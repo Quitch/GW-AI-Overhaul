@@ -11,7 +11,6 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
 const path = require("node:path");
 // stylelint 17 is ESM-only; Node's require(ESM) interop is what lets a
 // CommonJS test load it. See its "exports" field and .nvmrc.
@@ -57,17 +56,23 @@ async function accepts(code) {
   assert.deepEqual(await rulesFired(code), [], `expected to pass:\n${code}`);
 }
 
+const VALUES = "declaration-property-value-disallowed-list";
+const PROPERTIES = "property-disallowed-list";
+
 function rule(selector, declarations) {
   return `${selector} {\n${declarations.map((d) => `  ${d};\n`).join("")}}\n`;
 }
 
 describe("stylelint config resolution", () => {
-  it("is the .mjs file, with no .stylelintrc.json left to outrank it", () => {
-    // cosmiconfig ranks .stylelintrc.json third and stylelint.config.mjs last,
-    // so a resurrected JSON would silently shadow the whole profile while every
-    // other test here still passed.
-    assert.ok(fs.existsSync(CONFIG_FILE));
-    assert.ok(!fs.existsSync(path.join(REPO_ROOT, ".stylelintrc.json")));
+  it("resolves ui/ CSS to the .mjs file, with nothing outranking it", async () => {
+    // cosmiconfig ranks twenty names above stylelint.config.mjs and searches
+    // upward from each file, so any of them, here or under ui/, would silently
+    // shadow the whole profile while every other test here still passed.
+    assert.deepStrictEqual(
+      await stylelint.resolveConfig(FIXTURE),
+      await stylelint.resolveConfig(FIXTURE, { configFile: CONFIG_FILE }),
+      "stylelint resolves a config other than stylelint.config.mjs for ui/ CSS"
+    );
   });
 });
 
@@ -189,6 +194,59 @@ describe("CSS the engine drops", () => {
     );
   });
 
+  // What this profile catches beyond the plugin, with the rule that must fire.
+  const BEYOND_THE_PLUGIN = [
+    // A banned keyword anywhere in the value, not only as the whole of it.
+    ["overflow: clip visible", VALUES],
+    ["background-clip: padding-box, text", VALUES],
+    ["justify-content: safe start", VALUES],
+    // Hidden by the plugin's ignore list.
+    ["overflow: hidden auto", VALUES],
+    ["touch-action: pan-left", VALUES],
+    ["text-indent: 1em hanging", VALUES],
+    ["word-break: auto-phrase", VALUES],
+    ["-webkit-mask-mode: alpha", PROPERTIES],
+    // No hand-written entry: this pins that csstree's grammar still covers it.
+    ["-webkit-appearance: auto", "declaration-property-value-no-unknown"],
+    // The plugin has no matcher for these.
+    ["accent-color: red", PROPERTIES],
+    ["text-wrap: balance", PROPERTIES],
+    // Later alignment keywords the engine drops, or parses and ignores.
+    ["justify-content: safe center", VALUES],
+    ["justify-content: unsafe center", VALUES],
+    ["justify-content: anchor-center", VALUES],
+    ["align-items: first baseline", VALUES],
+    ["align-items: last baseline", VALUES],
+    ["align-self: unsafe center", VALUES],
+    ["align-self: anchor-center", VALUES],
+    ["align-content: space-evenly", VALUES],
+    ["align-content: start", VALUES],
+    ["align-content: normal", VALUES],
+    ["align-content: safe center", VALUES],
+    // Unprefixed filter and grab, where only the -webkit- forms work.
+    ["transition: filter 0.2s", VALUES],
+    ["-webkit-transition: opacity 1s, filter 1s", VALUES],
+    ["transition-property: filter", VALUES],
+    ["will-change: filter", VALUES],
+    ["cursor: grab", VALUES],
+  ];
+
+  it("rejects what the plugin misses", async () => {
+    for (const [declaration, fires] of BEYOND_THE_PLUGIN) {
+      await rejects(rule("a", ["display: flex", declaration]), fires);
+    }
+  });
+
+  it("rejects :-webkit-any-link, through the plugin", async () => {
+    // doiuse's css-matches-pseudo matches `:-webkit-any` as a substring, so the
+    // plugin rejects this whatever the engine does. That is why the config does
+    // not recommend it.
+    await rejects(
+      rule("a:-webkit-any-link", ["color: #fff"]),
+      "plugin/no-unsupported-browser-features"
+    );
+  });
+
   it("rejects modern functions", async () => {
     await rejects(
       rule("a", ["width: clamp(1px, 2vw, 3px)"]),
@@ -270,6 +328,10 @@ describe("CSS the engine drops", () => {
       rule("a", ["-webkit-transition: opacity 1s"]),
       "property-no-vendor-prefix"
     );
+    await rejects(
+      rule("a", ["display: -webkit-flex"]),
+      "value-no-vendor-prefix"
+    );
   });
 });
 
@@ -316,6 +378,7 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["text-decoration: none"]));
     await accepts(rule("a", ["text-indent: 5px"]));
     await accepts(rule("a", ["word-break: break-all"]));
+    await accepts(rule("a", ["mask-type: luminance"]));
   });
 
   it("accepts the flexbox the whole UI is built on", async () => {
@@ -332,6 +395,28 @@ describe("CSS the engine supports", () => {
       rule("a", ["display: flex", "justify-content: space-around"])
     );
     await accepts(rule("a", ["display: flex", "flex-flow: row wrap"]));
+  });
+
+  // The -webkit- forms and flex spellings the added bans must leave alone.
+  const LEFT_ALONE = [
+    "transition: -webkit-filter 0.2s",
+    "will-change: -webkit-filter",
+    "cursor: -webkit-grab",
+    'cursor: url("hand.png") 4 4, -webkit-grab',
+    "border-image-repeat: space",
+    '-webkit-mask-box-image: url("a.png") 10',
+    "justify-content: flex-end",
+    "align-content: flex-start",
+    "align-content: space-between",
+    "align-content: stretch",
+    // Parses in the engine, and in flex layout means flex-start anyway.
+    "justify-content: stretch",
+  ];
+
+  it("accepts what the added bans must leave alone", async () => {
+    for (const declaration of LEFT_ALONE) {
+      await accepts(rule("a", ["display: flex", declaration]));
+    }
   });
 
   it("accepts legacy colour notation and calc", async () => {
@@ -366,10 +451,26 @@ describe("CSS the engine supports", () => {
     );
   });
 
+  it("leaves a legacy gradient's prefix for a person to remove", async () => {
+    // Unprefixed, 0deg would point up rather than right.
+    const code = rule("a", [
+      "background: -webkit-linear-gradient(0deg, red, blue)",
+    ]);
+    const { code: fixed } = await stylelint.lint({
+      code,
+      codeFilename: FIXTURE,
+      configFile: CONFIG_FILE,
+      fix: true,
+    });
+    assert.equal(fixed, code);
+    await rejects(code, "value-no-vendor-prefix");
+  });
+
   it("accepts the longhands that must not be collapsed", async () => {
     // The shorthand this rule would otherwise propose is Chrome 68 for overflow
     // and Chrome 87 for inset - both dropped by the engine.
     await accepts(rule("a", ["overflow-x: hidden", "overflow-y: auto"]));
+    await accepts(rule("a", ["overflow: hidden"]));
     await accepts(
       rule("a", [
         "position: absolute",

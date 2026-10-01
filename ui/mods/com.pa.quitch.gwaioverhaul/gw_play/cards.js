@@ -14,8 +14,27 @@
     );
     locTree($("#hover-card"));
 
-    // Used by cards checking for T2 access - global for modders,
-    // New-GW-Cards pushes here - see tech-cards.md
+    // Deleting a card cannot be undone, so the button asks once before it acts.
+    model.gwoConfirmDiscard = ko.observable(false);
+    model.gwoDiscardLabel = ko.computed(function () {
+      return model.gwoConfirmDiscard()
+        ? loc("!LOC:Delete this Tech?")
+        : loc("!LOC:Delete Tech");
+    });
+    model.gwoDiscardHoverCard = function (card) {
+      if (!model.gwoConfirmDiscard()) {
+        model.gwoConfirmDiscard(true);
+        return;
+      }
+      model.gwoConfirmDiscard(false);
+      return model.discardHoverCard(card);
+    };
+    model.hoverCard.subscribe(function () {
+      model.gwoConfirmDiscard(false);
+    });
+
+    // Used by cards checking for T2 access - global for modders, which a card
+    // mod may push its own ids onto - see tech-cards.md
     model.gwoCardsGrantingAdvancedTech = _.isArray(
       model.gwoCardsGrantingAdvancedTech
     )
@@ -34,9 +53,10 @@
     );
 
     var numCardsToOffer = 3;
-    // cards_deal_helpers.js, assigned by the main requireGW below. Only read
-    // from bodies that run after that load resolves.
+    // cards_deal_helpers.js and the co-op reroll, assigned by the main
+    // requireGW below. Only read from bodies that run after that load resolves.
     var helpers;
+    var coopReroll;
 
     var currentCoopPendingTechCards = function () {
       return model.canChooseCoopTechCards()
@@ -61,18 +81,7 @@
           return;
         }
 
-        model.gwoRerollPending(true);
-        model.scanning(true);
-        model.sendCampaignViewerOperator(
-          "gwo_reroll_pending_tech",
-          {
-            star: pendingTechCards.star,
-            deal_index: pendingTechCards.dealIndex,
-          },
-          {
-            request_id: _.uniqueId("gwo_reroll_"),
-          }
-        );
+        coopReroll.requestReroll(pendingTechCards);
         return;
       }
 
@@ -297,6 +306,30 @@
       });
     };
 
+    var setupCoopAiTech = function (params) {
+      var game = model.game();
+      var perPlayer = game.perPlayerTechCards();
+
+      requireGW(
+        [
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_ai_tech.js",
+        ],
+        function (cardsCoopAiTech) {
+          cardsCoopAiTech(
+            _.assign({ game: game, perPlayer: perPlayer }, params)
+          );
+        },
+        function (err) {
+          console.error(
+            "Galactic War Overhaul (GWO): co-op AI tech not loaded: " +
+              err.requireModules +
+              ": " +
+              (err.stack || err.message || err)
+          );
+        }
+      );
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -316,6 +349,12 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_dealer.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_ai_star_deal.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_explore.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_win.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
       ],
       function (
         GW,
@@ -334,7 +373,13 @@
         gwoStreams,
         gwoTreasure,
         gwoLoadoutBanks,
-        gwoRaces
+        gwoRaces,
+        gwoPromise,
+        cardsDealer,
+        cardsAiStarDeal,
+        cardsExplore,
+        cardsWin,
+        cardsStartSubcdr
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -383,126 +428,25 @@
 
         var loaded = $.when(deckLoaded, cardUnitsLoaded);
 
-        // dealer.chooseCards() replacement - use our deck
-        var chooseCards = function (params) {
-          // params.rng is the deal's stream, one sub-stream per card of the hand.
-          // A caller with no stream keeps the unseeded draw it always had.
-          var dealStream = params.rng;
-          var unseeded = dealStream ? undefined : new Math.seedrandom();
-          var count = params.count;
-          var star = params.star;
-          var dealAddSlot = params.addSlot;
-          var systemCards = params.systemCards;
-          var dealInventory = params.inventory || inventory;
-          var cardContexts = {};
+        var chooseCards = cardsDealer({
+          cards: cards,
+          deck: deck,
+          loaded: loaded,
+          galaxy: galaxy,
+          inventory: inventory,
+          helpers: helpers,
+          gwoStreams: gwoStreams,
+          gwoRaces: gwoRaces,
+        });
 
-          // One iteration of the deal loop below. `list` accumulates in the
-          // loaded.then closure; `iteration` keys this card's stream.
-          var dealOneCard = function (list, iteration) {
-            var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
-            var fullHand = _.map(cards, function (card) {
-              // setupGwoDeck leaves a hole where a card failed to load.
-              if (!card) {
-                return undefined;
-              }
-
-              var context = cardContexts[card.id];
-              var cardChance;
-              // A third-party card's deal() is arbitrary code, and this runs
-              // inside a deferred callback where a throw is swallowed rather
-              // than rejected - the hand would simply never arrive.
-              try {
-                cardChance =
-                  card.deal &&
-                  card.deal(
-                    star,
-                    context,
-                    dealInventory,
-                    gwoStreams.cardRng(iterationRng, card.id)
-                  );
-              } catch (e) {
-                console.error(
-                  "Tech card deal() threw, skipping " +
-                    card.id +
-                    ": " +
-                    ((e && e.stack) || e)
-                );
-                return undefined;
-              }
-
-              var match =
-                helpers.doNotDealCard(
-                  dealInventory,
-                  card,
-                  list,
-                  dealAddSlot,
-                  systemCards
-                ) ||
-                !helpers.raceCanDeal(
-                  gwoRaces,
-                  dealInventory,
-                  card.id,
-                  model.gwoCardsToUnits
-                );
-
-              if (match && cardChance) {
-                cardChance.chance = 0;
-              }
-
-              return cardChance;
-            });
-
-            var resultIndex = helpers.chooseDealIndex(
-              fullHand,
-              iterationRng ? iterationRng() : unseeded()
-            );
-            if (_.isUndefined(resultIndex)) {
-              return;
-            }
-
-            var resultDeal = fullHand[resultIndex];
-            var cardParams = resultDeal && resultDeal.params;
-            var systemCard = {
-              id: deck[resultIndex],
-            };
-
-            if (cardParams && _.isPlainObject(cardParams)) {
-              _.assign(systemCard, cardParams);
-            }
-
-            list.push(systemCard);
-          };
-
-          var result = $.Deferred();
-          loaded.then(function () {
-            _.forEach(cards, function (card) {
-              if (card && card.getContext && !cardContexts[card.id]) {
-                try {
-                  cardContexts[card.id] = card.getContext(
-                    galaxy,
-                    dealInventory
-                  );
-                } catch (e) {
-                  console.error(
-                    "Tech card getContext() threw, skipping " +
-                      card.id +
-                      ": " +
-                      ((e && e.stack) || e)
-                  );
-                }
-              }
-            });
-
-            var list = [];
-
-            _.times(count, dealOneCard.bind(null, list));
-
-            result.resolve(list);
-          });
-          return result;
+        // A co-op AI player settling its deals, from gw_play/coop_ai.js.
+        var coopAiDeciding = function () {
+          return model.gwoCoopAiDeciding();
         };
+        var starCardsBusy = ko.observable(false);
 
-        // Deals each viewer their own card on every selectable AI star.
+        // Deals each viewer, and each co-op AI player, their own card on every
+        // selectable AI star.
         var coopStarCards = cardsCoopStarCards({
           game: game,
           chooseCards: chooseCards,
@@ -514,10 +458,16 @@
           gwoSettings: gwoSettings,
           gwoSave: gwoSave,
           gwoTreasure: gwoTreasure,
+          aiClients: function () {
+            return model.gwoCoopAi.clients();
+          },
+          aiDeciding: coopAiDeciding,
+          busy: starCardsBusy,
         });
 
-        // Installs model.dealCoopPlayerPendingTechCards, overriding stock gw_play.js.
-        cardsCoopDeal({
+        // Installs model.dealCoopPlayerPendingTechCards, overriding stock
+        // gw_play.js, and hands back the same deal for a co-op AI player.
+        var coopDeal = cardsCoopDeal({
           game: game,
           chooseCards: chooseCards,
           helpers: helpers,
@@ -534,16 +484,17 @@
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
-        // ones the base game's own record cannot carry, and holds a viewer's
-        // banking closed against the host's inventory.
+        // ones the base game's own record cannot carry.
         var treasureUnlocks = gwoTreasure.install({
           game: game,
           stockBank: GW.bank,
           gwoBank: gwoBank,
         });
 
-        // Registers the co-op reroll operator handlers, viewer and host.
-        cardsCoopReroll({
+        // Registers the co-op reroll operator handlers, viewer and host, and
+        // hands back the viewer's request and the same reroll for a co-op AI
+        // player.
+        coopReroll = cardsCoopReroll({
           game: game,
           galaxy: galaxy,
           chooseCards: chooseCards,
@@ -558,77 +509,18 @@
           stockBank: GW.bank,
         });
 
-        var dealCardToSelectableAI = function (win, turnState) {
-          if (model.isCampaignViewer()) {
-            return $.when().promise();
-          }
-
-          var deferred = $.Deferred();
-
-          // Avoid running twice after winning a fight
-          if (!win || turnState === "end") {
-            var deferredQueue = [];
-
-            _.forEach(model.galaxy.systems(), function (system, starIndex) {
-              var ai = system.star.ai();
-              // A treasure planet offers a loadout derived at exploration, so it
-              // never carries a pre-dealt card.
-              var treasurePlanet = gwoTreasure.isTreasureStar(
-                gwoSettings,
-                starIndex
-              );
-              var validForDeal =
-                gwoSettings && gwoSettings.staticTech
-                  ? _.isEmpty(system.star.cardList())
-                  : true;
-              if (
-                model.canSelect(starIndex) &&
-                ai &&
-                !treasurePlanet &&
-                validForDeal
-              ) {
-                deferredQueue.push(
-                  chooseCards({
-                    count: 1,
-                    star: system.star,
-                    addSlot: false,
-                    systemCards: system.star.cardList(),
-                    // Every selectable AI star is re-dealt each turn, so the
-                    // turn count is what stops a star repeating its own card.
-                    rng: gwoStreams.aiStarDealRng(
-                      warRng,
-                      starIndex,
-                      game.stats().turns()
-                    ),
-                  }).then(function (card) {
-                    system.star.cardList(card);
-                    model.sendCampaignAction("sync_star_cards", {
-                      star: starIndex,
-                      cards: system.star.cardList(),
-                    });
-                    return cardNameSync.setCardName(system, card, starIndex);
-                  })
-                );
-              }
-            });
-
-            // Not $.when(deferredQueue): it takes an array as one value and
-            // resolves at once. It would need $.when.apply.
-            Promise.all(deferredQueue)
-              .then(function () {
-                // The one caller that replaces cards viewers already hold, so
-                // their offers move exactly when the host's do.
-                return coopStarCards.refresh({ redeal: true });
-              })
-              .then(function () {
-                deferred.resolve();
-              });
-          } else {
-            deferred.resolve();
-          }
-
-          return deferred.promise();
-        };
+        var aiStarDeal = cardsAiStarDeal({
+          game: game,
+          chooseCards: chooseCards,
+          gwoTreasure: gwoTreasure,
+          gwoSettings: gwoSettings,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          cardNameSync: cardNameSync,
+          coopStarCards: coopStarCards,
+          gwoPromise: gwoPromise,
+        });
+        var dealCardToSelectableAI = aiStarDeal.dealCardToSelectableAI;
 
         // runRefresh reads the gate a tick late, so its inputs are read here.
         // See coop.md, "Per-player pre-dealt cards".
@@ -638,26 +530,17 @@
           game.coopPlayerInventoryData();
           game.hostTechCardDealCount();
           game.turnState();
+          coopAiDeciding();
           coopStarCards.refresh();
         });
 
-        requireGW(
-          [
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
-          ],
-          function (cardsStartSubcdr) {
-            var setupGeneralCommander = cardsStartSubcdr({
-              game: game,
-              gwoSettings: gwoSettings,
-              playerFaction: playerFaction,
-              inventory: inventory,
-            });
-            setupGeneralCommander();
-          },
-          function () {
-            console.error("GWO failed to load cards_start_subcdr.js");
-          }
-        );
+        // The handle a co-op AI player's starting loadout is set up with.
+        var generalCommander = cardsStartSubcdr({
+          game: game,
+          gwoSettings: gwoSettings,
+          playerFaction: playerFaction,
+          inventory: inventory,
+        });
 
         var dealCardToSelectableAIWhenWarStarts = function (settings) {
           if (settings && !settings.firstDealComplete) {
@@ -697,312 +580,55 @@
           );
         };
 
-        // gw_play self.explore - call our chooseCards()
-        model.explore = function (force) {
-          // game.explore() advances turnState rather than querying it, so it must
-          // stay below every guard that can refuse, or a refused call leaves the
-          // star inert with no deal.
-          if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
-            return;
-          }
+        // Installs model.explore.
+        cardsExplore({
+          game: game,
+          inventory: inventory,
+          helpers: helpers,
+          numCardsToOffer: numCardsToOffer,
+          chooseCards: chooseCards,
+          coopAiDeciding: coopAiDeciding,
+          startCardUnlocked: startCardUnlocked,
+          gwoTreasure: gwoTreasure,
+          gwoSettings: gwoSettings,
+          gwoRaces: gwoRaces,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          gwoSave: gwoSave,
+        });
 
-          // force is set for a host reroll, which must proceed even while co-op
-          // players are still choosing.
-          if (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked()) {
-            return;
-          }
+        setupCoopAiTech({
+          GW: GW,
+          GWInventory: GWInventory,
+          gwoAI: gwoAI,
+          gwoDeal: gwoDeal,
+          gwoSave: gwoSave,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          galaxy: galaxy,
+          inventory: inventory,
+          cards: cards,
+          loaded: loaded,
+          races: gwoRaces,
+          helpers: helpers,
+          coopDeal: coopDeal,
+          coopReroll: coopReroll,
+          starCardsBusy: starCardsBusy,
+          aiStarDealing: aiStarDeal.dealing,
+          startCardUnlocked: startCardUnlocked,
+          generalCommander: generalCommander,
+        });
 
-          if (!game.explore()) {
-            return;
-          }
+        // Installs model.win.
+        cardsWin({
+          game: game,
+          helpers: helpers,
+          treasureUnlocks: treasureUnlocks,
+          dealCardToSelectableAI: dealCardToSelectableAI,
+          gwoSave: gwoSave,
+        });
 
-          if (!model.gwCampaignReplayingAction) {
-            model.sendCampaignAction("explore", { star: game.currentStar() });
-          }
-
-          model.scanning(true);
-
-          api.audio.playSound("/VO/Computer/gw/board_exploring");
-
-          var cardsOffered = helpers.cardsOfferedCount(
-            numCardsToOffer,
-            inventory
-          );
-          var starIndex = game.currentStar();
-          var star = game.galaxy().stars()[starIndex];
-
-          // Deriving here rather than at war creation is what lets every player
-          // be judged by their own unlock record. Writing the whole list also
-          // clears the pre-dealt card a war generated before this carried.
-          // A replaying viewer reads its own banks, so the host's card reaches
-          // it through sync_star_cards instead.
-          if (
-            !model.gwCampaignReplayingAction &&
-            gwoTreasure.isTreasureStar(gwoSettings, starIndex)
-          ) {
-            var treasureLoadout = gwoTreasure.pickTreasureLoadout({
-              race: gwoRaces.raceOf(inventory),
-              isUnlocked: startCardUnlocked,
-              rng: gwoStreams.treasureLoadoutRng(warRng, undefined, starIndex),
-            });
-            star.cardList(treasureLoadout ? [treasureLoadout] : []);
-          }
-
-          var startLoadoutCards = helpers.filterStartLoadoutCards(
-            star.cardList()
-          );
-
-          var dealStarCards = chooseCards({
-            count:
-              cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
-            star: star,
-            systemCards: star.cardList(),
-            // A reroll re-enters here with the iteration index back at 0, so
-            // the reroll count is what makes it deal a different hand.
-            rng: gwoStreams.exploreDealRng(
-              warRng,
-              starIndex,
-              game.stats().turns(),
-              model.gwoRerollsUsed()
-            ),
-          }).then(function (result) {
-            var ok = true;
-
-            _.forEach(star.cardList(), function (card) {
-              if (
-                helpers.isStartLoadoutCardId(card.id) &&
-                !startCardUnlocked(card)
-              ) {
-                ok = false;
-              }
-            });
-
-            if (ok) {
-              // Combine the deal with pre-dealt system card
-              var cardList = result.concat(star.cardList());
-              star.cardList(cardList);
-            }
-
-            if (!model.gwCampaignReplayingAction) {
-              model.sendCampaignAction("sync_star_cards", {
-                star: game.currentStar(),
-                cards: star.cardList(),
-              });
-            }
-
-            var dealEntry;
-            // chooseCards is async, so the turn can have moved on. Recording then
-            // owes every co-op viewer a catch-up hand for a deal never offered.
-            var explorationLive = helpers.explorationStillLive(
-              game,
-              starIndex,
-              star
-            );
-
-            if (!explorationLive) {
-              console.log(
-                "[GW COOP] discarded a stale explore deal star=" +
-                  starIndex +
-                  " turnState=" +
-                  game.turnState()
-              );
-            }
-
-            if (
-              explorationLive &&
-              force !== true &&
-              (ok || startLoadoutCards.length) &&
-              star.cardList().length
-            ) {
-              dealEntry = game.recordHostTechCardDeal(starIndex, {
-                startLoadoutCards: startLoadoutCards,
-              });
-            }
-
-            if (!dealEntry) {
-              return $.Deferred().resolve([]).promise();
-            }
-
-            return model.dealCoopPlayerPendingTechCards(starIndex, star, {
-              dealIndex: dealEntry.dealIndex,
-              startLoadoutCards: startLoadoutCards,
-            });
-          });
-
-          // Returned so the base campaign queue can order it. The cosmetic
-          // scanning delay below is deliberately not awaited.
-          return $.when(dealStarCards).then(
-            function () {
-              if (
-                model.currentSystemCardList() &&
-                model.currentSystemCardList()[0] &&
-                model.currentSystemCardList()[0].isLoadout()
-              ) {
-                model.gwoOfferRerolls(false);
-              }
-              _.delay(function () {
-                model.scanning(false);
-              }, 2000);
-              if (
-                helpers.explorationDealtNothing(
-                  game,
-                  starIndex,
-                  star,
-                  model.gwCampaignReplayingAction
-                )
-              ) {
-                console.warn(
-                  "GWO: no tech card could be dealt at star " +
-                    starIndex +
-                    "; ending the exploration with nothing"
-                );
-                _.delay(function () {
-                  model.win(-1);
-                }, 2000);
-              }
-              return gwoSave(game, false);
-            },
-            function (reason) {
-              console.error(
-                "[GW COOP] failed to deal co-op player pending tech cards: " +
-                  reason
-              );
-              model.scanning(false);
-              return $.Deferred().reject(reason).promise();
-            }
-          );
-        };
-
-        // A loadout won at a treasure planet unlocks the commander for later
-        // wars and grants nothing in this one. Left in the inventory it would
-        // read as tech held: cardsOfferedCount tests hasCard for the Lucky
-        // Commander, so it would keep paying out an extra card every explore.
-        // Returns the index to submit in place of the player's own.
-        var bankWonLoadout = function (cardId, selectedCardIndex) {
-          if (
-            selectedCardIndex === -1 ||
-            !helpers.isStartLoadoutCardId(cardId)
-          ) {
-            return selectedCardIndex;
-          }
-
-          treasureUnlocks.bankOwnLoadout({ id: cardId });
-          return -1;
-        };
-
-        // call dealCardToSelectableAI() so systems' cards update when player acquires a card
-        model.win = function (selectedCardIndex) {
-          var resolveExitGate = function () {
-            model.exitGate().resolve();
-          };
-
-          if (
-            model.canUseCoopTechChoice() &&
-            model.isCampaignViewer() &&
-            !model.gwCampaignReplayingAction
-          ) {
-            var tech_card = model.currentSystemCardList()[selectedCardIndex];
-            var tech_audio =
-              tech_card && tech_card.audio() ? tech_card.audio().found : null;
-            // Every loadout id, not just the ones the server misfiles: banking
-            // is held for the whole scene on a viewer, so the server's own
-            // GW.bank.addStartCard would be suppressed along with the rest.
-            var submittedIndex = bankWonLoadout(
-              tech_card && tech_card.id(),
-              selectedCardIndex
-            );
-
-            return model.submitCoopTechCardChoice(submittedIndex).then(
-              function () {
-                if (tech_audio) {
-                  api.audio.playSound(tech_audio);
-                } else {
-                  api.audio.playSound("/VO/Computer/gw/board_tech_acquired");
-                }
-              },
-              function (reason) {
-                console.error(
-                  "[GW COOP] failed to acquire co-op tech choice: " + reason
-                );
-                return $.Deferred().reject(reason).promise();
-              }
-            );
-          }
-
-          if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
-            return;
-          }
-
-          if (!model.gwCampaignReplayingAction) {
-            model.sendCampaignAction("win_choice", {
-              selected_card_index: selectedCardIndex,
-            });
-          }
-
-          var actionCardList = model.currentSystemActionCardList();
-          if (
-            selectedCardIndex !== -1 &&
-            (!actionCardList || !actionCardList[selectedCardIndex])
-          ) {
-            console.error(
-              "[GW COOP] Cannot apply win choice without current system card data."
-            );
-            return;
-          }
-
-          model.exitGate($.Deferred());
-
-          var techCard = actionCardList && actionCardList[selectedCardIndex];
-          var techAudio =
-            techCard && techCard.audio() ? techCard.audio().found : null;
-          var playTechAudio = !!techCard;
-          // winTurn(-1) still clears the star and ends the turn; it just adds
-          // nothing to the inventory.
-          var wonIndex = bankWonLoadout(
-            techCard && techCard.id(),
-            selectedCardIndex
-          );
-
-          return game.winTurn(wonIndex).then(function (didWin) {
-            if (!didWin) {
-              console.error(
-                "Failed winning turn at star " + game.currentStar()
-              );
-              return $.Deferred().reject("Failed winning turn").promise();
-            }
-
-            if (model.isCampaignViewer()) {
-              model.syncViewerStarsFromGame("win_applied");
-            }
-
-            model.maybePlayCaptureSound();
-
-            return dealCardToSelectableAI(true, game.turnState())
-              .then(function () {
-                return gwoSave(game, true);
-              })
-              .then(function () {
-                if (model.gameOver()) {
-                  // always, so a failed stat write still opens the gate.
-                  api.tally
-                    .incStatInt("gw_war_victory")
-                    .always(resolveExitGate);
-                } else {
-                  resolveExitGate();
-
-                  if (playTechAudio) {
-                    if (techAudio) {
-                      api.audio.playSound(techAudio);
-                    } else {
-                      api.audio.playSound(
-                        "/VO/Computer/gw/board_tech_acquired"
-                      );
-                    }
-                  }
-                }
-              });
-          });
-        };
+        generalCommander.setupGeneralCommander();
       }
     );
   } catch (e) {

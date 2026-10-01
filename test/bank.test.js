@@ -49,16 +49,7 @@ stubs.setGlobal("ko", {
       }, {})
     ),
 });
-// Defined rather than assigned through the stub helper: Node ships its own
-// localStorage accessor, and merely reading it to save a previous value emits an
-// ExperimentalWarning about --localstorage-file.
-Object.defineProperty(global, "localStorage", {
-  value: storage,
-  configurable: true,
-  writable: true,
-});
-after(() => delete global.localStorage);
-
+stubs.setGlobal("localStorage", storage);
 stubs.setGlobal("api", {
   tally: {
     getStatInt: (name) => {
@@ -135,10 +126,12 @@ describe("bank load", () => {
     assert.deepEqual(bank.startCards(), []);
   });
 
+  // Counted rather than compared: a write-back of this record would store the
+  // same bytes. reload() seeds the store without setItem.
   it("does not write the record back while loading it", () => {
-    const stored = JSON.stringify({ startCards: [{ id: "gwaio_start_ceo" }] });
-    reload(stored);
-    assert.equal(storage[LS_KEY], stored);
+    const setItem = mock.method(storage, "setItem");
+    reload(JSON.stringify({ startCards: [{ id: "gwaio_start_ceo" }] }));
+    assert.equal(setItem.mock.callCount(), 0);
   });
 });
 
@@ -284,5 +277,148 @@ describe("bank suspendUnlocks", () => {
     bank.resumeUnlocks();
 
     assert.equal(stockBank.addStartCard, patchedByAnotherMod);
+  });
+});
+
+// applyCards empties everything else before the first buff(), so only these
+// reach an applied inventory. test/coop_ai_effects.test.js compares whole
+// applies against a whole copy's.
+describe("bank copyForApply", () => {
+  const saved = () => ({
+    units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
+    aiMods: [{ type: "fabber", op: "append", value: "x" }],
+    mods: [{ file: "f", path: "p", op: "multiply", value: 2 }],
+    maxCards: 5,
+    cards: [{ id: "gwc_start_bot" }, { id: "gwc_minion", minion: { a: 1 } }],
+    minions: [{ a: 1 }],
+    tags: { global: { playerFaction: 0 }, gwc_start_bot: { buffCount: 1 } },
+  });
+
+  it("copies only the cards and tags of an inventory an apply will run", () => {
+    const source = saved();
+    const copy = bank.copyForApply(source);
+
+    assert.deepEqual(copy, { cards: source.cards, tags: source.tags });
+    assert.notEqual(copy.cards[1], source.cards[1]);
+    assert.notEqual(copy.cards[1].minion, source.cards[1].minion);
+    assert.notEqual(copy.tags.gwc_start_bot, source.tags.gwc_start_bot);
+    assert.deepEqual(source, saved());
+  });
+
+  // One copy of both, as a copy of the whole inventory would be.
+  it("keeps an object the cards and the tags share shared", () => {
+    const source = saved();
+    source.tags.gwc_minion = { minion: source.cards[1].minion };
+    const copy = bank.copyForApply(source);
+
+    assert.equal(copy.tags.gwc_minion.minion, copy.cards[1].minion);
+  });
+
+  it("copies an inventory with no cards whole, since nothing applies it", () => {
+    const source = Object.assign(saved(), { cards: [] });
+    const copy = bank.copyForApply(source);
+
+    assert.deepEqual(copy, source);
+    assert.notEqual(copy.mods, source.mods);
+    assert.notEqual(copy.mods[0], source.mods[0]);
+    assert.deepEqual(bank.copyForApply({ tags: {} }), { tags: {} });
+    assert.equal(bank.copyForApply(undefined), undefined);
+  });
+});
+
+describe("bank applyInventoryHeld", () => {
+  const stock = () => ({
+    added: [],
+    addStartCard(card) {
+      this.added.push(card);
+      return true;
+    },
+  });
+
+  // applyCards hands its callback to the test, which finishes the apply when
+  // it chooses - or never, as a hung card would.
+  const inventoryClass = (finishers, options) =>
+    function GWInventory() {
+      let loaded = { cards: [] };
+      this.load = (saved) => {
+        loaded = saved;
+      };
+      this.cards = () => loaded.cards || [];
+      this.applyCards = (done) => {
+        if (options && options.throws) {
+          throw new Error("card threw");
+        }
+        finishers.push(done);
+      };
+    };
+
+  it("holds both banks for the apply and hands over the inventory after", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    const held = bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [{ id: "gwc_start_air" }] },
+      stockBank,
+      (inventory) => done.push(inventory)
+    );
+
+    assert.equal(stockBank.addStartCard({ id: "x" }), false);
+    assert.equal(done.length, 0);
+
+    finishers[0]();
+    assert.deepEqual(done, [held.inventory]);
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+
+  it("hands over an empty inventory at once, holding nothing", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [] },
+      stockBank,
+      (inventory) => done.push(inventory)
+    );
+
+    assert.equal(done.length, 1);
+    assert.equal(finishers.length, 0);
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+
+  // A caller that gave up on a hung apply must not leave every bank shut.
+  it("releases the hold when abandoned, and never calls done after", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    const held = bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [{ id: "gwc_start_air" }] },
+      stockBank,
+      () => done.push("late")
+    );
+
+    held.abandon();
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+    finishers[0]();
+    held.abandon();
+    assert.deepEqual(done, []);
+    assert.equal(stockBank.addStartCard({ id: "y" }), true);
+  });
+
+  it("releases the hold and throws when the apply throws", () => {
+    const stockBank = stock();
+    assert.throws(
+      () =>
+        bank.applyInventoryHeld(
+          inventoryClass([], { throws: true }),
+          { cards: [{ id: "gwc_start_air" }] },
+          stockBank,
+          () => {}
+        ),
+      /card threw/
+    );
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
   });
 });

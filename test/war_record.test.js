@@ -19,7 +19,6 @@ function settings() {
     systemScaling: true,
     simpleSystems: false,
     largePlanets: false,
-    easierStart: false,
     techCardDeck: "Expanded",
     staticTech: false,
     uniqueRaces: true,
@@ -42,7 +41,7 @@ function war(overrides) {
             identifier: "com.example.biomes",
             displayName: "Example Biomes",
             version: "1.0",
-            gwsm: true,
+            served: "gwsm",
           },
         ],
       }),
@@ -64,6 +63,7 @@ function war(overrides) {
       raceByFaction: { 0: "mla" },
       raceInfo: { mods: [], addonMods: [] },
       perPlayerTechCards: false,
+      uniqueAiLoadouts: true,
       galaxy: { stars: () => stars },
     },
     overrides
@@ -83,29 +83,37 @@ describe("build", () => {
       "systemScaling",
       "simpleSystems",
       "largePlanets",
-      "easierStart",
       "ai",
       "aiAlly",
+      "aiCoop",
       "aiByRace",
       "aiMods",
       "techCardDeck",
       "staticTech",
       "treasurePlanetFixed",
-      "clusterFixed",
       "treasureLoadoutDerived",
       "treasureStar",
       "coopPlayerScalingCount",
       "races",
+      "uniqueAiLoadouts",
       "biomeMods",
     ]);
     assert.equal(record.treasurePlanetFixed, true);
-    assert.equal(record.clusterFixed, true);
     assert.equal(record.treasureLoadoutDerived, true);
     assert.equal(record.version, gwoVersion);
     assert.equal(record.seed, "abc");
     assert.equal(record.difficulty, "!LOC:Gold");
     assert.equal(record.treasureStar, 3);
     assert.equal(record.coopPlayerScalingCount, 2);
+    // The stamp's map pack is one GW Server Mods serves, so the war depends
+    // on it.
+    assert.deepEqual(record.biomeMods, [
+      {
+        identifier: "com.example.biomes",
+        displayName: "Example Biomes",
+        version: "1.0",
+      },
+    ]);
     // MLA takes the war-wide brains, so it has no row.
     assert.deepEqual(record.aiByRace, {});
     assert.deepEqual(record.races, {
@@ -115,6 +123,42 @@ describe("build", () => {
       mods: [],
       addons: [],
       perPlayerRace: false,
+    });
+  });
+
+  // Only an AI under per-player tech draws a loadout.
+  it("records Unique AI loadouts only alongside per-player tech", () => {
+    assert.equal(warRecord.build(war()).uniqueAiLoadouts, false);
+    assert.equal(
+      warRecord.build(war({ perPlayerTechCards: true })).uniqueAiLoadouts,
+      true
+    );
+    assert.equal(
+      warRecord.build(
+        war({ perPlayerTechCards: true, uniqueAiLoadouts: false })
+      ).uniqueAiLoadouts,
+      false
+    );
+  });
+
+  it("records the co-op brain, which follows the opponent's until set", () => {
+    assert.equal(warRecord.build(war()).aiCoop, "Queller");
+
+    const record = warRecord.build(
+      war({
+        brains: {
+          aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+          ai: "Titans",
+          aiAlly: "Titans",
+          aiCoop: "Queller",
+        },
+        installedRaces: ["mla", "legion"],
+      })
+    );
+    assert.equal(record.aiCoop, "Queller");
+    // A stored row without a co-op cell follows its own opponent.
+    assert.deepEqual(record.aiByRace, {
+      legion: { enemy: "Titans", ally: "Titans", coop: "Titans" },
     });
   });
 
@@ -131,7 +175,7 @@ describe("build", () => {
       keys.indexOf("customDifficulty"),
       keys.indexOf("difficulty") + 1
     );
-    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("easierStart") + 1);
+    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("largePlanets") + 1);
     assert.deepEqual(record.customDifficulty, { econBase: 1 });
     assert.equal(record.cheatsUsed, true);
     assert.equal(record.races.perPlayerRace, true);

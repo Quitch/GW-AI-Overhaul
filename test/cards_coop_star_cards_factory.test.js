@@ -9,7 +9,7 @@
 // scripts/lib/ai-path-fixtures.js does. The pure predicates the factory delegates
 // to are pinned separately in cards_coop_star_cards.test.js.
 
-const { describe, it, afterEach, mock } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -22,6 +22,9 @@ const {
   inventoryClass,
   viewer,
 } = require("../scripts/lib/coop-fixtures.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
@@ -70,11 +73,20 @@ function setup(overrides = {}) {
       onUpsert: null,
       slowDeals: false,
       saveFails: false,
+      aiClients: [],
+      aiDeciding: false,
     },
     overrides
   );
 
-  const calls = { upserts: [], deals: [], saves: [], snapshots: [], bank: [] };
+  const calls = {
+    upserts: [],
+    deals: [],
+    saves: [],
+    snapshots: [],
+    bank: [],
+    busy: [],
+  };
 
   const stubs = createGlobalStubs();
   stubs.setGlobal("model", {
@@ -148,6 +160,9 @@ function setup(overrides = {}) {
       isTreasureStar: (settings, starIndex) =>
         settings.treasureStar === starIndex,
     },
+    aiClients: () => options.aiClients,
+    aiDeciding: () => options.aiDeciding,
+    busy: (value) => calls.busy.push(value),
   });
 
   return {
@@ -228,6 +243,76 @@ describe("coop star cards refresh - when it runs at all", () => {
     const { coopStarCards, calls } = build({ turnState: "explore" });
     await coopStarCards.refresh();
     assert.deepEqual(starsDealt(calls), []);
+  });
+});
+
+describe("coop star cards refresh - co-op AI players", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1", role: "ai" };
+
+  it("deals an AI player its own card on each star, with no viewer connected", async () => {
+    const { coopStarCards, calls, options } = build({
+      viewers: [],
+      aiClients: [AI],
+      records: { gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } } },
+      stars: [{}, {}],
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), [0, 1]);
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["gwo_ai_1", "gwo_ai_1"]
+    );
+    assert.deepEqual(cardIndexes(options.records.gwo_ai_1), ["0", "1"]);
+  });
+
+  it("waits while an AI player settles its deals", async () => {
+    const { coopStarCards, calls } = build({
+      aiClients: [AI],
+      aiDeciding: true,
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } },
+      },
+    });
+
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), []);
+  });
+
+  // A re-deal owes every record, the AIs' included; the refresh settles an
+  // AI's debt as it does a viewer's.
+  it("settles an AI player's re-deal debt", async () => {
+    const { coopStarCards, options } = build({
+      viewers: [],
+      aiClients: [AI],
+      records: {
+        gwo_ai_1: {
+          id: "gwo_ai_1",
+          inventory: { cards: [] },
+          gwaioStarCards: {
+            turn: 6,
+            cards: { 0: { id: "old" } },
+            redealOwed: true,
+          },
+        },
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    const field = options.records.gwo_ai_1.gwaioStarCards;
+    assert.equal(field.redealOwed, undefined);
+    assert.deepEqual(field.cards, { 0: { id: "card_for_0" } });
+  });
+
+  it("says it is busy while a refresh runs", async () => {
+    const { coopStarCards, calls } = build();
+    const running = coopStarCards.refresh();
+    assert.deepEqual(calls.busy, [true]);
+    await running;
+    assert.deepEqual(calls.busy, [true, false]);
   });
 });
 
@@ -410,9 +495,28 @@ describe("coop star cards refresh - what it writes", () => {
     );
   });
 
-  // Why the record is re-read at write time rather than closed over: chooseCards
-  // is async, so a viewer can have left and had their record dropped since this
-  // pass began. See coop.md, "Per-player pre-dealt cards".
+  // The record is re-read at write time: chooseCards is async, so a catch-up
+  // deal can land pendingTechCards on it while this pass deals, and writing
+  // over the copy read before the deal would erase that offer. See coop.md,
+  // "Per-player pre-dealt cards".
+  it("keeps an offer a catch-up deal wrote while the deal was in flight", async () => {
+    const offer = { star: 0, cards: [{ id: "gwc_catch_up" }], dealIndex: 3 };
+    const { coopStarCards, options } = build({
+      onDeal: (opts) => {
+        opts.records.alice = Object.assign({}, opts.records.alice, {
+          pendingTechCards: offer,
+        });
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(options.records.alice.pendingTechCards, offer);
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  // Read at write time, the record of a viewer who left mid-deal is gone, so
+  // nothing is written back for them.
   it("writes nothing when the record goes while the deal is in flight", async () => {
     const { coopStarCards, calls } = build({
       viewers: [viewer("alice"), viewer("bob")],
@@ -759,6 +863,56 @@ describe("coop star cards refresh - coalescing", () => {
     await coopStarCards.refresh({ redeal: true });
 
     assert.deepEqual(starsDealt(calls), [0]);
+  });
+});
+
+describe("coop star cards refresh - a throwing step", () => {
+  let timers;
+
+  before(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  after(() => timers.restore());
+
+  // A records subscriber runs inside a write, so a viewer's step can throw.
+  // The refresh must still end, or every later refresh only joins it.
+  it("ends the refresh when a viewer's step throws", async () => {
+    const { coopStarCards, calls } = build({
+      stars: [{ ai: null }],
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [] },
+          gwaioStarCards: { redealOwed: true },
+        },
+      },
+      onUpsert: () => {
+        throw new Error("subscriber threw");
+      },
+    });
+
+    let outcome;
+    await captureErrors(async () => {
+      const refreshed = coopStarCards.refresh().then(() => "ended");
+      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+        await Promise.resolve();
+      }
+      assert.equal(timers.delayed.length, 1, "the viewer's step is deferred");
+      // The engine logs a throw from a deferred callback and carries on.
+      try {
+        timers.delayed.shift().fn();
+      } catch (error) {
+        console.error(String(error));
+      }
+      outcome = await Promise.race([
+        refreshed,
+        new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+      ]);
+    });
+
+    assert.equal(outcome, "ended");
+    assert.deepEqual(calls.busy, [true, false]);
   });
 });
 

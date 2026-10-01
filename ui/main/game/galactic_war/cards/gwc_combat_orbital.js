@@ -26,25 +26,23 @@ define([
       };
     },
     buff: function (inventory) {
-      var mods = gwoCard.flatMapMods(
-        gwoGroup.orbitalMobile,
-        "multiply",
-        gwoCard.paths.navigation,
-        1.5
-      );
-
       inventory.addMods(
-        mods.concat(
-          gwoCard.flatMapMods(gwoGroup.orbitalMobile, "multiply", {
-            max_health: 1.5,
-          }),
-          gwoCard.flatMapMods(
-            gwoGroup.orbitalAmmo,
+        gwoCard
+          .flatMapMods(
+            gwoGroup.orbitalMobile,
             "multiply",
-            gwoCard.paths.damage,
-            1.25
+            _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 1.5), {
+              max_health: 1.5,
+            })
           )
-        )
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.orbitalAmmo,
+              "multiply",
+              gwoCard.paths.damage,
+              1.25
+            )
+          )
       );
     },
     dull: function () {},

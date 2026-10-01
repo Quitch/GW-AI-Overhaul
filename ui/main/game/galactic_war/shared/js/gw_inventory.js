@@ -1,21 +1,12 @@
-// GWO - a viewer applies the host's inventory every time the campaign loads, and
-// each loadout card's buff() banks, so without this a viewer collects the host's
-// loadouts as its own. The campaign half of `model` does not exist yet when that
-// first apply runs, so the signals are the session role and the game handed to
-// GWGamePatches.patch, which GWGame.load calls immediately beforehand with
-// perPlayerTechCards already set. gw_bank and gw_game_patches are both
-// dependency-free, so requiring them here cannot close the cycle that
-// shared/gw_common or shared/gw_game would. See coop.md.
-// Also GWO's: aiMods and addAIMods, setTag deleted after a pass beside getTag,
-// removeUnits removing every copy, tags.valueHasMutated() from getTag and setTag
-// so tag readers update, and the same patch hijack installing GWO's defeatTeam
-// before gw_play.js applies a battle result. See architecture.md.
+// GWO - changes are listed in shadowing.md; the viewer banking guard is in
+// coop.md, "Whose unlocks are whose".
 define([
   "shared/gw_bank",
   "shared/gw_game_patches",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/defeat_team.js",
-], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam, unitCells) {
   var loadingAnotherPlayersCards = false;
 
   var isCampaignViewerSession = function () {
@@ -28,6 +19,7 @@ define([
     }
   };
 
+  // GWO - GWGame.load calls patch immediately before the first applyCards.
   var stockPatch = gwoGamePatches.patch;
   gwoGamePatches.patch = function (game) {
     loadingAnotherPlayersCards = !!(
@@ -57,6 +49,8 @@ define([
       self.aiMods(config.aiMods || []);
       self.maxCards(_.isUndefined(config.maxCards) ? 0 : config.maxCards);
 
+      // GWO - stock gw_play's cardsChanged calls applyCards when the cards
+      // change mid-apply; the stub keeps this reset from queueing a re-run.
       self.applyCards = function () {};
       self.cards(config.cards || []);
       delete self.applyCards;
@@ -67,17 +61,21 @@ define([
     save: function () {
       return ko.toJS(this);
     },
+    // GWO - a card's own group may sit inside the list; a whole gwoUnit race
+    // table is not a list and names nothing
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(add));
+      self.units(self.units().concat(unitCells.unitPaths(add)));
     },
-    // GWO - updated to remove multiple copies of a unit
+    // GWO - updated to remove multiple copies of a unit, from a list that may
+    // hold groups
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(remove, function (unit) {
+      _.forEach(unitCells.unitPaths(remove), function (unit) {
         self.units.remove(unit);
       });
     },
+    // GWO
     addAIMods: function (aiMods) {
       var self = this;
       self.aiMods(self.aiMods().concat(aiMods));
@@ -112,11 +110,11 @@ define([
       var dirty = false;
       var finishApplyCards = function () {
         delete self.getTag;
-        delete self.setTag;
+        delete self.setTag; // GWO
         delete self.applyCards;
         delete self.isApplyingCards;
         if (foreignCards) {
-          foreignCards = false; // GWO - a dirty re-run suspends for itself
+          foreignCards = false; // GWO - the dirty re-run below is not held
           gwoBank.resumeUnlocks();
         }
         if (dirty) {
@@ -159,6 +157,8 @@ define([
         } else {
           cardId = cardParams.id;
         }
+        // GWO - once per card: the loader can run a failed card's errback twice
+        var finishThisCard = _.once(finishCard);
         requireGW(
           ["cards/" + cardId],
           function (card) {
@@ -172,11 +172,11 @@ define([
                 "GWO card " + cardId + " threw in " + op + ": " + e
               );
             }
-            finishCard();
+            finishThisCard();
           },
           function (error) {
             console.error("Failed loading card " + cardId + " : " + error);
-            finishCard();
+            finishThisCard();
           }
         );
       };
@@ -208,8 +208,8 @@ define([
         return id === card.id && !card.unique;
       });
     },
-    // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
-    // or in case the game itself uses it in the future. test is a CardViewModel, whose id is a computed.
+    // GWO - unchanged from stock; nothing shipped calls it. test is a
+    // CardViewModel, whose id is a computed.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {
@@ -262,6 +262,7 @@ define([
         mutated = true;
       }
 
+      // GWO - notify tag readers
       if (mutated) {
         self.tags.valueHasMutated();
       }
@@ -288,6 +289,7 @@ define([
         mutated = true;
       }
 
+      // GWO - notify tag readers
       if (mutated) {
         self.tags.valueHasMutated();
       }

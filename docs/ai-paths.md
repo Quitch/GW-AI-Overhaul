@@ -109,13 +109,14 @@ and shares the enemy's path.
 | `type`                                    | Result                            |
 | ----------------------------------------- | --------------------------------- |
 | `"all"`                                   | `/pa/ai_queller/` (the bare root) |
-| `"enemy"`                                 | `/pa/ai_queller/q_uber/`          |
+| `"enemy"` or `"coop"`                     | `/pa/ai_queller/q_uber/`          |
 | `"subcommander"` with Smart Subcommanders | `/pa/ai_queller/q_silver/`        |
 | anything else                             | `/pa/ai_queller/q_bronze/`        |
 
 Queller therefore structurally never hits the "enemy and subcommander share a
 path" case that Titans and Penchant can hit. The enemy is always `q_uber/`. The
-subcommander is always `q_bronze/` or `q_silver/`.
+subcommander is always `q_bronze/` or `q_silver/`. A co-op AI player fights at
+the enemy's tier, whatever Sub Commander Tactics its host holds.
 
 The tree ships six tiers (`q_bronze`, `q_casual`, `q_silver`, `q_gold`,
 `q_platinum`, `q_uber`). There is no iron or diamond tier, although those exist
@@ -133,10 +134,11 @@ For an object, it takes the first present of `playerTag`, `specTag`,
 `sanitizeToken`, which does three things:
 
 1. It strips leading dots.
-2. It replaces anything outside `[A-Za-z0-9_-]` with `_`.
+2. It replaces each run of characters outside `[A-Za-z0-9_-]` with one `_`.
 3. It trims leading and trailing underscores.
 
-If nothing survives, the token is `"player"`.
+If nothing survives, the token is the sanitised `fallbackToken`, and if nothing
+survives that either, `"player"`.
 
 **`appendScope` does not sanitise.** It concatenates whatever it receives:
 
@@ -147,11 +149,10 @@ return basePath + "player_" + scopeToken + "/";
 So whether a path is sanitised depends entirely on how the caller obtained its
 token. The two live call sites differ:
 
-- `referee_ai.js` computes `viewerScopeToken` via `getScopeToken(".player0", …)`,
-  which sanitises to `player0`. The Cluster path for that viewer is therefore
-  `/pa/ai_cluster/player_player0/`.
+- `getCoopAiPath` runs its token through `getScopeToken`, so a co-op AI
+  player's tree is always sanitised.
 - `shared/ai.js`'s `getSubcommanderPathForViewer` passes the **raw** player tag
-  as `scopeToken`. So the same viewer's subcommander destination is
+  as `scopeToken`. So a viewer's subcommander destination is
   `/pa/ai_subcommander/player_.player0/`, with the dot. The pure module's own
   `getViewerSubcommanderPath` has one special case. The host's tag, `.player`,
   yields no scope at all, because the host's subcommanders already own the
@@ -161,6 +162,35 @@ Both are internally consistent, because the same code generates and consumes
 them. So this is not a live bug. But it is a real inconsistency, and the tests
 pin it deliberately. `getScopeToken` sanitises. `getAIPathDestination` does not.
 A refactor that "fixes" the asymmetry silently changes shipped mount paths.
+
+## Co-op AI players
+
+A co-op AI player ([`coop.md`](coop.md), "AI players") reads its own tree.
+`getCoopAiPath(aiInUse, scopeToken, race)` is `getAIPathDestination("coop", …)`
+with the token sanitised, and a missing token becomes `coop`, so the path is
+always scoped. The `coop` type takes neither the Cluster branch nor the
+subcommander branch, so the tree is the co-op brain's root (a race's own root
+for a race) plus `player_<token>/`. Under shared tech every AI shares one tree,
+`player_coopai/`: the AIs share the brain, the race, the host's AI mods and the
+`.player` tag, so a copy per AI would be identical. Under per-player tech each
+AI takes a token of its own, `coopai_<serial>`, and so a tree of its own,
+`player_coopai_<serial>/`, because its AI mods and its tag are its own. Its Sub
+Commanders read a tree scoped by its player tag, as a viewer's do
+([`coop.md`](coop.md), "AI players' tech").
+
+Its source is `getAIPathSource("coop", …)`, the co-op brain's own root.
+`referee_ai.js` copies that whole tree to the AI's path with the AI's mods, as
+it does an MLA viewer's Sub Commanders' tree. It writes nothing else: the
+scope is the tree's isolation, so there is no Cluster routing and no Cluster AI
+op, as for a viewer. A race AI's tree, and its Sub Commanders' under per-player
+tech, are race tree jobs instead, as a race viewer's Sub Commanders' tree is.
+Each takes its owner's mods aimed at its race's keys
+([`ai-pipeline.md`](ai-pipeline.md), "Race trees").
+
+The brain is `aiInUse("coop", race)`. It reads the race's `coop` cell, then its
+`enemy` cell, then the war-wide `gwaio.aiCoop`, then `gwaio.ai`. A war saved
+before the co-op column therefore runs its co-op AIs exactly as it runs its
+enemy.
 
 ## Why scoped trees can nest safely
 
@@ -196,11 +226,12 @@ no unit cap.
 ## What `shared/ai.js` adds
 
 `aiInUse(alignment, race)` reads the origin system's `gwaio` blob. That blob
-holds the settings that `gw_start/setup.js` attaches to the galaxy at war
-creation. The brain is per race and per side (`shared/brain_table.js`). The
+holds the settings that `gw_start/war_generation.js` attaches to the galaxy at
+war creation. The brain is per race and per side (`shared/brain_table.js`). The
 function reads the race's `gwaio.aiByRace` row: `ally` for
-`alignment === "subcommander"`, and `enemy` otherwise. It falls back to the
-war-wide `gwaio.aiAlly`/`gwaio.ai` strings in three cases:
+`alignment === "subcommander"`, `coop` for a co-op AI player's `"coop"`, and
+`enemy` otherwise. It falls back to the war-wide `gwaio.aiAlly`/`gwaio.aiCoop`/
+`gwaio.ai` strings in three cases:
 
 - for MLA,
 - for a race with no row, and
@@ -233,11 +264,11 @@ viewer the isolation that would otherwise be needed.
 
 `gw_play/per_player_tech.js`'s `getViewerSubcommanderAiPath` follows the same
 rule. For the same reason, it also never routes a Cluster-faction viewer to the
-`"cluster"` type. This differs from `referee_config.js`'s
-`setupAlliedCommanders` and `referee_game_files.js`'s `buildPlayerFiles`, which
-do check the host's `playerFaction` tag. The Cluster destination exists only to
-stop a Cluster player's AI-mod writes from leaking into the shared brain-based
-tree. Other allies and enemies read from that tree. A per-player-tech viewer
+`"cluster"` type. This differs from `referee_config_setup.js`'s
+`setupAlliedCommanders` and `referee_game_file_paths.js`'s `buildPlayerFiles`,
+which do check the host's `playerFaction` tag. The Cluster destination exists
+only to stop a Cluster player's AI-mod writes from leaking into the shared
+brain-based tree. Other allies and enemies read from that tree. A per-player-tech viewer
 already has that isolation from their own scope, whatever their faction. So a
 second mechanism would be redundant.
 
@@ -255,18 +286,25 @@ them relies on them:
 - **The player and the enemy are never simultaneously Cluster.** The mod author
   confirmed this. `referee_config_setup.js` uses this to justify returning the
   same unscoped `/pa/ai_cluster/` path, regardless of which side asked.
-- **The Guardians are never Cluster.** `referee_ai.js`'s `processClusterJson`
+- **The Guardians are never Cluster.** `referee_ai.js`'s `writeClusterFile`
   states this. It is the reason `isCluster` can return early on mirror mode.
 
-A third invariant is not an external assumption but a property of the paths
-themselves. So, unlike those two, it _is_ machine-checkable, and a test checks
-it:
+Two more invariants are not external assumptions but properties of the paths
+themselves. So, unlike the first two, they _are_ machine-checkable, and tests
+check them:
 
 - **No `ai_path` root ever lands inside another `ai_path`'s five scanned
   directories.** See [above](#why-scoped-trees-can-nest-safely) for why that is
   the rule that matters, rather than "nothing nests".
   `test/ai_path_invariants.test.js` sweeps it over the full option matrix, and
   over the file paths `referee_ai.js` really writes.
+- **A co-op AI player's path is apart from every other army's.** It never
+  equals the enemy's, a Sub Commander's or a viewer's, for every pair of
+  brains. Co-op AIs with distinct scope tokens never share a path either;
+  under shared tech every AI takes the one token `coopai`, so they share
+  `player_coopai/` by design. `test/ai_path_invariants.test.js` sweeps it, and
+  `test/referee_ai_coop_trees.test.js` checks that the co-op pass writes only
+  under that path.
 
 ## Where to look next
 

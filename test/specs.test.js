@@ -10,6 +10,9 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const specs = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
 );
+const gwoCard = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
+);
 
 afterEach(() => {
   mock.restoreAll();
@@ -299,6 +302,143 @@ describe("specs.mod - path walking", () => {
   });
 });
 
+// multiply and tag return a missing target unchanged, so a container made on
+// the way to it would be left behind empty. See specs.md.
+describe("specs.mod - a missing intermediate segment", () => {
+  const observerItem = {
+    layer: "surface_and_air",
+    channel: "sight",
+    shape: "capsule",
+    radius: 100,
+  };
+  const oneObserverItem = () => ({
+    recon: { observer: { items: [{ ...observerItem }] } },
+  });
+
+  it("multiply scales the observer items a unit has and adds none", () => {
+    const data = { "unit.json": oneObserverItem() };
+    specs.mod(
+      data,
+      gwoCard.mods(
+        "unit.json",
+        "multiply",
+        gwoCard.observerPaths(2, "radius"),
+        1.5
+      ),
+      ""
+    );
+    assert.deepEqual(data["unit.json"].recon.observer.items, [
+      { ...observerItem, radius: 150 },
+    ]);
+  });
+
+  it('multiply appends no element for a "+" segment', () => {
+    const data = { "unit.json": { list: [{ a: 1 }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.+.a", op: "multiply", value: 2 }],
+      ""
+    );
+    assert.deepEqual(data["unit.json"].list, [{ a: 1 }]);
+  });
+
+  // The last segment too: a "+" or an index past the end is a missing target.
+  for (const [op, path, start] of [
+    ["multiply", "list.+", [1]],
+    ["multiply", "list.3", [1]],
+    ["tag", "list.+", ["tool.json"]],
+    ["tag", "list.2", ["tool.json"]],
+  ]) {
+    it(`${op} on ${path} leaves the array as it was`, () => {
+      mock.method(console, "warn", () => {});
+      const data = { "unit.json": { list: start.slice() } };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path: path, op: op, value: 2 }],
+        ".player"
+      );
+      assert.deepEqual(data["unit.json"].list, start);
+    });
+  }
+
+  it("tag adds no tool the unit lacks, and warns as for a missing value", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { tools: [{ spec_id: "tool.json" }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools.1.spec_id", op: "tag" }],
+      ".player"
+    );
+    assert.deepEqual(data["unit.json"].tools, [{ spec_id: "tool.json" }]);
+    assert.equal(warnMock.mock.callCount(), 1);
+  });
+
+  for (const path of ["x.y.z", "x", "list.+", "list.1"]) {
+    it(`clone on ${path} adds nothing to the unit, creates no copy, and warns`, () => {
+      const warnMock = mock.method(console, "warn", () => {});
+      const data = { "unit.json": { a: 1, list: ["tool.json"] } };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path, op: "clone", value: "/new.json" }],
+        ".player"
+      );
+      assert.deepEqual(data["unit.json"], { a: 1, list: ["tool.json"] });
+      assert.deepEqual(Object.keys(data), ["unit.json"]);
+      assert.equal(warnMock.mock.callCount(), 1);
+    });
+  }
+
+  // A segment the walker cannot follow makes a malformed path, not a missing
+  // one, so it is still reported.
+  for (const [spec, path] of [
+    [{ a: 5 }, "a.b"],
+    [{ list: [{ a: 1 }] }, "list.x.a"],
+  ]) {
+    it("multiply still reports " + path + ", which cannot be walked", () => {
+      const errorMock = mock.method(console, "error", () => {});
+      const data = { "unit.json": structuredClone(spec) };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path, op: "multiply", value: 2 }],
+        ""
+      );
+      assert.deepEqual(data["unit.json"], spec);
+      assert.equal(errorMock.mock.callCount(), 1);
+    });
+  }
+
+  for (const [op, value] of [
+    ["replace", 5],
+    ["multiplyOrCreate", 5],
+    ["add", 5],
+    ["merge", { a: 1 }],
+    ["push", 5],
+    ["prepend", 5],
+    ["pull", 5],
+    ["wipe", ["a", "b"]],
+    ["eval", "return 5;"],
+  ]) {
+    it(op + " still creates the observer item it writes to", () => {
+      const data = { "unit.json": oneObserverItem() };
+      specs.mod(
+        data,
+        [
+          {
+            file: "unit.json",
+            path: "recon.observer.items.1.radius",
+            op,
+            value,
+          },
+        ],
+        ""
+      );
+      const items = data["unit.json"].recon.observer.items;
+      assert.equal(items.length, 2);
+      assert.ok("radius" in items[1]);
+    });
+  }
+});
+
 describe("specs.mod - base_spec inheritance", () => {
   it("flattens an inherited base_spec onto the child before applying the mod", () => {
     const data = {
@@ -314,6 +454,45 @@ describe("specs.mod - base_spec inheritance", () => {
     assert.deepEqual(data["child.json"].tags, ["base"]);
     assert.equal(data["child.json"].armor, 20);
     assert.equal("base_spec" in data["child.json"], false);
+  });
+
+  it("gives a child modded after its base the change twice on a key it inherits", () => {
+    const mods = (order) =>
+      order.map((file) => ({
+        file,
+        path: "armor_damage_map.AT_Commander",
+        op: "multiplyOrCreate",
+        value: 2,
+      }));
+    const fresh = () => ({
+      "base.json": { armor_damage_map: { AT_Commander: 1 } },
+      "child.json": { base_spec: "base.json", damage: 80 },
+    });
+
+    const childFirst = fresh();
+    specs.mod(childFirst, mods(["child.json", "base.json"]), "");
+    assert.equal(childFirst["child.json"].armor_damage_map.AT_Commander, 2);
+
+    const baseFirst = fresh();
+    specs.mod(baseFirst, mods(["base.json", "child.json"]), "");
+    assert.equal(baseFirst["child.json"].armor_damage_map.AT_Commander, 4);
+  });
+
+  it("lists the commander's main gun ammo before the base it inherits from", () => {
+    const gwoUnit = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+    );
+    const gwoGroup = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js"
+    );
+    for (const group of ["commanderAmmo", "ammo", "combatMobileAmmo"]) {
+      const list = gwoGroup[group];
+      const base = list.indexOf(gwoUnit.commanderAmmo);
+      for (const child of ["commanderAmmoBullet", "commanderAmmoLaser"]) {
+        const at = list.indexOf(gwoUnit[child]);
+        assert.ok(at !== -1 && at < base, group + " lists " + child + " first");
+      }
+    }
   });
 
   it("prefers the spec-tagged base variant when one exists", () => {
@@ -503,30 +682,31 @@ describe("specs.mod - malformed-mod tolerance", () => {
 
 describe("specs.mod - navigation pruning", () => {
   // An empty navigation object marks a structure as mobile. See specs.md.
-  it("removes a navigation object left empty by a mod on a structure", () => {
+  // The prune would delete one after the fact, so the writes are recorded.
+  it("never writes navigation onto a structure for a multiply of its movement stats", () => {
     const warnMock = mock.method(console, "warn", () => {});
-    const data = { "struct.json": { hp: 100 } };
+    const struct = { hp: 100 };
+    const written = [];
+    const data = {
+      "struct.json": new Proxy(struct, {
+        set(target, key, value) {
+          written.push(key);
+          target[key] = value;
+          return true;
+        },
+      }),
+    };
     specs.mod(
       data,
-      [
-        {
-          file: "struct.json",
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
-        },
-      ],
+      gwoCard.mods("struct.json", "multiply", gwoCard.paths.navigation, 1.5),
       ""
     );
-    // multiply on a nonexistent numeric leaf leaves navigation.move_speed
-    // undefined - which serialises to navigation: {} - so navigation is stripped.
-    assert.equal("navigation" in data["struct.json"], false);
-    assert.equal(data["struct.json"].hp, 100);
-    // multiply on a missing leaf is silent.
+    assert.deepEqual(written, []);
+    assert.deepEqual(struct, { hp: 100 });
     assert.equal(warnMock.mock.callCount(), 0);
   });
 
-  it("removes navigation after several navigation.* mods all resolve to undefined", () => {
+  it("removes a navigation object a later mod leaves empty", () => {
     const data = { "struct.json": { hp: 100 } };
     specs.mod(
       data,
@@ -534,31 +714,40 @@ describe("specs.mod - navigation pruning", () => {
         {
           file: "struct.json",
           path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
+          op: "replace",
+          value: 10,
         },
         {
           file: "struct.json",
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: "struct.json",
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: "struct.json",
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.5,
+          path: "navigation.move_speed",
+          op: "replace",
+          value: undefined,
         },
       ],
       ""
     );
-    assert.equal("navigation" in data["struct.json"], false);
+    assert.deepEqual(data["struct.json"], { hp: 100 });
+  });
+
+  it("removes the empty navigation a merge of nothing makes on a structure", () => {
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [{ file: "struct.json", path: "navigation", op: "merge", value: {} }],
+      ""
+    );
+    assert.deepEqual(data["struct.json"], { hp: 100 });
+  });
+
+  // An empty teleportable means true, so no other empty object is pruned.
+  it("keeps the empty teleportable the Nomad loadout writes", () => {
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [{ file: "struct.json", path: "teleportable", op: "replace", value: {} }],
+      ""
+    );
+    assert.deepEqual(data["struct.json"], { hp: 100, teleportable: {} });
   });
 
   it("keeps a populated navigation object on a genuinely mobile unit", () => {
@@ -888,6 +1077,21 @@ describe("specs.mod - clone through a reference", () => {
 
     assert.equal(data["copy.json"], "missing.json");
   });
+
+  it("creates no copy of a null field, and warns", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { tools: null } };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
+      ""
+    );
+
+    assert.equal(Object.hasOwn(data, "copy.json"), false);
+    assert.equal(data["unit.json"].tools, null);
+    assert.equal(warnMock.mock.callCount(), 1);
+  });
 });
 
 describe("specs.mod - circular base_spec", () => {
@@ -909,5 +1113,332 @@ describe("specs.mod - circular base_spec", () => {
     assert.deepEqual(data["a.json"], { hp: 9, armour: 2 });
     assert.equal(warnMock.mock.callCount(), 1);
     assert.match(warnMock.mock.calls[0].arguments[0], /circular base_spec/);
+  });
+});
+
+describe("specs.mod - a card's value is not shared", () => {
+  // A co-op host hires the referee twice from one inventory, so the same
+  // descriptors reach two spec sets. See specs.md, "The op table".
+  function radarMods() {
+    return [
+      {
+        file: "radar.json",
+        path: "recon.observer.items",
+        op: "replace",
+        value: [{ radius: 300 }, { radius: 1200 }],
+      },
+      {
+        file: "radar.json",
+        path: "recon.observer.items.0.radius",
+        op: "multiply",
+        value: 33.33,
+      },
+      {
+        file: "radar.json",
+        path: "recon.observer.items.1.radius",
+        op: "multiply",
+        value: 8.3325,
+      },
+    ];
+  }
+
+  it("leaves a replaced value unchanged when a later mod writes into it", () => {
+    const mods = radarMods();
+    const original = structuredClone(mods[0].value);
+    const data = { "radar.json": { recon: {} } };
+
+    specs.mod(data, mods, "");
+
+    assert.deepEqual(mods[0].value, original);
+    assert.notEqual(data["radar.json"].recon.observer.items, mods[0].value);
+  });
+
+  it("gives two spec sets the same radar radii from one mod list", () => {
+    const mods = radarMods();
+    const first = { "radar.json": { recon: {} } };
+    const second = { "radar.json": { recon: {} } };
+
+    specs.mod(first, mods, "");
+    specs.mod(second, mods, "");
+
+    const radii = (data) =>
+      data["radar.json"].recon.observer.items.map((item) => item.radius);
+    assert.deepEqual(radii(first), [9999, 9999]);
+    assert.deepEqual(radii(second), [9999, 9999]);
+  });
+
+  it("gives two spec sets the same armour damage map from one mod list", () => {
+    const mods = [
+      {
+        file: "ammo.json",
+        path: "armor_damage_map",
+        op: "replace",
+        value: {},
+      },
+      {
+        file: "ammo.json",
+        path: "armor_damage_map.AT_Air",
+        op: "multiplyOrCreate",
+        value: 2,
+      },
+      {
+        file: "ammo.json",
+        path: "armor_damage_map.AT_Orbital",
+        op: "multiplyOrCreate",
+        value: 0.5,
+      },
+    ];
+    const first = { "ammo.json": { armor_damage_map: { AT_Air: 1 } } };
+    const second = { "ammo.json": { armor_damage_map: { AT_Air: 1 } } };
+
+    specs.mod(first, mods, "");
+    specs.mod(second, mods, "");
+
+    const expected = { AT_Air: 2, AT_Orbital: 0.5 };
+    assert.deepEqual(first["ammo.json"].armor_damage_map, expected);
+    assert.deepEqual(second["ammo.json"].armor_damage_map, expected);
+    assert.deepEqual(mods[0].value, {});
+  });
+
+  it("leaves a nested object in a merge value unchanged", () => {
+    const mods = [
+      {
+        file: "unit.json",
+        path: "weapon",
+        op: "merge",
+        value: { targeting: { layers: ["WL_Air"] } },
+      },
+      {
+        file: "unit.json",
+        path: "weapon.targeting.layers",
+        op: "push",
+        value: "WL_Orbital",
+      },
+    ];
+    const data = { "unit.json": { weapon: { range: 5 } } };
+
+    specs.mod(data, mods, "");
+
+    assert.deepEqual(data["unit.json"].weapon, {
+      range: 5,
+      targeting: { layers: ["WL_Air", "WL_Orbital"] },
+    });
+    assert.deepEqual(mods[0].value, { targeting: { layers: ["WL_Air"] } });
+  });
+
+  it("keeps one army's tag when another army's pass tags the same replaced tools", () => {
+    const mods = [
+      {
+        file: "tower.json",
+        path: "tools",
+        op: "replace",
+        value: [{ spec_id: "/pa/tools/arm/arm.json" }],
+      },
+      { file: "tower.json", path: "tools.0.spec_id", op: "tag" },
+    ];
+    const player = { "tower.json": { tools: [] } };
+    const guardians = { "tower.json": { tools: [] } };
+
+    specs.mod(player, mods, ".player");
+    specs.mod(guardians, mods, ".ai0");
+
+    assert.equal(
+      player["tower.json"].tools[0].spec_id,
+      "/pa/tools/arm/arm.json.player"
+    );
+    assert.equal(
+      guardians["tower.json"].tools[0].spec_id,
+      "/pa/tools/arm/arm.json.ai0"
+    );
+    assert.equal(mods[0].value[0].spec_id, "/pa/tools/arm/arm.json");
+  });
+});
+
+describe("specs.mod - selecting an observer item by layer and channel", () => {
+  const JAMMER =
+    "recon.observer.items.[layer=surface_and_air,channel=radar_jammer]";
+  const item = (layer, channel, radius) => ({ layer, channel, radius });
+  const unit = (items) => ({ "unit.json": { recon: { observer: { items } } } });
+  const radii = (data) =>
+    data["unit.json"].recon.observer.items.map((entry) => entry.radius);
+
+  it("changes every matching item, and only those", () => {
+    const data = unit([
+      item("surface_and_air", "radar_jammer", 100),
+      item("underwater", "sight", 200),
+      item("surface_and_air", "sight", 300),
+      item("surface_and_air", "radar_jammer", 400),
+    ]);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(radii(data), [200, 200, 300, 800]);
+  });
+
+  it("writes nothing when no item matches, for replace and multiply", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = unit([item("surface_and_air", "sight", 100)]);
+    const before = structuredClone(data);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+        { file: "unit.json", path: JAMMER, op: "replace", value: {} },
+      ],
+      ""
+    );
+    assert.deepEqual(data, before);
+    assert.equal(errorMock.mock.callCount(), 0);
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it("creates nothing on a missing prefix or a prefix that is not an array", () => {
+    const data = {
+      "unit.json": { max_health: 10 },
+      "scalar.json": { recon: { observer: { items: 5 } } },
+    };
+    const before = structuredClone(data);
+    specs.mod(
+      data,
+      ["unit.json", "scalar.json"].map((file) => ({
+        file,
+        path: JAMMER + ".radius",
+        op: "replace",
+        value: 1,
+      })),
+      ""
+    );
+    assert.deepEqual(data, before);
+  });
+
+  it("matches against the array an earlier whole-array replace left", () => {
+    const data = unit([item("surface_and_air", "radar_jammer", 100)]);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: "unit.json",
+          path: "recon.observer.items",
+          op: "replace",
+          value: [
+            item("surface_and_air", "sight", 50),
+            item("surface_and_air", "radar_jammer", 300),
+          ],
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(radii(data), [50, 600]);
+  });
+
+  for (const segment of [
+    "[layer=surface_and_air]",
+    "[channel=radar_jammer,layer=surface_and_air]",
+    "[layer=surface_and_air,channel=]",
+    "[layer=surface_and_air,channel=radar_jammer",
+    "[layer=surface_and_air,channel=radar_jammer,shape=capsule]",
+  ]) {
+    it("logs and skips a malformed selector: " + segment, () => {
+      const errorMock = mock.method(console, "error", () => {});
+      const data = unit([item("surface_and_air", "radar_jammer", 100)]);
+      specs.mod(
+        data,
+        [
+          {
+            file: "unit.json",
+            path: "recon.observer.items." + segment + ".radius",
+            op: "multiply",
+            value: 2,
+          },
+        ],
+        ""
+      );
+      assert.deepEqual(radii(data), [100]);
+      assert.equal(errorMock.mock.callCount(), 1);
+      assert.match(errorMock.mock.calls[0].arguments[0], /Invalid selector/);
+    });
+  }
+
+  it("reaches a selector in a referenced spec through its reference", () => {
+    const data = {
+      "unit.json": { recon: "recon.json" },
+      "recon.json": {
+        observer: { items: [item("surface_and_air", "radar_jammer", 100)] },
+      },
+    };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 3,
+        },
+      ],
+      ""
+    );
+    assert.equal(data["recon.json"].observer.items[0].radius, 300);
+    assert.equal(data["unit.json"].recon, "recon.json");
+  });
+
+  it("resolves a later selector inside each matched item", () => {
+    const data = {
+      "unit.json": {
+        groups: [
+          {
+            layer: "a",
+            channel: "b",
+            items: [item("c", "d", 1), item("e", "f", 2)],
+          },
+          { layer: "x", channel: "y", items: [item("c", "d", 3)] },
+        ],
+      },
+    };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "groups.[layer=a,channel=b].items.[layer=c,channel=d].radius",
+          op: "multiply",
+          value: 10,
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(
+      data["unit.json"].groups.map((group) =>
+        group.items.map((entry) => entry.radius)
+      ),
+      [[10, 2], [3]]
+    );
   });
 });

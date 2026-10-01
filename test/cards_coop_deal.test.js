@@ -1,7 +1,9 @@
 "use strict";
 
-// The target-collection helper of gw_play/cards_coop_deal.js, reached through the
-// module's test-only hook. The async deal the factory drives is exercised in-game.
+// The helpers of gw_play/cards_coop_deal.js the factory does not return, reached
+// through the module's test-only hook: target collection, the deal count for a
+// hand, and each viewer's deal stream. The async deal the factory drives is
+// pinned in cards_coop_deal_factory.test.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -187,7 +189,8 @@ describe("pendingTechDealRng", () => {
     assert.notDeepEqual(seq(target()), seq(target({ dealIndex: 2 })));
   });
 
-  // A catch-up deal supplies no dealIndex; it must not land on deal 0's hand.
+  // Stock's catch-up and GWO's explore both pass a dealIndex; a deal without
+  // one must still not land on deal 0's hand.
   it("keeps a missing dealIndex apart from deal zero", () => {
     assert.notDeepEqual(
       seq(target({ dealIndex: undefined })),

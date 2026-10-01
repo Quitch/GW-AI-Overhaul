@@ -61,7 +61,7 @@
       function (hostWar, raceMods, races, pickerOptions, gwoAI) {
         raceMods.registerAll();
 
-        hostWar.load().then(function (host) {
+        var offerRaces = function (host) {
           // A viewer shares the host's faction, so its commander wears the
           // war's colour. The art hue follows the race whose commanders are
           // on show: the host's race is not swapped in below unless the
@@ -106,34 +106,48 @@
 
           // Zip mounts only, no content remount: the commander specs and
           // portraits are read through coui:. See races.md. Waited on - a
-          // commander read before its zip is mounted caches a failure, and the
-          // name never recovers.
+          // commander read before its zip is mounted fails, and its tile shows
+          // the spec path until a later render reads it again.
           raceMods.mountRoot().always(function () {
+            var stock;
+            var offerRaceCommanders = function () {
+              var choices = pickerOptions.commanderChoices(
+                races.byId(model.gwoViewerRace()),
+                stock,
+                races.MLA_ID
+              );
+
+              model.commanders(choices);
+              if (
+                choices.length &&
+                !_.includes(choices, model.selectedCommander.peek())
+              ) {
+                model.selectedCommander(choices[0]);
+              }
+              if (_.isFunction(model.gwoRebuildStartCards)) {
+                model.gwoRebuildStartCards();
+              }
+            };
+
             // Waiting for the stock list too, so the race's does not get
             // overwritten a moment later.
             CommanderUtility.afterCommandersLoaded(function () {
-              var stock = model.commanders();
-
-              ko.computed(function () {
-                var choices = pickerOptions.commanderChoices(
-                  races.byId(model.gwoViewerRace()),
-                  stock,
-                  races.MLA_ID
-                );
-
-                model.commanders(choices);
-                if (
-                  choices.length &&
-                  !_.includes(choices, model.selectedCommander.peek())
-                ) {
-                  model.selectedCommander(choices[0]);
-                }
-                if (_.isFunction(model.gwoRebuildStartCards)) {
-                  model.gwoRebuildStartCards();
-                }
-              });
+              stock = model.commanders();
+              ko.computed(offerRaceCommanders);
             });
           });
+        };
+
+        // Join waits on the same promise, and jQuery runs no later callback
+        // on it once one throws, so this one catches its own.
+        hostWar.load().then(function (host) {
+          try {
+            offerRaces(host);
+          } catch (e) {
+            console.error(
+              "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+            );
+          }
         });
       },
       // No picker is shown, and under Separate races gwoViewerRace stays MLA.

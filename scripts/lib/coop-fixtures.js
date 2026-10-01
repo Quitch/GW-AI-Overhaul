@@ -1,7 +1,8 @@
 "use strict";
 
 const { loadCouiModule } = require("./amd-loader.js");
-const { installFakeKnockout } = require("./fake-knockout.js");
+const { makeObservable, makeObservableArray } = require("./fake-knockout.js");
+const { createGlobalStubs } = require("./global-stubs.js");
 
 // Shared stand-ins for the co-op card factories: a connected viewer, its
 // inventory record, the GWInventory the factories load a record's saved cards
@@ -17,8 +18,9 @@ function record(id, extra) {
 
 // A minimal stand-in for the base game's GWInventory: the factories only load a
 // record's saved cards, count them, and apply them. `withHand` adds the hand-size
-// answers the per-player deal weighs an offer on; `onApply` sees the instance as
-// it is applied.
+// answers the per-player deal weighs an offer on. As the real applyCards does,
+// an apply rebuilds the slots from the cards alone: a card's `slots` is what its
+// buff gives. `onApply` sees the instance as it is applied.
 function inventoryClass(options) {
   const opts = options || {};
   return function GWInventory() {
@@ -34,6 +36,7 @@ function inventoryClass(options) {
       this.hasCard = (id) => loaded.some((card) => card.id === id);
     }
     this.applyCards = (done) => {
+      limit = loaded.reduce((slots, card) => slots + (card.slots || 0), 0);
       if (opts.onApply) {
         opts.onApply(this);
       }
@@ -49,15 +52,23 @@ function inventoryClass(options) {
 let realBank;
 function fakeBank(calls) {
   if (!realBank) {
-    installFakeKnockout();
-    global.localStorage = global.localStorage || {};
-    realBank = loadCouiModule(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"
-    );
+    // The bank reads ko and localStorage as it loads, and again only when its
+    // start cards change, which nothing here does.
+    const stubs = createGlobalStubs();
+    stubs.setGlobal("ko", {
+      observable: makeObservable,
+      observableArray: makeObservableArray,
+    });
+    stubs.setGlobal("localStorage", {});
+    try {
+      realBank = loadCouiModule(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"
+      );
+    } finally {
+      stubs.restoreGlobals();
+    }
   }
   return {
-    suspendUnlocks: () => calls.bank.push("suspend"),
-    resumeUnlocks: () => calls.bank.push("resume"),
     applyRecordInventory: function () {
       realBank.suspendUnlocks = () => calls.bank.push("suspend");
       realBank.resumeUnlocks = () => calls.bank.push("resume");

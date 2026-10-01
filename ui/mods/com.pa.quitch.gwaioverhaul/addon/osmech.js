@@ -11,17 +11,16 @@ define(function () {
     layers: {},
     units: {
       aegis: "/pa/units/thorosmen/tank_shield/tank_shield.json",
-      aegisWeaponEasyWeapon:
+      aegisEasyWeapon:
         "/pa/units/thorosmen/tank_shield/tank_shield_weapon_easy.json",
-      aegisAmmoEasyAmmo:
+      aegisEasyAmmo:
         "/pa/units/thorosmen/tank_shield/tank_shield_ammo_easy.json",
-      aegisWeaponMidWeapon:
+      aegisMidWeapon:
         "/pa/units/thorosmen/tank_shield/tank_shield_weapon_mid.json",
-      aegisAmmoMidAmmo:
-        "/pa/units/thorosmen/tank_shield/tank_shield_ammo_mid.json",
-      aegisWeaponHardWeapon:
+      aegisMidAmmo: "/pa/units/thorosmen/tank_shield/tank_shield_ammo_mid.json",
+      aegisHardWeapon:
         "/pa/units/thorosmen/tank_shield/tank_shield_weapon_hard.json",
-      aegisAmmoHardAmmo:
+      aegisHardAmmo:
         "/pa/units/thorosmen/tank_shield/tank_shield_ammo_hard.json",
       aegisLShieldGenDeathAmmo:
         "/pa/units/thorosmen/tank_shield/l_shield_gen_death.json",
@@ -45,16 +44,16 @@ define(function () {
       beenadoAmmo:
         "/pa/units/thorosmen/tank_drone/tank_drone/tank_drone_ammo.json",
       binho: "/pa/units/thorosmen/binho/binho.json",
-      binhoToolCuWeapon: "/pa/units/thorosmen/binho/binho_tool_cu.json",
+      binhoCuWeapon: "/pa/units/thorosmen/binho/binho_tool_cu.json",
       binhoAmmo: "/pa/units/thorosmen/binho/binho_ammo.json",
       binhoWeapon: "/pa/units/thorosmen/binho/binho_tool_weapon.json",
       bunker: "/pa/units/thorosmen/bunker_build/bunker/bunker.json",
-      bunkerAmmoDeathAmmo:
+      bunkerDeathAmmo:
         "/pa/units/thorosmen/bunker_build/bunker_orb/bunker_ammo_death.json",
       bunkerBuild: "/pa/units/thorosmen/bunker_build/bunker_build.json",
-      bunkerBuildToolWeaponOrbWeapon:
+      bunkerBuildOrbWeapon:
         "/pa/units/thorosmen/bunker_build/bunker_build_tool_weapon_orb.json",
-      bunkerBuildAmmoOrbAmmo:
+      bunkerBuildOrbAmmo:
         "/pa/units/thorosmen/bunker_build/bunker_build_ammo_orb.json",
       bunkerBuildWeapon:
         "/pa/units/thorosmen/bunker_build/bunker_build_tool_weapon.json",
@@ -76,9 +75,8 @@ define(function () {
       elysium: "/pa/units/thorosmen/air_healer/air_healer.json",
       elysiumWeapon: "/pa/units/thorosmen/air_healer/air_healer_tool.json",
       elysiumAmmo: "/pa/units/thorosmen/air_healer/air_healer_ammo.json",
-      elysiumTool2Weapon:
-        "/pa/units/thorosmen/air_healer/air_healer_tool2.json",
-      elysiumAmmo2Ammo: "/pa/units/thorosmen/air_healer/air_healer_ammo2.json",
+      elysium2Weapon: "/pa/units/thorosmen/air_healer/air_healer_tool2.json",
+      elysium2Ammo: "/pa/units/thorosmen/air_healer/air_healer_ammo2.json",
       fef: "/pa/units/thorosmen/st_fef/st_fef.json",
       fefWeapon: "/pa/units/thorosmen/st_fef/st_fef_tool_weapon.json",
       fefAmmo: "/pa/units/thorosmen/st_fef/st_fef_ammo.json",
@@ -93,7 +91,6 @@ define(function () {
         "/pa/units/thorosmen/bot_drone/boombot_air/boombot_air_life_tool_weapon.json",
       flyingSpiderLifePbaoeAmmo:
         "/pa/units/thorosmen/bot_drone/boombot_air/boombot_air_life_pbaoe.json",
-      flyingSpiderDeathAmmo: "/pa/ammo/air_pbaoe/air_pbaoe.json",
       freezer: "/pa/units/thorosmen/bot_freeze/bot_freeze.json",
       freezerWeapon:
         "/pa/units/thorosmen/bot_freeze/bot_freeze_tool_weapon.json",
@@ -136,8 +133,6 @@ define(function () {
       knalhaZxAmmo: "/pa/units/thorosmen/cuzeta/cuzeta_ammo.json",
       knalhaZxTorpedoWeapon:
         "/pa/units/thorosmen/cuzeta/cuzeta_torpedo_tool_weapon.json",
-      knalhaZxAmmo2:
-        "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
       lawnmower: "/pa/units/thorosmen/st_lawnmower/st_lawnmower.json",
       lawnmowerWeapon:
         "/pa/units/thorosmen/st_lawnmower/st_lawnmower_weapon.json",
@@ -153,19 +148,19 @@ define(function () {
       lawnmowerDeathAmmo: "/pa/ammo/st_ammo_death/st_ammo_death.json",
       lolis: "/pa/units/thorosmen/lolis/lolis.json",
       lz130Hindenburg: "/pa/units/thorosmen/st_airship/st_airship.json",
-      lz130HindenburgToolWeaponMissileWeapon:
+      lz130HindenburgMissileWeapon:
         "/pa/units/thorosmen/st_airship/st_airship_tool_weapon_missile.json",
-      lz130HindenburgAmmoMissileAmmo:
+      lz130HindenburgMissileAmmo:
         "/pa/units/thorosmen/st_airship/st_airship_ammo_missile.json",
-      lz130HindenburgOrbitalBattleshipToolWeaponGroundWeapon:
+      lz130HindenburgOrbitalBattleshipGroundWeapon:
         "/pa/units/thorosmen/st_airship/orbital_battleship_tool_weapon_ground.json",
-      lz130HindenburgOrbitalBattleshipAmmoGroundAmmo:
+      lz130HindenburgOrbitalBattleshipGroundAmmo:
         "/pa/units/thorosmen/st_airship/orbital_battleship_ammo_ground.json",
       lz130HindenburgOrbitalBattleshipWeapon:
         "/pa/units/thorosmen/st_airship/orbital_battleship_tool_weapon.json",
       lz130HindenburgOrbitalBattleshipAmmo:
         "/pa/units/thorosmen/st_airship/orbital_battleship_ammo.json",
-      lz130HindenburgAmmoDeathAmmo:
+      lz130HindenburgDeathAmmo:
         "/pa/units/thorosmen/st_airship/st_airship_ammo_death.json",
       metalAssimilator:
         "/pa/units/thorosmen/metal_destructor/metal_destructor.json",
@@ -195,14 +190,9 @@ define(function () {
       skyBreaker: "/pa/units/thorosmen/maciota/maciota.json",
       skyBreakerWeapon: "/pa/units/thorosmen/maciota/maciota_tool_weapon.json",
       skyBreakerAmmo: "/pa/units/thorosmen/maciota/maciota_ammo.json",
-      skyBreakerToolAntidropWeapon:
-        "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
-      skyBreakerAntidropAmmo:
-        "/pa/units/orbital/ion_defense/ion_defense_antidrop_ammo.json",
       spartak: "/pa/units/thorosmen/bot_tp/bot_tp.json",
       spartakWeapon: "/pa/units/thorosmen/bot_tp/bot_tp_tool_weapon.json",
       spartakAmmo: "/pa/units/thorosmen/bot_tp/bot_tp_ammo.json",
-      spartakWeapon2: "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
       spartakAmmo2: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
       stGgspider:
         "/pa/units/thorosmen/st_ggspider_build/st_ggspider/st_ggspider.json",
@@ -216,52 +206,48 @@ define(function () {
       stGgspiderBuildAmmo:
         "/pa/units/thorosmen/st_ggspider_build/st_ggspider_build_ammo.json",
       theEgg: "/pa/units/thorosmen/titan_egg_build/titan_egg_build.json",
-      theEggWeaponStGgspiderWeapon:
+      theEggStGgspiderWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_ggspider.json",
-      theEggAmmoStGgspiderAmmo:
+      theEggStGgspiderAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_st_ggspider.json",
-      theEggWeaponStLawnmowerWeapon:
+      theEggStLawnmowerWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_lawnmower.json",
-      theEggAmmoStLawnmowerAmmo:
+      theEggStLawnmowerAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_st_lawnmower.json",
-      theEggWeaponKamechaWeapon:
+      theEggKamechaWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_kamecha.json",
-      theEggAmmoKamechaAmmo:
+      theEggKamechaAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_kamecha.json",
-      theEggWeaponStIlegalWeapon:
+      theEggStIlegalWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_ilegal.json",
-      theEggAmmoStIlegalAmmo:
+      theEggStIlegalAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_st_ilegal.json",
-      theEggWeaponStPapWeapon:
+      theEggStPapWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_pap.json",
-      theEggAmmoStPapAmmo:
-        "/pa/units/thorosmen/titan_egg_build/ammo_st_pap.json",
-      theEggWeaponStFefWeapon:
+      theEggStPapAmmo: "/pa/units/thorosmen/titan_egg_build/ammo_st_pap.json",
+      theEggStFefWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_fef.json",
-      theEggAmmoStFefAmmo:
-        "/pa/units/thorosmen/titan_egg_build/ammo_st_fef.json",
-      theEggWeaponTobleroneWeapon:
+      theEggStFefAmmo: "/pa/units/thorosmen/titan_egg_build/ammo_st_fef.json",
+      theEggTobleroneWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_toblerone.json",
-      theEggAmmoTobleroneAmmo:
+      theEggTobleroneAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_toblerone.json",
-      theEggWeaponHindenburgWeapon:
+      theEggHindenburgWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_hindenburg.json",
-      theEggAmmoHindenburgAmmo:
+      theEggHindenburgAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_hindenburg.json",
-      theEggWeaponStColumWeapon:
+      theEggStColumWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_st_colum.json",
-      theEggAmmoStColumAmmo:
+      theEggStColumAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_st_colum.json",
-      theEggWeaponTripodWeapon:
+      theEggTripodWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_tripod.json",
-      theEggAmmoTripodAmmo:
-        "/pa/units/thorosmen/titan_egg_build/ammo_tripod.json",
-      theEggWeaponAtatWeapon:
-        "/pa/units/thorosmen/titan_egg_build/weapon_atat.json",
-      theEggAmmoAtatAmmo: "/pa/units/thorosmen/titan_egg_build/ammo_atat.json",
-      theEggWeaponElysiumWeapon:
+      theEggTripodAmmo: "/pa/units/thorosmen/titan_egg_build/ammo_tripod.json",
+      theEggAtatWeapon: "/pa/units/thorosmen/titan_egg_build/weapon_atat.json",
+      theEggAtatAmmo: "/pa/units/thorosmen/titan_egg_build/ammo_atat.json",
+      theEggElysiumWeapon:
         "/pa/units/thorosmen/titan_egg_build/weapon_elysium.json",
-      theEggAmmoElysiumAmmo:
+      theEggElysiumAmmo:
         "/pa/units/thorosmen/titan_egg_build/ammo_elysium.json",
       thorondor: "/pa/units/thorosmen/thorondor/thorondor.json",
       toblerone: "/pa/units/thorosmen/st_bot_anti_nuke/st_bot_anti_nuke.json",
@@ -272,26 +258,25 @@ define(function () {
       tripod: "/pa/units/thorosmen/tripod/tripod.json",
       tripodWeapon: "/pa/units/thorosmen/tripod/tripod_tool_weapon.json",
       tripodAmmo: "/pa/units/thorosmen/tripod/tripod_ammo.json",
-      tripodToolWeaponTacticalWeapon:
+      tripodTacticalWeapon:
         "/pa/units/thorosmen/tripod/tripod_tool_weapon_tactical.json",
-      tripodAmmoTacticalAmmo:
+      tripodTacticalAmmo:
         "/pa/units/thorosmen/tripod/tripod_ammo_tactical.json",
       tripodDeathAmmo: "/pa/ammo/st_ammo_death/st_ammo_death.json",
       usedSpartak:
         "/pa/units/thorosmen/bot_tp/bot_tesla_tped/bot_tesla_tped.json",
-      usedSpartakWeapon: "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
       usedSpartakAmmo: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
       voltar: "/pa/units/thorosmen/healer/healer/healer.json",
       wallF: "/pa/units/thorosmen/bot_shield_wall/bot_shield_wall.json",
-      wallFLShieldGenLongToolWeapon2Weapon:
+      wallFLShieldGenLong2Weapon:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_long_tool_weapon_2.json",
-      wallFLShieldGenAmmo2Ammo:
+      wallFLShieldGen2Ammo:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_ammo_2.json",
-      wallFLShieldGenMidToolWeapon2Weapon:
+      wallFLShieldGenMid2Weapon:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_mid_tool_weapon_2.json",
-      wallFLShieldGenShortToolWeapon2Weapon:
+      wallFLShieldGenShort2Weapon:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_short_tool_weapon_2.json",
-      wallFLShieldGenMiniToolWeapon2Weapon:
+      wallFLShieldGenMini2Weapon:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_mini_tool_weapon_2.json",
       wallFMetalDestructorWeapon:
         "/pa/units/thorosmen/st_lawnmower/metal_destructor_tool_weapon.json",
@@ -301,7 +286,7 @@ define(function () {
         "/pa/units/thorosmen/st_lawnmower/l_shield_gen_long_tool_weapon.json",
       wallFLShieldGenAmmo:
         "/pa/units/thorosmen/st_lawnmower/l_shield_gen_ammo.json",
-      wallFLShieldGenDeath2DeathAmmo:
+      wallFLShieldGen2DeathAmmo:
         "/pa/units/thorosmen/bot_shield_wall/l_shield_gen_death_2.json",
     },
     unitNames: {

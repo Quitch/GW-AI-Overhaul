@@ -10,17 +10,27 @@ race needs something new.
 1. **Descriptor.** Add `ui/mods/…/race/<id>.js` and list it in
    `shared/races_shipped.js`. Its fields are `id`, `name`, `serverMods` (every
    identifier that counts as the mod active, matched exactly), `unitTypeBit`
-   (`Custom<N>`), `commanderTypes`, `commanders`, `commanderArtHue`,
-   `playerIcon`, `ai`, `units`, `unitNames`.
+   (`Custom<N>`), `commanderTypes`, `engineKeys` (see "Conventions the code
+   relies on" below), `commanders`, `commanderArtHue`, `playerIcon`, `ai`,
+   `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
+   builds with an MLA builder it fields, although a race unit shares their cell
+   (Exiles' teleporter and basic metal extractor; [`races.md`](races.md),
+   "Units a race builds itself").
 2. **Unit table.** `units` keys every spec the race ships by a name of the
    race's own (`shank`, `crusher`). It keys parts by owner plus role
-   (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
-   `<x>Research`, and unlock tokens as `<x>Unlock`. The table exists for cards
-   written for that race alone. Nothing in the referee reads it. Add the race
+   (`shankAmmo`, `crusherWeapon`, `fabBuildArm`), research factories as
+   `<x>Research`, and unlock tokens as `<x>Unlock`. It holds only the files the
+   race's own mod ships; a base-game file its units reuse is left out and stays
+   stock. The table is for cards written for that race alone, and it marks its
+   non-stock files as the race's: the deal gate, the referees and the vanilla
+   index all read it ([`races.md`](races.md), "Capability cells"). Add the race
    to `scripts/lib/race-table-inputs.js` (its mods, bit and name prefixes),
    then run `npm run harvest:race-specs` and `npm run generate:race-tables`.
-   Do not hand-write it. [`races.md`](races.md), "Unit tables", has the
-   rules.
+   Do not hand-write it. Publish it to cards under the race's own key in
+   `shared/units.js` (`gwoUnit.legion`), and pin that key in
+   `test/modder_api.test.js`. [`races.md`](races.md), "Unit tables", has the
+   rules. A race-only card is tied to the race by its `card_units.js` entry
+   naming the race's units; nothing else marks it.
 
    `unitNames` has one consumer: the card tooltips name a race unit from it,
    and they use `gw_play/unit_names.js` when it has no name. So every race
@@ -51,7 +61,11 @@ race needs something new.
    descriptor shape. They check that the cells the starter set and the `gwc_`
    cards open all hold a race unit. They check any race-specific grant rule
    (Bugs' research). They check that the withheld-card list is exactly the
-   MLA-only set plus whatever the race lacks.
+   MLA-only set plus whatever the race lacks. `test/unit_jobs.test.js` covers
+   every registered race without a change: it fails when a race unit of a
+   mobile combat, defence, or superweapon cell has no vanilla unit a card can
+   grant standing for it, and when a unit of one of those cells carries a bit
+   the job rule does not know.
 6. **Docs**: add a section in `races.md`, a CHANGELOG line, and anything new
    here.
 7. **Live**: play a war as the race and a war against it. Check the primed
@@ -73,7 +87,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    camel-cased from `display_name`, parts by owner plus role from
    `tools[].spec_id` / `ammo_id` / `death_weapon`, and every name as a
    `!LOC:` key. For MLA the table _is_ the membership rule, so every unit the
-   mod adds must be in it.
+   mod adds must be in it. Publish it under the add-on's own key in
+   `shared/units.js` (`gwoUnit.secondWave`), and pin that key in
+   `test/modder_api.test.js`.
 3. **Layers.** `layers[raceId].titans` carries `unitMaps` and `sources` for
    each race the mod ships AI data for, `mla` included. `sources` must cover
    everything the add-on ships under `/pa/ai/`, because it is what every
@@ -84,8 +100,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    `download/`. The script reads the add-on's `serverMods` from its
    descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
-   every harvested unit is in the table, that the zip ships every path and
-   every layer entry (skipped without the zip), and the cells: a held vanilla
+   every harvested unit is in the table, that the mod ships every path and
+   every layer entry (read from its zip or `server_mods/` build through
+   `modFiles`, and skipped without either), and the cells: a held vanilla
    unit brings the add-on units of its cell, an orphan arrives through a
    builder, an exclusive arrives only through its gantry.
 6. **Validator.** Run `npm run validate:race-trees` with the zip in
@@ -101,26 +118,44 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   and they are kept out of the vanilla index. An add-on's Legion or Bugs
   units carry that race's bit and are the race's by the ordinary rule.
 - **An exclusive bit belongs to nobody.** A unit under a `Custom` bit no
-  registered race owns (Section 17's `Custom17`) has no cell grant, no card
-  and no mod, and arrives only through a builder's `buildable_types`. A
+  registered race owns (Section 17's `Custom17`) has no cell grant and takes
+  no mod aimed at a vanilla file, and arrives only through a builder's
+  `buildable_types`. A card that names one directly is dealt to the races
+  that can build it. A
   third-party race registering `Custom17` would claim those units by the bit
   rule instead.
 
 - **Race membership is the unit-type bit alone.** A unit is the race's when
   its effective `unit_types` carry `UNITTYPE_<bit>`. Vanilla is `Custom58` or
   no `Custom*` at all. A commander's `buildable_types` is the race's `CmdBuild`
-  expression. `races.commanderRetagMods` produces exactly that shape for a
-  vanilla commander that a race army keeps.
-- **Cells decide what a race player fields.** Nothing per race is hand-mapped.
-  `test/unit_groups_cells.test.js` validates the classifier's domain and class
-  precedence (`shared/unit_cells.js`) against `shared/unit_groups.js`. A new
-  race vocabulary (Legion `Shield`, Bugs `TacticalDefense`, Exiles `Sub`) needs
-  no change unless it names a domain or class the classifier does not know.
-- **A part belongs to the unit whose directory holds it** when units of
-  several cells share it (the Dox's ammo also arms an advanced vehicle).
+  expression, and its `ai_metal_extractor_names` names the race's extractors.
+  `races.commanderRetagMods` produces exactly that shape for a vanilla
+  commander that a race army keeps, from the descriptor's `commanderTypes`.
+  Copy `commanderTypes.metalExtractorNames` from the race mod's commander
+  specs. Nothing checks it against the mod.
+- **`engineKeys` names the race's own unit for each stock key the engine
+  reads by name** (`races.md`, "Race trees"). Pick each from the race mod's
+  units by type: a factory key wants the race's basic factory of that kind.
+  `null` keeps the stock unit where the race has none (Bugs have no bot
+  factory). `test/race_*.test.js` pins the table. `test/races.test.js`
+  checks that every unit it and `stockUnits` name is in the harvested unit
+  list (`test/fixtures/unit_types.json`), so a renamed unit fails; nothing
+  checks that each is the right unit.
+- **Cells and jobs decide what a race player fields.** Nothing per race is
+  hand-mapped. `test/unit_groups_cells.test.js` validates the classifier's
+  domain and class precedence (`shared/unit_cells.js`) against
+  `shared/unit_groups.js`. A race's bits on a mobile combat unit (Legion
+  `Shield`, Bugs `TacticalDefense`, Exiles `Sub`) are jobs
+  ([`races.md`](races.md), "Jobs"). A bit that is neither a domain, tier,
+  class, or job bit nor stripped fails `test/unit_jobs.test.js`, and needs a
+  decision: a job in `unit_cells`' `JOBS` table, or the test's ignore list.
+  A defence or superweapon structure's bits are checked the same way against
+  `STRUCTURE_JOBS` and the test's list of bits that are no structure's job.
+- **A part belongs to the unit whose directory holds it** when several units
+  share it (the Dox's ammo also arms an advanced vehicle).
 - **`unit_list.json` is authoritative.** A race's units are the list's. A
   spec that its AI unit map names but its list lacks is a bug in the mod's AI
-  data (Bugs' Evolution Chambers). This repo never adds a workaround for it.
+  data. This repo never adds a workaround for it.
 - **A race unit in a cell vanilla never fills is granted only when something
   granted can build it** (`buildable_types`, evaluated by
   `shared/build_types.js`). That is how Bugs' research unlock tokens travel
@@ -134,11 +169,16 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   remakes a unit that way, every other mod on that unit in the list (its new
   cost, health, storage) stays with it too. This rule was found the hard way.
   The Guardians of a Cluster war carry the Angel-to-commander mods, and by cell
-  they turned Exiles' Heron into a broken commander.
-- **Cards never change.** They name vanilla units. The race's units follow at
-  launch. A card that cannot work by cell goes in
+  they turned Exiles' Heron into a broken commander. A descriptor with
+  `stockOnly: true`, which a card mod sets on one change, stays on its unit
+  too, but it remakes nothing: the other mods on that unit still travel.
+- **Cards never change.** GWO's own cards name vanilla units. The race's units
+  follow at launch. A card that cannot work by cell goes in
   `cards_deal_helpers.MLA_ONLY`, with a comment that says why. Every
-  `_upgrade_` card is MLA-only except the commander's.
+  `_upgrade_` card is MLA-only except the commander's, unless its
+  `card_units.js` entry names race or add-on units: such a card is written for
+  that race and dealt to whoever fields one. An entry's `races` list overrides
+  both rules for its card.
 - **The race tag travels with every inventory** (`global:playerRace`), the
   host's and each co-op viewer's. Every referee function takes the race per
   army. Never read a race from `model.game().inventory()` when the thing being
@@ -147,12 +187,15 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   does a co-op viewer under Separate races. The boss keeps its Pumpkin, and the
   Guardians keep their Unicorn. A viewer that kept a stock commander keeps it.
   All of these are retagged. Commander cells receive mods but are never
-  granted.
+  granted. Every commander in the list is a spec the race's own mods ship.
+  `test/race_tables.test.js` checks the list against the harvest.
 - **Commander art hue.** `commanderArtHue` is the hue that the preview art
   ships in (MLA 210 blue, Legion 0 red). The war setup's Commander picker and
   the co-op loadout scene both rotate from there to the faction colour.
-- **Player icon** is a 16px fill/outline pair the race's own mod ships,
-  reached through GW Server Mods' root mount (`coui://ui/mods/<mod>/img/…`).
+- **Player icon** is a 16px fill/outline pair at `coui://ui/mods/<mod>/img/…`.
+  Legion and Bugs ship theirs only in their client mods, which the game mounts
+  itself. Exiles ships its pair in both its client and its server mod, and GW
+  Server Mods' root mount reaches the server copy.
 - **Brains.** Titans runs every race, with the mod's own `/pa/ai/` files
   layered over the base game's. Queller runs MLA and Legion. Penchant runs
   MLA. A brain that does not know a race in play is not offered, and
@@ -172,14 +215,10 @@ Each issue gets a bug report in Simplified Technical English (ASD-STE100) for
 the mod's author. The report is kept outside the repo (the user's Desktop).
 
 - Bugs' `unit_list.json` lists `/pa/units/air/bug_siren/bug_siren.json`,
-  which the zip does not ship (`Failed to load unit spec … .ai0`). Its
-  `unit_maps/bugs.json` builds three specs that the list lacks:
-  `basic_research_station`, `advanced_research_station` (the Evolution
-  Chambers) and `bug_turret_spray`. So its AI cannot research in GW until the
-  mod lists them. Report this upstream. The list stays authoritative.
+  which the zip does not ship (`Failed to load unit spec … .ai0`). Report this
+  upstream. The list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
-  parse server-side (`CostStampSpec::parse failed`). Its unit map names two
-  specs that the zip does not ship (`adv_tank_hover`, `r_artillery`).
+  parse server-side (`CostStampSpec::parse failed`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles also ships
   `platoon_templates.json` and `platoon_land_builds.json` at the vanilla
@@ -209,5 +248,11 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   `AnyBugFabberBasic` and `AnyBugFabberAdvanced`, which its own maps never
   define: the Bugs race's `unit_maps/bugs.json` supplies them in every Bugs
   tree (`test/addon_second_wave.test.js` pins the dependency).
+- Second Wave's GigaSilo Storage Device
+  (`/pa/units/l_addon/l_adv_storage/l_adv_storage.json`) names its death
+  weapon as `/pa/units/land/l_adv_storage/l_adv_storage_death_weapon.json`,
+  which no mod ships. The zip has that file under
+  `/pa/units/l_addon/l_adv_storage/`, where nothing in the mod names it. So
+  the table has no key for the part. Report this upstream.
 - Osmech has no AI data. A player fields its units by cell; an AI army never
   builds them.

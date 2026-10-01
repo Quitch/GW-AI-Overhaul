@@ -3,12 +3,86 @@
 // Covers exactly the $/api subset the shipped referee and co-op code uses - not a
 // general polyfill.
 
-// The Promise itself, augmented, rather than a wrapper - so `.then` stays the
-// inherited Promise.prototype.then rather than a hand-rolled look-alike. What
-// `.then` returns is augmented in the same way, as jQuery's is: setup.js chains
-// .fail() off a .then(), and $.when reads the result of one.
+// jQuery 2's .then waits for what a callback returns only if it has a
+// `promise` method; an engine or native promise is passed on unwaited. The
+// native .then below would wait for one, so the callback throws instead.
+// `failWith`, given for an error callback, takes any other return value, and
+// stands in for a missing one.
+function thenCallback(fn, failWith) {
+  if (typeof fn !== "function") {
+    return failWith || fn;
+  }
+  return function (...args) {
+    var returned = fn(...args);
+    if (
+      returned &&
+      typeof returned.then === "function" &&
+      !isJqueryPromise(returned)
+    ) {
+      throw new Error(
+        "fake-jquery: a .then callback returned a thenable with no promise() " +
+          "method, which jQuery 2 passes on unwaited - adapt it with " +
+          "shared/gwo_promise.js"
+      );
+    }
+    if (failWith && !isJqueryPromise(returned)) {
+      return failWith(returned);
+    }
+    return returned;
+  };
+}
+
+// jQuery 2.1.4 runs callbacks inside resolve() and reject(), so a callback's
+// throw escapes and no .fail() further down can catch it. The native chain
+// turns it into a rejection, so it is reported out of band as well.
+function escaping(fn) {
+  if (typeof fn !== "function") {
+    return fn;
+  }
+  return function (...args) {
+    try {
+      return fn(...args);
+    } catch (e) {
+      process.nextTick(function () {
+        throw e;
+      });
+      throw e;
+    }
+  };
+}
+
+function failNext(value) {
+  return Promise.reject(value);
+}
+
+// jQuery 2 fails the next promise with what an error callback returns,
+// unless it has promise(), where native .then would recover. A step with no
+// error callback fails it with the failure it was given.
+function jqueryThen(chain, onDone, onFail) {
+  return chain(onDone, thenCallback(onFail, failNext));
+}
+
+// The Promise itself, augmented, rather than a wrapper - so `.then` chains on
+// the inherited Promise.prototype.then rather than a hand-rolled look-alike.
+// What `.then` returns is augmented in the same way, as jQuery's is:
+// war_generation.js chains .fail() off a .then(), and $.when reads the result
+// of one.
+//
+// A failed jQuery Deferred reports nothing, however far down a chain the
+// failure passes, so each promise, and each one a callback is chained with,
+// is marked handled; only a callback's throw is reported. The mark uses the
+// native .then: the decorated one would mark what it returns, without end.
 function decorate(promise) {
-  var chain = promise.then.bind(promise);
+  var native = promise.then.bind(promise);
+  var chain = function (onDone, onFail) {
+    return decorate(native(escaping(onDone), escaping(onFail)));
+  };
+  native(undefined, function () {});
+
+  // A jqXHR is no Promise, so Promise.resolve and await wrap it in a native
+  // one, whose .then recovers. They hand back a Promise whose constructor is
+  // Promise unwrapped, so this one must not have that constructor.
+  promise.constructor = undefined;
 
   promise.promise = function () {
     return promise;
@@ -26,7 +100,7 @@ function decorate(promise) {
     return promise;
   };
   promise.then = function (onDone, onFail) {
-    return decorate(chain(onDone, onFail));
+    return jqueryThen(chain, thenCallback(onDone), onFail);
   };
 
   return promise;
@@ -59,27 +133,26 @@ function makeDeferred() {
 // call that settled it, and .then does not turn a throw into a rejection. After
 // a throw the Deferred is stuck, as 2.1.4's is (Callbacks.fire never clears
 // `firing`, so add() only queues): the callbacks after the thrower never run,
-// and neither does one attached later. It differs from 2.1.4 in three ways: a
+// and neither does one attached later. It differs from 2.1.4 in two ways: a
 // callback added while the list fires runs at once rather than after the rest,
-// only the first settled value is passed on, and promise() returns the
-// Deferred itself, resolve() included.
+// and promise() returns the Deferred itself, resolve() included.
 function makeSyncDeferred() {
   var state = "pending";
   var stuck = false;
-  var value;
+  var values = [];
   var lists = { resolved: [], rejected: [] };
 
-  var settle = function (to, settledValue) {
+  var settle = function (to, settledValues) {
     if (state !== "pending") {
       return;
     }
     state = to;
-    value = settledValue;
+    values = settledValues;
     var list = lists[to];
     lists = { resolved: [], rejected: [] };
     for (const callback of list) {
       try {
-        callback(value);
+        callback(...values);
       } catch (e) {
         stuck = true;
         throw e;
@@ -93,7 +166,7 @@ function makeSyncDeferred() {
     }
     if (state === when) {
       try {
-        fn(value);
+        fn(...values);
       } catch (e) {
         stuck = true;
         throw e;
@@ -104,12 +177,12 @@ function makeSyncDeferred() {
   };
 
   var deferred = {
-    resolve: function (resolvedValue) {
-      settle("resolved", resolvedValue);
+    resolve: function (...resolvedValues) {
+      settle("resolved", resolvedValues);
       return deferred;
     },
-    reject: function (reason) {
-      settle("rejected", reason);
+    reject: function (...reasons) {
+      settle("rejected", reasons);
       return deferred;
     },
     done: function (fn) {
@@ -128,12 +201,12 @@ function makeSyncDeferred() {
     then: function (onDone, onFail) {
       var next = makeSyncDeferred();
       var forward = function (fn, settleNext) {
-        return function (settledValue) {
+        return function (...settledValues) {
           if (!fn) {
-            settleNext(settledValue);
+            settleNext(...settledValues);
             return;
           }
-          var returned = fn(settledValue);
+          var returned = fn(...settledValues);
           if (returned && typeof returned.promise === "function") {
             returned.promise().done(next.resolve).fail(next.reject);
           } else {
@@ -153,17 +226,37 @@ function makeSyncDeferred() {
   return deferred;
 }
 
-// $.when for makeSyncDeferred: one argument, waited on without a tick. More
-// than one is refused rather than waited on partially, so a $.when(a, b) under
-// test can't pass with b never waited for.
-function syncWhen(arg) {
-  if (arguments.length !== 1) {
-    throw new Error("syncWhen waits on one argument, not " + arguments.length);
+// jQuery 2.1.4's $.when, for makeSyncDeferred: it waits on every argument with
+// a promise method, without a tick, and passes the rest through. Several
+// arguments reach the callbacks as arguments of their own, and an argument
+// settled with several values as an array of them.
+function syncWhen(...args) {
+  if (args.length === 1 && isJqueryPromise(args[0])) {
+    return args[0].promise();
   }
-  if (isJqueryPromise(arg)) {
-    return arg.promise();
+  var master = makeSyncDeferred();
+  var values = args.slice();
+  var remaining = args.length;
+  var settleOne = function (i) {
+    return function (...settled) {
+      values[i] = settled.length > 1 ? settled : settled[0];
+      remaining--;
+      if (!remaining) {
+        master.resolve(...values);
+      }
+    };
+  };
+  args.forEach(function (arg, i) {
+    if (isJqueryPromise(arg)) {
+      arg.promise().done(settleOne(i)).fail(master.reject);
+    } else {
+      remaining--;
+    }
+  });
+  if (!remaining) {
+    master.resolve(...values);
   }
-  return makeSyncDeferred().resolve(arg).promise();
+  return master.promise();
 }
 
 // What every api.* call hands back: `then` and nothing jQuery recognises. Hold
@@ -200,6 +293,37 @@ function enginePromise() {
   };
 }
 
+// A failed api.* call, chained as PA's coherent.js chains one: a .then given
+// an error callback gets the failure, and fails the promise it returns with
+// what that callback returned or threw. The promise a .then given no error
+// callback returns never settles, because the engine's default handler merges
+// rather than rejects. api.file.list fails this way for a path it cannot list.
+// Measured against the game's own coherent.js.
+function failedEngineCall(reason) {
+  return {
+    then: function (onDone, onFail) {
+      if (!onFail) {
+        return neverSettles();
+      }
+      var failure;
+      try {
+        failure = onFail(reason);
+      } catch (e) {
+        failure = e;
+      }
+      return failedEngineCall(failure);
+    },
+  };
+}
+
+function neverSettles() {
+  return {
+    then: function () {
+      return neverSettles();
+    },
+  };
+}
+
 // A settled jQuery promise, for a fixture standing in for code that returns one.
 function resolved(value) {
   return makeDeferred().resolve(value).promise();
@@ -210,14 +334,17 @@ function rejected(reason) {
 }
 
 // jQuery 2 identifies a promise by a `promise` method, not by `then`, so an
-// engine promise handed to $.when is read as a plain value and never waited
-// for. Modelled here so a shipped file that does that fails a test.
+// engine promise handed to $.when, or returned from a .then callback, is read
+// as a plain value and never waited for. Modelled here so a shipped file that
+// does that fails a test.
 function isJqueryPromise(value) {
   return !!value && typeof value.promise === "function";
 }
 
 // jQuery 2's $.when: waits on a jQuery promise and passes everything else
-// through. One argument resolves to that value; several to the array of them.
+// through. The callbacks get each argument's value as an argument of its own,
+// and an argument settled with several values as an array of them. One jQuery
+// promise comes back as itself, as jQuery's does.
 // The result carries `.always`, as jQuery's does - a caller that only wants to
 // know the wait is over uses it rather than .then.
 //
@@ -226,6 +353,9 @@ function isJqueryPromise(value) {
 // all, which is the whole thing this models.
 function when() {
   var args = Array.prototype.slice.call(arguments);
+  if (args.length === 1 && isJqueryPromise(args[0])) {
+    return args[0].promise();
+  }
   var values = args.slice();
   var waits = [];
 
@@ -234,23 +364,26 @@ function when() {
       return;
     }
     waits.push(
-      arg.promise().then(function (value) {
-        values[index] = value;
+      arg.promise().then(function (...settled) {
+        values[index] = settled.length > 1 ? settled : settled[0];
       })
     );
   });
 
+  // An argument's failure, passed on, which nothing in the game reports.
   var settled = Promise.all(waits);
+  settled.catch(function () {});
   var self = {};
 
   var chain = function (onDone, onFail) {
+    var done = escaping(onDone);
     return decorate(
       settled.then(
-        onDone &&
+        done &&
           function () {
-            return onDone(args.length === 1 ? values[0] : values);
+            return done(...values);
           },
-        onFail
+        escaping(onFail)
       )
     );
   };
@@ -258,7 +391,9 @@ function when() {
   self.promise = function () {
     return self;
   };
-  self.then = chain;
+  self.then = function (onDone, onFail) {
+    return jqueryThen(chain, thenCallback(onDone), onFail);
+  };
   self.done = function (fn) {
     chain(fn);
     return self;
@@ -275,9 +410,9 @@ function when() {
   return self;
 }
 
-// Requesting a URL with no configured resolver rejects, so a test's fixtures can't
-// silently drift from what the code under test actually asks for. `sync` swaps
-// in makeSyncDeferred and syncWhen.
+// Requesting a URL with no configured resolver rejects, so a fixture that drifts
+// from what the code under test asks for sends it down its error path. `sync`
+// swaps in makeSyncDeferred and syncWhen.
 function createFakeJQuery(options) {
   var opts = options || {};
 
@@ -285,18 +420,20 @@ function createFakeJQuery(options) {
     Deferred: opts.sync ? makeSyncDeferred : makeDeferred,
     when: opts.sync ? syncWhen : when,
     getJSON: function (url) {
-      return Promise.resolve()
-        .then(function () {
-          if (!opts.getJSON) {
-            throw new Error(
-              "fake-jquery: no getJSON resolver configured for " + url
-            );
-          }
-          return opts.getJSON(url);
-        })
-        .then(undefined, function (err) {
-          throw err;
-        });
+      return decorate(
+        Promise.resolve()
+          .then(function () {
+            if (!opts.getJSON) {
+              throw new Error(
+                "fake-jquery: no getJSON resolver configured for " + url
+              );
+            }
+            return opts.getJSON(url);
+          })
+          .then(undefined, function (err) {
+            throw err;
+          })
+      );
     },
   };
 }
@@ -329,6 +466,7 @@ function createFakeApi(overrides) {
 module.exports = {
   makeDeferred: makeDeferred,
   enginePromise: enginePromise,
+  failedEngineCall: failedEngineCall,
   resolved: resolved,
   rejected: rejected,
   createFakeJQuery: createFakeJQuery,

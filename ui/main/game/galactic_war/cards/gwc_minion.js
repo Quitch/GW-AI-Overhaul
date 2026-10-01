@@ -1,11 +1,9 @@
 define([
   "shared/gw_factions",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GWFactions, gwoCard, gwoGroup, gwoAI, gwoRaces, gwoUnit) {
+], function (GWFactions, gwoCard, gwoAI, gwoRaces) {
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
@@ -57,17 +55,7 @@ define([
     },
     deal: function (system, context, inventory, rng) {
       var chance = 80;
-      if (
-        gwoCard.missingAllUnits(
-          inventory.units(),
-          gwoGroup.landFactoriesBasic
-        ) ||
-        gwoCard.missingAllUnits(inventory.units(), [
-          gwoUnit.metalExtractorAdvanced,
-          gwoUnit.metalExtractor,
-          gwoUnit.jig,
-        ])
-      ) {
+      if (gwoAI.armyGap(inventory.units())) {
         chance = 0;
       } else {
         var hostMinionCount = inventory.minions().length;

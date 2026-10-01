@@ -120,10 +120,7 @@ describe("a viewer that has chosen a star", () => {
     selection(5);
     const move = replayMove(2);
     move.fail();
-    await move.applying.then(
-      () => {},
-      () => {}
-    );
+    await Promise.resolve(move.applying).catch(() => {});
 
     assert.equal(selection(), 5);
   });
@@ -165,5 +162,22 @@ describe("a viewer that has chosen a star", () => {
     await move.applying;
 
     assert.equal(selection(), 2);
+  });
+
+  // Once the host stands on the chosen star, the viewer is following again,
+  // so the host's next move takes the selection along.
+  it("follows the host's next move from a star the host moved onto", async () => {
+    const { replayMove, selection } = build();
+
+    selection(2);
+    const first = replayMove(2);
+    first.settle();
+    await first.applying;
+
+    const second = replayMove(4);
+    second.settle();
+    await second.applying;
+
+    assert.equal(selection(), 4);
   });
 });

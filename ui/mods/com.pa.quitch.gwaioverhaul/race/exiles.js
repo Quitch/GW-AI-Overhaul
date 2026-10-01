@@ -16,7 +16,29 @@ define(function () {
     commanderTypes: {
       unitType: "UNITTYPE_Custom6",
       buildable: "CmdBuild & Custom6",
+      metalExtractorNames: {
+        basic: "ExilesBasicMetalExtractor",
+        advanced: "ExilesAdvancedMetalExtractor",
+      },
     },
+    engineKeys: {
+      BasicVehicleFactory: "/pa/units/land/t_tank_fac/t_tank_fac.json",
+      BasicBotFactory: "/pa/units/land/t_bot_fac/t_bot_fac.json",
+      BasicAirFactory: "/pa/units/air/t_air_fac/t_air_fac.json",
+      BasicNavalFactory: "/pa/units/sea/t_naval_fac/t_naval_fac.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/t_orbital_launcher/t_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
+    },
+    // The stock build orders have MLA's orbital fabber build these, although
+    // an Exiles unit shares their cell. See races.md, "Units a race builds
+    // itself".
+    stockUnits: [
+      "/pa/units/land/teleporter/teleporter.json",
+      "/pa/units/land/metal_extractor/metal_extractor.json",
+    ],
     commanders: [
       { spec: "/pa/units/commanders/exiles_maxim/exiles_maxim.json" },
       { spec: "/pa/units/commanders/exiles_taurus/exiles_taurus.json" },
@@ -150,9 +172,6 @@ define(function () {
         "/pa/units/sea/drone_aa/chirp/l_air_bomb_tracer_tool_weapon.json",
       chirpLAirBombWeapon:
         "/pa/units/sea/drone_aa/chirp/l_air_bomb_tool_weapon.json",
-      cobra: "/pa/units/land/stalker/stalker.json",
-      cobraAmmo: "/pa/units/land/stalker/stalker_ammo.json",
-      cobraWeapon: "/pa/units/land/stalker/stalker_weapon.json",
       cougar: "/pa/units/land/tank_gattling/tank_gattling.json",
       cougarAmmo: "/pa/units/land/tank_gattling/tank_gattling_ammo.json",
       cougarWeapon:
@@ -204,6 +223,12 @@ define(function () {
       fabricationVehicle: "/pa/units/land/t_tank_fab/t_tank_fab.json",
       fabricationVehicleBuildArm:
         "/pa/units/land/t_tank_fab/t_tank_fab_build_arm.json",
+      fangtooth: "/pa/units/sea/t_battleship/t_battleship.json",
+      fangtoothAmmo: "/pa/units/sea/t_battleship/t_battleship_ammo.json",
+      fangtoothWeapon:
+        "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json",
+      fangtoothWeapon2:
+        "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json",
       fiend: "/pa/units/sea/a_croc/a_croc.json",
       fiendAmmo: "/pa/units/sea/a_croc/a_croc_ammo.json",
       fiendWeapon: "/pa/units/sea/a_croc/a_croc_tool_weapon.json",
@@ -213,6 +238,9 @@ define(function () {
       gargoyle: "/pa/units/air/t_gunship/t_gunship.json",
       gargoyleAmmo: "/pa/units/air/t_gunship/t_gunship_ammo.json",
       gargoyleWeapon: "/pa/units/air/t_gunship/t_gunship_tool_weapon.json",
+      gremlin: "/pa/units/land/stalker/stalker.json",
+      gremlinAmmo: "/pa/units/land/stalker/stalker_ammo.json",
+      gremlinWeapon: "/pa/units/land/stalker/stalker_weapon.json",
       hail: "/pa/units/land/hail/hail.json",
       hailAmmo: "/pa/units/land/hail/hail_ammo.json",
       hailWeapon: "/pa/units/land/hail/hail_tool_weapon.json",
@@ -272,7 +300,6 @@ define(function () {
         "/pa/units/land/hail/hail_mine/hail_mine_death_weapon.json",
       landMineWeapon:
         "/pa/units/land/hail/hail_mine/hail_mine_tool_weapon.json",
-      leviathan: "/pa/units/sea/t_battleship/t_battleship.json",
       lice: "/pa/units/land/lice/lice.json",
       maximCommander: "/pa/units/commanders/exiles_maxim/exiles_maxim.json",
       maximCommanderAmmo:
@@ -459,7 +486,6 @@ define(function () {
       catalyst: "!LOC:Catalyst",
       chimera: "!LOC:Chimera",
       chirp: "!LOC:Chirp",
-      cobra: "!LOC:Cobra",
       cougar: "!LOC:Cougar",
       crocodile: "!LOC:Crocodile",
       cub: "!LOC:Cub",
@@ -477,9 +503,11 @@ define(function () {
       fabricationShip: "!LOC:Fabrication Ship",
       fabricationShipAdvanced: "!LOC:Advanced Fabrication Ship",
       fabricationVehicle: "!LOC:Fabrication Vehicle",
+      fangtooth: "!LOC:Fangtooth",
       fiend: "!LOC:Fiend",
       folga: "!LOC:Folga",
       gargoyle: "!LOC:Gargoyle",
+      gremlin: "!LOC:Gremlin",
       hail: "!LOC:Hail",
       halley: "!LOC:Halley",
       hardtack: "!LOC:Hardtack",
@@ -491,12 +519,11 @@ define(function () {
       hyena: "!LOC:Hyena",
       hyperTideAssembly: "!LOC:Hyper Tide Assembly",
       jaguar: "!LOC:Jaguar",
-      jelly: "!LOC:Jelly",
+      jelly: "!LOC:Navigator",
       kikimora: "!LOC:Kikimora",
       lamya: "!LOC:Lamya",
       lanceDox: "!LOC:Lance Dox",
       landMine: "!LOC:Land Mine",
-      leviathan: "!LOC:Leviathan",
       lice: "!LOC:Lice",
       maximCommander: "!LOC:Maxim Commander",
       meerkat: "!LOC:Meerkat",

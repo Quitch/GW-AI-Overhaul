@@ -27,6 +27,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
       ],
       function (
         GW,
@@ -38,7 +39,8 @@
         gwoBiomeMods,
         raceMods,
         gameFilePaths,
-        gwoPromise
+        gwoPromise,
+        coopAiRoster
       ) {
         var hiresThisLaunch = 0;
         // The AI tree cache lives one launch: a co-op host's two hires share
@@ -56,7 +58,7 @@
         // pass is labelled while it runs. See architecture.md.
         gwoReferee.prototype.stage = function (key) {
           var progress = model.gwoLaunchProgress;
-          if (!progress || !_.isFunction(progress.stage)) {
+          if (!progress) {
             return;
           }
           var text = loc(key);
@@ -115,21 +117,16 @@
             _.assign(allFiles, self.localFiles());
           }
 
-          var cookedFiles = _.mapValues(allFiles, function (value) {
-            if (_.isString(value)) {
-              return value;
-            } else {
-              return JSON.stringify(value);
-            }
-          });
+          var cookedFiles = gameFilePaths.cookFiles(allFiles);
+          var resolveMounted = function () {
+            deferred.resolve();
+          };
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
             self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
-              gwoBiomeMods.mount(self.biomeMods).always(function () {
-                deferred.resolve();
-              });
+              gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
             });
           });
 
@@ -152,6 +149,22 @@
           // be read.
           return gwoPromise
             .steps(raceMods.installedRaces(), [
+              // The co-op AI players this battle fields, fixed for the hire. A
+              // throw fails the hire: a battle is not fought without the AI
+              // players its session has. See coop.md.
+              function () {
+                if (model.gwoCoopAi) {
+                  ref.coopAis = model.gwoCoopAi.launchRoster();
+                  return;
+                }
+                if (
+                  model.gwCampaignActive() &&
+                  coopAiRoster.aiRecords(game.coopPlayerInventoryData()).length
+                ) {
+                  throw new Error("co-op AI players are not loaded");
+                }
+                ref.coopAis = [];
+              },
               _.bind(gwoGenerateGameFiles, ref),
               function () {
                 ref.stage("!LOC:Processing AI mods");
@@ -163,6 +176,18 @@
               },
               _.bind(gwoGenerateConfig, ref),
               function () {
+                // A co-op host's own pass is mounted on this client alone, and
+                // stock deep-clones its files first. lodash 3's cloneDeep is
+                // quadratic in the objects it copies, so they go as JSON text.
+                // See coop.md, "The two referees".
+                if (
+                  ref.pass === 2 &&
+                  model.launchingFight() &&
+                  model.gwCampaignActive() &&
+                  model.isCampaignHost()
+                ) {
+                  ref.files(gameFilePaths.cookFiles(ref.files()));
+                }
                 // Later stages (mountFiles) belong to the launch, not a pass.
                 ref.pass = 0;
                 return ref;

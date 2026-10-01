@@ -1,10 +1,12 @@
 "use strict";
 
 // The translation files under ui/mods/<id>/translations/: named for a PA
-// locale, shaped as PA's own tables, keys in code-point order with no
-// duplicates, the en-US catalog equal to what the tree asks loc() for, every
-// other file a subset of it, and placeholders and style codes preserved per
-// entry. Needs no PA install, so it runs in verify. See docs/translations.md.
+// locale, shaped as PA's own tables, keys in code-unit order with no
+// duplicates, the en-US catalog equal to what the tree asks the game to
+// translate, with no file:line in its notes and every file a note names
+// holding its key, every other file a subset of it, and placeholders and style
+// codes preserved per entry. Needs no PA install, so it runs in verify. See
+// docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -12,6 +14,7 @@ const path = require("node:path");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
 const {
   CATALOG_LOCALE,
+  EXCLUDED_ROLES,
   PA_LOCALES,
   TRANSLATIONS_DIR,
   extractKeys,
@@ -21,6 +24,14 @@ const {
 const { reportProblems } = require("../lib/report-failures.js");
 
 const SEPARATORS = /;;|::/;
+// A translator note's `file:line` reference; the line moves with the code.
+const LINE_REFERENCE = /[\w-]\.(?:js|html|json|css):\d/;
+// A file a translator note names, as a path or a bare file name: a run of
+// path characters ending in a source extension, less any full stop after it.
+const PATH_RUN = /[\w./-]+/g;
+const SOURCE_FILE = /[\w-]\.(?:js|html|json|css)$/;
+// The game's own files, which a note may name for comparison.
+const GAME_FILES = new Set(["legion.json"]);
 // What a translation must carry over from its key, counted as a multiset.
 const PRESERVED = [
   /__\w+__/g,
@@ -125,6 +136,12 @@ function checkEntry(problems, label, key, entry, isCatalog) {
     }
     if (typeof entry.description !== "string" || !entry.description.trim()) {
       problems.push(label + ": no description for " + JSON.stringify(key));
+    } else if (LINE_REFERENCE.test(entry.description)) {
+      problems.push(
+        label +
+          ": description names a line, which goes stale; name the file only: " +
+          JSON.stringify(key)
+      );
     }
     return;
   }
@@ -173,7 +190,7 @@ function checkFile(problems, file, isCatalog) {
     if (sorted[i] !== inOrder[i]) {
       problems.push(
         label +
-          ": keys are not in code-point order; first out of place: " +
+          ": keys are not in code-unit order; first out of place: " +
           JSON.stringify(inOrder[i])
       );
       break;
@@ -186,11 +203,19 @@ function checkFile(problems, file, isCatalog) {
   return data;
 }
 
+function isCatalogued(entry) {
+  return entry.sites.some((site) => !EXCLUDED_ROLES.includes(site.role));
+}
+
 // The catalog and the tree must carry the same keys, both ways.
-function checkCatalogAgainstTree(problems, catalogFile, catalogKeys) {
-  const extracted = extractKeys();
+function checkCatalogAgainstTree(
+  problems,
+  catalogFile,
+  catalogKeys,
+  extracted
+) {
   for (const key of catalogKeys) {
-    if (!extracted.has(key)) {
+    if (!extracted.has(key) || !isCatalogued(extracted.get(key))) {
       problems.push(
         relative(catalogFile) +
           ": stale key, no longer in the tree: " +
@@ -198,13 +223,54 @@ function checkCatalogAgainstTree(problems, catalogFile, catalogKeys) {
       );
     }
   }
-  for (const key of extracted.keys()) {
-    if (!catalogKeys.has(key)) {
+  for (const [key, entry] of extracted) {
+    if (isCatalogued(entry) && !catalogKeys.has(key)) {
       problems.push(
         relative(catalogFile) +
           ": key in the tree but not catalogued: " +
           JSON.stringify(key)
       );
+    }
+  }
+}
+
+function namedFiles(description) {
+  const names = new Set();
+  for (const run of description.match(PATH_RUN) || []) {
+    let name = run;
+    while (name.endsWith(".")) {
+      name = name.slice(0, -1);
+    }
+    if (SOURCE_FILE.test(name)) {
+      names.add(name);
+    }
+  }
+  return names;
+}
+
+// Each file a note names must hold the key as the extractor reads it. A race
+// file's unit names count, though they are not catalogued.
+function checkNoteFiles(problems, catalogFile, catalog, extracted) {
+  for (const key of Object.keys(catalog)) {
+    const entry = extracted.get(key);
+    const description = catalog[key]?.description;
+    if (!entry || typeof description !== "string") {
+      continue;
+    }
+    const files = entry.sites.map((site) => site.file);
+    for (const name of namedFiles(description)) {
+      const held = files.some(
+        (file) => file === name || file.endsWith("/" + name)
+      );
+      if (!held && !GAME_FILES.has(name)) {
+        problems.push(
+          relative(catalogFile) +
+            ": description names " +
+            name +
+            ", which does not hold " +
+            JSON.stringify(key)
+        );
+      }
     }
   }
 }
@@ -256,7 +322,9 @@ function main() {
   const catalogKeys = new Set(catalog ? Object.keys(catalog) : []);
 
   if (catalog) {
-    checkCatalogAgainstTree(problems, catalogFile, catalogKeys);
+    const extracted = extractKeys({ keepExcluded: true });
+    checkCatalogAgainstTree(problems, catalogFile, catalogKeys, extracted);
+    checkNoteFiles(problems, catalogFile, catalog, extracted);
   }
 
   let entries = 0;

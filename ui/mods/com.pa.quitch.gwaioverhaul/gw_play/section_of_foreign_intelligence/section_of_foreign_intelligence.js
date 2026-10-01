@@ -10,12 +10,6 @@
   // shared/ai.js's BUFF_TYPES, filled once it loads, plus `commanders`, which
   // only v5.11.0 and earlier saves carry.
   var gwoBuffType = {};
-  var eradicationModes = [];
-  var eradicationModeNames = {
-    SubCommanders: "!LOC:Colonel",
-    Factories: "!LOC:Factory",
-    Fabbers: "!LOC:Fabber",
-  };
 
   try {
     model.gwoAvailableTechTooltip =
@@ -55,7 +49,7 @@
       return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
 
-    var getFactionName = function (commander, currentFaction) {
+    var getFactionName = function (commander, currentFaction, GWFactions) {
       if (_.isUndefined(commander.faction)) {
         return {
           name: "",
@@ -67,20 +61,20 @@
         .game()
         .inventory()
         .getTag("global", "playerFaction");
-      var factionInfo = [
-        { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
-        { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
-        { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
-        { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
-        {
-          name: "Cluster",
-          tooltip:
-            "!LOC:Prefers bots and vehicles; applies tech to structures.",
-        },
+      var factionTooltips = [
+        "!LOC:Prefers vehicles.",
+        "!LOC:Prefers air and navy.",
+        "!LOC:Prefers bots.",
+        "!LOC:Prefers orbital.",
+        "!LOC:Prefers bots and vehicles; applies tech to structures.",
       ];
+      // A copy: the ALLY suffix below must not reach shared/gw_factions.
       var faction = commander.mirrorMode
         ? { name: "Guardians", tooltip: "!LOC:A mystery." }
-        : factionInfo[commander.faction];
+        : {
+            name: GWFactions[commander.faction].name,
+            tooltip: factionTooltips[commander.faction],
+          };
 
       if (currentFaction === playerFaction) {
         faction.name += " (" + loc("!LOC:ALLY") + ")";
@@ -112,11 +106,6 @@
       return formattedString(area);
     };
 
-    var toFixedIfNecessary = function (value, decimals) {
-      // + converts the string output of toFixed() back to a float
-      return +Number.parseFloat(value).toFixed(decimals);
-    };
-
     // Under per-player tech a viewer is shown their own offer, and nothing at
     // all until the host has dealt them one - ai.cardName is the host's card,
     // which is the thing this exists to stop advertising to them.
@@ -136,28 +125,6 @@
       }
 
       return star.ai().cardName || "";
-    };
-
-    var eradicatorModeNameBuilder = function (ai) {
-      var commander = loc("!LOC:Commander");
-      var modes = [commander];
-      _.forEach(eradicationModes, function (mode) {
-        if (ai["eradicationMode" + mode]) {
-          modes.push(loc(eradicationModeNames[mode]));
-        }
-      });
-
-      var append = "";
-
-      _.forEach(modes, function (mode, i) {
-        append += " ";
-        append += mode;
-        if (i !== modes.length - 1) {
-          append += ",";
-        }
-      });
-
-      return append;
     };
 
     var convertBuffNumberToName = function (ai) {
@@ -209,6 +176,9 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/eradication_label.js",
+        "shared/gw_factions",
       ],
       function (
         gwoColour,
@@ -216,11 +186,13 @@
         gwoAI,
         gwoRefereeCoop,
         gwoStarCardsView,
-        gwoRaces
+        gwoRaces,
+        gwoStarThreat,
+        eradicationLabel,
+        GWFactions
       ) {
         var starCardsView = gwoStarCardsView();
         _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
-        eradicationModes = gwoAI.ERADICATION_MODES;
 
         var getNumberOfCommanders = function (commander) {
           return gwoAI.commanderCount(commander);
@@ -260,7 +232,11 @@
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
-              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+              eradicationLabel({
+                subCommanders: ai.eradicationModeSubCommanders,
+                factories: ai.eradicationModeFactories,
+                fabbers: ai.eradicationModeFabbers,
+              })
             );
           }
           return gameModifiers;
@@ -286,7 +262,7 @@
           var numCommanders = getNumberOfCommanders(commander);
           // The race shows through the icon, not the name. See races.md.
           var raceDescriptor = gwoRaces.byId(commander.race);
-          var faction = getFactionName(commander, factionIndex);
+          var faction = getFactionName(commander, factionIndex, GWFactions);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
@@ -328,53 +304,6 @@
           );
         };
 
-        var measureThreat = function (ai, commanders) {
-          var totalThreat = 0;
-          _.forEach(ai.foes, function (army) {
-            var commanderCount = gwoAI.commanderCount(army);
-            totalThreat +=
-              gwoAI.aiEconRateWithFloor(army.econ_rate) *
-              0.4 *
-              (commanderCount - 1);
-          });
-          _.times(commanders.length, function (n) {
-            totalThreat += commanders[n].eco;
-          });
-          if (ai.ally) {
-            // Not ai.ally.econ_rate - the battle overrides it with this
-            // (referee_config_setup.js).
-            totalThreat /= gwoAI.subcommanderEconRate + 1;
-          }
-          _.forEach(ai.typeOfBuffs, function (buff) {
-            switch (buff) {
-              case gwoBuffType.cost:
-              case gwoBuffType.build:
-                totalThreat *= 1.3;
-                break;
-              case gwoBuffType.damage:
-              case gwoBuffType.health:
-              case gwoBuffType.cooldown:
-                totalThreat *= 1.2;
-                break;
-              case gwoBuffType.speed:
-                totalThreat *= 1.1;
-                break;
-              case gwoBuffType.combat:
-                totalThreat *= 1.5;
-                break;
-              case gwoBuffType.commanders:
-                break;
-              default:
-                console.warn("Undefined buff type: " + buff);
-            }
-          });
-          var guardians = ai.mirrorMode;
-          if (guardians) {
-            totalThreat *= 3;
-          }
-          return toFixedIfNecessary(totalThreat, 2);
-        };
-
         var createAIIntelligence = function (ai, commanders) {
           if (ai.ally) {
             var game = model.game();
@@ -412,7 +341,7 @@
             return;
           }
           var commanders = starCommanders(ai);
-          model.gwoSystemThreat(measureThreat(ai, commanders));
+          model.gwoSystemThreat(gwoStarThreat.measure(ai));
           model.gwoAvailableTech(availableTech(star, starIndex, starCardsView));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));

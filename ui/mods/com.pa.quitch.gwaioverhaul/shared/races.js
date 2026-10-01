@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
-], function (unitCells, shipped, shippedAddons, ids) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (unitCells, shipped, shippedAddons, ids, gwoUnit) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -36,8 +37,18 @@ define([
   // Capability-cell indexes by race id, built by race_cells.js once the specs
   // are read. See unit_cells.js.
   var cellsById = {};
+  // foreignUnitPaths, rebuilt after any registration.
+  var foreignCache;
 
   var normalizeId = ids.normalize;
+
+  // See races.md, "Capability cells".
+  var stockPaths = {};
+  _.forEach(gwoUnit, function (path) {
+    if (_.isString(path)) {
+      stockPaths[path] = true;
+    }
+  });
 
   // `unitNames` names units by the keys of `units` and is compiled to
   // path -> name.
@@ -57,6 +68,13 @@ define([
   // written for the race alone.
   var compile = function (descriptor) {
     var units = descriptor.units || {};
+    var unitPaths = {};
+
+    _.forEach(units, function (path) {
+      if (_.isString(path)) {
+        unitPaths[path] = true;
+      }
+    });
 
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
@@ -64,6 +82,7 @@ define([
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
+      unitPaths: unitPaths,
       unitNames: compileNames(units, descriptor.unitNames),
     });
   };
@@ -108,6 +127,7 @@ define([
     }
 
     registry[id] = compile(descriptor);
+    foreignCache = undefined;
 
     return registry[id];
   };
@@ -164,6 +184,7 @@ define([
     }
 
     addonRegistry[id] = compileAddon(descriptor);
+    foreignCache = undefined;
 
     return addonRegistry[id];
   };
@@ -222,11 +243,125 @@ define([
     return paths;
   };
 
-  var hasName = function (descriptor, path) {
-    return (
-      !!descriptor &&
-      Object.prototype.hasOwnProperty.call(descriptor.unitNames, path)
+  // Every path in a registered race's or add-on's `units` table that is not
+  // stock, as { path: true }. See races.md, "Capability cells".
+  var foreignUnitPaths = function () {
+    if (!foreignCache) {
+      foreignCache = {};
+      _.forEach(
+        _.map(all(), "units").concat(_.map(addons(), "units")),
+        function (units) {
+          _.forEach(units, function (path) {
+            if (_.isString(path) && !stockPaths[path]) {
+              foreignCache[path] = true;
+            }
+          });
+        }
+      );
+    }
+
+    return foreignCache;
+  };
+
+  var hasOwn = function (object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+  };
+
+  var ownTable = function (raceId, path) {
+    return !isMla(raceId) && hasOwn(byId(raceId).unitPaths, path);
+  };
+
+  // What a player of this race fields for the paths held, through its cells.
+  // See races.md, "Capability cells".
+  var fieldedFor = function (raceId, held, cells) {
+    if (!cells) {
+      return held || [];
+    }
+
+    if (isMla(raceId)) {
+      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race);
+    }
+
+    return unitCells.buildableStockUnits(
+      unitCells.raceUnitsFor(held, cells.vanilla, cells.race),
+      held,
+      stockUnitsFor(raceId),
+      cells.vanilla,
+      cells.race
     );
+  };
+
+  // Kept per race until its index is replaced.
+  var reachable = {};
+  var reachableUnits = function (raceId, index) {
+    var id = normalizeId(raceId) || MLA_ID;
+
+    if (!reachable[id] || reachable[id].index !== index) {
+      var units = {};
+      _.forEach(
+        fieldedFor(raceId, index.vanilla.units, index),
+        function (path) {
+          units[path] = true;
+        }
+      );
+      reachable[id] = { index: index, units: units };
+    }
+
+    return reachable[id].units;
+  };
+
+  // `index` defaults to the race's published cells. See races.md,
+  // "Capability cells".
+  var fieldsUnit = function (raceId, path, index) {
+    if (ownTable(raceId, path)) {
+      return true;
+    }
+
+    var cells = index || cellsOf(raceId);
+    if (!cells) {
+      return false;
+    }
+
+    if (cells.race.exclusive[path]) {
+      return !!reachableUnits(raceId, cells)[path];
+    }
+
+    return (
+      hasOwn(cells.race.cellOf, path) || hasOwn(cells.race.partIndex, path)
+    );
+  };
+
+  // See races.md, "Capability cells".
+  var ownedPaths = function (raceId, paths, cells) {
+    var foreign = foreignUnitPaths();
+
+    return _.filter(paths || [], function (path) {
+      return !foreign[path] || fieldsUnit(raceId, path, cells);
+    });
+  };
+
+  // See races.md, "Capability cells".
+  var modsFor = function (raceId, mods, cells, has) {
+    var foreign = foreignUnitPaths();
+    var owned = _.filter(mods || [], function (mod) {
+      var file = mod && mod.file;
+      return (
+        !_.isString(file) ||
+        !foreign[file] ||
+        (_.isFunction(has) && has(file)) ||
+        fieldsUnit(raceId, file, cells)
+      );
+    });
+
+    if (!cells) {
+      return owned;
+    }
+
+    return unitCells.expandMods(owned, cells.vanilla, cells.race, has, foreign);
+  };
+
+  var hasName = function (descriptor, path) {
+    return !!descriptor && hasOwn(descriptor.unitNames, path);
   };
 
   // A unit's display name: the race's, else any add-on's, else undefined for
@@ -280,26 +415,74 @@ define([
     return cellsById[normalizeId(raceId)];
   };
 
-  // A card is worth offering when the race owns something in a cell it names.
-  // Until the race's cells are built, everything is offered rather than
-  // nothing. See races.md.
+  var namesForeignUnit = function (cardUnits) {
+    var foreign = foreignUnitPaths();
+
+    return _.some(unitCells.unitList(cardUnits), function (path) {
+      return !!foreign[path];
+    });
+  };
+
+  // Until the race's cells are built, every card naming a stock unit is
+  // offered rather than nothing. See races.md, "Capability cells".
   var cardUsable = function (raceId, cardUnits) {
-    if (isMla(raceId) || _.isEmpty(cardUnits)) {
+    var units = unitCells.unitList(cardUnits);
+
+    if (_.isEmpty(units)) {
+      return true;
+    }
+
+    var foreign = foreignUnitPaths();
+    var split = _.partition(units, function (path) {
+      return !!foreign[path];
+    });
+
+    if (
+      _.some(split[0], function (path) {
+        return fieldsUnit(raceId, path);
+      })
+    ) {
+      return true;
+    }
+
+    if (_.isEmpty(split[1])) {
+      return false;
+    }
+
+    if (isMla(raceId)) {
       return true;
     }
 
     var index = cellsOf(raceId);
 
-    return (
-      !index ||
-      !index.race.units.length ||
-      unitCells.cardUsable(cardUnits, index.vanilla, index.race)
-    );
+    return !index || unitCells.cardUsable(split[1], index.vanilla, index.race);
+  };
+
+  // The units a card's entry reaches for a player of this race, for the
+  // tooltips. See races.md, "Capability cells".
+  var cardUnitsFor = function (raceId, cardUnits, cells) {
+    var foreign = foreignUnitPaths();
+    var split = _.partition(unitCells.unitList(cardUnits), function (path) {
+      return !!foreign[path];
+    });
+    var fielded = _.filter(split[0], function (path) {
+      return fieldsUnit(raceId, path, cells);
+    });
+    var stock = split[1];
+
+    if (cells) {
+      stock = (
+        isMla(raceId) ? unitCells.addonCardUnitsFor : unitCells.cardUnitsFor
+      )(stock, cells.vanilla, cells.race);
+    }
+
+    return _.uniq(stock.concat(fielded));
   };
 
   // An AI descriptor carries `race`; an inventory carries the global tag,
   // through getTag on the live GWInventory or as plain `tags` once serialised
-  // into a co-op record.
+  // into a co-op record. Plain tags are read first: a save() copy carries
+  // getTag too (ko.toJS copies the prototype), and it throws off a live one.
   var raceOf = function (source) {
     if (!source) {
       return MLA_ID;
@@ -307,12 +490,10 @@ define([
 
     var id = source.race;
 
-    if (_.isUndefined(id) && _.isFunction(source.getTag)) {
-      id = source.getTag("global", "playerRace");
-    }
-
     if (_.isUndefined(id) && _.isPlainObject(source.tags)) {
       id = source.tags.global && source.tags.global.playerRace;
+    } else if (_.isUndefined(id) && _.isFunction(source.getTag)) {
+      id = source.getTag("global", "playerRace");
     }
 
     return isMla(id) ? MLA_ID : normalizeId(id);
@@ -360,7 +541,7 @@ define([
   };
 
   // A vanilla commander fielded by a race: the retag plus the race's build
-  // list. See races.md.
+  // list and metal extractor names. See races.md.
   var commanderRetagMods = function (raceId, commanderPath) {
     var mods = unitRetagMods(raceId, commanderPath);
 
@@ -368,21 +549,23 @@ define([
       return mods;
     }
 
-    return mods.concat([
-      {
+    var types = byId(raceId).commanderTypes;
+    mods.push({
+      file: commanderPath,
+      path: "buildable_types",
+      op: "replace",
+      value: types.buildable,
+    });
+    if (types.metalExtractorNames) {
+      mods.push({
         file: commanderPath,
-        path: "buildable_types",
+        path: "ai_metal_extractor_names",
         op: "replace",
-        value: byId(raceId).commanderTypes.buildable,
-      },
-    ]);
-  };
+        value: _.clone(types.metalExtractorNames),
+      });
+    }
 
-  var matchesSource = function (filePath, source) {
-    return (
-      _.startsWith(filePath, source.dir) &&
-      _.startsWith(filePath.slice(source.dir.length), source.match || "")
-    );
+    return mods;
   };
 
   var brainKeyOf = function (brain) {
@@ -407,7 +590,7 @@ define([
     };
 
     _.forEach(all(), function (race) {
-      add(race.id, race.ai && race.ai[brainKey]);
+      add(race.id, race.ai[brainKey]);
     });
     _.forEach(activeAddons(), function (addon) {
       _.forEach(addon.layers, function (brains, raceId) {
@@ -418,192 +601,30 @@ define([
     return layers;
   };
 
-  var layerClaims = function (layer, filePath) {
-    return (
-      _.includes(layer.unitMaps, filePath) ||
-      _.some(layer.sources, function (source) {
-        return matchesSource(filePath, source);
-      })
-    );
-  };
-
-  // The parsed `ai` block a brain's tree filters read for a race, plus the
-  // path constants they share.
-  var treeConfig = function (raceId, brain, sourceRoot) {
+  // The race's own unit for each stock key the engine reads by name; null
+  // keeps the stock unit. None for MLA.
+  var engineKeysFor = function (raceId) {
     var race = byId(raceId);
-    var brainKey = brainKeyOf(brain);
-    var config = (race && race.ai && race.ai[brainKey]) || {};
 
-    return {
-      race: race,
-      brainKey: brainKey,
-      sources: config.sources || [],
-      exclude: config.exclude || [],
-      aiConfig: sourceRoot + "ai_config.json",
-      mapsDir: sourceRoot + "unit_maps/",
-      // The engine lists unit_maps/ and loads each file it finds plus the
-      // army's tag, so the tagged merged map is only read when its untagged
-      // namesake is there to be listed. The brain's own map files fill that
-      // role.
-      baseMaps: [
-        sourceRoot + "unit_maps/ai_unit_map.json",
-        sourceRoot + "unit_maps/ai_unit_map_x1.json",
-      ],
-    };
+    return (race && race.engineKeys) || {};
   };
 
-  // Which files of a brain's source tree make up the race's own tree. See
-  // races.md, "Race trees".
-  var treeFilter = function (raceId, brain, sourceRoot) {
-    var c = treeConfig(raceId, brain, sourceRoot);
-    var layers = layersFor(c.brainKey);
-    // The race's own layer is its `ai` block plus its add-ons'; every other
-    // layer, MLA's add-ons included, is subtracted from the base. A file two
-    // layers claim (Second Wave's aux map) is the race's when its own does.
-    var own = (c.race && layers[c.race.id]) || { unitMaps: [], sources: [] };
-    var otherSources = _(layers)
-      .omit(c.race ? c.race.id : "")
-      .map("sources")
-      .flatten()
-      .value();
+  // The stock units the race builds with MLA builders it fields, although a
+  // race unit shares their cell. None for MLA. See races.md, "Units a race
+  // builds itself".
+  var stockUnitsFor = function (raceId) {
+    var race = byId(raceId);
 
-    var isUnitMap = function (filePath) {
-      return _.some(own.unitMaps, function (map) {
-        return filePath === map || _.endsWith(filePath, "/" + map);
-      });
-    };
-
-    return function (filePath) {
-      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
-        return false;
-      }
-
-      if (filePath === c.aiConfig || _.includes(c.baseMaps, filePath)) {
-        return true;
-      }
-
-      if (isUnitMap(filePath) || _.includes(filePath, "/neural_networks/")) {
-        return false;
-      }
-
-      if (own.sources.length) {
-        if (
-          _.some(own.sources, function (source) {
-            return matchesSource(filePath, source);
-          })
-        ) {
-          return true;
-        }
-
-        // No untagged stray may reach unit_maps/ - the engine would load it
-        // with the army's tag appended.
-        if (_.startsWith(filePath, c.mapsDir)) {
-          return false;
-        }
-
-        // The base layer: whatever no other layer claims.
-        return !_.some(otherSources, function (source) {
-          return matchesSource(filePath, source);
-        });
-      }
-
-      if (!c.exclude.length) {
-        return false;
-      }
-
-      return !_.some(c.exclude, function (fragment) {
-        return _.includes(filePath, fragment);
-      });
-    };
-  };
-
-  // Whether the race mod itself put this file in the tree - the base layer
-  // does not count. The referee warns when nothing matches: no race files in
-  // the merged listing means the race's server mod is not mounted.
-  var raceLayerFilter = function (raceId, brain, sourceRoot) {
-    var c = treeConfig(raceId, brain, sourceRoot);
-    var keep = treeFilter(raceId, brain, sourceRoot);
-
-    return function (filePath) {
-      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
-        return false;
-      }
-
-      if (c.sources.length) {
-        return _.some(c.sources, function (source) {
-          return matchesSource(filePath, source);
-        });
-      }
-
-      if (!c.exclude.length) {
-        return false;
-      }
-
-      // A brain that carries the race itself: the tier's own data files, not
-      // the config and map boilerplate every tree keeps.
-      return (
-        keep(filePath) &&
-        filePath !== c.aiConfig &&
-        !_.includes(c.baseMaps, filePath)
-      );
-    };
-  };
-
-  // Every brain key any descriptor names a layer for.
-  var brainKeys = function () {
-    return _.uniq(
-      _.flatten(
-        _.map(all(), function (race) {
-          return _.keys(race.ai || {});
-        }).concat(
-          _.map(addons(), function (addon) {
-            return _.flatten(_.map(addon.layers, _.keys));
-          })
-        )
-      )
-    );
-  };
-
-  // Whether a race's layer claims this file and MLA's does not: a race mod's
-  // own build files or unit map, or an add-on's files for a race, under any
-  // brain, in the merged listing. An MLA tree is the brain's base files plus
-  // MLA's add-on files, so referee_ai.js's sweep drops these and keeps the
-  // rest - an add-on map both MLA and a race claim rides along untagged. A
-  // relative unit map names a file the brain ships itself, never a race
-  // mod's, and matches nothing here.
-  //
-  // raceLayerTest builds the layers once, for a caller testing a whole file
-  // list: nothing it reads changes during one sweep.
-  var raceLayerTest = function () {
-    var layerSets = _.map(brainKeys(), layersFor);
-
-    return function (filePath) {
-      var mla = false;
-      var other = false;
-
-      _.forEach(layerSets, function (layers) {
-        _.forEach(layers, function (layer, raceId) {
-          if (layerClaims(layer, filePath)) {
-            if (raceId === MLA_ID) {
-              mla = true;
-            } else {
-              other = true;
-            }
-          }
-        });
-      });
-
-      return other && !mla;
-    };
+    return (race && race.stockUnits) || [];
   };
 
   // The race's unit map files for a brain, its add-ons' included, absolute.
-  // None for MLA: an MLA army's unit_maps/ is the live listing, where an
-  // add-on's map already sits untagged, so nothing is merged for it.
+  // MLA's are its add-ons' alone: the engine loads only tagged maps, so an
+  // add-on's untagged map beside the brain's is never read.
   var unitMapsFor = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
 
-    if (!race || race.id === MLA_ID) {
+    if (!race) {
       return [];
     }
 
@@ -736,7 +757,15 @@ define([
     activeAddons: activeAddons,
     knownBits: knownBits,
     addonUnitPaths: addonUnitPaths,
+    foreignUnitPaths: foreignUnitPaths,
+    namesForeignUnit: namesForeignUnit,
+    fieldsUnit: fieldsUnit,
+    ownedPaths: ownedPaths,
+    fieldedFor: fieldedFor,
+    modsFor: modsFor,
+    cardUnitsFor: cardUnitsFor,
     unitName: unitName,
+    brainKeyOf: brainKeyOf,
     layersFor: layersFor,
     supportedBy: supportedBy,
     brainFor: brainFor,
@@ -752,9 +781,8 @@ define([
     isRaceCommander: isRaceCommander,
     commanderArtHue: commanderArtHue,
     commanderFor: commanderFor,
-    treeFilter: treeFilter,
-    raceLayerFilter: raceLayerFilter,
-    raceLayerTest: raceLayerTest,
+    engineKeysFor: engineKeysFor,
+    stockUnitsFor: stockUnitsFor,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads
@@ -766,6 +794,8 @@ define([
       addonOrder = [];
       activeAddonIds = [];
       cellsById = {};
+      foreignCache = undefined;
+      reachable = {};
     },
     registerShipped: registerShipped,
   };

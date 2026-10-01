@@ -8,13 +8,19 @@ const { afterEach } = require("node:test");
 function createGlobalStubs() {
   const restores = [];
 
+  // The property is saved and put back whole, never read: Node 26 defines
+  // localStorage as an accessor whose getter warns when read.
   function setGlobal(name, value) {
-    const had = Object.prototype.hasOwnProperty.call(global, name);
-    const previous = global[name];
-    global[name] = value;
+    const previous = Object.getOwnPropertyDescriptor(global, name);
+    Object.defineProperty(global, name, {
+      value: value,
+      configurable: true,
+      enumerable: true,
+      writable: true,
+    });
     restores.push(function () {
-      if (had) {
-        global[name] = previous;
+      if (previous) {
+        Object.defineProperty(global, name, previous);
       } else {
         delete global[name];
       }

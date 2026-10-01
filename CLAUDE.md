@@ -39,6 +39,7 @@ the traps that have actually caused bugs here.
 | The Node AMD harness, the validators, coverage                              | [`docs/testing.md`](docs/testing.md)                   |
 | Translation files, the i18n tooling, the catalog and the scope rule         | [`docs/translations.md`](docs/translations.md)         |
 | Checking a change in a running game: test clients, logs, console recipes    | [`docs/live-testing.md`](docs/live-testing.md)         |
+| WCAG audit results, what the engine rules out, rules for new markup         | [`docs/accessibility.md`](docs/accessibility.md)       |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:
@@ -49,9 +50,10 @@ named:
   answer to "may I use X?" - no entry means no.
   ([`constraints.md`](docs/constraints.md))
 - **Shipped CSS is bound by the same engine, and fails more quietly.** An
-  unsupported declaration is dropped silently rather than erroring, so
-  `stylelint.config.mjs` is the CSS half of that whitelist and the answer to "may I
-  use this property?". ([`constraints.md`](docs/constraints.md))
+  unsupported declaration is dropped silently rather than erroring.
+  `stylelint.config.mjs` is the CSS counterpart, but a curated denylist rather
+  than a whitelist: a lint failure means no, and a lint pass is necessary, not
+  sufficient. ([`constraints.md`](docs/constraints.md))
 - **The lodash `v3` lint rules cover `ui/**` only, and ESLint is held at 9.x.**
   Every non-`prefer-*` rule is on; of the `prefer-*` rules only `prefer-get`,
   `prefer-includes`, and `prefer-startswith` are kept, where the lodash method

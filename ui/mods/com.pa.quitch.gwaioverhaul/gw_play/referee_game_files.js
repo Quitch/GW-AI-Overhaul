@@ -22,19 +22,16 @@ define([
   unitCells,
   gwoTech
 ) {
-  var getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   var getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
-  var mergeUnitMaps = gameFilePaths.mergeUnitMaps;
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
-  var loadMap = gameFilePaths.loadMap;
   // Drop-in for GW.specs.genUnitSpecs, fetching each spec file at most once.
   var genUnitSpecs = function (units, tag) {
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
   };
 
-  var guardianMods = function (game, hostMods) {
+  var guardianMods = function (game, hostMods, coopAis) {
     // Without per-player tech every viewer draws from the host's inventory.
     if (!game.perPlayerTechCards()) {
       return hostMods;
@@ -42,9 +39,11 @@ define([
 
     var mods = hostMods;
     _.forEach(
-      refereeCoop.getConnectedViewerInventories(game),
-      function (viewer) {
-        mods = mods.concat(viewer.inventory.mods);
+      refereeCoop
+        .getConnectedViewerInventories(game)
+        .concat(refereeCoop.launchAiInventories(coopAis)),
+      function (player) {
+        mods = mods.concat(player.inventory.mods || []);
       }
     );
 
@@ -113,26 +112,24 @@ define([
         var guardians = ai.mirrorMode;
         if (guardians) {
           aiInventory = aiInventory.concat(
-            guardianMods(game, inventory.mods())
+            guardianMods(game, inventory.mods(), params.coopAis)
           );
         }
         // The AI's tech names vanilla files; a race army's land on the race
-        // files of the same cell too, and an MLA army's on the add-on files.
+        // files they stand for too, and an MLA army's on the add-on files.
         // Its spec set holds every listed unit, so the originals stay as
-        // well. See races.md.
-        if (cells) {
-          aiInventory = unitCells.expandMods(
-            aiInventory,
-            cells.vanilla,
-            cells.race,
-            function (file) {
-              return Object.prototype.hasOwnProperty.call(
-                aiSpecFiles,
-                file + aiTag[currentCount]
-              );
-            }
-          );
-        }
+        // well. A mod on a race file the specs lack is dropped. See races.md.
+        aiInventory = gwoRaces.modsFor(
+          race,
+          aiInventory,
+          cells,
+          function (file) {
+            return Object.prototype.hasOwnProperty.call(
+              aiSpecFiles,
+              file + aiTag[currentCount]
+            );
+          }
+        );
         _.forEach(commanders, function (commander) {
           aiInventory = aiInventory.concat(
             gwoRaces.commanderModsFor(race, commander)
@@ -144,6 +141,181 @@ define([
         aiFactionDeferred.resolve(aiFiles);
       }
     );
+  };
+
+  var PLAYER_TAG = ".player";
+  var CLUSTER_UNIT_MAP = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
+  var CLUSTER_UNIT_MAP_X1 = "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
+
+  // The helpers below build each army's files from `battle`: what the hire
+  // read before the unit list and the maps loaded, and what it made of them.
+
+  // Whether `specFiles` holds `file` on `tag`.
+  var hasTaggedSpec = function (specFiles, tag, file) {
+    return Object.prototype.hasOwnProperty.call(specFiles, file + tag);
+  };
+
+  // One enemy army's files: its race's cells and maps, then its specs.
+  var enemyArmyFiles = function (battle, n) {
+    var ai = battle.ai;
+    var army = battle.armyOf(n);
+    var race = battle.raceOfArmy(n);
+    var destination = gwoAI.getAIPathDestination("enemy", {
+      race: race,
+    });
+
+    return battle.cellsFor(race).then(function (cells) {
+      var maps = battle.armyMaps("enemy", race, cells);
+
+      return Promise.resolve(maps).then(function (unitMaps) {
+        return buildAiFactionFiles({
+          currentCount: n,
+          ai: ai,
+          aiTag: battle.aiTag,
+          race: race,
+          cells: cells,
+          commanders: [army.commander].concat(
+            n === 0 ? _.pluck(ai.minions || [], "commander") : []
+          ),
+          aiUnitMap: unitMaps.classic,
+          aiX1UnitMap: unitMaps.x1,
+          aiSpecs: battle.aiSpecs,
+          aiUnitMapDestinationPath: getAIUnitMapDestinationPath(
+            false,
+            destination
+          ),
+          aiUnitMapTitansDestinationPath: getAIUnitMapDestinationPath(
+            true,
+            destination
+          ),
+          clusterUnitMapPath: CLUSTER_UNIT_MAP,
+          clusterUnitMapTitansPath: CLUSTER_UNIT_MAP_X1,
+          game: battle.game,
+          inventory: battle.inventory,
+          coopAis: battle.coopAis,
+          aiFactionDeferred: battle.aiFactions[n],
+        });
+      });
+    });
+  };
+
+  // Each co-op AI reads its own brain's maps, merged as the player's are.
+  var coopAiMaps = function (battle, coopAi) {
+    return battle
+      .cellsFor(coopAi.race)
+      .then(_.partial(battle.armyMaps, "coop", coopAi.race));
+  };
+
+  // The maps of `coopAi`, one of `coopAis`, from `maps` in the same order.
+  var mapsOfCoopAi = function (coopAis, maps, coopAi) {
+    return maps[_.indexOf(coopAis, coopAi)];
+  };
+
+  // A per-player AI's own specs and its Sub Commanders' maps, which read the
+  // ally brain as the host's do.
+  var ownAiFiles = function (battle, coopAi, index) {
+    var saved = coopAi.inventory;
+    var race = coopAi.race;
+    var isMla = gwoRaces.isMla(race);
+    var commanders = [
+      _.get(saved, "tags.global.commander") || coopAi.commander,
+    ].concat(_.pluck(saved.minions || [], "commander"));
+
+    return battle.cellsFor(race).then(function (cells) {
+      var plan = gameFilePaths.specPlan({
+        units: saved.units || [],
+        extra: model.gwoSpecs,
+        cells: cells,
+        race: race,
+        isMla: isMla,
+        commanders: commanders,
+        unitCells: unitCells,
+        gwoRaces: gwoRaces,
+      });
+      var maps = battle.armyMaps("subcommander", race, cells);
+
+      return Promise.resolve(maps).then(function (unitMaps) {
+        return genUnitSpecs(plan.specs, coopAi.tag).then(function (specFiles) {
+          battle.ownFileGens[index].resolve(
+            gameFilePaths.buildCoopAiFiles({
+              tag: coopAi.tag,
+              specFiles: specFiles,
+              subcommanderPath: gwoAI.getSubcommanderPathForViewer(
+                saved,
+                coopAi.tag,
+                race
+              ),
+              maps: unitMaps,
+              genAIUnitMap: GW.specs.genAIUnitMap,
+              mods: gwoRaces.modsFor(
+                race,
+                saved.mods || [],
+                cells,
+                _.partial(hasTaggedSpec, specFiles, coopAi.tag)
+              ),
+              extraMods: plan.retagMods,
+              gwoSpecs: gwoSpecs,
+            })
+          );
+        });
+      });
+    });
+  };
+
+  // The host's specs, which the star's ally and a shared-tech co-op AI field.
+  var playerFiles = function (battle) {
+    var playerRace = battle.playerRace;
+    var inventory = battle.inventory;
+
+    return battle.cellsFor(playerRace).then(function (cells) {
+      var plan = gameFilePaths.specPlan({
+        units: inventory.units(),
+        extra: battle.additionalPlayerSpecs,
+        cells: cells,
+        race: playerRace,
+        isMla: gwoRaces.isMla(playerRace),
+        commanders: battle.playerCommanders,
+        unitCells: unitCells,
+        gwoRaces: gwoRaces,
+      });
+      var playerSpecs = plan.specs;
+      var playerExtraMods = plan.retagMods;
+      var playerMaps = battle.armyMaps("subcommander", playerRace, cells);
+
+      return Promise.resolve(playerMaps).then(function (unitMaps) {
+        return genUnitSpecs(playerSpecs, PLAYER_TAG).then(
+          function (playerSpecFiles) {
+            var playerMods = gwoRaces.modsFor(
+              playerRace,
+              inventory.mods(),
+              cells,
+              _.partial(hasTaggedSpec, playerSpecFiles, PLAYER_TAG)
+            );
+            battle.playerFileGen.resolve(
+              buildPlayerFiles(
+                {
+                  playerAIUnitMap: GW.specs.genAIUnitMap(
+                    unitMaps.classic,
+                    PLAYER_TAG
+                  ),
+                  playerX1AIUnitMap: GW.specs.genAIUnitMap(
+                    unitMaps.x1,
+                    PLAYER_TAG
+                  ),
+                  playerSpecFiles: playerSpecFiles,
+                  inventory: inventory,
+                  race: playerRace,
+                  mods: playerMods,
+                  extraMods: playerExtraMods,
+                },
+                gwoAI,
+                gwoSpecs
+              )
+            );
+          }
+        );
+      });
+    });
   };
 
   // Files not assigned by default that we wish to mod - global for modder
@@ -176,18 +348,25 @@ define([
         });
 
         var playerFileGen = $.Deferred();
-        var filesToProcess = [playerFileGen];
+        var coopAiFileGen = $.Deferred();
+        var filesToProcess = [playerFileGen, coopAiFileGen];
+        var coopAis = self.coopAis || [];
+        // Under per-player tech each co-op AI player fields its own units on
+        // its own tag, as a viewer does. See coop.md, "AI players' tech".
+        var ownFileAis = _.filter(coopAis, "perPlayer");
+        var ownFileGens = _.map(ownFileAis, function () {
+          return $.Deferred();
+        });
+        filesToProcess = filesToProcess.concat(ownFileGens);
 
         var inventory = game.inventory();
         var playerRace = gwoRaces.raceOf(inventory);
-        var enemyAI = gwoAI.aiInUse("enemy");
-        var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
-        var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
 
         // A race army reads the brain that carries its race (or Titans) from
         // that brain's own map with the race's maps laid over it, at the race's
-        // tree; a vanilla spec_id the race maps left falls back to a race unit
-        // of its cell. Guardians mirror the player, race included. See races.md.
+        // tree, translated to the race's units (gameFilePaths.raceUnitMap). An
+        // MLA army reads its brain's map with its add-ons' maps laid over it.
+        // Guardians mirror the player, race included. See races.md.
         var armyOf = function (n) {
           return n === 0 ? ai : ai.foes[n - 1];
         };
@@ -195,202 +374,84 @@ define([
           return ai.mirrorMode ? playerRace : gwoRaces.raceOf(armyOf(n));
         };
         var armyMaps = function (type, race, cells) {
-          var brain = gwoAI.aiInUse(type, race);
-          var source = gwoAI.getAIPathSource(type, race);
-          var raceMaps = gwoRaces.unitMapsFor(race, brain, source);
-          var loads = [
-            loadMap(getAIUnitMapPath(false, brain)),
-            loadMap(getAIUnitMapPath(true, brain)),
-          ].concat(_.map(raceMaps, loadMap));
-          // A key the race maps left falls back to a race unit of its cell,
-          // preferring one the race's own AI data knows over an add-on's.
-          var merge = function (base, extra) {
-            var merged = mergeUnitMaps(base, extra);
-            return cells
-              ? unitCells.unitMapFallback(
-                  merged,
-                  extra,
-                  cells.vanilla,
-                  cells.race,
-                  gwoRaces.addonUnitPaths()
-                )
-              : merged;
-          };
-
-          return $.when.apply($, loads).then(function () {
-            var maps = _.toArray(arguments);
-            var extra = maps.slice(2);
-            return {
-              classic: merge(maps[0], extra),
-              x1: merge(maps[1], extra),
-            };
+          return gameFilePaths.armyUnitMaps({
+            race: race,
+            brain: gwoAI.aiInUse(type, race),
+            source: gwoAI.getAIPathSource(type, race),
+            cells: cells,
+            unitCells: unitCells,
+            gwoRaces: gwoRaces,
           });
         };
 
         var unitsLoad = $.get("spec://pa/units/unit_list.json");
-        var aiMapLoad = loadMap(aiUnitMapSourcePath);
-        var aiX1MapLoad = loadMap(aiUnitMapTitansSourcePath);
         // Native from here on: a jQuery callback that throws hangs the launch,
         // a native one rejects, and every chain below ends in fail. A jQuery
         // promise adopted by a native one hands over its first argument only,
-        // so the three loads are gathered into one first.
-        var loads = $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
-          function (unitsGet, aiUnitMap, aiX1UnitMap) {
-            return [unitsGet, aiUnitMap, aiX1UnitMap];
-          }
-        );
-        Promise.resolve(loads)
-          .then(function (loaded) {
-            var units = parse(loaded[0][0]).units;
-            var aiUnitMap = loaded[1];
-            var aiX1UnitMap = loaded[2];
-            var clusterUnitMapPath =
-              "/pa/ai_cluster/unit_maps/ai_unit_map.json";
-            var clusterUnitMapTitansPath =
-              "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
-            // Identical for every faction - build it once rather than per iteration.
-            var aiSpecs = units.concat(model.gwoSpecs);
-            // A race's capability cells, from the same specs genUnitSpecs will
-            // fetch. MLA's are its add-on cells, and undefined while no
-            // add-on is mounted. See races.md, "Add-ons".
-            var cellsFor = function (race) {
+        // which for $.get is the data.
+        var buildArmyFiles = function (unitList) {
+          var units = parse(unitList).units;
+          // Under shared tech a co-op AI fields the host's units, its
+          // commander among them, as the star's ally does.
+          var coopAiCommanders = _.pluck(
+            _.filter(coopAis, { tag: PLAYER_TAG }),
+            "commander"
+          );
+          var battle = {
+            game: game,
+            inventory: inventory,
+            coopAis: coopAis,
+            ai: ai,
+            aiTag: aiTag,
+            aiFactions: aiFactions,
+            playerRace: playerRace,
+            playerFileGen: playerFileGen,
+            ownFileGens: ownFileGens,
+            armyOf: armyOf,
+            raceOfArmy: raceOfArmy,
+            armyMaps: armyMaps,
+            // Identical for every faction - build it once rather than per
+            // iteration.
+            aiSpecs: units.concat(model.gwoSpecs),
+            // A race's capability cells, from the same specs genUnitSpecs
+            // will fetch. MLA's are its add-on cells, and undefined while
+            // no add-on is mounted. See races.md, "Add-ons".
+            cellsFor: function (race) {
               return gwoRaceCells.indexFor(race, units);
-            };
-            _.times(aiFactionCount, function (n) {
-              var army = armyOf(n);
-              var race = raceOfArmy(n);
-              var destination = gwoAI.getAIPathDestination("enemy", {
-                race: race,
-              });
-
-              cellsFor(race)
-                .then(function (cells) {
-                  var maps = gwoRaces.isMla(race)
-                    ? { classic: aiUnitMap, x1: aiX1UnitMap }
-                    : armyMaps("enemy", race, cells);
-
-                  return Promise.resolve(maps).then(function (unitMaps) {
-                    return buildAiFactionFiles({
-                      currentCount: n,
-                      ai: ai,
-                      aiTag: aiTag,
-                      race: race,
-                      cells: cells,
-                      commanders: [army.commander].concat(
-                        n === 0 ? _.pluck(ai.minions || [], "commander") : []
-                      ),
-                      aiUnitMap: unitMaps.classic,
-                      aiX1UnitMap: unitMaps.x1,
-                      aiSpecs: aiSpecs,
-                      aiUnitMapDestinationPath: getAIUnitMapDestinationPath(
-                        false,
-                        destination
-                      ),
-                      aiUnitMapTitansDestinationPath:
-                        getAIUnitMapDestinationPath(true, destination),
-                      clusterUnitMapPath: clusterUnitMapPath,
-                      clusterUnitMapTitansPath: clusterUnitMapTitansPath,
-                      game: game,
-                      inventory: inventory,
-                      aiFactionDeferred: aiFactions[n],
-                    });
-                  });
-                })
-                .then(null, fail);
-            });
-
-            var playerTag = ".player";
-            var additionalPlayerSpecs = _.isUndefined(ai.ally)
+            },
+            additionalPlayerSpecs: (_.isUndefined(ai.ally)
               ? model.gwoSpecs
-              : model.gwoSpecs.concat(ai.ally.commander);
-            var held = inventory.units().concat(additionalPlayerSpecs);
-            var playerCommanders = [inventory.getTag("global", "commander")]
+              : model.gwoSpecs.concat(ai.ally.commander)
+            ).concat(coopAiCommanders),
+            playerCommanders: [inventory.getTag("global", "commander")]
               .concat(_.pluck(inventory.minions(), "commander"))
-              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander]);
+              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander])
+              .concat(coopAiCommanders),
+          };
 
-            var playerIsMla = gwoRaces.isMla(playerRace);
+          _.times(aiFactionCount, function (n) {
+            enemyArmyFiles(battle, n).then(null, fail);
+          });
 
-            cellsFor(playerRace)
-              .then(function (cells) {
-                // A race player fields the race's units of the cells the
-                // vanilla ones held occupy; a kept vanilla unit (the Colonel)
-                // is retagged so the race can build it. An MLA player keeps
-                // everything held and gains the add-on units of those cells.
-                // See races.md.
-                var playerSpecs = held;
-                if (cells) {
-                  playerSpecs = (
-                    playerIsMla
-                      ? unitCells.addonUnitsFor
-                      : unitCells.raceUnitsFor
-                  )(held, cells.vanilla, cells.race);
-                }
-                var keptVanilla =
-                  cells && !playerIsMla
-                    ? _.difference(
-                        unitCells.heldCommanderUnits(held, cells.vanilla),
-                        playerCommanders
-                      )
-                    : [];
-                var playerExtraMods = _.flatten(
-                  _.map(playerCommanders, function (commander) {
-                    return gwoRaces.commanderModsFor(playerRace, commander);
-                  }).concat(
-                    _.map(keptVanilla, function (unit) {
-                      return gwoRaces.unitRetagMods(playerRace, unit);
-                    })
-                  )
-                );
-                // MLA keeps the enemy brain's map for the player, as it always has.
-                var playerMaps = gwoRaces.isMla(playerRace)
-                  ? { classic: aiUnitMap, x1: aiX1UnitMap }
-                  : armyMaps("subcommander", playerRace, cells);
+          Promise.all(_.map(coopAis, _.partial(coopAiMaps, battle)))
+            .then(function (maps) {
+              coopAiFileGen.resolve(
+                gameFilePaths.coopAiMapFiles(
+                  coopAis,
+                  _.partial(mapsOfCoopAi, coopAis, maps),
+                  GW.specs.genAIUnitMap
+                )
+              );
+            })
+            .then(null, fail);
 
-                return Promise.resolve(playerMaps).then(function (unitMaps) {
-                  return genUnitSpecs(playerSpecs, playerTag).then(
-                    function (playerSpecFiles) {
-                      var has = function (file) {
-                        return Object.prototype.hasOwnProperty.call(
-                          playerSpecFiles,
-                          file + playerTag
-                        );
-                      };
-                      var playerMods = cells
-                        ? unitCells.expandMods(
-                            inventory.mods(),
-                            cells.vanilla,
-                            cells.race,
-                            has
-                          )
-                        : inventory.mods();
-                      playerFileGen.resolve(
-                        buildPlayerFiles(
-                          {
-                            playerAIUnitMap: GW.specs.genAIUnitMap(
-                              unitMaps.classic,
-                              playerTag
-                            ),
-                            playerX1AIUnitMap: GW.specs.genAIUnitMap(
-                              unitMaps.x1,
-                              playerTag
-                            ),
-                            playerSpecFiles: playerSpecFiles,
-                            inventory: inventory,
-                            race: playerRace,
-                            mods: playerMods,
-                            extraMods: playerExtraMods,
-                          },
-                          gwoAI,
-                          gwoSpecs
-                        )
-                      );
-                    }
-                  );
-                });
-              })
-              .then(null, fail);
-          })
-          .then(null, fail);
+          _.forEach(ownFileAis, function (coopAi, index) {
+            ownAiFiles(battle, coopAi, index).then(null, fail);
+          });
+
+          playerFiles(battle).then(null, fail);
+        };
+        Promise.resolve(unitsLoad).then(buildArmyFiles).then(null, fail);
 
         _.times(aiFactionCount, function (n) {
           filesToProcess.push(aiFactions[n]);

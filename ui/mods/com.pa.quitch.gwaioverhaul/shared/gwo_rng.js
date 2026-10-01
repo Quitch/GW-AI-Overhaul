@@ -41,7 +41,7 @@ define(function () {
   var SEPARATOR = "\u0000";
 
   var create = function (seed) {
-    // The lobby's own default seed is a number, and 0 has to survive.
+    // A seed can arrive as a number, and 0 has to survive.
     var seedText = seed === undefined || seed === null ? "" : String(seed);
     var words = hashSeed(seedText);
     var a = words[0];

@@ -1,8 +1,13 @@
 // The helper names this returns are a published API: third-party cards call
 // them directly, and the New-GW-Cards template documents every one. Renaming
 // or dropping one breaks those cards silently. See tech-cards.md.
-define(function () {
-  // Mirrors gwoAI.CLUSTER_FACTION; this module stays dependency-free.
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (races, unitCells, gwoUnit, gwoGroup) {
+  // Mirrors gwoAI.CLUSTER_FACTION; this module imports only pure modules.
   var CLUSTER_FACTION = 4;
 
   var getConnectedClients = function () {
@@ -40,8 +45,19 @@ define(function () {
     });
   };
 
-  // The saved inventories of every connected co-op player bar the host, whose
-  // own is the live GWInventory.
+  // A co-op AI player's record (gwaioAi marks one) counts while a session is
+  // active: an AI sits out a war played without one.
+  var isActiveAiPlayer = function (data) {
+    return (
+      _.isPlainObject(data.gwaioAi) &&
+      _.isFunction(model.gwCampaignActive) &&
+      !!model.gwCampaignActive()
+    );
+  };
+
+  // The saved inventories of every co-op player in the session bar the host,
+  // whose own is the live GWInventory: the connected viewers, and the AI
+  // players.
   var connectedPlayerInventories = function (game) {
     var activeGame = game || model.game();
     var connectedClients = getConnectedClients();
@@ -52,7 +68,9 @@ define(function () {
 
     return _.filter(
       _.map(records, function (data) {
-        return isConnectedPlayerInventory(data, connectedClients)
+        return data &&
+          (isActiveAiPlayer(data) ||
+            isConnectedPlayerInventory(data, connectedClients))
           ? data.inventory
           : undefined;
       }),
@@ -70,8 +88,9 @@ define(function () {
     far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 
-  // Clamped against thresholds, not numberOfSystems: a longer third-party size
-  // table would index past the end, and `distance > undefined` is silently false.
+  // Clamped to the shorter table: a third-party size table longer than the
+  // thresholds would index past their end, and `distance > undefined` is
+  // silently false.
   var farForSize = function (system, context, numberOfSystems, thresholds) {
     var lastTier = Math.min(numberOfSystems.length, thresholds.length) - 1;
     var tier = 0;
@@ -82,21 +101,50 @@ define(function () {
   };
 
   var hasUnit = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.some(units, function (unit) {
+    return _.some(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
   };
 
   var hasAllUnits = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.every(units, function (unit) {
+    return _.every(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
+  };
+
+  var fieldedMemo = {};
+
+  // See races.md, "Capability cells".
+  // A new list each call; the memo notices a new held list or a new length.
+  var fieldedUnits = function (inventory) {
+    var held = inventory.units();
+    var race = races.raceOf(inventory);
+    var cells = races.cellsOf(race);
+    var foreign = races.foreignUnitPaths();
+    var memo = fieldedMemo;
+    var same =
+      memo.race === race && memo.cells === cells && memo.foreign === foreign;
+
+    if (!same || memo.held !== held || memo.length !== held.length) {
+      var key = held.join("|");
+      if (!same || memo.key !== key) {
+        var owned = races.ownedPaths(race, held, cells);
+        memo = {
+          race: race,
+          cells: cells,
+          foreign: foreign,
+          key: key,
+          units: cells
+            ? _.union(owned, races.fieldedFor(race, owned, cells))
+            : owned,
+        };
+      }
+      memo.held = held;
+      memo.length = held.length;
+      fieldedMemo = memo;
+    }
+
+    return memo.units.slice();
   };
 
   // The two states that flood every planet fought on. See tech-cards.md.
@@ -169,21 +217,14 @@ define(function () {
 
     hasAllUnits: hasAllUnits,
 
+    fieldedUnits: fieldedUnits,
+
     missingUnit: function (inventoryUnits, units) {
       return !hasAllUnits(inventoryUnits, units);
     },
 
     missingAllUnits: function (inventoryUnits, units) {
       return !hasUnit(inventoryUnits, units);
-    },
-
-    // Substring rather than a prefix test because the shipped English locales are "en"
-    // and "en-US", and Chrome 40's startsWith ignores its second argument. detectLanguage
-    // returns nothing when the engine has no locale to report, and the source strings are
-    // English, so that case is English too.
-    isEnglish: function () {
-      var language = i18n.detectLanguage();
-      return !language || _.includes(language, "en");
     },
 
     withSlot: withSlot,
@@ -254,13 +295,14 @@ define(function () {
 
     applyDulls: applyDulls,
 
-    // The buff/dull pair every loadout shares. The first buff of the war
-    // runs the default start and `apply`; a later one only adds the slot
-    // (unless `repeatSlot` is false); a copy dealt after the start goes to
-    // `bank`. `always` runs on every buff of the start card. See tech-cards.md.
+    // The buff/dull pair every loadout shares. The first buff of each
+    // applyCards pass runs the default start and `apply`; a later one only
+    // adds the slot (unless `repeatSlot` is false); a copy dealt after the
+    // start goes to `bank`. `always` runs on every buff of the start card,
+    // and its second argument is the card's saved params. See tech-cards.md.
     loadout: function (card, options) {
       return {
-        buff: function (inventory, context) {
+        buff: function (inventory, params) {
           if (inventory.lookupCard(card) === 0) {
             var buffCount = inventory.getTag("", "buffCount", 0);
             if (!buffCount) {
@@ -272,7 +314,7 @@ define(function () {
               inventory.maxCards(inventory.maxCards() + 1);
             }
             if (options.always) {
-              options.always(inventory, context);
+              options.always(inventory, params);
             }
             ++buffCount;
             inventory.setTag("", "buffCount", buffCount);
@@ -321,17 +363,17 @@ define(function () {
     upgradeDeal: upgradeDeal,
 
     // The whole of an upgrade card: visible, one slot, dealt through
-    // upgradeDeal once `requires` is held (and `unless` is not), `description`
-    // wrapped by withSlot. `describe`, `available`, `deal` and `chance` (a
-    // weight or a function of the inventory) override those parts; `slot:
-    // false` skips the slot. See tech-cards.md.
+    // upgradeDeal once `requires` is fielded (and `unless` is not held),
+    // `description` wrapped by withSlot. `describe`, `available`, `deal` and
+    // `chance` (a weight or a function of the inventory) override those parts;
+    // `slot: false` skips the slot. See tech-cards.md.
     upgradeCard: function (options) {
       var available =
         options.available ||
         function (inventory) {
           return (
             (!options.unless || !inventory.hasCard(options.unless)) &&
-            hasUnit(inventory.units(), options.requires)
+            hasUnit(fieldedUnits(inventory), options.requires)
           );
         };
       return {
@@ -406,7 +448,7 @@ define(function () {
     playerIsCluster: playerIsCluster,
 
     // Prefer the wrappers below, which keep the tables private. numberOfSystems
-    // is a parameter, not an import: this module must stay dependency-free, as
+    // is a parameter, not an import: this module imports only pure modules, as
     // every card transitively depends on it. See tech-cards.md.
     farForSize: farForSize,
 
@@ -425,6 +467,15 @@ define(function () {
     // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
     //      mods(gwoUnit.x, "multiply", gwoCard.paths.navigation, 1.25)
     mods: mods,
+
+    // The same descriptors, each kept on the unit it names: never landed on
+    // a race or add-on unit. See tech-cards.md, "Which races a card reaches".
+    // e.g. stockOnly(mods(gwoUnit.dox, "multiply", { max_health: 1.5 }))
+    stockOnly: function (list) {
+      return _.map(list || [], function (mod) {
+        return _.assign({}, mod, { stockOnly: true });
+      });
+    },
 
     // The attribute sets cards multiply as one, in the order they emit them.
     paths: {
@@ -451,13 +502,28 @@ define(function () {
       });
     },
 
+    // `field` on every recon.observer item of that layer and channel, wherever
+    // the unit puts it. See specs.md, "Path segments".
+    observerPath: function (layer, channel, field) {
+      return (
+        "recon.observer.items.[layer=" +
+        layer +
+        ",channel=" +
+        channel +
+        "]." +
+        field
+      );
+    },
+
     // mods() over every file, flattened: one file's entries before the next's.
+    // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
-      return _.flatten(
-        _.map(_.isString(files) ? [files] : files, function (file) {
+      return _(unitCells.unitPaths(files))
+        .map(function (file) {
           return mods(file, op, props, value);
         })
-      );
+        .flatten()
+        .value();
     },
 
     // The gwaio_anti_* shape: zero against its counter card, half once any other
@@ -476,6 +542,16 @@ define(function () {
       return _.some(inventory.cards(), function (card) {
         return _.includes(model.gwoCardsGrantingAdvancedTech, card.id);
       });
+    },
+
+    // Cluster makes the Colonel a Sub Commander that builds only what a
+    // commander builds (faction/cluster_setup.js), so a Cluster player's does
+    // not count.
+    hasAdvancedFabber: function (inventory) {
+      var fabbers = playerIsCluster(inventory)
+        ? _.without(gwoGroup.fabbersAdvanced, gwoUnit.colonel)
+        : gwoGroup.fabbersAdvanced;
+      return hasUnit(inventory.units(), fabbers);
     },
 
     getAllConnectedPlayerCards: function (hostInventory, game) {

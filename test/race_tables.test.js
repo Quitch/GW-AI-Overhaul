@@ -3,8 +3,10 @@
 // scripts/lib/race-tables.js: the generator reproduces every race/ and
 // addon/ file from the harvested specs (test/fixtures/race_specs.json) and
 // the hand-kept inputs, and its naming rules on small hand-built sources.
-// scripts/harvest-race-specs.js, which writes that fixture, fails without
-// writing it when a spec does not parse.
+// Every path a table names is a file its own mods ship, and every commander
+// a descriptor offers is a spec the harvest found in those mods. The
+// harvester, scripts/harvest-race-specs.js, fails without writing the
+// fixture when a spec does not parse.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -21,6 +23,8 @@ const {
   generateAll,
 } = require("../scripts/lib/race-tables.js");
 const { TABLES } = require("../scripts/lib/race-table-inputs.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { modRoots } = require("../scripts/lib/mod-roots.js");
 const fixture = require("./fixtures/race_specs.json");
 
 const read = (file) => fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
@@ -31,13 +35,80 @@ describe("the race table generator", () => {
     const files = await generateAll(fixture, read);
 
     assert.deepEqual(
-      Object.keys(files).sort(),
-      TABLES.map((table) => table.file).sort()
+      Object.keys(files),
+      TABLES.map((table) => table.file)
     );
     for (const [file, content] of Object.entries(files)) {
       assert.equal(lf(content), lf(read(file)), file);
     }
   });
+});
+
+describe("every path a race or add-on table names", () => {
+  for (const input of TABLES) {
+    const units = loadCouiModule("coui://" + input.file).units;
+    const unshipped = (ships) =>
+      Object.entries(units)
+        .filter(([, specPath]) => !ships(specPath))
+        .map(([key, specPath]) => key + " -> " + specPath);
+
+    it(
+      input.id + ": is a spec the harvest found in the table's own mods",
+      () => {
+        const specs = fixture.tables[input.id].specs;
+
+        assert.deepEqual(
+          unshipped((specPath) =>
+            input.mods.some((mod) => Object.hasOwn(specs[mod], specPath))
+          ),
+          []
+        );
+      }
+    );
+
+    it(
+      input.id +
+        ": is a file the table's own mods ship on disk (skipped without them)",
+      (t) => {
+        const byMod = input.mods.map((mod) => modRoots([mod]));
+        if (byMod.some((roots) => !roots.length)) {
+          t.skip("not every mod of " + input.id + " is on disk");
+          return;
+        }
+        const roots = byMod.flat();
+
+        assert.deepEqual(
+          unshipped((specPath) =>
+            roots.some((root) => root.has(specPath.replace(/^\/pa\//, "")))
+          ),
+          []
+        );
+      }
+    );
+  }
+});
+
+describe("every commander a race or add-on descriptor offers", () => {
+  for (const input of TABLES) {
+    const commanders = loadCouiModule("coui://" + input.file).commanders || [];
+
+    it(
+      input.id + ": is a spec the harvest found in the table's own mods",
+      () => {
+        const specs = fixture.tables[input.id].specs;
+
+        assert.deepEqual(
+          commanders
+            .map((commander) => commander.spec)
+            .filter(
+              (spec) =>
+                !input.mods.some((mod) => Object.hasOwn(specs[mod], spec))
+            ),
+          []
+        );
+      }
+    );
+  }
 });
 
 describe("the race spec harvester", () => {
@@ -183,9 +254,9 @@ describe("race naming rules", () => {
     );
   });
 
-  it("gives a shared name the unit's directory, and follows base_spec for the bit", () => {
+  it("gives a shared name the unit's directory, joined in camel case, and follows base_spec for the bit", () => {
     assert.equal(
-      new Map(table(RACE).units).get("heavyAATankfxTankFast"),
+      new Map(table(RACE).units).get("heavyAATankFxTankFast"),
       "/pa/units/land/fx_tank_fast/fx_tank_fast.json"
     );
   });
@@ -193,7 +264,7 @@ describe("race naming rules", () => {
   it("reads only a unit's own types when told to", () => {
     const keyed = new Map(table({ ...RACE, ownTypesOnly: true }).units);
 
-    assert.equal(keyed.has("heavyAATankfxTankFast"), false);
+    assert.equal(keyed.has("heavyAATankFxTankFast"), false);
   });
 
   it("keys parts by owner plus role, from tools, ammo and death weapons", () => {
@@ -280,7 +351,7 @@ describe("race naming rules", () => {
     const names = new Map(table(RACE).unitNames);
 
     assert.equal(names.get("heavyAATank"), "!LOC:Fx Heavy AA Tank");
-    assert.equal(names.get("heavyAATankfxTankFast"), "!LOC:Heavy AA Tank");
+    assert.equal(names.get("heavyAATankFxTankFast"), "!LOC:Heavy AA Tank");
   });
 
   it("sorts keys in code-point order", () => {
@@ -311,9 +382,9 @@ describe("race naming rules", () => {
       () =>
         table({
           ...RACE,
-          units: { heavyAATankfxTankFast: "/pa/units/land/fx_x/fx_x.json" },
+          units: { heavyAATankFxTankFast: "/pa/units/land/fx_x/fx_x.json" },
         }),
-      /fx: key heavyAATankfxTankFast for \/pa\/units\/land\/fx_tank_fast\/fx_tank_fast\.json is already taken/
+      /fx: key heavyAATankFxTankFast for \/pa\/units\/land\/fx_tank_fast\/fx_tank_fast\.json is already taken/
     );
   });
 });
@@ -373,6 +444,9 @@ describe("add-on naming rules", () => {
       "/pa/units/addon/rex/base_weapon.json": {
         ammo_id: "/pa/units/addon/rex/rex_ammo.json",
       },
+      "/pa/units/addon/rex/rex_ammo.json": {},
+      "/pa/units/addon/rex/rex_build_arm.json": {},
+      "/pa/units/addon/rex/rex_boom_ammo.json": {},
     };
     const { units, unitNames } = addon(["/pa/units/addon/rex/rex.json"], specs);
 
@@ -386,19 +460,59 @@ describe("add-on naming rules", () => {
     assert.deepEqual(unitNames, [["rex", "!LOC:Rex"]]);
   });
 
+  it("leaves out a part the base game ships, and a part nothing ships", () => {
+    const silo = "/pa/units/addon/silo/silo.json";
+    const baseTool = "/pa/units/land/tank/tank_tool_weapon.json";
+    const { units } = buildTable(
+      { id: "fx", strategy: "addon" },
+      {
+        tables: {
+          fx: {
+            mods: [MOD],
+            unitList: [silo],
+            specs: {
+              [MOD]: {
+                [silo]: {
+                  display_name: "Silo",
+                  tools: [baseTool],
+                  death_weapon: {
+                    ground_ammo_spec:
+                      "/pa/units/land/silo/silo_death_weapon.json",
+                  },
+                },
+              },
+              baseGame: { [baseTool]: {} },
+            },
+          },
+        },
+        baseUnits: [],
+      }
+    );
+
+    assert.deepEqual(units, [["silo", silo]]);
+  });
+
   it("refuses a unit key an earlier unit's part holds", () => {
     const specs = {
       "/pa/units/addon/rex/rex.json": {
         display_name: "Rex",
         tools: ["/pa/units/addon/rex/rex_build_arm.json"],
       },
+      "/pa/units/addon/rex/rex_build_arm.json": {},
       "/pa/units/addon/rex_arm/rex_arm.json": {
         display_name: "Rex Build Arm",
       },
     };
 
     assert.throws(
-      () => addon(Object.keys(specs), specs),
+      () =>
+        addon(
+          [
+            "/pa/units/addon/rex/rex.json",
+            "/pa/units/addon/rex_arm/rex_arm.json",
+          ],
+          specs
+        ),
       /fx: key rexBuildArm for \/pa\/units\/addon\/rex_arm\/rex_arm\.json is already taken/
     );
   });
@@ -408,6 +522,43 @@ describe("add-on naming rules", () => {
     assert.equal(camelLower("Planet-wide Radar"), "planetWideRadar");
     assert.equal(camelLower("ARKYD Déjà"), "arkydDeja");
     assert.equal(camelKeepCase("Bug Heavy AA Turret"), "bugHeavyAATurret");
+  });
+
+  it("drops the role words from a part's key wherever its file name puts them", () => {
+    const tower = "/pa/units/addon/tower/tower.json";
+    const part = (stem) => "/pa/units/addon/tower/tower_" + stem + ".json";
+    const specs = {
+      [tower]: {
+        display_name: "Tower",
+        tools: [
+          part("tool_weapon_missile"),
+          part("tool_2"),
+          part("death_range"),
+          part("tool_build_arm"),
+        ],
+        death_weapon: { ground_ammo_spec: part("ammo_death_2") },
+      },
+      [part("tool_weapon_missile")]: { ammo_id: part("ammo_missile") },
+      [part("tool_2")]: { ammo_id: part("ammo2") },
+      [part("death_range")]: { ammo_id: part("death_range_ammo") },
+      [part("tool_build_arm")]: {},
+      [part("ammo_missile")]: {},
+      [part("ammo2")]: {},
+      [part("death_range_ammo")]: {},
+      [part("ammo_death_2")]: {},
+    };
+
+    assert.deepEqual(addon([tower], specs).units, [
+      ["tower", tower],
+      ["towerMissileWeapon", part("tool_weapon_missile")],
+      ["towerMissileAmmo", part("ammo_missile")],
+      ["tower2Weapon", part("tool_2")],
+      ["tower2Ammo", part("ammo2")],
+      ["towerDeathRangeWeapon", part("death_range")],
+      ["towerDeathRangeAmmo", part("death_range_ammo")],
+      ["towerBuildArm", part("tool_build_arm")],
+      ["tower2DeathAmmo", part("ammo_death_2")],
+    ]);
   });
 });
 

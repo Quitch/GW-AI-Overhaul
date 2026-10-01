@@ -3,17 +3,24 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
 ], function (brainTable) {
-  // Cards a race player is never offered: unit upgrades are tuned to the MLA
-  // unit they name (the commander's excepted - every race has one), these
+  // Cards a race player is not offered unless their entry names race units:
+  // unit upgrades are tuned to the MLA unit they name (the commander's
+  // excepted - every race has one), these
   // loadouts and protocols are built on hand-picked unit lists no cell reads,
-  // and the Deepspace Radar is a TITANS stub only its card brings back. A
-  // race gets its own. See races.md.
+  // the Deepspace Radar is a TITANS stub only its card brings back, and a
+  // loadout that changes what an MLA unit is or builds keeps all its changes
+  // to that unit on MLA. A race gets its own. See races.md.
   var MLA_ONLY = [
     "gwaio_start_paratrooper", // specific to Unit Cannon and Lob
     "gwaio_start_nomad",
     "gwaio_protocol_killswitch", // unit scoped - cannot be automatically translated
     "gwaio_enable_planetaryradar", // MLA only unit
     "gwaio_start_rapid", // loads AI files specific to MLA
+    "nem_start_nuke", // pushes a build type and a description onto the MLA nuke
+    "nem_start_planetary", // its description change keeps the extractor changes on MLA
+    "nem_start_deepspace", // changes the Jig's description and model, and the orbital fabber's build list
+    "nem_start_tower_rush", // pushes build types onto MLA defences
+    "gwc_start_artillery", // pushes a build type onto MLA artillery
   ];
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
@@ -28,6 +35,37 @@ define([
   // `race`. An MLA or unknown race locks nothing.
   var raceLocksLoadout = function (race, cardId) {
     return !!race && race !== "mla" && mlaOnlyCard(cardId);
+  };
+
+  // Every deal asks for every card's entry, so the list is indexed by
+  // position, rebuilt when the list, its length or an indexed entry changes.
+  var entryIndex = { list: undefined, length: -1, at: {} };
+
+  var entryFor = function (cardsToUnits, cardId) {
+    var list = cardsToUnits || [];
+    var indexed = function () {
+      return Object.prototype.hasOwnProperty.call(entryIndex.at, cardId);
+    };
+    var moved = function () {
+      var entry = list[entryIndex.at[cardId]];
+      return !entry || entry.id !== cardId;
+    };
+
+    if (
+      entryIndex.list !== list ||
+      entryIndex.length !== list.length ||
+      (indexed() && moved())
+    ) {
+      var at = {};
+      _.forEachRight(list, function (entry, position) {
+        if (entry) {
+          at[entry.id] = position;
+        }
+      });
+      entryIndex = { list: list, length: list.length, at: at };
+    }
+
+    return indexed() ? list[entryIndex.at[cardId]] : undefined;
   };
 
   var isStartLoadoutCardId = function (cardId) {
@@ -160,15 +198,7 @@ define([
     // the async chooser resolves. See tech-cards.md, "A deal that arrives late,
     // or empty".
     explorationDealtNothing: function (game, starIndex, star, replaying) {
-      if (
-        replaying ||
-        !game ||
-        !_.isFunction(game.turnState) ||
-        !_.isFunction(game.currentStar) ||
-        !_.isNumber(starIndex) ||
-        !star ||
-        !_.isFunction(star.cardList)
-      ) {
+      if (replaying) {
         return false;
       }
 
@@ -179,17 +209,6 @@ define([
       );
     },
     explorationStillLive: function (game, starIndex, star) {
-      if (
-        !game ||
-        !_.isFunction(game.turnState) ||
-        !_.isFunction(game.currentStar) ||
-        !_.isNumber(starIndex) ||
-        !star ||
-        !_.isFunction(star.hasCard)
-      ) {
-        return false;
-      }
-
       return (
         game.turnState() === "explore" &&
         game.currentStar() === starIndex &&
@@ -212,10 +231,10 @@ define([
       var settings = gwoSettings || {};
       var allyBrain = brainTable.resolve(
         settings.aiByRace,
-        settings.ai,
-        settings.aiAlly,
         "ally",
-        race
+        race,
+        settings.ai,
+        settings.aiAlly
       );
       if (allyBrain !== "Penchant") {
         return;
@@ -228,22 +247,25 @@ define([
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
 
-    // A card the player's race can own nothing of is not worth a hand slot.
-    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
-    // See races.md.
+    // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
-      if (!races) {
-        return true;
-      }
       var race = races.raceOf(inventory);
-      if (races.isMla(race)) {
-        return true;
-      }
-      if (mlaOnlyCard(cardId)) {
+      var entry = entryFor(cardsToUnits, cardId);
+      var units = entry ? entry.units : undefined;
+      // An entry's `races` names the races outright, in place of the
+      // MLA-only rule. See tech-cards.md, "Which races a card reaches".
+      if (entry && _.isArray(entry.races)) {
+        if (!_.includes(_.map(entry.races, races.normalizeId), race)) {
+          return false;
+        }
+      } else if (
+        !races.isMla(race) &&
+        mlaOnlyCard(cardId) &&
+        !races.namesForeignUnit(units)
+      ) {
         return false;
       }
-      var entry = _.find(cardsToUnits || [], { id: cardId });
-      return !entry || races.cardUsable(race, entry.units);
+      return races.cardUsable(race, units);
     },
 
     // A Sub Commander fights as the player's race, with one of its commanders.

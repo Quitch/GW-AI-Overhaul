@@ -68,13 +68,20 @@ const stubs = createGlobalStubs();
 stubs.setGlobal("ko", {
   observable: (initial) => makeObservable(initial, hooks),
   observableArray: (initial) => makeObservableArray(initial, hooks),
-  // Own properties only, which is exactly the observables the constructor sets.
-  toJS: (target) =>
-    Object.keys(target).reduce((out, key) => {
+  // As knockout's own: every enumerable property, the prototype's methods
+  // included, with each observable read. GWInventory.save() is this, so a save
+  // carries GWInventory's methods, as it does in the game.
+  toJS: (target) => {
+    const out = {};
+    for (const key in target) {
+      const value = target[key];
       out[key] =
-        typeof target[key] === "function" ? target[key]() : target[key];
-      return out;
-    }, {}),
+        typeof value === "function" && value.subscribe
+          ? JSON.parse(JSON.stringify(value()))
+          : value;
+    }
+    return out;
+  },
 });
 
 // cards/<id> lookups, answered synchronously. applyCards is only asynchronous
@@ -101,7 +108,12 @@ const defineSessionStorage = (value) =>
     writable: true,
   });
 
-defineSessionStorage({ getItem: () => JSON.stringify(role) });
+// Keyed, and null for any other key as sessionStorage is, so the module must
+// ask for the key stock writes the role under.
+const sessionRole = {
+  getItem: (key) => (key === "gw_campaign_role" ? JSON.stringify(role) : null),
+};
+defineSessionStorage(sessionRole);
 
 // _.delay carries the dirty re-run.
 let timers;
@@ -208,7 +220,7 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
     inventoryHolding([{ id: "gwc_start_orbital" }]).applyCards();
 
     assert.deepEqual(bank, []);
-    defineSessionStorage({ getItem: () => JSON.stringify(role) });
+    defineSessionStorage(sessionRole);
   });
 
   // The apply GWGame.load flagged is the one immediately following, so the
@@ -310,6 +322,43 @@ describe("gw_inventory - a card that throws", () => {
   });
 });
 
+describe("gw_inventory - a card that fails to load", () => {
+  // The loader can run a failed require's errback a second time, when the
+  // next require's check re-emits the module's error. Counting both ended the
+  // phase before the other cards had run.
+  it("counts a card whose errback runs twice once", () => {
+    mock.method(console, "error", () => {});
+    const order = [];
+    cardModules.gwc_start_orbital = {
+      buff: () => order.push("buff"),
+      dull: () => order.push("dull"),
+    };
+    const requireCards = global.requireGW;
+    global.requireGW = (ids, onLoad, onError) => {
+      if (ids[0] === "cards/gwc_missing") {
+        onError("no such card");
+        onError("no such card");
+        return;
+      }
+      requireCards(ids, onLoad, onError);
+    };
+
+    try {
+      inventoryHolding([
+        { id: "gwc_missing" },
+        { id: "gwc_start_orbital" },
+      ]).applyCards(() => order.push("done"));
+      while (timers.delayed.length) {
+        timers.delayed.shift().fn();
+      }
+    } finally {
+      global.requireGW = requireCards;
+    }
+
+    assert.deepEqual(order, ["buff", "dull", "done"]);
+  });
+});
+
 describe("gw_inventory - the inventory itself", () => {
   it("loads an absent config as an empty inventory", () => {
     const inventory = new GWInventory();
@@ -341,7 +390,9 @@ describe("gw_inventory - the inventory itself", () => {
     assert.deepEqual(bank, []);
   });
 
-  it("saves what it loaded", () => {
+  // A copied getTag reads tags() off the save, where tags is plain, so a
+  // reader of a saved record reads its plain tags (races.raceOf).
+  it("saves what it loaded, and the prototype's methods with it", () => {
     const config = {
       units: ["u"],
       aiMods: [{ id: "m" }],
@@ -354,8 +405,10 @@ describe("gw_inventory - the inventory itself", () => {
     const inventory = new GWInventory();
 
     inventory.load(config);
+    const saved = inventory.save();
 
-    assert.deepEqual(inventory.save(), config);
+    assert.deepEqual(JSON.parse(JSON.stringify(saved)), config);
+    assert.equal(saved.getTag, GWInventory.prototype.getTag);
   });
 
   it("appends units, ai mods and mods", () => {
@@ -380,6 +433,23 @@ describe("gw_inventory - the inventory itself", () => {
     inventory.removeUnits(["tank"]);
 
     assert.deepEqual(inventory.units(), ["bot"]);
+  });
+
+  it("adds and removes a group nested in the list, and a single unit", () => {
+    const inventory = new GWInventory();
+    inventory.load({ units: ["a"] });
+
+    inventory.addUnits([["b", ["c"]], "d"]);
+    inventory.addUnits("e");
+    assert.deepEqual(inventory.units(), ["a", "b", "c", "d", "e"]);
+
+    inventory.removeUnits([["b"], "d"]);
+    inventory.removeUnits("e");
+    assert.deepEqual(inventory.units(), ["a", "c"]);
+
+    inventory.addUnits([{ table: "f" }, "g"]);
+    inventory.removeUnits({ table: "a" });
+    assert.deepEqual(inventory.units(), ["a", "c", "g"]);
   });
 
   it("finds a held card, but not a unique one", () => {

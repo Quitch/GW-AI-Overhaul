@@ -59,9 +59,14 @@ define([
   // Whether the host may re-deal now. Every connected viewer must be level with
   // the host's deal counter, which is the server's own catch-up predicate - a
   // viewer part-way through catching up would otherwise trigger one full refresh
-  // per outstanding deal. See coop.md.
+  // per outstanding deal. A co-op AI player (role "ai") has no connection to
+  // load, and is level once the host has settled its deals. See coop.md.
   var viewersReadyForStarRefresh = function (params) {
-    if (params.setupBlocked || params.turnState === "explore") {
+    if (
+      params.setupBlocked ||
+      params.turnState === "explore" ||
+      params.aiDeciding
+    ) {
       return false;
     }
 
@@ -70,14 +75,17 @@ define([
       : 0;
 
     return !_.some(params.viewers, function (client) {
-      if (!client || client.requires_loadout || client.loading) {
+      if (!client) {
         return true;
       }
 
       var loadingStatus = client.loading_status || "";
       if (
-        loadingStatus === "picking_loadout" ||
-        loadingStatus === "picking_tech_cards"
+        client.role !== "ai" &&
+        (client.requires_loadout ||
+          client.loading ||
+          loadingStatus === "picking_loadout" ||
+          loadingStatus === "picking_tech_cards")
       ) {
         return true;
       }
@@ -102,6 +110,12 @@ define([
     var gwoSettings = params.gwoSettings;
     var gwoSave = params.gwoSave;
     var gwoTreasure = params.gwoTreasure;
+    // The co-op AI players, as clients with role "ai", and whether one is
+    // settling its deals. See coop.md, "AI players' tech".
+    var aiClients = params.aiClients;
+    var aiDeciding = params.aiDeciding;
+    // Held true while a refresh is in flight.
+    var busy = params.busy;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
@@ -110,8 +124,10 @@ define([
     var refreshInFlight;
     var refreshPending;
 
-    var connectedViewers = function () {
-      return refereeCoop.viewersOf(model.gwCampaignConnectedClients());
+    var participants = function () {
+      return refereeCoop
+        .viewersOf(model.gwCampaignConnectedClients())
+        .concat(aiClients());
     };
 
     var findRecord = function (client) {
@@ -239,11 +255,12 @@ define([
     };
 
     // A refresh calls deal() on every card of the deck once per star per viewer,
-    // which is too much for one frame, so each viewer yields before starting.
+    // which is too much for one frame, so each viewer yields before starting. A
+    // throw rejects, so the refresh still ends.
     var refreshViewerLater = function (client) {
       return new Promise(function (resolve) {
         _.defer(function () {
-          resolve(refreshViewer(client));
+          resolve(Promise.resolve().then(_.partial(refreshViewer, client)));
         });
       });
     };
@@ -280,12 +297,23 @@ define([
       });
     };
 
+    var saveIfChanged = function (changed) {
+      if (!changed) {
+        return undefined;
+      }
+
+      console.log("[GW COOP] refreshed co-op player star cards");
+      return Promise.resolve(gwoSave(game, false)).then(function () {
+        model.sendCampaignSnapshot("gwo_star_cards", true);
+      });
+    };
+
     var runRefresh = function (redeal) {
       if (redeal && !(gwoSettings && gwoSettings.staticTech)) {
         oweRedealToEveryViewer();
       }
 
-      var viewers = connectedViewers();
+      var viewers = participants();
       if (!viewers.length) {
         return Promise.resolve();
       }
@@ -300,21 +328,13 @@ define([
           hostDealCount: game.hostTechCardDealCount(),
           setupBlocked: model.gwCampaignPlayerSetupBlocked(),
           turnState: game.turnState(),
+          aiDeciding: aiDeciding(),
         })
       ) {
         return Promise.resolve();
       }
 
-      return refreshEachViewer(viewers).then(function (changed) {
-        if (!changed) {
-          return undefined;
-        }
-
-        console.log("[GW COOP] refreshed co-op player star cards");
-        return Promise.resolve(gwoSave(game, false)).then(function () {
-          model.sendCampaignSnapshot("gwo_star_cards", true);
-        });
-      });
+      return refreshEachViewer(viewers).then(saveIfChanged);
     };
 
     // redeal replaces every viewer's card, and belongs only to the host's own
@@ -322,11 +342,7 @@ define([
     var refresh = function (options) {
       var redeal = !!(options && options.redeal);
 
-      if (
-        !model.gwCampaignActive() ||
-        !model.isCampaignHost() ||
-        !model.gwCampaignPerPlayerTechCards()
-      ) {
+      if (!refereeCoop.hostingPerPlayerSession()) {
         return Promise.resolve();
       }
 
@@ -342,6 +358,7 @@ define([
       // cards.js refreshes on every record write. Run synchronously, that
       // refresh would start before refreshInFlight is set and run alongside
       // this one.
+      busy(true);
       refreshInFlight = Promise.resolve()
         .then(function () {
           return runRefresh(redeal);
@@ -355,6 +372,7 @@ define([
           refreshInFlight = undefined;
           var queued = refreshPending;
           refreshPending = undefined;
+          busy(false);
           return queued ? refresh(queued) : undefined;
         });
 
@@ -370,6 +388,8 @@ define([
   // The record shape has one reader, and coop_star_cards_view.js needs it
   // without standing up a host-side factory.
   factory.starCardForRecord = starCardForRecord;
+  // The co-op AI lobby publishes behind the same readiness.
+  factory.viewersReadyForStarRefresh = viewersReadyForStarRefresh;
 
   // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef

@@ -1,12 +1,17 @@
 "use strict";
 
 // `sonar-project.properties` is live config that nothing else in the repo reads,
-// so it drifts silently. Two checks, both for failures that already happened:
+// so it drifts silently. Three checks:
 //
 //   1. Every exclusion pattern still matches a tracked file, so a rename cannot
-//      leave a stale path sitting there looking intentional.
+//      leave a stale path sitting there looking intentional. That covers the
+//      analysis, coverage and copy-paste exclusions and the file pattern of
+//      every issue-ignore criterion.
 //   2. Every file the scanner indexes decodes as UTF-8, matching the declared
 //      sonar.sourceEncoding.
+//   3. The issue-ignore criteria agree with their list. The scanner applies
+//      only the criteria sonar.issue.ignore.multicriteria names, so one left
+//      off it is ignored and the accepted issue comes back.
 //
 // Tracked files are the right population: the scanner is SCM-aware, so what
 // `git ls-files` returns is what it sees. See testing.md.
@@ -18,7 +23,16 @@ const { REPO_ROOT } = require("../lib/amd-loader.js");
 const { reportProblems } = require("../lib/report-failures.js");
 
 const CONFIG_PATH = path.join(REPO_ROOT, "sonar-project.properties");
-const PATTERN_KEYS = ["sonar.exclusions", "sonar.coverage.exclusions"];
+const PATTERN_KEYS = [
+  "sonar.exclusions",
+  "sonar.coverage.exclusions",
+  "sonar.cpd.exclusions",
+];
+const IGNORE_LIST_KEY = "sonar.issue.ignore.multicriteria";
+const IGNORE_RESOURCE_KEY =
+  /^sonar\.issue\.ignore\.multicriteria\.[^.]+\.resourceKey$/;
+const IGNORE_CRITERION_KEY = /^sonar\.issue\.ignore\.multicriteria\.([^.]+)\./;
+const IGNORE_CRITERION_FIELDS = ["ruleKey", "resourceKey"];
 const ENCODING_KEY = "sonar.sourceEncoding";
 const EXPECTED_ENCODING = "UTF-8";
 
@@ -98,8 +112,11 @@ function trackedFiles() {
 function checkPatterns(props, files, failures) {
   const analysisMatchers = [];
   let patternCount = 0;
+  const keys = PATTERN_KEYS.concat(
+    Object.keys(props).filter((key) => IGNORE_RESOURCE_KEY.test(key))
+  );
 
-  for (const key of PATTERN_KEYS) {
+  for (const key of keys) {
     for (const pattern of splitPatterns(props[key])) {
       patternCount++;
       const matcher = patternToRegExp(pattern);
@@ -117,6 +134,32 @@ function checkPatterns(props, files, failures) {
   }
 
   return { analysisMatchers, patternCount };
+}
+
+function checkIgnoreCriteria(props, failures) {
+  const listed = splitPatterns(props[IGNORE_LIST_KEY]);
+
+  for (const key of Object.keys(props)) {
+    const match = IGNORE_CRITERION_KEY.exec(key);
+    if (match && !listed.includes(match[1])) {
+      failures.push(
+        key +
+          " belongs to a criterion that " +
+          IGNORE_LIST_KEY +
+          " does not list, so the scanner never applies it"
+      );
+    }
+  }
+
+  for (const id of listed) {
+    for (const field of IGNORE_CRITERION_FIELDS) {
+      if (!props[IGNORE_LIST_KEY + "." + id + "." + field]) {
+        failures.push(
+          IGNORE_LIST_KEY + " lists " + id + ", which has no " + field
+        );
+      }
+    }
+  }
 }
 
 function checkEncoding(files, analysisMatchers, failures) {
@@ -187,6 +230,7 @@ function main() {
     failures
   );
   const analysedCount = checkEncoding(files, analysisMatchers, failures);
+  checkIgnoreCriteria(props, failures);
 
   console.log(
     "sonar-config: " +

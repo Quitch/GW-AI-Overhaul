@@ -1,0 +1,20 @@
+<span class="gw-slot-host gwo-slot-ai-marker" data-bind="visible: $data.gwoAi">
+  - <loc>AI Commander</loc>
+</span>
+<div
+  class="gw-slot-kick gwo-slot-button gwo-slot-add-ai"
+  data-bind="visible: $data.empty && $root.gwoCoopAi.canAdd(), click: $root.gwoCoopAi.add, click_sound: 'default', rollover_sound: 'default'"
+>
+  <loc>Add AI</loc>
+</div>
+<div
+  class="gw-slot-kick gwo-slot-button gwo-slot-kick-ai"
+  data-bind="visible: $data.gwoAi && $root.gwoCoopAi.canKick($data), click: $root.gwoCoopAi.kick, click_sound: 'default', rollover_sound: 'default'"
+>
+  <span data-bind="visible: !$root.gwoCoopAi.kickArmed($data)"
+    ><loc>Kick</loc></span
+  >
+  <span data-bind="visible: $root.gwoCoopAi.kickArmed($data)"
+    ><loc>Kick this AI?</loc></span
+  >
+</div>

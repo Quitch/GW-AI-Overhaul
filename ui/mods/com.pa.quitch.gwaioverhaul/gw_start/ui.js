@@ -36,7 +36,6 @@
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
-      easierStart: ko.observable(true),
       ai: ko.observable("Titans"),
       paLore: ko.observable(false),
       techCardDeck: ko.observable("Expanded"),
@@ -67,6 +66,8 @@
       personalityTags: ko.observableArray(),
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Titans"),
+      // Co-op AI players' brain; undefined follows the opponent's. See coop.md.
+      aiCoop: ko.observable(),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
       // Race id; see races.md.
@@ -74,9 +75,9 @@
       uniqueRaces: ko.observable(false),
       // Co-op only, and only alongside per-player tech. See coop.md.
       perPlayerRace: ko.observable(false),
-      // { raceId: { enemy, ally } } for non-MLA races; ai/aiAlly above are
-      // the MLA row. Stale ids are kept so a reinstalled race remembers its
-      // brains. See races.md.
+      // { raceId: { enemy, ally, coop } } for non-MLA races; ai/aiAlly/aiCoop
+      // above are the MLA row. Stale ids are kept so a reinstalled race
+      // remembers its brains. See races.md.
       aiByRace: ko.observable({}),
     };
 
@@ -156,7 +157,6 @@
       systemScaling: ko.observable(false),
       simpleSystems: ko.observable(false),
       largePlanets: ko.observable(false),
-      easierStart: ko.observable(false),
       paLore: ko.observable(false),
       staticTech: ko.observable(false),
       uniqueRaces: ko.observable(false),
@@ -169,7 +169,6 @@
       draft.systemScaling(difficultySettings.systemScaling());
       draft.simpleSystems(difficultySettings.simpleSystems());
       draft.largePlanets(difficultySettings.largePlanets());
-      draft.easierStart(difficultySettings.easierStart());
       draft.paLore(difficultySettings.paLore());
       draft.staticTech(difficultySettings.staticTech());
       draft.uniqueRaces(difficultySettings.uniqueRaces());
@@ -191,7 +190,6 @@
       difficultySettings.systemScaling(draft.systemScaling());
       difficultySettings.simpleSystems(draft.simpleSystems());
       difficultySettings.largePlanets(draft.largePlanets());
-      difficultySettings.easierStart(draft.easierStart());
       difficultySettings.paLore(draft.paLore());
       difficultySettings.staticTech(draft.staticTech());
       difficultySettings.uniqueRaces(draft.uniqueRaces());
@@ -269,6 +267,7 @@
     $("#new-game-left").remove();
     addHtml.before("#gwo-game-options-panel", "commander_button.html");
     addHtml.before(".div_commit_cont", "war_generation_error.html");
+    addHtml.append(".div_commit_secondary_options", "report_bug_button.html");
     // Must hang off body: the modal is position: absolute, and in the Setup
     // column it would resolve against a short, scrolling ancestor.
     addHtml.append("body", "commander_modal.html");
@@ -282,6 +281,7 @@
     // and so leaves that header's <loc> unreached.
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
+    locTree($("#gwo-report-bug"));
 
     model.gwoFactionTooltip +=
       "<br>" +

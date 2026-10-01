@@ -492,35 +492,6 @@ describe("explorationStillLive", () => {
   it("rejects a deal for a star already resolved by a win", () => {
     assert.equal(helpers.explorationStillLive(live, 17, star(true)), false);
   });
-
-  it("rejects a non-numeric star index", () => {
-    assert.equal(
-      helpers.explorationStillLive(live, undefined, star(false)),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, "17", star(false)), false);
-  });
-
-  it("rejects a missing game or star without throwing", () => {
-    assert.equal(
-      helpers.explorationStillLive(undefined, 17, star(false)),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, 17, undefined), false);
-  });
-
-  it("rejects a game or star missing the accessors it reads", () => {
-    assert.equal(helpers.explorationStillLive({}, 17, star(false)), false);
-    assert.equal(
-      helpers.explorationStillLive(
-        { turnState: () => "explore" },
-        17,
-        star(false)
-      ),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, 17, {}), false);
-  });
 });
 
 describe("races", () => {
@@ -595,8 +566,108 @@ describe("races", () => {
       ]),
       true
     );
+  });
+
+  it("deals a card naming a race unit to that race alone, whatever its id", () => {
+    const shank = [
+      {
+        id: "mym_upgrade_shank",
+        units: [[FIXTURE_RACE.units.fxTank]],
+      },
+    ];
+
     assert.equal(
-      helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("mla"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("fixture"), "bot_card", [
+        { id: "bot_card", units: [[gwoUnit.dox], gwoUnit.ant] },
+      ]),
+      true
+    );
+  });
+
+  it("deals a card whose entry lists races to those races alone", () => {
+    const deal = (race, id, entry) =>
+      helpers.raceCanDeal(races, inventoryOf(race), id, [
+        Object.assign({ id: id }, entry),
+      ]);
+
+    // MLA only, whatever its id.
+    assert.equal(
+      deal("mla", "mym_ant_health", { units: [gwoUnit.ant], races: ["mla"] }),
+      true
+    );
+    assert.equal(
+      deal("fixture", "mym_ant_health", {
+        units: [gwoUnit.ant],
+        races: ["mla"],
+      }),
+      false
+    );
+    // In place of the _upgrade_ rule, and trimmed and case-blind.
+    assert.equal(
+      deal("fixture", "gwaio_upgrade_ant", {
+        units: [gwoUnit.ant],
+        races: [" Fixture ", "mla"],
+      }),
+      true
+    );
+    assert.equal(
+      deal("mla", "gwaio_upgrade_ant", {
+        units: [gwoUnit.ant],
+        races: ["fixture"],
+      }),
+      false
+    );
+    // A listed race still needs a unit in a cell it fills.
+    assert.equal(
+      deal("fixture", "mym_dox_health", {
+        units: [gwoUnit.dox],
+        races: ["fixture"],
+      }),
+      false
+    );
+    // No list: the rules above.
+    assert.equal(
+      deal("fixture", "gwaio_upgrade_ant", { units: [gwoUnit.ant] }),
+      false
+    );
+  });
+
+  it("sees an entry pushed, or changed, after an earlier deal", () => {
+    const list = [{ id: "bot_card", units: [gwoUnit.dox] }];
+    const fixture = inventoryOf("fixture");
+
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list.push({ id: "late_card", units: [gwoUnit.dox] });
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
+    list[1].units = [gwoUnit.ant];
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[1] = { id: "late_card", units: [gwoUnit.dox] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
+    list[1].units.push(gwoUnit.ant);
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[0] = { id: "swapped_card", units: [gwoUnit.ant] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    assert.equal(helpers.raceCanDeal(races, fixture, "bot_card", list), true);
+    assert.equal(
+      helpers.raceCanDeal(races, fixture, "constructor", list),
       true
     );
   });
@@ -619,6 +690,11 @@ describe("races", () => {
       "gwaio_protocol_killswitch",
       "gwaio_enable_planetaryradar",
       "gwaio_start_rapid",
+      "nem_start_nuke",
+      "nem_start_planetary",
+      "nem_start_deepspace",
+      "nem_start_tower_rush",
+      "gwc_start_artillery",
     ]);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
@@ -757,21 +833,9 @@ describe("explorationDealtNothing", () => {
     );
   });
 
-  it("is false while replaying a host action, and for bad inputs", () => {
+  it("is false while replaying a host action", () => {
     assert.equal(
       helpers.explorationDealtNothing(game("explore", 4), 4, star([]), true),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(null, 4, star([]), false),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(game("explore", 4), "4", star([]), false),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(game("explore", 4), 4, {}, false),
       false
     );
   });

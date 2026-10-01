@@ -190,36 +190,6 @@ define([
     return highest;
   };
 
-  var candidatesFor = function (brackets, armies) {
-    var list = brackets || [];
-    if (!list.length) {
-      return [];
-    }
-
-    var wanted = Math.min(armies, highestMax(list));
-    var systems = [];
-    var i;
-
-    for (i = 0; i < list.length; i++) {
-      if (list[i].min <= wanted && wanted <= list[i].max) {
-        systems = systems.concat(list[i].systems);
-      }
-    }
-    if (systems.length) {
-      return systems;
-    }
-
-    // A gap in the cover - brackets [0,2] and [6,8], wanted 4. The clamp above
-    // guarantees some bracket has max >= wanted, so this always finds one.
-    var nearest = null;
-    for (i = 0; i < list.length; i++) {
-      if (list[i].max >= wanted && (!nearest || list[i].max < nearest.max)) {
-        nearest = list[i];
-      }
-    }
-    return nearest ? nearest.systems.slice() : [];
-  };
-
   // What gw_galaxy.js dereferences the moment a star is given a system.
   var usableSystem = function (system) {
     return !!(
@@ -270,7 +240,9 @@ define([
     });
 
     // Walks in `max` order, so the first out-of-range entry that fits is the
-    // closest above - the gap fill candidatesFor describes.
+    // closest above: a gap in the cover - brackets [0,2] and [6,8], wanted 4 -
+    // is filled from [6,8]. take() clamps `wanted` to the highest max, so
+    // while the pool holds a system, one fits.
     var eligible = function (wanted) {
       var inRange = [];
       var gap = [];
@@ -322,7 +294,6 @@ define([
   return {
     armyRange: armyRange,
     bracketsFrom: bracketsFrom,
-    candidatesFor: candidatesFor,
     selectorFor: selectorFor,
   };
 });

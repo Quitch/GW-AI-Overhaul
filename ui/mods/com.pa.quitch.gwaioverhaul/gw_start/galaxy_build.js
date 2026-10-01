@@ -26,7 +26,7 @@ define([
 ) {
   // Stock calls reduceConnections(max) with no seed, so Graph.js autoseeds from
   // crypto and the gate topology - and every distance derived from it - re-rolled
-  // on every build. The body is otherwise stock.
+  // on every build. The body is otherwise stock but for the lines marked GWO.
   var buildGraph = function () {
     this.graph = new Delaunay(this.stars);
     var allEdges = this.graph.getEdges();
@@ -35,6 +35,19 @@ define([
       return !_.some(outerEdges, { 0: testEdge[0], 1: testEdge[1] });
     });
     this.reducedGraph = new Graph(innerEdges);
+    // GWO - before the reduction, which a star with no gates stops. See
+    // galaxy.md, "The isolated-star bug".
+    _.forEach(
+      gwoGalaxyConnect.reconnectingEdges(
+        this.stars.length,
+        allEdges,
+        this.reducedGraph.getConnections()
+      ),
+      function (edge) {
+        this.reducedGraph.addEdge(edge);
+      },
+      this
+    );
     this.reducedGraph.reduceConnections(this.maxConnections, this.seed); // GWO - was (this.maxConnections)
     this.reducedGraph.sortEdges();
     this.edges = this.reducedGraph.getEdges().map(function (e) {
@@ -46,26 +59,12 @@ define([
     var self = this;
     config = config || {};
 
-    // GWO - setup.js passes its galaxy stream; the fallback serves any other caller.
+    // GWO - war_generation.js passes its galaxy stream; the fallback serves any
+    // other caller.
     var rng = config.gwoRng || gwoRng.create(config.seed || 0);
 
     var builder = new GalaxyBuilder(config);
     builder.build();
-
-    // Must run before anything reads the graph. Can push a neighbour one
-    // connection past config.maxConnections, which beats an unreachable star.
-    // See gw_start/gw_galaxy_connect.js.
-    var reconnect = gwoGalaxyConnect.reconnectingEdges(
-      builder.stars.length,
-      builder.graph.getEdges(),
-      builder.reducedGraph.getConnections()
-    );
-    if (reconnect.length > 0) {
-      _.forEach(reconnect, function (edge) {
-        builder.reducedGraph.addEdge(edge);
-      });
-      builder.reducedGraph.sortEdges();
-    }
 
     var min = builder.stars[0].slice(0);
     var max = builder.stars[0].slice(0);
@@ -141,14 +140,6 @@ define([
       }
     });
 
-    // GWO - a seeded copy of the stock loader, unless Shared Systems for Galactic War
-    // has replaced it; see gw_start/gwo_system_templates.js.
-    var StarSystemTemplates = gwoSystemTemplates.chooseFor(
-      chooseStarSystemTemplates,
-      config.content,
-      config.useEasierSystemTemplate
-    );
-
     var brackets = config.gwoSystemBrackets;
 
     // GWO - size follows distance only when System Scaling is on, which is the
@@ -179,7 +170,7 @@ define([
       // A real-system pool has no simpler template set for Easy Systems to swap
       // to, so it asks for the lowest bracket. Last, so it wins over the rest.
       if (brackets && model.gwoDifficultySettings.simpleSystems()) {
-        systemSize = Math.min(systemSize, 0);
+        systemSize = 0;
       }
       return systemSize;
     };
@@ -206,6 +197,7 @@ define([
     // GWO - brackets are consumed, so nearer stars must claim the smaller systems
     // before the generator loop below runs in array order.
     var systemByStar = [];
+    var StarSystemTemplates;
     if (brackets) {
       var selector = gwoSystemBrackets.selectorFor(
         brackets,
@@ -225,6 +217,15 @@ define([
           systemSizeFor(entry.star, entry.index)
         );
       });
+    } else {
+      // GWO - a seeded copy of the stock loader, unless Shared Systems for Galactic
+      // War has replaced it; see gw_start/gwo_system_templates.js. Made only here,
+      // as making Shared Systems' loader loads every selected source again.
+      StarSystemTemplates = gwoSystemTemplates.chooseFor(
+        chooseStarSystemTemplates,
+        config.content,
+        config.useEasierSystemTemplate
+      );
     }
 
     var starGenerators = _.map(self.stars(), function (star, index) {

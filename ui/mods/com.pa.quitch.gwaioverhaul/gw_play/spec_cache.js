@@ -78,6 +78,9 @@ define(function () {
   // The untagged references a spec makes, in the order tagSpec finds them.
   var references = function (spec) {
     var found = [];
+    if (!spec) {
+      return found;
+    }
     forEachReference(spec, function (obj, key) {
       found = found.concat(obj[key]);
     });
@@ -135,20 +138,21 @@ define(function () {
           }
         };
 
+        // The error handler follows the tagging step rather than sitting
+        // beside it, so a spec that fails to tag is skipped like one that
+        // fails to load, and the count still comes down.
         var fetch = function (item) {
           getRaw(item, deps)
-            .then(
-              function (raw) {
-                // Tag a clone, never the cached pristine copy.
-                var data = _.cloneDeep(raw);
-                var newWork = tagSpec(tag, data);
-                work = work.concat(newWork);
-                results[item + tag] = data;
-              },
-              function (error) {
-                console.log("error loading spec: " + item + " (" + error + ")");
-              }
-            )
+            .then(function (raw) {
+              // Tag a clone, never the cached pristine copy.
+              var data = _.cloneDeep(raw);
+              var newWork = tagSpec(tag, data);
+              work = work.concat(newWork);
+              results[item + tag] = data;
+            })
+            .then(null, function (error) {
+              console.log("error loading spec: " + item + " (" + error + ")");
+            })
             .then(function () {
               --pending;
               if (!pending) {

@@ -20,7 +20,9 @@ define([
         gwoCard.missingUnit(
           inventory.units(),
           gwoGroup.structuresDefencesAdvanced
-        ) && gwoCard.hasT2Access(inventory),
+        ) &&
+          (gwoCard.hasAdvancedFabber(inventory) ||
+            gwoCard.hasT2Access(inventory)),
         100
       );
     },

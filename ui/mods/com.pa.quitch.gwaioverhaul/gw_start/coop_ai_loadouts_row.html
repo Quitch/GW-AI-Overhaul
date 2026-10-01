@@ -1,0 +1,24 @@
+<div
+  class="gw-start-coop-switch-row"
+  id="gwo-unique-ai-loadouts-row"
+  data-bind="css: { disabled: !draftNewGamePerPlayerTechCards() }"
+>
+  <div class="gw-start-coop-switch-label">
+    <loc>Unique AI loadouts</loc>
+    <span
+      class="info_tip gwo-tip"
+      data-bind="tooltip: $root.gwoUniqueAiLoadoutsTooltip"
+      >?</span
+    >
+  </div>
+  <div
+    class="gw-start-square-switch"
+    data-bind="css: { on: gwoDraftUniqueAiLoadouts() && draftNewGamePerPlayerTechCards(), disabled: !draftNewGamePerPlayerTechCards() }, click: toggleGwoDraftUniqueAiLoadouts, click_sound: 'default', rollover_sound: 'default'"
+  >
+    <span
+      class="gw-start-square-switch-label"
+      data-bind="text: gwoUniqueAiLoadoutsSwitchText"
+    ></span>
+    <span class="gw-start-square-switch-thumb"></span>
+  </div>
+</div>

@@ -12,10 +12,10 @@ define([
   var brainForRace = function (brains, race, side) {
     return gwoBrainTable.resolve(
       brains.aiByRace,
-      brains.ai,
-      brains.aiAlly,
       side,
-      race
+      race,
+      brains.ai,
+      brains.aiAlly
     );
   };
 
@@ -61,9 +61,8 @@ define([
     } else {
       selectedMinion = _.cloneDeep(rng.pick(minions));
     }
-    // Call sites must check the result. These run inside jQuery deferred
-    // callbacks, where a throw escapes .fail() instead of rejecting, so a
-    // TypeError here hangs Go To War with no seed retry.
+    // Call sites must check the result: an unchecked one fails the war as a
+    // bug with a TypeError that does not name the faction.
     if (_.isUndefined(selectedMinion)) {
       console.error("No minion found for faction " + faction);
     }
@@ -193,276 +192,345 @@ define([
     }
   };
 
-  // Every AI in teamInfo, the breeder's result. Returns the outcome setup.js
-  // acts on.
-  var populate = function (war, teamInfo) {
-    var outcome = {
-      failed: false,
-      spawnShortage: false,
-      treasureStar: undefined,
-    };
-    var settings = war.settings;
-    var brains = war.brains;
-    var playerCount = war.playerCount;
-    var tier = war.tier;
+  var personalise = function (context, rng, ai, faction) {
+    if (!setAIPersonality(rng, ai, context.tier, faction, context.brains)) {
+      context.outcome.failed = true;
+    }
+  };
 
-    var maxDist = _.reduce(
-      war.galaxy.stars(),
-      function (value, star) {
-        return Math.max(star.distance(), value);
-      },
-      0
-    );
+  var pickMinion = function (context, rng, pool, faction, clusterRole) {
+    var minion = selectMinion(rng, pool, faction, clusterRole);
+    if (!minion) {
+      context.outcome.failed = true;
+    }
+    return minion;
+  };
 
-    var personalise = function (rng, ai, faction) {
-      if (!setAIPersonality(rng, ai, tier, faction, brains)) {
-        outcome.failed = true;
-      }
-    };
-
-    var pickMinion = function (rng, pool, faction, clusterRole) {
-      var minion = selectMinion(rng, pool, faction, clusterRole);
+  // One minion per stream index off the parent's rng. Given a cluster, each
+  // is picked by cluster.role and carries cluster.commanderCount commanders;
+  // only MLA Cluster callers pass one.
+  var addMinions = function (
+    context,
+    minionPool,
+    parent,
+    parentRng,
+    count,
+    dist,
+    cluster
+  ) {
+    parent.minions = [];
+    _.times(count, function (minionIndex) {
+      var minionRng = parentRng.stream("minion", minionIndex);
+      var minion = pickMinion(
+        context,
+        minionRng,
+        minionPool,
+        parent.faction,
+        cluster && cluster.role
+      );
       if (!minion) {
-        outcome.failed = true;
-      }
-      return minion;
-    };
-
-    _.forEach(teamInfo, function (info, teamIndex) {
-      var boss = info.boss;
-      // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
-      var teamRng = war.rng.stream("ai", teamIndex);
-      var bossRng = teamRng.stream("boss");
-
-      if (!boss) {
-        console.error(
-          "No AI boss found for faction " +
-            info.faction +
-            ", terminating war generation"
-        );
-        outcome.failed = true;
-        outcome.spawnShortage = true;
         return;
       }
-
-      var teamBrain = brainForRace(
-        brains,
-        war.raceByFaction[info.faction],
-        "enemy"
-      );
-      // The team pre-filter in setup.js covers the built-in factions; this
-      // catches a modded faction populating team.workers.
-      var workerPool = quellerPool(info.workers, teamBrain);
-      var minionPool = quellerPool(
-        war.factions[info.faction].minions,
-        teamBrain
-      );
-
-      // One minion per stream index off the parent's rng. Given a clusterRole,
-      // each is picked by that role and carries commanderCount commanders;
-      // only MLA Cluster callers pass one.
-      var addMinions = function (
-        parent,
-        parentRng,
-        count,
+      giveRace(minionRng, minion, parent.race, false);
+      personalise(context, minionRng, minion, parent.faction);
+      minion.econ_rate = aiEconRate(
+        minionRng,
+        context.settings,
         dist,
-        clusterRole,
-        commanderCount
-      ) {
-        parent.minions = [];
-        _.times(count, function (minionIndex) {
-          var minionRng = parentRng.stream("minion", minionIndex);
-          var minion = pickMinion(
-            minionRng,
-            minionPool,
-            parent.faction,
-            clusterRole
-          );
-          if (!minion) {
-            return;
-          }
-          giveRace(minionRng, minion, parent.race, false);
-          personalise(minionRng, minion, parent.faction);
-          minion.econ_rate = aiEconRate(minionRng, settings, dist, playerCount);
-          if (clusterRole) {
-            minion.commanderCount = commanderCount;
-          }
-          parent.minions.push(minion);
-        });
-      };
-      personalise(bossRng, boss, boss.faction);
-      boss.econ_rate = aiEconRate(bossRng, settings, maxDist);
-      var bossCommanders = settings.bossCommanders() * playerCount;
-
-      var factionTechHandicap = Number.parseFloat(
-        settings.factionTechHandicap()
+        context.playerCount
       );
-      boss.typeOfBuffs = setupAIBuffs(bossRng, maxDist, factionTechHandicap);
-
-      var mandatoryMinions = settings.mandatoryMinions() * playerCount;
-      var minionMod = Number.parseFloat(settings.minionMod()) * playerCount;
-      var bossMinions = countMinions(mandatoryMinions, minionMod, maxDist);
-
-      if (bossMinions > 0) {
-        if (gwoAI.isCluster(boss)) {
-          addMinions(boss, bossRng, 1, maxDist, "Security", bossMinions);
-        } else {
-          addMinions(boss, bossRng, bossMinions, maxDist);
-        }
+      if (cluster) {
+        minion.commanderCount = cluster.commanderCount;
       }
-
-      _.forEach(workerPool, function (worker, workerIndex) {
-        var ai = worker.ai;
-        var aiRng = teamRng.stream("worker", workerIndex);
-
-        ai.landAnywhere = gameModeEnabled(aiRng, settings.landAnywhereChance());
-        ai.suddenDeath = gameModeEnabled(aiRng, settings.suddenDeathChance());
-        ai.bountyMode = gameModeEnabled(aiRng, settings.bountyModeChance());
-        ai.eradicationMode = gameModeEnabled(
-          aiRng,
-          settings.eradicationModeChance()
-        );
-        enableAnEradicationModeTypes(aiRng, ai);
-
-        var dist = worker.star.distance();
-
-        var numMinions = countMinions(mandatoryMinions, minionMod, dist);
-
-        personalise(aiRng, ai, ai.faction);
-        ai.econ_rate = aiEconRate(aiRng, settings, dist, playerCount);
-
-        var workerBuffs = setupAIBuffs(aiRng, dist, factionTechHandicap);
-        ai.typeOfBuffs = workerBuffs;
-
-        if (numMinions > 0) {
-          if (!gwoAI.isCluster(ai)) {
-            addMinions(ai, aiRng, numMinions, dist);
-          } else if (ai.name === "Worker") {
-            // MLA Cluster Workers get additional commanders in place of
-            // minions
-            ai.minions = [];
-            ai.commanderCount = Math.max(
-              clusterCommanderCount(numMinions, bossCommanders),
-              2
-            );
-          } else {
-            addMinions(
-              ai,
-              aiRng,
-              1,
-              dist,
-              "Worker",
-              clusterCommanderCount(numMinions, bossCommanders)
-            );
-          }
-        }
-
-        var availableFactions = _.without(war.aiFactions, ai.faction);
-        _.times(availableFactions.length, function (foeIndex) {
-          var foeRng = aiRng.stream("foe", foeIndex);
-          if (gameModeEnabled(foeRng, settings.ffaChance())) {
-            if (!ai.foes) {
-              ai.foes = [];
-            }
-
-            availableFactions = foeRng.shuffle(availableFactions);
-            var foeFaction = availableFactions.shift();
-            var foeMinions = quellerPool(
-              war.factions[foeFaction].minions,
-              brainForRace(brains, war.raceByFaction[foeFaction], "enemy")
-            );
-            var foeCommander = pickMinion(foeRng, foeMinions, foeFaction);
-            if (!foeCommander) {
-              return;
-            }
-            foeCommander.faction = foeFaction;
-            giveRace(
-              foeRng,
-              foeCommander,
-              war.raceByFaction[foeFaction],
-              false
-            );
-            personalise(foeRng, foeCommander, foeCommander.faction);
-            foeCommander.econ_rate = aiEconRate(
-              foeRng,
-              settings,
-              dist,
-              playerCount
-            );
-            var numFoes = Math.round((numMinions + 1) / 2);
-            // MLA Cluster Workers get additional commanders in place of
-            // armies
-            if (
-              gwoAI.isCluster(foeCommander) &&
-              foeCommander.name === "Worker"
-            ) {
-              numFoes = clusterCommanderCount(numMinions, bossCommanders);
-            }
-            foeCommander.commanderCount = numFoes;
-
-            // A foe fields its worker's tech. Recorded here; the spec mods
-            // are built from it at launch.
-            foeCommander.typeOfBuffs = workerBuffs;
-
-            ai.foes.push(foeCommander);
-          }
-        });
-
-        var allyRng = aiRng.stream("ally");
-        if (
-          !war.startCardBreaksAllies &&
-          gameModeEnabled(allyRng, settings.alliedCommanderChance())
-        ) {
-          // The ally fights as the player's race, so its brain is that race's
-          // ally cell.
-          var allyBrain = brainForRace(brains, war.playerRace, "ally");
-          var allyMinions = quellerPool(
-            war.factions[war.playerFaction].minions,
-            allyBrain
-          );
-          var allyCommander = pickMinion(
-            allyRng,
-            allyMinions,
-            war.playerFaction
-          );
-          if (allyCommander) {
-            allyCommander.faction = war.playerFaction;
-            giveRace(allyRng, allyCommander, war.playerRace, false);
-            // Every reader gives an ally the Sub Commander rate, so the save
-            // carries no rate the template may hold.
-            delete allyCommander.econ_rate;
-            if (allyBrain === "Penchant") {
-              allyCommander.penchantName =
-                gwoAI.penchants(allyRng).penchantName;
-            }
-            allyCommander.personality = gwoPersonality.resolve(allyCommander, {
-              side: "ally",
-              faction: war.playerFaction,
-              penchantTags: gwoAI.penchantTags(allyCommander.penchantName),
-            });
-            ai.ally = allyCommander;
-          }
-        }
-
-        if (ai.foes) {
-          // Tagged per entity: in a mixed-race FFA only the armies actually
-          // running Queller take its FFA tags.
-          var tagIfQueller = function (entities, brain) {
-            if (brain === "Queller") {
-              setupQuellerFFATag(entities);
-            }
-          };
-          var workerBrain = brainForRace(brains, ai.race, "enemy");
-          tagIfQueller(ai, workerBrain);
-          tagIfQueller(ai.minions, workerBrain);
-          _.forEach(ai.foes, function (foe) {
-            tagIfQueller(foe, brainForRace(brains, foe.race, "enemy"));
-          });
-          tagIfQueller(ai.ally, brainForRace(brains, war.playerRace, "ally"));
-        }
-      });
+      parent.minions.push(minion);
     });
+  };
 
+  var populateBoss = function (context, minionPool, boss, bossRng) {
+    var maxDist = context.maxDist;
+    personalise(context, bossRng, boss, boss.faction);
+    boss.econ_rate = aiEconRate(bossRng, context.settings, maxDist);
+    boss.typeOfBuffs = setupAIBuffs(
+      bossRng,
+      maxDist,
+      context.factionTechHandicap
+    );
+
+    var bossMinions = countMinions(
+      context.mandatoryMinions,
+      context.minionMod,
+      maxDist
+    );
+
+    if (bossMinions > 0) {
+      if (gwoAI.isCluster(boss)) {
+        addMinions(context, minionPool, boss, bossRng, 1, maxDist, {
+          role: "Security",
+          commanderCount: bossMinions,
+        });
+      } else {
+        addMinions(context, minionPool, boss, bossRng, bossMinions, maxDist);
+      }
+    }
+  };
+
+  var setGameModes = function (rng, settings, ai) {
+    ai.landAnywhere = gameModeEnabled(rng, settings.landAnywhereChance());
+    ai.suddenDeath = gameModeEnabled(rng, settings.suddenDeathChance());
+    ai.bountyMode = gameModeEnabled(rng, settings.bountyModeChance());
+    ai.eradicationMode = gameModeEnabled(rng, settings.eradicationModeChance());
+    enableAnEradicationModeTypes(rng, ai);
+  };
+
+  var addWorkerMinions = function (
+    context,
+    minionPool,
+    ai,
+    aiRng,
+    dist,
+    numMinions
+  ) {
+    if (!gwoAI.isCluster(ai)) {
+      addMinions(context, minionPool, ai, aiRng, numMinions, dist);
+    } else if (ai.name === "Worker") {
+      // MLA Cluster Workers get additional commanders in place of
+      // minions
+      ai.minions = [];
+      ai.commanderCount = Math.max(
+        clusterCommanderCount(numMinions, context.bossCommanders),
+        2
+      );
+    } else {
+      addMinions(context, minionPool, ai, aiRng, 1, dist, {
+        role: "Worker",
+        commanderCount: clusterCommanderCount(
+          numMinions,
+          context.bossCommanders
+        ),
+      });
+    }
+  };
+
+  var makeFoe = function (context, foeRng, foeFaction, dist, numMinions) {
+    var war = context.war;
+    var foeMinions = quellerPool(
+      war.factions[foeFaction].minions,
+      brainForRace(context.brains, war.raceByFaction[foeFaction], "enemy")
+    );
+    var foeCommander = pickMinion(context, foeRng, foeMinions, foeFaction);
+    if (!foeCommander) {
+      return undefined;
+    }
+    foeCommander.faction = foeFaction;
+    giveRace(foeRng, foeCommander, war.raceByFaction[foeFaction], false);
+    personalise(context, foeRng, foeCommander, foeCommander.faction);
+    foeCommander.econ_rate = aiEconRate(
+      foeRng,
+      context.settings,
+      dist,
+      context.playerCount
+    );
+    var numFoes = Math.round((numMinions + 1) / 2);
+    // MLA Cluster Workers get additional commanders in place of
+    // armies
+    if (gwoAI.isCluster(foeCommander) && foeCommander.name === "Worker") {
+      numFoes = clusterCommanderCount(numMinions, context.bossCommanders);
+    }
+    foeCommander.commanderCount = numFoes;
+    return foeCommander;
+  };
+
+  var addFoes = function (context, ai, aiRng, dist, numMinions) {
+    var availableFactions = _.without(context.war.aiFactions, ai.faction);
+    _.times(availableFactions.length, function (foeIndex) {
+      var foeRng = aiRng.stream("foe", foeIndex);
+      if (gameModeEnabled(foeRng, context.settings.ffaChance())) {
+        if (!ai.foes) {
+          ai.foes = [];
+        }
+
+        availableFactions = foeRng.shuffle(availableFactions);
+        var foeFaction = availableFactions.shift();
+        var foeCommander = makeFoe(
+          context,
+          foeRng,
+          foeFaction,
+          dist,
+          numMinions
+        );
+        if (!foeCommander) {
+          return;
+        }
+
+        // A foe fields its worker's tech. Recorded here; the spec mods
+        // are built from it at launch.
+        foeCommander.typeOfBuffs = ai.typeOfBuffs;
+
+        ai.foes.push(foeCommander);
+      }
+    });
+  };
+
+  var addAlly = function (context, ai, aiRng) {
+    var war = context.war;
+    var allyRng = aiRng.stream("ally");
+    if (
+      !war.startCardBreaksAllies &&
+      gameModeEnabled(allyRng, context.settings.alliedCommanderChance())
+    ) {
+      // The ally fights as the player's race, so its brain is that race's
+      // ally cell.
+      var allyBrain = brainForRace(context.brains, war.playerRace, "ally");
+      var allyMinions = quellerPool(
+        war.factions[war.playerFaction].minions,
+        allyBrain
+      );
+      var allyCommander = pickMinion(
+        context,
+        allyRng,
+        allyMinions,
+        war.playerFaction
+      );
+      if (allyCommander) {
+        allyCommander.faction = war.playerFaction;
+        giveRace(allyRng, allyCommander, war.playerRace, false);
+        // Every reader gives an ally the Sub Commander rate, so the save
+        // carries no rate the template may hold.
+        delete allyCommander.econ_rate;
+        if (allyBrain === "Penchant") {
+          allyCommander.penchantName = gwoAI.penchants(allyRng).penchantName;
+        }
+        allyCommander.personality = gwoPersonality.resolve(allyCommander, {
+          side: "ally",
+          faction: war.playerFaction,
+          penchantTags: gwoAI.penchantTags(allyCommander.penchantName),
+        });
+        ai.ally = allyCommander;
+      }
+    }
+  };
+
+  var tagIfQueller = function (entities, brain) {
+    if (brain === "Queller") {
+      setupQuellerFFATag(entities);
+    }
+  };
+
+  // Tagged per entity: in a mixed-race FFA only the armies actually running
+  // Queller take its FFA tags.
+  var tagQuellerFFA = function (context, ai) {
+    var brains = context.brains;
+    var workerBrain = brainForRace(brains, ai.race, "enemy");
+    tagIfQueller(ai, workerBrain);
+    tagIfQueller(ai.minions, workerBrain);
+    _.forEach(ai.foes, function (foe) {
+      tagIfQueller(foe, brainForRace(brains, foe.race, "enemy"));
+    });
+    tagIfQueller(ai.ally, brainForRace(brains, context.war.playerRace, "ally"));
+  };
+
+  var populateWorker = function (context, minionPool, worker, aiRng) {
+    var ai = worker.ai;
+    var settings = context.settings;
+
+    setGameModes(aiRng, settings, ai);
+
+    var dist = worker.star.distance();
+
+    var numMinions = countMinions(
+      context.mandatoryMinions,
+      context.minionMod,
+      dist
+    );
+
+    personalise(context, aiRng, ai, ai.faction);
+    ai.econ_rate = aiEconRate(aiRng, settings, dist, context.playerCount);
+
+    ai.typeOfBuffs = setupAIBuffs(aiRng, dist, context.factionTechHandicap);
+
+    if (numMinions > 0) {
+      addWorkerMinions(context, minionPool, ai, aiRng, dist, numMinions);
+    }
+
+    addFoes(context, ai, aiRng, dist, numMinions);
+    addAlly(context, ai, aiRng);
+
+    if (ai.foes) {
+      tagQuellerFFA(context, ai);
+    }
+  };
+
+  var populateTeam = function (context, info, teamIndex) {
+    var war = context.war;
+    var boss = info.boss;
+    // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
+    var teamRng = war.rng.stream("ai", teamIndex);
+    var bossRng = teamRng.stream("boss");
+
+    if (!boss) {
+      console.error(
+        "No AI boss found for faction " +
+          info.faction +
+          ", terminating war generation"
+      );
+      context.outcome.failed = true;
+      context.outcome.spawnShortage = true;
+      return;
+    }
+
+    var teamBrain = brainForRace(
+      context.brains,
+      war.raceByFaction[info.faction],
+      "enemy"
+    );
+    // The team pre-filter in war_generation.js covers the built-in factions;
+    // this catches a modded faction populating team.workers.
+    var workerPool = quellerPool(info.workers, teamBrain);
+    var minionPool = quellerPool(war.factions[info.faction].minions, teamBrain);
+
+    populateBoss(context, minionPool, boss, bossRng);
+
+    _.forEach(workerPool, function (worker, workerIndex) {
+      populateWorker(
+        context,
+        minionPool,
+        worker,
+        teamRng.stream("worker", workerIndex)
+      );
+    });
+  };
+
+  var makeGuardians = function (context, treasureRng, ai, system) {
+    delete ai.commanderCount;
+    delete ai.minions;
+    delete ai.foes;
+    delete ai.ally;
+    delete ai.team;
+    delete ai.penchantName;
+    ai.icon =
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
+    ai.boss = true; // otherwise it won't display its icon
+    ai.mirrorMode = true;
+    ai.treasurePlanet = true;
+    ai.econ_rate = aiEconRate(treasureRng, context.settings, context.maxDist);
+    ai.name = "The Guardians";
+    ai.character = "!LOC:Unknown";
+    ai.color = [
+      [255, 255, 255],
+      [255, 192, 203],
+    ];
+    ai.commander = "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+    // Mirrors the player, race included; keeps the Unicorn.
+    giveRace(treasureRng, ai, context.war.playerRace, true);
+    // The loadout itself is derived per player at exploration - see
+    // gw_play/treasure_loadouts.js.
+    system.description =
+      "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
+  };
+
+  var setupStars = function (context) {
+    var war = context.war;
+    var outcome = context.outcome;
     var loreEntry = 0;
     var optionalLoreEntry = 0;
     var treasureRng = war.rng.stream("treasure");
@@ -479,33 +547,11 @@ define([
           // identified by index for the loadout offer to survive the fight.
           if (_.isUndefined(outcome.treasureStar)) {
             outcome.treasureStar = starIndex;
-            delete ai.commanderCount;
-            delete ai.minions;
-            delete ai.foes;
-            delete ai.ally;
-            delete ai.team;
-            delete ai.penchantName;
-            ai.icon =
-              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
-            ai.boss = true; // otherwise it won't display its icon
-            ai.mirrorMode = true;
-            ai.treasurePlanet = true;
-            ai.econ_rate = aiEconRate(treasureRng, settings, maxDist);
-            ai.name = "The Guardians";
-            ai.character = "!LOC:Unknown";
-            ai.color = [
-              [255, 255, 255],
-              [255, 192, 203],
-            ];
-            ai.commander =
-              "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-            // Mirrors the player, race included; keeps the Unicorn.
-            giveRace(treasureRng, ai, war.playerRace, true);
-            // The loadout itself is derived per player at exploration - see
-            // gw_play/treasure_loadouts.js.
-            system.description =
-              "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-          } else if (settings.paLore() && war.lore.ai[optionalLoreEntry]) {
+            makeGuardians(context, treasureRng, ai, system);
+          } else if (
+            context.settings.paLore() &&
+            war.lore.ai[optionalLoreEntry]
+          ) {
             system.description = war.lore.ai[optionalLoreEntry];
             optionalLoreEntry += 1;
           }
@@ -516,8 +562,48 @@ define([
         loreEntry += 1;
       }
     });
+  };
 
-    return outcome;
+  var populationContext = function (war) {
+    var settings = war.settings;
+    var playerCount = war.playerCount;
+    return {
+      war: war,
+      settings: settings,
+      brains: war.brains,
+      playerCount: playerCount,
+      tier: war.tier,
+      maxDist: _.reduce(
+        war.galaxy.stars(),
+        function (value, star) {
+          return Math.max(star.distance(), value);
+        },
+        0
+      ),
+      bossCommanders: settings.bossCommanders() * playerCount,
+      factionTechHandicap: Number.parseFloat(settings.factionTechHandicap()),
+      mandatoryMinions: settings.mandatoryMinions() * playerCount,
+      minionMod: Number.parseFloat(settings.minionMod()) * playerCount,
+      outcome: {
+        failed: false,
+        spawnShortage: false,
+        treasureStar: undefined,
+      },
+    };
+  };
+
+  // Every AI in teamInfo, the breeder's result. Returns the outcome
+  // war_generation.js acts on.
+  var populate = function (war, teamInfo) {
+    var context = populationContext(war);
+
+    _.forEach(teamInfo, function (info, teamIndex) {
+      populateTeam(context, info, teamIndex);
+    });
+
+    setupStars(context);
+
+    return context.outcome;
   };
 
   return {

@@ -1,9 +1,11 @@
 "use strict";
 
-// Writes translations/en-US.json, the catalog: every key the tree asks loc()
-// for, with `message` equal to the key and a `description` for translators.
-// Hand-edited descriptions survive a rerun; --regenerate overwrites them. Keys
-// no longer in the tree are dropped and printed. See docs/translations.md.
+// Writes translations/en-US.json, the catalog: every key the tree asks the
+// game to translate, with `message` equal to the key and a `description` for
+// translators.
+// Every existing description survives a rerun, generated or hand-edited;
+// --regenerate rewrites them all. Keys no longer in the tree are dropped and
+// printed. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -51,6 +53,8 @@ const ROLE_RULES = {
     "Unit display name in the Which Units? list. Use the game's own name for this unit from units.json where one exists.",
   "html-label":
     "Panel label. A trailing colon sits outside the tag; keep the stock casing of the same word elsewhere in the game (CSS down-cases shouty labels).",
+  "html-control":
+    "A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly.",
   tooltip:
     "Tooltip shown on hover. A full sentence; keep the trailing full stop if the English has one.",
   placeholder: "Placeholder text inside an empty input field.",
@@ -98,7 +102,7 @@ function otherSites(count) {
   return " and " + count + " other site" + (count > 1 ? "s" : "");
 }
 
-// The generated translator note: role, site, where a player sees it, the
+// The generated translator note: role, site file, where a player sees it, the
 // source snippet, the facts the site carries, and the rules for the role.
 function describe(key, entry) {
   const site = entry.sites[0];
@@ -106,7 +110,7 @@ function describe(key, entry) {
   const others = entry.sites.length - 1;
 
   parts.push(
-    site.role + " in " + site.file + ":" + site.line + otherSites(others) + ".",
+    site.role + " in " + site.file + otherSites(others) + ".",
     "Shown: " + shownIn(site.file) + ".",
     "Source: `" + site.snippet + "`."
   );

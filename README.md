@@ -34,7 +34,8 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Fixes all the errors in the tech cards
 - Over 150 new tech cards
 - Every feature is supported in co-op, including per-player loadouts and per-player tech
-- Three AI brains, chosen per race and separately for your enemies and your allies:
+- AI players can fill the open slots of a co-op war: they fight beside you, ping the star they want next, and with per-player tech each one has its own loadout and tech
+- Three AI brains, chosen per race and separately for your enemies, your allies, and co-op AI players:
   - Titans: the base game AI, which knows every race
   - Queller: a greater challenge at the cost of performance
   - Penchant: increased personality
@@ -100,8 +101,9 @@ A war remembers the race mods it was created with. Remove one and the war cannot
 ## Seeds
 
 The **Seed Value** field in the war setup panel controls galaxy generation. Entering the
-same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty,
-game options and installed mods match. Planet names still vary.
+same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number
+of players, faction, difficulty, game options, and installed mods match. Planet names
+still vary.
 
 A war's seed is shown in its Galactic War Overhaul panel, so a galaxy worth replaying can
 be noted down and returned to. Leave the field alone for a fresh galaxy each time.
@@ -170,7 +172,7 @@ GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean
 
 ## Report a Bug
 
-Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository. In the game, the Report a Galactic War Bug button on the war setup screen, in the galaxy map's menu, and in the battle menu opens a new bug report there.
 
 ### Known issues
 

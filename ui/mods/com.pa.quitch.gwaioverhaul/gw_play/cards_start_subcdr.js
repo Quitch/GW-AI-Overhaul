@@ -9,6 +9,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/general_commander_setup.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -19,7 +22,10 @@ define([
   gwoCard,
   coopHost,
   gwoRaces,
-  setup
+  setup,
+  coopPublish,
+  gwoBank,
+  refereeCoop
 ) {
   return function (params) {
     var game = params.game;
@@ -168,11 +174,7 @@ define([
         return result.promise();
       };
 
-      if (
-        !model.isCampaignHost() ||
-        !model.gwCampaignPerPlayerTechCards() ||
-        !operator
-      ) {
+      if (!refereeCoop.hostingPerPlayerSession() || !operator) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
       }
@@ -184,8 +186,8 @@ define([
         return result.promise();
       }
 
-      recordInventory = _.cloneDeep(record.inventory);
-      cards = recordInventory && recordInventory.cards;
+      recordInventory = gwoBank.copyForApply(record.inventory);
+      cards = recordInventory.cards;
       if (!_.isArray(cards)) {
         failSetup("invalid co-op player inventory");
         return result.promise();
@@ -209,15 +211,16 @@ define([
           return;
         }
 
+        // Plain data: a save carries the GWInventory methods.
         var nextRecord = coopHost.upsertRecord(game, fresh, {
-          inventory: playerInventory.save(),
+          inventory: JSON.parse(JSON.stringify(playerInventory.save())),
         });
         if (!nextRecord) {
           failSetup("failed to store co-op player inventory");
           return;
         }
 
-        model.sendCampaignSnapshot("gwo_setup_general_commander", true);
+        coopPublish.publish(setupGeneralCommanderRequest);
         coopHost.reply(setupGeneralCommanderResult, operator, {
           changed: true,
           updated_at: nextRecord.updatedAt,
@@ -262,7 +265,23 @@ define([
       applyGeneralCommanderSetupResult
     );
 
-    return function setupGeneralCommander() {
+    // A co-op AI player's starting inventory with the General Commander's Sub
+    // Commanders appended, unapplied, drawn as a viewer's are. Any other
+    // loadout comes back as it was. See coop.md, "AI players' tech".
+    var appendRecordMinions = function (savedInventory, playerKey) {
+      var next = JSON.parse(JSON.stringify(savedInventory));
+      var recordFaction = _.get(next, "tags.global.playerFaction");
+
+      appendGeneralCommanderMinions(
+        next.cards,
+        _.isNumber(recordFaction) ? recordFaction : playerFaction,
+        playerKey,
+        next
+      );
+      return next;
+    };
+
+    var setupGeneralCommander = function () {
       var cards;
 
       // A viewer's inventory is a copy of the host's, so a viewer never takes
@@ -280,6 +299,11 @@ define([
           gwoSave(game, false);
         });
       }
+    };
+
+    return {
+      setupGeneralCommander: setupGeneralCommander,
+      appendRecordMinions: appendRecordMinions,
     };
   };
 });

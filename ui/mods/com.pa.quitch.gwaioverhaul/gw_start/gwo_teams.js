@@ -2,7 +2,7 @@
 // shadow: stock calls getTeam as _.map(aiFactions, GWTeams.getTeam), which would
 // hand the added rng parameter the array index. See shadowing.md.
 //
-// makeWorker is deliberately absent; gw_start/setup.js supplies its own.
+// makeWorker is deliberately absent: gw_start/war_generation.js has its own.
 define([
   "main/game/galactic_war/shared/js/systems/template-loader",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js",
@@ -12,6 +12,7 @@ define([
     getTeam: function (index, rng) {
       var faction = GWFactions[index],
         team = rng.pick(faction.teams); // GWO - was _.sample
+      // GWO - _.assign, was its alias _.extend
       return _.assign({}, team, {
         color: faction.color,
         faction: faction,
@@ -37,6 +38,7 @@ define([
           // GWO - stock omits this, so every boss system re-rolled its terrain.
           seed: seed,
         };
+        // GWO - the seeded copy, or Shared Systems' loader when it is installed
         return gwoSystemTemplates
           .chooseFor(activeStarSystemTemplates)
           .generate(generatorConfig)

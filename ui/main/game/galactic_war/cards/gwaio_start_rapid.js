@@ -13,9 +13,7 @@ define([
     apply: function (inventory) {
       var playerIsCluster = gwoCard.playerIsCluster(inventory);
 
-      // These run after cluster_setup.js tags Cluster's Sub Commanders
-      // NoBuild, so a bare `Mobile & <layer>` clause would match one and
-      // hand Cluster a buildable. The basic fabbers require Basic, so are safe.
+      // See tech-cards.md, "Cluster and buildable types".
       var advancedBotFabberBuilds =
         "(Mobile & Bot | Land & Structure & Advanced - Factory | " +
         "FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58 - NoBuild";

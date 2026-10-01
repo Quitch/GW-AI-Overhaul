@@ -75,8 +75,9 @@ unsuppressible parse error that silently skips every other rule in the file.
 ## Available libraries
 
 The globals in every scene are **lodash** (`_`), **jQuery** (`$`), **Knockout**
-(`ko`), **createjs**, and **`Math.seedrandom`**. `ui/main/shared/js/thirdparty`
-holds what else the engine ships.
+(`ko`), and **`Math.seedrandom`**, all from stock's `ui/boot.json`. **createjs**
+(EaselJS) is not among them: only `gw_play.html` loads it.
+`ui/main/shared/js/thirdparty` holds what else the engine ships.
 
 `Math.seedrandom` exists in the game but **not** in Node, so nothing on a
 testable path can use it. That is why `shared/gwo_rng.js` exists and carries its
@@ -114,12 +115,19 @@ the adapter fails a test rather than skipping the wait in a war. An audit on
 2026-08-31 found that every other `$.when` in the mod is handed a jQuery promise
 or a plain value.
 
-`.then` on a jQuery promise also returns a _new_ promise each time. The AI tree
-cache depends on that.
+An engine promise has a trap of its own. PA's `coherent.js` settles the promise
+that `.then` returns only through a handler, so when the call fails, a `.then`
+given no error callback leaves it pending for good, with no error.
+`api.file.list` fails this way for a path it cannot list. Give an engine call's
+`.then` an error callback, or adopt the call into a native promise first, as the
+AI tree cache does.
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
 errors either. The callback simply never fires. A tally that counts callbacks
 must count failures too. Otherwise the promise it gates is never settled at all.
+An errback can also run a second time for the same failed module, when a later
+require reports the failure again, so a tally counts each module once
+(`_.once`).
 
 ## Where a defensive check belongs
 
@@ -136,7 +144,7 @@ Guard when the data is:
   template. The validators cover shipped cards only ([`tech-cards.md`](tech-cards.md)).
 - **Remote**: an operator payload from another peer ([`coop.md`](coop.md)).
 - **Persisted**: an older GWO's save, or user-writable `localStorage`. Name the
-  version the field appeared in, as `shared/deal.js` does.
+  version the field appeared in, as `shared/decks.js`'s `cardsFor` does.
 - **Scene- or mod-conditional**: a symbol genuinely absent from a scene the
   module also loads into, or a base path another mod may own.
 - **Optional by contract**: `rng` on `deal()`, `keep`/`discard`.
@@ -147,9 +155,9 @@ followed by an unguarded read of the result is worse than neither, because it
 advertises a safety it does not provide.
 
 `gw_play/gwo_panel.js` is the calibration. It walks
-`model.game() → galaxy() → stars()[origin()].system()` unguarded, then checks
-`_.isPlainObject(originSystem.gwaio)`. It trusts the base game and checks the
-field that an old save may lack.
+`model.game() → galaxy() → stars()[origin()].system()` unguarded, and checks
+`_.isPlainObject(originSystem.gwaio)`. It trusts the base game's loaded war and
+checks the field that an old save may lack.
 
 Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic
@@ -210,9 +218,11 @@ exactly as `eslint.config.mjs` is for JS. It works through two nets:
 
 Be honest about the difference from the JS side. **The CSS denylists are
 curated, not exhaustive.** ES5-vs-Chrome-40 is a finite gap that can be
-enumerated. CSS-since-2015 is not. The plugin is the exhaustive half, and the
-hand-written rules are the high-traffic set plus everything the plugin misses.
-"No entry means no" is a promise the JS config keeps and this one cannot.
+enumerated. CSS-since-2015 is not. The plugin is the automatic half, but not an
+exhaustive one: it counts prefixed-only support as support, and it checks only
+the caniuse features it has a matcher for. The hand-written rules are the
+high-traffic set plus the plugin's known misses. "No entry means no" is a
+promise the JS config keeps and this one cannot.
 
 Every Chrome number in that file was verified against a running PA
 (Chrome/40.0.2214.28) over the Coherent inspector. The method was
@@ -224,9 +234,10 @@ MDN alone.
 
 - **`filter` is Chrome 53.** Only `-webkit-filter` does anything.
 - **`animation` and `@keyframes` are Chrome 43.** Only `-webkit-animation` and
-  `@-webkit-keyframes` work. The base game ships 41 prefixed and zero unprefixed.
+  `@-webkit-keyframes` work. The base game ships 46 prefixed and zero unprefixed.
 - **`mask-*` is Chrome 120**, `user-select` is 54, and `appearance` is 84. All
-  three are `-webkit-` only.
+  three are `-webkit-` only. The exception is `mask-type`, unprefixed since
+  Chrome 24.
 - **`justify-content: space-evenly` parses, computes, and does nothing.**
   `CSS.supports()` returns `true` and `getComputedStyle` echoes the value back.
   But flex layout behaves as `flex-start`. Measured, it lays out identically to
@@ -236,7 +247,7 @@ MDN alone.
 
 ### What is fine, despite feeling modern
 
-These all work in Chrome 40: `calc()` (Chrome 26, and the base game uses it ~40
+These all work in Chrome 40: `calc()` (Chrome 26, and the base game uses it 46
 times), `vw`/`vh`/`vmin`/`vmax` (26), `rem` (4), `ch` (27), `object-fit` (32),
 `will-change` (36), `touch-action` (36), `all` (37), `shape-outside` (37),
 `border-image` (16, and PA's panel frames are built on it), `@supports` (28),
@@ -248,7 +259,7 @@ with one simple argument, and flexbox in full (29).
 A prefix is required only where the unprefixed form postdates 40. `transition`
 (Chrome 26), `transform` (36), `box-shadow` (10), `border-radius` (4) and every
 flex property (29) need **no** prefix. The config rejects prefixes on them as
-legacy cruft, even though the base game ships 64 `-webkit-transition` and 10
+legacy cruft, even though the base game ships 92 `-webkit-transition` and 21
 `-webkit-box-shadow`.
 
 Four properties are dropped in **both** spellings, so there is no working form
@@ -264,11 +275,13 @@ ids). It uses `function-url-quotes: "always"` (stock is split three ways). Stock
 is not linted, so a stock violation of a rule is not a reason to loosen the
 rule.
 
-The config is calibrated, not over-tuned. Run over the base game's own 57
-unmodified CSS files, it reports no false positives. Everything it flags there
-is either a genuinely inert declaration or a redundant prefix. The inert
-declarations are unprefixed `filter` ×9, `user-select` ×7, `mask` ×2,
-`-webkit-overflow-scrolling` ×1, and `word-break: keep-all` ×1.
+The config is calibrated, not over-tuned. Run over the base game's own 77
+unmodified CSS files under `ui/main` (`thirdparty` aside), it reports no false
+positives. Everything it flags there is either a genuinely inert declaration or
+a redundant prefix. The inert declarations are unprefixed `filter` ×12,
+`user-select` ×19, `mask` ×2, `text-wrap` ×3, `-webkit-overflow-scrolling` ×1,
+`word-break: keep-all` ×1, `clamp()` ×65 (all in `start.css`), flex `gap` ×2,
+and `attr()` outside `content` ×1.
 
 Do not remove an exclusion or "fix" the usage it covers as a drive-by. The
 `format:css` pass runs `stylelint --fix` repo-wide, and several of these rules
@@ -276,8 +289,9 @@ are fixable. So a mis-set rule rewrites working CSS into dropped CSS.
 `test/stylelint_config.test.js` is what stops that.
 
 CSS load order is also not what it looks like. Mod CSS is injected at runtime
-via `head.appendChild` in `loadCSS`, fired from a delayed `ko.computed`. So it
-loads **after** the scene's own static `<link>` stylesheets, not before.
+via `head.appendChild` in `loadCSS`, when the scene loads its mods (in
+`gw_start`, from a delayed `ko.computed`). So it loads **after** the scene's own
+static `<link>` stylesheets, not before.
 Overrides should out-specify rather than rely on source order.
 
 ## Localisation
@@ -298,8 +312,8 @@ Do not restore it in a shadowed file "to match stock". It has no effect and no
 consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
-inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14.
-`LOCKED` is the only casing shipped at all. That is why several UI strings
+inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14,
+and `LOCKED` in 18 where `Locked` has 14. That is why several UI strings
 are requested in a shouty casing and then down-cased in CSS rather than written
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation. That is what makes the trick work.

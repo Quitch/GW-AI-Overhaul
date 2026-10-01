@@ -8,10 +8,6 @@ define([
 ], function (races, gwsm) {
   var manifest = gwsm.manifest;
 
-  var gwsmActive = function () {
-    return !!manifest();
-  };
-
   // Whatever a mod pushed onto model.gwoRaces and model.gwoAddons before this
   // ran; GWO's own were registered when races.js loaded. Adopted, never
   // assigned over - see tech-cards.md.
@@ -149,7 +145,6 @@ define([
   };
 
   return {
-    gwsmActive: gwsmActive,
     registerAll: registerAll,
     installedRaces: installedRaces,
     mountRoot: mountRoot,

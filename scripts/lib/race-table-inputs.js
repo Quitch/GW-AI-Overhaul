@@ -39,14 +39,12 @@ const TABLES = [
         "imperatorMeteoroid",
     },
     // Keyed before any rule runs, so a rule's key that collides with one of
-    // these takes a suffix instead. They are the entries the table first
-    // carried by hand (29a1c192) that no rule above reaches.
+    // these takes a suffix instead. No rule above reaches them, and a
+    // Legion-only card may address them, so they stay.
     units: { commander: LEGION_COMMANDER },
     parts: {
       infiltratorAmmo:
         "/pa/units/air/l_air_scout_adv/l_air_scout_adv_ammo.json",
-      investigatorDummyAmmo:
-        "/pa/units/land/land_scout/land_scout_dummy_ammo.json",
       investigatorLandAmmo:
         "/pa/units/land/l_scout_bot/l_scout_bot_land_ammo.json",
       investigatorRadarCollisionCheckLandAmmo:
@@ -84,13 +82,12 @@ const TABLES = [
     strategy: "race",
     mods: ["com.pa.nik.exiles", "com.pa.ferretmaster.commander-merge"],
     bit: "Custom6",
-    namePrefix: "^(Exiles?|Exile) ",
+    namePrefix: "^Exiles? ",
     stemPrefix: "^(t|r|a)_",
-    // Exiles renamed Jelly to Navigator after the table shipped. A key is
-    // what a race-only card addresses, so it stays; the name is held with
-    // it until the table is regenerated on purpose.
+    // Exiles 0.8.4 renamed Jelly to Navigator, and 0.7.2 calls it Jelly. A
+    // key is what a race-only card addresses, so it stays whatever a release
+    // names the unit.
     keys: { "/pa/units/land/jelly/jelly.json": "jelly" },
-    names: { "/pa/units/land/jelly/jelly.json": "Jelly" },
   },
   {
     id: "second_wave",

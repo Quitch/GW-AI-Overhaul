@@ -5,7 +5,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+], function (
+  gwoLoadoutIds,
+  helpers,
+  gwoLoadoutBanks,
+  coopHost,
+  coopPublish,
+  refereeCoop
+) {
   var cardId = function (card) {
     if (_.isString(card)) {
       return card;
@@ -121,10 +130,16 @@ define([
     });
   };
 
+  // A co-op AI player owns every loadout: it banks nothing, so it is dealt an
+  // ordinary hand at the treasure star and never holds up the war's end. See
+  // coop.md, "AI players' tech".
   var recordHasUnlockedLoadout = function (record, card) {
     var id = cardId(card);
     if (!helpers.isStartLoadoutCardId(id)) {
       return false;
+    }
+    if (refereeCoop.isAiRecord(record)) {
+      return true;
     }
 
     return _.includes(unlockedIds(record), id);
@@ -218,7 +233,7 @@ define([
       return;
     }
 
-    model.sendCampaignSnapshot(reportOperator, true);
+    coopPublish.publish(reportOperator);
   };
 
   // The host has to know which loadouts a viewer already owns to offer them a

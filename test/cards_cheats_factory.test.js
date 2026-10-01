@@ -13,14 +13,29 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
-const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeJQuery,
+  makeDeferred,
+} = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
 );
 
+// A jQuery promise, as dealCard returns, settled on a later turn. $.when waits
+// only for a promise with a promise() method, and a deal already settled would
+// land ahead of an apply that did not wait for it.
+function laterDeal(settle) {
+  const deferred = makeDeferred();
+  setImmediate(() => settle(deferred));
+  return deferred.promise();
+}
+
 // An inventory whose card list is a callable observable, as the base game's is.
-function makeInventory(maxCards, initial) {
+// applyCards records the hand it applied, then calls done on a later turn, as
+// the real pass does, or keeps it in `held` when the test finishes the apply
+// itself.
+function makeInventory(maxCards, initial, holdApply) {
   const list = (initial || []).slice();
   const cards = function () {
     return list;
@@ -31,8 +46,16 @@ function makeInventory(maxCards, initial) {
     cards,
     maxCards: () => maxCards,
     applied: 0,
-    applyCards() {
+    appliedHands: [],
+    held: [],
+    applyCards(done) {
       this.applied += 1;
+      this.appliedHands.push(list.map((card) => card.id));
+      if (holdApply) {
+        this.held.push(done);
+      } else if (done) {
+        setImmediate(done);
+      }
     },
   };
 }
@@ -51,6 +74,7 @@ function setup(overrides = {}) {
       playerFaction: 0,
       commanderNames: {},
       missing: [],
+      holdApply: false,
     },
     overrides
   );
@@ -63,7 +87,11 @@ function setup(overrides = {}) {
     penchants: [],
   };
 
-  const inventory = makeInventory(options.maxCards, options.startingCards);
+  const inventory = makeInventory(
+    options.maxCards,
+    options.startingCards,
+    options.holdApply
+  );
   const factions = [
     { minions: [{ name: "Able", commander: "/pa/units/x.json" }] },
     { minions: [{ name: "Baker" }] },
@@ -95,10 +123,11 @@ function setup(overrides = {}) {
     gwoDeal: {
       dealCard: (request) => {
         calls.dealt.push(request);
-        if (options.missing.includes(request.id)) {
-          return Promise.reject(new Error("GWO card not found: " + request.id));
-        }
-        return Promise.resolve({ id: request.id });
+        return laterDeal((deferred) =>
+          options.missing.includes(request.id)
+            ? deferred.reject(new Error("GWO card not found: " + request.id))
+            : deferred.resolve({ id: request.id })
+        );
       },
     },
     gwoAI: { name: "ai" },
@@ -155,6 +184,28 @@ async function capture(stream, run) {
   return mocked.mock.calls.map((call) => call.arguments.join(" "));
 }
 
+// A save between applyCards' buff and dull phases keeps the loadout's
+// buffCount, and the war then loads without the loadout's units (#358).
+async function assertFinishesAfterApply(cheat, snapshotName) {
+  const { inventory, calls } = build({ holdApply: true });
+
+  cheat();
+  await flush();
+
+  assert.equal(inventory.held.length, 1);
+  assert.equal(typeof inventory.held[0], "function");
+  assert.deepEqual(calls.aiDeals, []);
+  assert.deepEqual(calls.snapshots, []);
+  assert.deepEqual(calls.saves, []);
+
+  inventory.held[0]();
+  await flush();
+
+  assert.deepEqual(calls.aiDeals, [false]);
+  assert.deepEqual(calls.snapshots, [[snapshotName, true]]);
+  assert.deepEqual(calls.saves, [true]);
+}
+
 describe("cheats install", () => {
   it("replaces both cheats so they deal from GWO's deck", () => {
     build();
@@ -176,7 +227,7 @@ describe("cheats testCards", () => {
     assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
-  it("adds each dealt card and applies the inventory once", async () => {
+  it("adds each dealt card and applies the inventory once, after them all", async () => {
     const { inventory } = build();
 
     testCards();
@@ -186,7 +237,9 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 1);
+    assert.deepEqual(inventory.appliedHands, [
+      ["gwc_combat_bots", "gwc_orbital"],
+    ]);
   });
 
   // $.when rejects on the first failed deal, so without settling each one the
@@ -206,7 +259,9 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 1);
+    assert.deepEqual(inventory.appliedHands, [
+      ["gwc_combat_bots", "gwc_orbital"],
+    ]);
     assert.match(errors[0], /GWO card not found: gwc_missing/);
     assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, []);
@@ -222,6 +277,9 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.snapshots, [["gwo_cheat_test_cards", true]]);
     assert.deepEqual(calls.saves, [true]);
   });
+
+  it("re-deals, broadcasts and saves only once the apply has finished", () =>
+    assertFinishesAfterApply(testCards, "gwo_cheat_test_cards"));
 
   // The base game logs an error for a snapshot sent with no co-op session to
   // receive it.
@@ -366,6 +424,9 @@ describe("cheats giveCard", () => {
     assert.deepEqual(calls.snapshots, [["gwo_cheat_give_card", true]]);
     assert.deepEqual(calls.saves, [true]);
   });
+
+  it("re-deals, broadcasts and saves only once the apply has finished", () =>
+    assertFinishesAfterApply(giveCard, "gwo_cheat_give_card"));
 
   it("saves without broadcasting in a solo war", async () => {
     const { calls } = build({ isHost: false, campaignActive: false });

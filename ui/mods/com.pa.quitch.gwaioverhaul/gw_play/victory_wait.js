@@ -22,9 +22,7 @@
       title: loc("!LOC:Waiting for players"),
       message: ko.observable(""),
       cancel: function () {
-        if (state()) {
-          state().cancel();
-        }
+        state().cancel();
       },
       state: state,
     };

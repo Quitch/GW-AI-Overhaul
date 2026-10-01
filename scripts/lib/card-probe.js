@@ -9,7 +9,7 @@ const { createAutoStub } = require("./auto-stub.js");
 const { CARDS_DIR, listCardFiles, loadCard } = require("./card-files.js");
 const {
   createCapturingInventory,
-  recordInto,
+  recordUnitsInto,
 } = require("./capturing-inventory.js");
 const {
   installFakeKnockout,
@@ -51,9 +51,9 @@ function installCardHarness() {
 }
 
 // Deliberately no `model` global. No card in scope reads one inside deal(), and
-// leaving it undefined means a card that starts to throws here rather than being
-// silently weighted against a fake galaxy - the same reasoning amd-loader.js gives
-// for leaving api/model/ko undefined.
+// leaving it undefined means a card that starts reading one throws here rather
+// than being silently weighted against a fake galaxy - the same reasoning
+// amd-loader.js gives for leaving api/model/ko undefined.
 function loadAllCards() {
   installCardHarness();
 
@@ -96,7 +96,7 @@ function recordGrantedUnits(buff, gwoUnit, hasCard) {
         return def;
       },
     },
-    capture: { addUnits: recordInto(granted) },
+    capture: { addUnits: recordUnitsInto(granted) },
   });
 
   // params is what the card's own deal() returned at runtime; a card that reads

@@ -11,16 +11,18 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.html"
       )
     );
-    locTree($(".gwo-launch-progress"));
 
     // The observables exist before the bindings and before any mod loaded after
-    // GWO can read them; the methods arrive with the module below. See
-    // architecture.md, "Battle launch, end to end".
+    // GWO can read them; the methods do nothing until the module below replaces
+    // this object. See architecture.md, "Battle launch, end to end".
     model.gwoLaunchProgress = {
       visible: ko.observable(false),
       title: ko.observable(""),
       message: ko.observable(""),
       steps: ko.observableArray([]),
+      begin: _.noop,
+      stage: _.noop,
+      end: _.noop,
     };
 
     requireGW(
@@ -43,8 +45,8 @@
         // A co-op viewer's only stock signal is the page being replaced, so the
         // host mirrors the panel to every viewer. Wrapping the methods rather
         // than the callers covers stages reported by other mods too. The send
-        // helper no-ops off-host; the handler returns nothing, so it never
-        // joins the state apply tail.
+        // helper no-ops off-host. Stock queues every host operator; the handler
+        // returns nothing, so later updates in that queue need not wait on it.
         var launchProgressOperator = "gwo_launch_progress";
 
         var broadcast = function (action, text) {

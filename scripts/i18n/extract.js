@@ -1,7 +1,8 @@
 "use strict";
 
-// What the ui/ tree asks loc() for: a summary by role and file, or with --json
-// the full site map for the other i18n scripts and for eyeballing a key.
+// What the ui/ tree asks the game to translate: a summary by role and file, or
+// with --json the full site map for the other i18n scripts and for eyeballing
+// a key.
 
 const { extractKeys, sortedKeys } = require("../lib/loc-keys.js");
 

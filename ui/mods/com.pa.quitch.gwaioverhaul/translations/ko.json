@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - 증원 가속"
+  },
   "A map pack this war uses is missing": {
     "message": "이 전쟁에 사용되는 맵 팩이 없습니다"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "군대/지휘관:"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "이 전쟁을 시작할 때 활성화되어 있었지만 지금은 비활성화된 애드온 모드:"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "상급 방어 기술은 더 강력한 방어 체계를 구축할 수 있게 해줍니다. 상급 방어 시설은 상급 건설 유닛이 건설합니다."
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "항공 쿨다운 기술은 모든 항공 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "AI 플레이어는 선택할 수 있는 로드아웃을 모두 다른 플레이어가 가지고 있지 않은 한, 다른 플레이어가 가진 로드아웃으로 시작하지 않습니다. \"Separate loadout &amp; tech\" 옵션이 필요합니다."
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "종족을 알지 못하는 AI는 해당 종족에 제공되지 않습니다."
@@ -170,6 +179,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "클러스터: 지상. Angel과 Colonel을 부관으로 사용하며 이들을 생산할 수 없습니다."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "협동: 호스트가 협동 세션에 추가하는 AI 플레이어"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "지휘관 수송:"
   },
@@ -199,6 +211,9 @@
   },
   "Co-Op Settings": {
     "message": "협동 설정"
+  },
+  "Co-op": {
+    "message": "협동"
   },
   "Co-op host setup": {
     "message": "협동 호스트 설정"
@@ -236,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "다이아몬드: 로드아웃이 너무 강합니다"
   },
+  "DIRE": {
+    "message": "처참함"
+  },
   "Deck:": {
     "message": "덱:"
   },
@@ -244,6 +262,9 @@
   },
   "Delay in creating new bases.": {
     "message": "새 기지 생성의 지연 시간입니다."
+  },
+  "Delete this Tech?": {
+    "message": "이 기술을 삭제하시겠습니까?"
   },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "세기 전쟁 동안 헤게모니의 비밀 부대가 투입한 존재로, 현재의 확산 수준을 보면 전쟁이 끝난 뒤 스스로 행성에 퍼지는 능력을 발달시켰거나, 크지피드가 패배를 막으려는 필사적인 시도로 퍼뜨린 것으로 보입니다."
@@ -293,6 +314,18 @@
   "Exiles": {
     "message": "엑자일즈"
   },
+  "FAST": {
+    "message": "빠름"
+  },
+  "FASTER": {
+    "message": "더 빠름"
+  },
+  "FASTEST": {
+    "message": "가장 빠름"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "개인전 방식"
+  },
   "FOUNDATION: air/navy": {
     "message": "파운데이션: 항공/해양"
   },
@@ -308,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "골드: 퀠러 AI 모드를 이겼습니다"
   },
+  "GOOD": {
+    "message": "좋음"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods가 활성화되지 않았습니다"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-비기너"
+  },
+  "HEALTHY": {
+    "message": "건실함"
+  },
+  "HUGE": {
+    "message": "초대형"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "할리 업그레이드 기술은 델타 V 엔진의 HP를 두 배로 늘리고 비용을 절반으로 줄입니다."
@@ -325,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "AI가 얼마나 잘 정찰하는지입니다."
+  },
+  "IMMEDIATELY": {
+    "message": "즉시"
+  },
+  "IMMENSE": {
+    "message": "최대형"
+  },
+  "INCREDIBLE": {
+    "message": "엄청남"
   },
   "IRON: you no longer turtle": {
     "message": "아이언: 더 이상 거북이 전략을 쓰지 않습니다"
@@ -350,6 +404,9 @@
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "Kessler 업그레이드 기술은 궤도 기뢰가 폭발해도 제거되지 않게 해줍니다."
   },
+  "Kick this AI?": {
+    "message": "이 AI를 강제 퇴장시키겠습니까?"
+  },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "크라켄 업그레이드 기술은 상급 잠수함 미사일의 사거리를 200% 증가시킵니다."
   },
@@ -359,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "아무 곳에나 착륙: 플레이어가 시작 가능한 행성의 아무 곳에서나 시작할 수 있습니다."
   },
+  "LATE ORBITAL": {
+    "message": "늦은 궤도 진출"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "리저니스 머시나: 차량"
+  },
+  "LONG": {
+    "message": "길게"
+  },
+  "LOVES AIR": {
+    "message": "항공 선호"
+  },
+  "LOVES BOTS": {
+    "message": "로봇 선호"
+  },
+  "LOVES LAND": {
+    "message": "지상 선호"
+  },
+  "LOVES ORBITAL": {
+    "message": "궤도 선호"
+  },
+  "LOVES TANKS": {
+    "message": "전차 선호"
   },
   "Land Anywhere Tech": {
     "message": "아무 곳에나 착륙 기술"
@@ -479,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "궤도 쿨다운 기술은 모든 궤도 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
   },
+  "Osmech": {
+    "message": "오스메크"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: 개성 강화"
   },
@@ -487,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "플래티넘: 적 하나는 상대도 안 됩니다"
+  },
+  "POOR": {
+    "message": "나쁨"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "펠리컨 업그레이드 기술은 항공 수송기가 지휘관을 실어 나를 수 있게 합니다. 모든 유닛이 수송 중에도 사격할 수 있습니다."
@@ -557,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "기존의 핵미사일을 비용과 위력이 낮은 새 버전으로 대체하고 공격과 방어 모두에서 이에 크게 의존합니다. 그 대가로 대부분의 상급 방어 시설을 포기합니다."
   },
+  "Report a Galactic War Bug": {
+    "message": "은하계 전쟁 버그 신고"
+  },
   "SCOUTING:": {
     "message": "정찰:"
   },
+  "SHORT": {
+    "message": "짧게"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "실버: 대전 AI를 이겼습니다"
+  },
+  "SLOW": {
+    "message": "느림"
+  },
+  "SLOWER": {
+    "message": "더 느림"
+  },
+  "SLOWEST": {
+    "message": "가장 느림"
+  },
+  "SPAWN ONLY": {
+    "message": "시작 지점만"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "서든데스 확률:"
@@ -577,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "스케일링 기준:"
+  },
+  "Second Wave": {
+    "message": "세컨드 웨이브"
+  },
+  "Section 17": {
+    "message": "섹션 17"
   },
   "Separate": {
     "message": "개별"
@@ -650,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "기술 행성계:"
   },
+  "TERRIBLE": {
+    "message": "끔찍함"
+  },
+  "TINY": {
+    "message": "초소형"
+  },
   "TITANS: base game AI": {
     "message": "TITANS: 기본 게임 AI"
   },
@@ -674,14 +788,23 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "해양 지휘관 로드아웃은 모든 조선소를 포함합니다. 조건에 맞는 행성의 물과 용암의 양을 늘립니다."
   },
-  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
-    "message": "진영, 난이도, 게임 옵션이 같고 같은 모드가 설치되어 있으면 같은 시드로 같은 은하와 같은 적이 다시 만들어집니다. 행성 이름은 여전히 달라집니다. 새로운 은하를 원하면 그대로 두십시오."
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "은하가 너무 작아 모든 적 진영이 본거지 행성계를 가질 수 없습니다. 더 큰 은하를 선택하거나 \"진영 스케일링\"을 켜서 작은 은하의 진영 수를 줄이십시오."
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "은하 크기, 플레이어 수, 진영, 난이도, 게임 옵션이 같고 같은 모드가 설치되어 있으면 같은 시드로 같은 은하와 같은 적이 다시 만들어집니다. 행성 이름은 여전히 달라집니다. 새로운 은하를 원하면 그대로 두십시오."
   },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "나와 내 부관이 사용하는 유닛입니다. 각 종족의 AI는 AI 버튼으로 선택합니다."
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "나와 내 부관이 사용하는 유닛입니다. 호스트의 전쟁이 만들어질 때 사용된 종족만 선택할 수 있습니다."
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "버그로 인해 전쟁을 만들 수 없었습니다. __url__에서 신고하고 전쟁 시드(__seed__)와 __folder__에 있는 PA 로그 파일을 첨부하십시오."
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "\"Systems\"에서 선택한 소스를 불러올 수 없거나 사용할 수 있는 행성계가 없어 전쟁을 만들 수 없었습니다. 다른 소스를 선택하거나, 이 화면을 나갔다가 돌아와 다시 불러오십시오."
   },
   "This card will be offered as part of the first draw.": {
     "message": "이 카드는 첫 번째 뽑기에서 제안됩니다."
@@ -722,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "우버: 이기는 게 싫은 분께"
   },
+  "UNHEALTHY": {
+    "message": "부실함"
+  },
   "UNIT DELAY (MAX):": {
     "message": "유닛 지연 (최대):"
   },
   "UNIT DELAY (MIN):": {
     "message": "유닛 지연 (최소):"
+  },
+  "Unique AI loadouts": {
+    "message": "고유 AI 로드아웃"
   },
   "Unique Races": {
     "message": "고유 종족"
@@ -754,6 +883,15 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "차량 쿨다운 기술은 모든 차량 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "View loadout and tech cards": {
+    "message": "로드아웃 및 기술 카드 보기"
+  },
+  "WEAK": {
+    "message": "약함"
+  },
+  "Waiting for loadout": {
+    "message": "로드아웃 대기 중"
   },
   "Waiting for players": {
     "message": "플레이어 대기 중"

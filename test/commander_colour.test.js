@@ -17,12 +17,25 @@ const minion = [
 ];
 
 describe("pick", () => {
+  // Every faction, every count up to the fallback that ends its palette.
   it("gives each count its own palette colour, with the grey secondary", () => {
-    const first = colour.pick(0, minion, 0);
-    const second = colour.pick(0, minion, 1);
-
-    assert.deepEqual(first[1], [192, 192, 192]);
-    assert.notDeepEqual(first[0], second[0]);
+    for (const faction of [0, 1, 2, 3, 4]) {
+      const primaries = [];
+      for (let count = 0; ; count++) {
+        const picked = colour.pick(faction, minion, count);
+        if (picked === minion) {
+          break;
+        }
+        assert.deepEqual(picked[1], [192, 192, 192]);
+        primaries.push(JSON.stringify(picked[0]));
+      }
+      assert.ok(primaries.length > 1, "faction " + faction + " palette");
+      assert.equal(
+        new Set(primaries).size,
+        primaries.length,
+        "faction " + faction + " repeats a colour"
+      );
+    }
   });
 
   it("falls back to the minion's colour once the palette is spent", () => {

@@ -478,23 +478,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var fabbersBasic = [
     gwoUnit.airFabber,
-    gwoUnit.barnacle,
     gwoUnit.botFabber,
     gwoUnit.navalFabber,
     gwoUnit.orbitalFabber,
-    gwoUnit.stitch,
     gwoUnit.vehicleFabber,
   ];
   var fabbersAdvanced = [
     gwoUnit.airFabberAdvanced,
-    gwoUnit.angel,
     gwoUnit.botFabberAdvanced,
     gwoUnit.colonel,
-    gwoUnit.mend,
     gwoUnit.navalFabberAdvanced,
     gwoUnit.vehicleFabberAdvanced,
   ];
-  var fabbers = fabbersBasic.concat(fabbersAdvanced);
+  var fabbersCombatBasic = [gwoUnit.barnacle, gwoUnit.stitch];
+  var fabbersCombatAdvanced = [gwoUnit.angel, gwoUnit.mend];
+  var fabbersCombat = fabbersCombatBasic.concat(fabbersCombatAdvanced);
+  var fabbers = fabbersBasic.concat(fabbersAdvanced, fabbersCombat);
 
   var landFactoriesBasic = [
     gwoUnit.airFactory,
@@ -571,8 +570,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var teleporters = [gwoUnit.teleporter, gwoUnit.helios];
 
-  // The titan groups already exclude the immobile Ragnarok, so these two drop
-  // only the defensive structures - the same split combatMobile makes.
+  // The mobile units' ammo: titansAmmo and titansWeapons already leave out the
+  // immobile Ragnarok. weaponsMobile, further down, is its weapons counterpart.
   var ammoMobile = airAmmo.concat(
     botsAmmo,
     navalAmmo,
@@ -581,8 +580,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesAmmo
   );
 
+  // The main gun's ammo comes before the base it inherits from. See specs.md,
+  // "A modded spec is flattened".
   var commanderAmmo = [
     gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmoBullet,
+    gwoUnit.commanderAmmoLaser,
     gwoUnit.commanderAmmo,
     gwoUnit.commanderSecondaryAmmo,
     gwoUnit.commanderTorpedoLandAmmo,
@@ -844,6 +847,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
     fabbersBasic: fabbersBasic,
+    fabbersCombat: fabbersCombat,
+    fabbersCombatAdvanced: fabbersCombatAdvanced,
+    fabbersCombatBasic: fabbersCombatBasic,
     factories: factories,
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,

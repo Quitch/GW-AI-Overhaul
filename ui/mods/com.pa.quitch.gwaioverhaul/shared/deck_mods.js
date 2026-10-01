@@ -20,14 +20,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js"], function (
       seen.push(descriptor);
 
       try {
-        if (descriptor && decks.byId(descriptor.id)) {
+        var registeredBefore = !!(descriptor && decks.byId(descriptor.id));
+        decks.register(descriptor);
+        if (registeredBefore) {
           console.warn(
             "gwoDeckMods: deck " +
               descriptor.id +
               " registered twice; the later registration wins"
           );
         }
-        decks.register(descriptor);
       } catch (e) {
         console.error("gwoDeckMods: deck not registered: " + (e.message || e));
       }

@@ -18,21 +18,24 @@ define([
       return { chance: gwoCard.commanderWeight(inventory, 35) };
     },
     buff: function (inventory) {
-      var mods = gwoCard.mods(
-        gwoUnit.commander,
-        "multiply",
-        _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 3), {
-          max_health: 2,
-        })
+      inventory.addMods(
+        gwoCard
+          .mods(
+            gwoUnit.commander,
+            "multiply",
+            _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 3), {
+              max_health: 2,
+            })
+          )
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.commanderAmmo,
+              "multiply",
+              gwoCard.paths.damage,
+              1.25
+            )
+          )
       );
-
-      _.forEach(gwoGroup.commanderAmmo, function (ammo) {
-        mods = mods.concat(
-          gwoCard.mods(ammo, "multiply", gwoCard.paths.damage, 1.25)
-        );
-      });
-
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

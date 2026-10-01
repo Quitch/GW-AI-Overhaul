@@ -1,8 +1,8 @@
 "use strict";
 
-// Tests for gw_play/gwo_streams.js, which holds every stream key the play scene
-// draws from. The collision suite is the point of the file: a key that shadows
-// another would silently make two unrelated deals identical.
+// Tests for gw_play/gwo_streams.js, which holds every parent stream key the
+// play scene draws from. The collision suite is the point of the file: a key
+// that shadows another would silently make two unrelated deals identical.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -60,7 +60,7 @@ describe("coopPlayerKey", () => {
     assert.equal(streams.coopPlayerKey(undefined, undefined), "unknown");
   });
 
-  // A space in a label would let stream("a b") collide with stream("a", "b").
+  // Pinned because live wars' streams are keyed with the squash. See galaxy.md.
   it("squashes whitespace in a player name", () => {
     assert.equal(
       streams.coopPlayerKey({}, { name: "Big Bad Bob" }),
@@ -80,6 +80,10 @@ describe("gwo_streams fallback contract", () => {
     assert.equal(streams.treasureLoadoutRng(undefined, "p", 1), undefined);
     assert.equal(streams.coopRerollRng(undefined, "p", 1, 0), undefined);
     assert.equal(streams.battleRng(undefined, 1, 2), undefined);
+    assert.equal(streams.coopAiPlayerRng(undefined, 1), undefined);
+    assert.equal(streams.coopAiLoadoutRng(undefined, 1), undefined);
+    assert.equal(streams.coopAiFactoryRng(undefined, 1, 1), undefined);
+    assert.equal(streams.coopAiDecisionRng(undefined, 1, 2, 0), undefined);
     assert.equal(streams.iterationRng(undefined, 0), undefined);
     assert.equal(streams.cardRng(undefined, "gwc_minion"), undefined);
   });
@@ -97,6 +101,20 @@ describe("gwo_streams determinism", () => {
         coopStar: draws(streams.coopStarDealRng(war, "uber-1", 3, 5)),
         treasure: draws(streams.treasureLoadoutRng(war, "uber-1", 3)),
         battle: draws(streams.battleRng(war, 3, 5)),
+        coopAi: draws(streams.coopAiPlayerRng(war, 2)),
+        coopAiLoadout: draws(streams.coopAiLoadoutRng(war, 2)),
+        coopAiDecision: draws(streams.coopAiDecisionRng(war, 2, 3, 1)),
+        coopAiFactory: draws(streams.coopAiFactoryRng(war, 2, 3)),
+        coopReroll: draws(streams.coopRerollRng(war, "uber-1", 2, 1)),
+        iteration: draws(
+          streams.iterationRng(streams.exploreDealRng(war, 3, 5, 1), 2)
+        ),
+        card: draws(
+          streams.cardRng(
+            streams.iterationRng(streams.exploreDealRng(war, 3, 5, 1), 2),
+            "gwc_minion"
+          )
+        ),
       };
     };
     assert.deepEqual(build(), build());
@@ -140,6 +158,34 @@ describe("gwo_streams determinism", () => {
       draws(streams.treasureLoadoutRng(war, "p", 3)),
       draws(streams.treasureLoadoutRng(war, "p", 4))
     );
+    assert.notDeepEqual(
+      draws(streams.coopAiPlayerRng(war, 1)),
+      draws(streams.coopAiPlayerRng(war, 2))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiLoadoutRng(war, 1)),
+      draws(streams.coopAiLoadoutRng(war, 2))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 2, 3, 0))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 1, 4, 0))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 1, 3, 1))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiFactoryRng(war, 1, 3)),
+      draws(streams.coopAiFactoryRng(war, 2, 3))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiFactoryRng(war, 1, 3)),
+      draws(streams.coopAiFactoryRng(war, 1, 4))
+    );
   });
 
   // The absence of a turn component is what makes a treasure offer survive
@@ -148,7 +194,7 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
       draws(streams.treasureLoadoutRng(war, "p", 3)),
-      draws(streams.treasureLoadoutRng(war, "p", 3))
+      draws(war.stream("treasure_loadout", "p").stream("star", 3))
     );
   });
 
@@ -232,6 +278,23 @@ describe("gwo_streams key collisions", () => {
       }
     }
 
+    for (const serial of [undefined, 0, 1, 2]) {
+      add(`coopAi:${serial}`, streams.coopAiPlayerRng(war, serial));
+      add(`coopAiLoadout:${serial}`, streams.coopAiLoadoutRng(war, serial));
+      for (const dealIndex of [0, 1, 2]) {
+        add(
+          `coopAiFactory:${serial}:${dealIndex}`,
+          streams.coopAiFactoryRng(war, serial, dealIndex)
+        );
+        for (const reroll of [0, 1]) {
+          add(
+            `coopAiDecision:${serial}:${dealIndex}:${reroll}`,
+            streams.coopAiDecisionRng(war, serial, dealIndex, reroll)
+          );
+        }
+      }
+    }
+
     for (const star of [0, 1, 2]) {
       for (const turns of [0, 1, 2]) {
         add(`ai:${star}:${turns}`, streams.aiStarDealRng(war, star, turns));
@@ -267,8 +330,8 @@ describe("gwo_streams key collisions", () => {
     assert.ok(built.length > 100, `only checked ${built.length} keys`);
   });
 
-  // "uber 1" and "uber_1" are the same key by design - squashing is what stops
-  // a name with a space from colliding with a two-argument stream instead.
+  // "big bob" and "big_bob" share a key: the squash's known cost, kept because
+  // dropping it would re-key every live war. See galaxy.md.
   it("collapses a spaced name onto its underscored form", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(

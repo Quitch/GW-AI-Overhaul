@@ -87,9 +87,7 @@ define(function () {
       return product;
     };
 
-    // The per-card fix-up a real deal does in model.win: a minion product
-    // needs a Sub Commander, a slot product its overflow flag.
-    var prepareProduct = function (product, inventory, testing) {
+    var prepareProduct = function (product, testing) {
       if (product.id === "gwc_minion") {
         if (testing) {
           testMinions(product);
@@ -175,7 +173,7 @@ define(function () {
                 cards
               )
               .then(function (product) {
-                inventory.cards.push(prepareProduct(product, inventory, true));
+                inventory.cards.push(prepareProduct(product, true));
               })
           )
         );
@@ -187,10 +185,11 @@ define(function () {
       $.when.apply($, deferredQueue).then(function () {
         // Once per cheat, not per card: each applyCards re-applies every card
         // held.
-        inventory.applyCards();
-        if (!failed) {
-          finishCheat("gwo_cheat_test_cards");
-        }
+        inventory.applyCards(function () {
+          if (!failed) {
+            finishCheat("gwo_cheat_test_cards");
+          }
+        });
       });
     };
 
@@ -218,9 +217,10 @@ define(function () {
             cards
           )
           .then(function (product) {
-            inventory.cards.push(prepareProduct(product, inventory));
-            inventory.applyCards();
-            finishCheat("gwo_cheat_give_card");
+            inventory.cards.push(prepareProduct(product));
+            inventory.applyCards(function () {
+              finishCheat("gwo_cheat_give_card");
+            });
           });
       } else {
         console.error(

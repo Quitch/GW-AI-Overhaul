@@ -2,7 +2,7 @@
 
 // Unit tests for gw_play/spec_cache.js, driven with an injected mock fetch.
 
-const { describe, it, beforeEach } = require("node:test");
+const { describe, it, beforeEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
@@ -148,6 +148,33 @@ describe("genUnitSpecs - fetch caching", () => {
   });
 });
 
+// A spec file holding `null` parses, and tagging it throws. The walk counted
+// the fetch in and never out, so the battle launch waited forever.
+describe("genUnitSpecs - a spec that cannot be tagged", () => {
+  it("skips it and resolves with the rest", async () => {
+    const logged = mock.method(console, "log", () => {});
+    const withNull = Object.assign({}, files, {
+      "/pa/units/base_bot.json": null,
+    });
+    const { fetch } = makeFetch(withNull);
+
+    const outcome = await Promise.race([
+      specCache.genUnitSpecs([TANK], ".x", { fetch }),
+      new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+    ]);
+    logged.mock.restore();
+
+    assert.notEqual(outcome, "hung");
+    assert.ok(!("/pa/units/base_bot.json.x" in outcome));
+    assert.ok(TANK + ".x" in outcome);
+    assert.ok("/pa/ammo/shell_ammo.json.x" in outcome);
+    assert.match(
+      logged.mock.calls[0].arguments[0],
+      /^error loading spec: \/pa\/units\/base_bot\.json \(TypeError/
+    );
+  });
+});
+
 describe("references", () => {
   // Every field the tagger renames, once each, so the two cannot drift apart.
   const spec = () => ({
@@ -193,6 +220,7 @@ describe("references", () => {
       "/pa/ammo/one.json",
     ]);
     assert.deepEqual(specCache.references("not a spec"), []);
+    assert.deepEqual(specCache.references(null), []);
     assert.deepEqual(specCache.references({ base_spec: 7 }), []);
   });
 

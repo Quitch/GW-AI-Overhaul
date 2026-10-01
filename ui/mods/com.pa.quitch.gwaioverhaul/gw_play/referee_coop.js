@@ -17,6 +17,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     });
   };
 
+  // The host of a co-op session played with per-player tech: the one client
+  // that deals, rerolls and refreshes the other players' tech.
+  var hostingPerPlayerSession = function () {
+    return !!(
+      model.gwCampaignActive() &&
+      model.isCampaignHost() &&
+      model.gwCampaignPerPlayerTechCards()
+    );
+  };
+
+  // A record is an AI's iff it carries gwaioAi. It has no playerName, so no
+  // human lookup, by id or by name, can land on it.
+  var isAiRecord = function (record) {
+    return !!record && _.isPlainObject(record.gwaioAi);
+  };
+
   // A connected client's co-op record. The game keys records by id and name.
   var recordForClient = function (game, client) {
     return game.findCoopPlayerInventoryData({
@@ -45,13 +61,47 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     );
   };
 
+  // The co-op AI players' records that field tech of their own: those with an
+  // inventory, under per-player tech, in a session. Slot order. See coop.md,
+  // "AI players' tech".
+  var getCoopAiInventories = function (game) {
+    if (!game.perPlayerTechCards() || !model.gwCampaignActive()) {
+      return [];
+    }
+
+    return _(game.coopPlayerInventoryData())
+      .filter(function (record) {
+        return isAiRecord(record) && !!record.inventory;
+      })
+      .sortBy("gwaioAi.serial")
+      .map(function (record) {
+        return { record: record, inventory: record.inventory };
+      })
+      .value();
+  };
+
+  // The co-op AI players of one hire (ref.coopAis) that field tech of their
+  // own, in slot order. Each carries its inventory, as getCoopAiInventories'
+  // pairs do.
+  var launchAiInventories = function (coopAis) {
+    return _.filter(coopAis, "perPlayer");
+  };
+
   // {subcommander, cards} pairs for every allied AI commander drawing from the
-  // player faction's palette, in battle-config colour order. The cards are the
-  // owning player's, since a subcommander's tech comes from its own player.
+  // player faction's palette, in battle-config colour order: the host's, each
+  // viewer's, then each co-op AI player's. The cards are the owning player's,
+  // since a subcommander's tech comes from its own player.
   //
   // Order in equals order out, so a caller that cares which colour lands where
-  // must pass clients host-first. See coop.md for what is excluded and why.
-  var getOrderedSubcommanders = function (inventory, game, connectedClients) {
+  // must pass clients host-first. A hire passes its AI players as
+  // aiInventories (launchAiInventories); without them the records are read.
+  // See coop.md for what is excluded and why.
+  var getOrderedSubcommanders = function (
+    inventory,
+    game,
+    connectedClients,
+    aiInventories
+  ) {
     // The host's own inventory is always the live GWInventory. Only the viewer
     // records below arrive as plain objects, hence the _.isArray tests there.
     var hostCards = inventory.cards();
@@ -66,19 +116,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
 
     _.forEach(
-      getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
-        if (!_.isArray(viewer.inventory.minions)) {
+      getConnectedViewerInventories(game, connectedClients).concat(
+        aiInventories || getCoopAiInventories(game)
+      ),
+      function (player) {
+        if (!_.isArray(player.inventory.minions)) {
           return;
         }
 
-        var viewerCards = _.isArray(viewer.inventory.cards)
-          ? viewer.inventory.cards
+        var playerCards = _.isArray(player.inventory.cards)
+          ? player.inventory.cards
           : [];
 
         subcommanders = subcommanders.concat(
-          _.map(viewer.inventory.minions, function (minion) {
-            return { subcommander: minion, cards: viewerCards };
+          _.map(player.inventory.minions, function (minion) {
+            return { subcommander: minion, cards: playerCards };
           })
         );
       }
@@ -107,11 +159,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    hostingPerPlayerSession: hostingPerPlayerSession,
+    isAiRecord: isAiRecord,
     viewersOf: viewersOf,
     recordForClient: recordForClient,
     clientKey: clientKey,
     getConnectedClients: getConnectedClients,
     getConnectedViewerInventories: getConnectedViewerInventories,
+    getCoopAiInventories: getCoopAiInventories,
+    launchAiInventories: launchAiInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,
     clientsInPlayerOrder: clientsInPlayerOrder,

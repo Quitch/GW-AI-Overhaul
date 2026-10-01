@@ -3,10 +3,12 @@
 // Cross-reference checks within this repo only, so they run in CI:
 //
 //   1. Every loadout card id has a file under ui/main/game/galactic_war/cards/.
-//   2. Every `<unitsParam>.someKey` reference in a card resolves against units.js.
-//      A typo there is `undefined` at runtime, with no error.
-//   3. Every `builders` role in AI build-order JSON resolves against the unit map,
-//      bar the literals in KNOWN_BUILDER_NAMES.
+//   2. Every `<unitsParam>.someKey` (or `.table.someKey`) reference in a card,
+//      card_units.js or unit_groups.js resolves against units.js, and none
+//      names a whole race table. A typo there is `undefined` at runtime, with
+//      no error.
+//   3. Every `builders` role in AI build-order JSON, and every `to_build` in a
+//      fabber or factory build list, resolves against the penchant unit maps.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -18,17 +20,23 @@ const { aiDataFiles } = require("../lib/walk.js");
 const LOADOUT_IDS_COUI =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";
-const UNIT_MAP_PATH = path.join(
+const MOD_DIR = path.join(
   REPO_ROOT,
-  "pa",
-  "ai_penchant",
-  "unit_maps",
-  "ai_unit_map.json"
+  "ui",
+  "mods",
+  "com.pa.quitch.gwaioverhaul"
 );
-
-// referee_ai.js names these literally rather than resolving them through the
-// role map, so their absence from ai_unit_map.json is not a gap.
-const KNOWN_BUILDER_NAMES = new Set(["SupportCommander", "SupportPlatform"]);
+const UNIT_LIST_FILES = [
+  path.join(MOD_DIR, "gw_play", "card_units.js"),
+  path.join(MOD_DIR, "shared", "unit_groups.js"),
+];
+// The engine loads every map under a tree's unit_maps/ into one namespace, and
+// the _x1 map holds the keys TITANS added.
+const UNIT_MAP_PATHS = ["ai_unit_map.json", "ai_unit_map_x1.json"].map((file) =>
+  path.join(REPO_ROOT, "pa", "ai_penchant", "unit_maps", file)
+);
+// A platoon build's to_build names a platoon template, not a unit.
+const UNIT_BUILD_DIRS = new Set(["fabber_builds", "factory_builds"]);
 
 const failures = [];
 function fail(message) {
@@ -94,42 +102,83 @@ function findUnitsParamName(src) {
   return index === -1 ? null : params[index] || null;
 }
 
+// A bare table followed by `,`, `]` or `)` is an element or an argument - a
+// table handed over as a unit list. A guard (`&&`) or a bracketed key is not.
+function handedOverAsList(code, end) {
+  const next = code.slice(end).match(/^\s*(\S)/);
+  return Boolean(next) && ",])".includes(next[1]);
+}
+
+// Every `<paramName>.key` and `<paramName>.table.key` in a file's code, and a
+// bare table where it is handed over as a list.
+function unitReferences(code, paramName, units) {
+  const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+  const refPattern = new RegExp(
+    String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)(?:\.([A-Za-z_$][A-Za-z0-9_$]*))?`,
+    "g"
+  );
+  const referenced = new Set();
+  for (const m of code.matchAll(refPattern)) {
+    const isTable = typeof units[m[1]] === "object";
+    if (!isTable || m[2]) {
+      referenced.add(isTable ? m[1] + "." + m[2] : m[1]);
+    } else if (handedOverAsList(code, m.index + m[0].length)) {
+      referenced.add(m[1]);
+    }
+  }
+  return referenced;
+}
+
+// What is wrong with one reference, or undefined.
+function referenceProblem(units, unitKeys, paramName, key) {
+  const [table, unit] = key.split(".");
+  if (!unit && typeof units[table] === "object") {
+    return (
+      "names the whole table " +
+      paramName +
+      "." +
+      table +
+      " - a card names one unit of it"
+    );
+  }
+  if (!unitKeys.has(table) || (unit && !Object.hasOwn(units[table], unit))) {
+    return (
+      "references " +
+      paramName +
+      "." +
+      key +
+      ", which does not exist in units.js"
+    );
+  }
+  return undefined;
+}
+
 function checkUnitReferencesInCards() {
   const units = loadCouiModule(UNITS_COUI);
   const unitKeys = new Set(Object.keys(units));
 
-  const cardFiles = fs.readdirSync(CARDS_DIR).filter((f) => f.endsWith(".js"));
+  const files = fs
+    .readdirSync(CARDS_DIR)
+    .filter((f) => f.endsWith(".js"))
+    .map((f) => path.join(CARDS_DIR, f))
+    .concat(UNIT_LIST_FILES);
   let checkedCards = 0;
   let checkedRefs = 0;
 
-  for (const file of cardFiles) {
-    const src = fs.readFileSync(path.join(CARDS_DIR, file), "utf8");
+  for (const filePath of files) {
+    const src = fs.readFileSync(filePath, "utf8");
     const paramName = findUnitsParamName(src);
     if (!paramName) {
       continue;
     }
     checkedCards++;
 
-    const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const refPattern = new RegExp(
-      String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)`,
-      "g"
-    );
-    const referenced = new Set(
-      [...stripComments(src).matchAll(refPattern)].map((m) => m[1])
-    );
-
-    for (const key of referenced) {
+    for (const key of unitReferences(stripComments(src), paramName, units)) {
       checkedRefs++;
-      if (!unitKeys.has(key)) {
+      const problem = referenceProblem(units, unitKeys, paramName, key);
+      if (problem) {
         fail(
-          "cross-refs: " +
-            file +
-            " references " +
-            paramName +
-            "." +
-            key +
-            ", which does not exist in units.js"
+          "cross-refs: " + path.relative(REPO_ROOT, filePath) + " " + problem
         );
       }
     }
@@ -140,35 +189,56 @@ function checkUnitReferencesInCards() {
       checkedRefs +
       " unit references across " +
       checkedCards +
-      " cards checked against units.js (" +
+      " files checked against units.js (" +
       unitKeys.size +
       " known units)."
   );
 }
 
-function checkBuilderRoles() {
-  const unitMap = JSON.parse(fs.readFileSync(UNIT_MAP_PATH, "utf8")).unit_map;
-  const roleKeys = new Set(Object.keys(unitMap));
+// [what, key] for each unit-map key a build entry names. An entry with no
+// to_build is an action, such as a Commander teleport.
+function unitMapReferences(entry, buildsUnits) {
+  const references = (entry.builders || []).map((builder) => [
+    "builder role",
+    builder,
+  ]);
+  if (buildsUnits && entry.to_build !== undefined) {
+    references.push(["to_build", entry.to_build]);
+  }
+  return references;
+}
 
-  const files = aiDataFiles();
+function checkUnitMapKeys() {
+  const unitMapKeys = new Set(
+    UNIT_MAP_PATHS.flatMap((file) =>
+      Object.keys(JSON.parse(fs.readFileSync(file, "utf8")).unit_map)
+    )
+  );
 
   let checked = 0;
-  for (const file of files) {
+  for (const file of aiDataFiles()) {
     const data = JSON.parse(fs.readFileSync(file, "utf8"));
     if (!Array.isArray(data.build_list)) {
       continue;
     }
+    const where = path.relative(REPO_ROOT, file);
+    const buildsUnits = where
+      .split(path.sep)
+      .some((segment) => UNIT_BUILD_DIRS.has(segment));
+
     for (const entry of data.build_list) {
-      for (const builder of entry.builders || []) {
+      for (const [what, key] of unitMapReferences(entry, buildsUnits)) {
         checked++;
-        if (!roleKeys.has(builder) && !KNOWN_BUILDER_NAMES.has(builder)) {
+        if (!unitMapKeys.has(key)) {
           fail(
             "cross-refs: " +
-              path.relative(REPO_ROOT, file) +
+              where +
               ' build_list entry "' +
               entry.name +
-              '" has unresolvable builder role "' +
-              builder +
+              '" has unresolvable ' +
+              what +
+              ' "' +
+              key +
               '"'
           );
         }
@@ -179,14 +249,14 @@ function checkBuilderRoles() {
   console.log(
     "cross-refs: " +
       checked +
-      " builder role references checked against ai_unit_map.json."
+      " builder roles and fabber/factory to_build keys checked against the penchant unit maps."
   );
 }
 
 function main() {
   checkLoadoutCardsExist();
   checkUnitReferencesInCards();
-  checkBuilderRoles();
+  checkUnitMapKeys();
 
   console.log("cross-refs: " + failures.length + " problems.");
   reportProblems(failures);

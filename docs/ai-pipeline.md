@@ -25,13 +25,16 @@ inventory.addAIMods([
     value: 100,
     refId: "test_type", // optional: narrows the match
     refValue: "HaveEcoForAdvanced",
-    matchAll: false, // optional: match every test, ignore refId/refValue
+    matchAll: false, // optional: at the condition level, every test
     treeOnly: false, // optional: skip files a `load` pulled in from /pa/ai_tech/
   },
 ]);
 ```
 
-`type` maps to a directory via `managerPath()`:
+`type` names a build directory. A `load` finds its file's directory through
+`managerPath()` in `shared/race_ai_mods.js`. Every other op applies to a file
+whose path contains that directory: `pathTypeMap` in `gw_play/referee_ai.js`
+maps each directory back to its `type`.
 
 | `type`     | Directory            |
 | ---------- | -------------------- |
@@ -40,8 +43,14 @@ inventory.addAIMods([
 | `platoon`  | `platoon_builds/`    |
 | `template` | `platoon_templates/` |
 
-Anything else throws. Note that there is no `unit_map` type.
-`referee_game_files.js` writes unit maps, not this pipeline.
+Any other `type` has no directory. On a `load`, `managerPath()` returns
+`undefined`, and the referee logs `Invalid AI file type in load mod` and adds
+no file. It does not throw: its callers in the referee run in a deferred
+callback, where a throw is swallowed and hangs the battle launch. On every other
+op, the descriptor matches no file and does nothing, and nothing is logged.
+`npm run validate:ai-mods` rejects an unknown `type` in a shipped card. Note
+that there is no `unit_map` type, so no descriptor reaches a unit map. This pipeline copies a tree's untagged maps with its other
+files, and `referee_game_files.js` writes the tagged ones.
 
 ## The op table
 
@@ -67,7 +76,10 @@ only. One works on `json.platoon_templates` and is valid for `template` only.
 `addApplicableAiLoadModsToFileList` handles it separately. That function appends
 `/pa/ai_tech/<managerPath(type)>/<value>` to the file list, so a whole extra
 build file joins the walk. If a caller passes `load` to `applyAiMods`, the
-function logs `"Invalid AI mod operation"` and does nothing.
+function logs `"Invalid AI mod operation"` and does nothing. Nothing checks
+that a third-party card's `value` names a file that exists, so a load file that
+cannot be read is logged and skipped. Every other file that cannot be read
+fails the battle.
 
 The pipeline walks a loaded file like any other file. So every in-scope
 descriptor also applies to it, **including the loading card's own**. That is
@@ -98,14 +110,18 @@ gwoAI.builderAppendMods(
 );
 ```
 
-That call is one `append` to `builders` per name. It sets `matchAll`, so every
-list that carries the build takes it. `gwoAI.advancedStructureBuilds` is the
-structure list that the four basic-fabber upgrades share.
+That call is one `append` to `builders` per name. It sets no `refId`, so every
+entry for the name with a `builders` list takes it, in every file the pipeline
+walks. It also sets `matchAll`, so where an entry keeps `builders` in its
+conditions instead, every test that has one takes it (see below).
+`gwoAI.advancedStructureBuilds` is the structure list that the four
+basic-fabber upgrades share.
 
 ### How a build op matches
 
-Each of the six build ops walks `json.build_list` and skips any entry whose
-`to_build` is not the descriptor's `toBuild`. Then:
+`append`, `prepend`, `replace`, and `unset` share one walk
+(`forEachMatchingTarget`). It goes through `json.build_list` and skips any
+entry whose `to_build` is not the descriptor's `toBuild`. Then:
 
 ```js
 var validMatch =
@@ -117,6 +133,9 @@ If that holds, the op applies to the build entry itself. If it does not, the op
 descends into `build.build_conditions`, which is an array of arrays of test
 objects. There the op applies to every test where `matchAll` is set, or where
 `test[refId] === refValue`.
+
+`remove` and `new` skip the same entries, but ignore `refId`, `refValue`, and
+`matchAll`: every entry left takes the op, as the op table describes it.
 
 So one descriptor can hit either the build level or the condition level,
 depending on the file it is applied to. And the pipeline applies the same descriptor
@@ -163,9 +182,9 @@ or any of its foes is Cluster. Otherwise it returns `"None"`.
 
 ## Writing the output
 
-`processFilesInDirectory` resolves, per file, which destination path(s) the
-contents belong at and which descriptors are in scope. Then `writeConfigFiles`
-applies and writes. Three kinds of file are skipped:
+`resolveWrites` resolves, per file, which destination path(s) the contents
+belong at and which descriptors are in scope. Then `writeConfigFiles` applies
+and writes. Three kinds of file are skipped:
 
 - A file is skipped unless it ends in `.json`.
 - `/neural_networks/` is skipped entirely, because AIs use
@@ -176,7 +195,7 @@ applies and writes. Three kinds of file are skipped:
 Three behaviours here are worth knowing before editing:
 
 **The Cluster duplication is asymmetric on purpose.**
-`applyClusterModsIfNeeded` takes two JSON objects. The player branch uses the
+`writeClusterCopy` takes two JSON objects. The player branch uses the
 mutated `json`, because the player's own Cluster ally is _supposed_ to receive the
 tech. The enemy branch uses `originalJson`, a pre-mod snapshot, so an enemy
 Cluster foe never inherits tech the player bought. The code skips the deep clone
@@ -199,10 +218,103 @@ the plain path onto the write list explicitly. Otherwise `writeConfigFiles`' "no
 paths resolved, fall back to the original" branch would be skipped, and the plain
 write would be lost.
 
+## Race trees
+
+A race AI reads a race tree ([`races.md`](races.md), "Race trees"). Each tree
+takes the AI mods of the inventories whose mods the MLA tree in its place takes
+(`referee_ai.js`'s `raceTreeJobs`):
+
+- An enemy and its foes take none. Under Guardians they take every player's:
+  the host's, the connected viewers', and the co-op AI players'.
+- The host's Sub Commanders and the star's ally take the host's. Under
+  Guardians they take every player's.
+- A viewer's Sub Commanders take the viewer's.
+- A co-op AI player's tree, and its Sub Commanders' tree under per-player
+  tech, take its own inventory's. Under shared tech that is the host's.
+
+A tree's destination changes whenever its list does, so the (source,
+destination) key that joins two jobs into one never joins two lists.
+
+The descriptors name stock unit-map keys, and a race tree does not use them.
+Its stock items are stripped, and its race's own items name the race's keys.
+No race key equals a stock key, and the stock class keys (`Commander`,
+`AnyBasicFabber`, `AnyAdvancedFabber`, `AnyBasicFactory`, `AnyAdvancedFactory`,
+and Titans' `SupportCommander`) require `Custom58`, which no race unit
+carries. So `writeRaceTree` first aims the descriptors at the race's keys
+(`shared/race_ai_mods.js`). It works from the context
+`referee_game_file_paths.raceKeysFor` resolves: the brain's stock maps, the
+race's maps, the stock keys the army's map re-points, the race's cells, and
+its `engineKeys`. The cells are the tree's own read, through
+`race_cells.indexFor`, not the ones `gw_play/races.js` primes, so a tree does
+not depend on priming having finished before Fight. Without the race's cells
+(no race unit in the unit list read) nothing is aimed, and the tree takes no AI
+mods. A failed unit list read fails the battle.
+
+**A key's targets.** Each `toBuild` and each builder key is aimed by the first
+rule that fits:
+
+1. A key the stock maps lack is kept as written: a race's key, or a third
+   party's.
+2. A class key (a `unit_types` expression) becomes the race keys whose units
+   all stand in for the class's vanilla members. `Commander` becomes Legion's
+   `LegionCommander`.
+3. A spec key the army's map keeps is kept as written. The map keeps a key
+   whose `engineKeys` entry is `null`, a `stockUnits` unit, a unit the race
+   builds itself, and a unit that stands for nothing, unless it is an intel
+   unit (races.md, "Jobs"). Exiles keeps `BasicMetalExtractor` this way.
+4. A spec key whose unit the inventory's own cards remake is dropped (below).
+5. Any other spec key becomes the race keys that name the race's `engineKeys`
+   unit for it, or else its stand-ins.
+
+A race key names a set of units when its units are not empty and all of them
+are in the set. Its units are its `spec_id`, or the race's units its
+`unit_types` expression matches. So `OrbitalLauncher` becomes Legion's
+`LegionFactoryBasicOrbital` and not `AnyLegionFactoryOrbital`, which also
+covers the advanced orbital factory.
+
+**The guard.** A builder key joins a target only when every unit it covers has
+`buildable_types` that match every unit of the target. A key that covers no
+unit fails, and so does a unit with no `buildable_types`, such as Bugs'
+research tokens. A stock structure key stands for its whole race cell
+(`BasicLandDefense` for seven Legion keys), so without the guard a builder
+would be ordered to build what it cannot, and the engine repeats a refused
+order. An `append`, `prepend`, or `replace` of `builders` that has no builder
+left for a target lands nothing there.
+
+**Remade units.** A card that remakes a unit keeps every change it makes to
+that unit on the MLA file ([`tech-cards.md`](tech-cards.md), "Which races a
+card reaches"), and a descriptor that names the unit stays on MLA with it. The
+units are `unit_cells.remadeFiles` over the same inventories' spec mods.
+Defense Tech Commander's builder appends name the defences it remakes, so a
+race tree would take none of them. That is why the loadout is in
+`cards_deal_helpers.MLA_ONLY`, with the other loadouts that remake MLA units.
+
+**Kept as written.** `refId` and `refValue`, which name one stock item.
+Conditions and their `string0` keys, which the army's map resolves. `platoon`
+and `template` descriptors. `silence` has its `builders` and `except` aimed
+without the guard, and is dropped when no builder is left.
+
+**Passes.** As `expandMods` lands a spec mod ([`races.md`](races.md),
+"Capability cells"), a target and a change land once per pass. Two stock keys
+that reach one race key change it once. A pass ends when a stock key already
+seen for it comes again, so a second copy of a card stacks.
+
+**Load files.** Each `load` file is read from `/pa/ai_tech/` through the tree
+cache and aimed. The in-scope descriptors are then walked over it, `treeOnly`
+ones excepted, and it is written at the tree's destination. A file that cannot
+be read is logged and skipped. The aim copies each item once per target, with
+the builders that pass the guard for that target, and drops an item left with
+no builder. An item with no `to_build`, such as Tourist Commander's `GiveUp`,
+keeps its aimed builders without the guard. A `platoon` or `template` load's
+file is written as it is: a platoon item names a template and has no builders.
+
+A co-op AI player of a race counts only the AI mods its race's tree takes
+([`tech-cards.md`](tech-cards.md), "A race's units").
+
 ## The tree cache
 
 One launch walks the same trees repeatedly: the enemy tree, the subcommander tree,
-and one more pass per connected viewer. `createTreeCache()` memoises
+and one more pass per connected MLA viewer. `createTreeCache()` memoises
 `api.file.list` per path and `$.getJSON` per file. That makes the co-op launch
 cost flat instead of growing with player count.
 
@@ -214,10 +326,15 @@ Two details make it correct:
   `processDirectories` pushes the pass's `load` paths onto its listing. A shared
   array would carry the host's `/pa/ai_tech/` files into every later pass, a
   viewer's tree and a race tree included.
-- **It re-chains rather than re-fetches.** `.then` returns a new promise each
-  time, on the engine's promise (`api.file.list`) as on jQuery's (`$.getJSON`).
-  So the cache can chain from one stored request repeatedly without consuming
-  it.
+- **It holds native promises and re-chains rather than re-fetches.** Each
+  request, the engine's `api.file.list` and jQuery's `$.getJSON`, is adopted
+  into a native promise when it is made. `.then` returns a new promise each
+  time, so the cache can chain from one stored request repeatedly without
+  consuming it. Native, because neither original settles a failure safely: the
+  engine's promise never settles a `.then` given no error callback when the
+  call fails, and jQuery's lets a callback's throw escape rather than reject.
+  Either would leave a failed listing or a file that throws in the per-file
+  work hanging the launch.
 
 The cache lives exactly one launch. `gw_play/referee.js` creates it on the first
 hire after `launchingFight` becomes true. It passes the same cache to every hire
@@ -227,17 +344,20 @@ again. A run that receives no cache (tests, the console) creates its own.
 
 ## Test hook
 
-`referee_ai.js` exposes `applyAiMods` through a `typeof module !== "undefined"`
-guard. That branch never executes in the game's Chromium runtime. It exists so
-`test/applyAiMods.test.js` can reach a function that `define()` never returns.
-Tests reach it with `requireShippedModule`, not `loadCouiModule`. See
-[`testing.md`](testing.md).
+`referee_ai.js` exposes `applyAiMods`, `raceTreeJobs`, `coopAiTreeRequests`, and
+`writeRaceTree` through a `typeof module !== "undefined"` guard. That branch
+never executes in the game's Chromium runtime. It exists so tests can reach
+functions that `define()` never returns: `test/applyAiMods.test.js` and
+`test/rapid_builders.test.js` take `applyAiMods`, and
+`test/referee_ai_race_trees.test.js`, `test/referee_ai_coop_trees.test.js`, and
+`test/referee_ai_file_processing.test.js` take the rest. Tests reach them with `requireShippedModule`, not
+`loadCouiModule`. See [`testing.md`](testing.md).
 
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md): how GWO chooses the source and destination paths.
 - [`tech-cards.md`](tech-cards.md): where `addAIMods` gets called from.
 - `scripts/validate/ai-mods-contract.js`: the shape checker. It mirrors this op
-  table and fails if the two drift. It also carries `load`. `load` is not an op
-  here, but it is a descriptor a card can emit, so the checker checks its shape
-  too.
+  table by hand, and nothing compares the two, so change both together. It also
+  carries `load`. `load` is not an op here, but it is a descriptor a card can
+  emit, so the checker checks its shape too.

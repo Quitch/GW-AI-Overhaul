@@ -3751,6 +3751,7 @@
       "UNITTYPE_Vehicle",
       "UNITTYPE_Mobile",
       "UNITTYPE_Land",
+      "UNITTYPE_Hover",
       "UNITTYPE_Advanced",
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_CannonBuildable",

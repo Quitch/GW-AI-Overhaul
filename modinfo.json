@@ -4,9 +4,9 @@
   "display_name": "Galactic War Overhaul",
   "description": "Make Galactic War more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and more AI brains. Start a new war to enjoy all the new features. Check out the new war tooltips for more information and difficulty recommendations. Recommended accompanying mods: Shared Systems for galactic war, AI Chat, and Show AI Personality Names. Supports unit mods when used with Galactic War Server Mods.",
   "author": "Quitch",
-  "version": "7.4.1",
-  "build": "124674",
-  "date": "2026-09-24",
+  "version": "7.5.0",
+  "build": "124680",
+  "date": "2026-10-01",
   "signature": " ",
   "forum": "https://steamcommunity.com/app/386070/discussions/0/133259956005401439/",
   "category": ["titans", "ai", "gw", "gameplay", "gwaio", "gwo"],
@@ -19,19 +19,24 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_picker.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/deck_picker.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/races.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/biomes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/bugfixes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_selection.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/galaxy_map_perf.js",
@@ -39,19 +44,29 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/menu.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ],
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
+    "gw_lobby": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_lobby/specs.js"],
+    "gw_reconnect_loading": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_lobby/specs.js"
+    ],
     "live_game": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
     ],
     "live_game_options_bar": [
@@ -61,15 +76,14 @@
     "shared_build": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"
     ],
-    "start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
-    ],
+    "start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js"],
     "gw_coop_per_player_loadout": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_picker.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ]
   },
   "priority": 200,

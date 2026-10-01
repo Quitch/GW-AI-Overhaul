@@ -13,8 +13,7 @@ define([
   var specsLoads = {};
   var indexes = {};
 
-  // The whole list, not a digest of it: two lists of the same count and total
-  // length would otherwise share one entry.
+  // The whole list, so two different lists never share an entry.
   var signatureOf = function (units) {
     return units.join("|");
   };
@@ -36,10 +35,12 @@ define([
     });
   };
 
-  // Every listed unit and the closure of what it references, keyed by path.
+  // Every listed unit and the closure of what it references, keyed by path,
+  // and the paths that could not be read.
   var loadSpecs = function (units) {
     var specs = {};
     var pending = {};
+    var failed = [];
 
     var visit = function (item) {
       if (
@@ -55,6 +56,7 @@ define([
           return Promise.all(_.map(specCache.references(raw), visit));
         },
         function (error) {
+          failed.push(item);
           console.log(
             "error loading spec: " +
               item +
@@ -67,12 +69,14 @@ define([
     };
 
     return Promise.all(_.map(units, visit)).then(function () {
-      return specs;
+      return { specs: specs, failed: failed };
     });
   };
 
   // `units` is optional: a caller that has already parsed the list hands it
-  // over rather than reading it twice. Resolves to { units, specs }.
+  // over rather than reading it twice. Resolves to { units, specs, failed }.
+  // A read in which a spec failed is not kept, so the next caller reads it
+  // again: a spec read while a race's zip mounts can fail and then succeed.
   var load = function (units) {
     var listLoad = units
       ? Promise.resolve(units)
@@ -83,25 +87,73 @@ define([
     return listLoad.then(function (list) {
       var key = signatureOf(list);
       if (!specsLoads[key]) {
-        specsLoads[key] = loadSpecs(list).then(function (specs) {
-          return { units: list, specs: specs };
+        specsLoads[key] = loadSpecs(list).then(function (read) {
+          return { units: list, specs: read.specs, failed: read.failed };
         });
-        specsLoads[key].then(null, function () {
-          delete specsLoads[key];
-        });
+        specsLoads[key].then(
+          function (loaded) {
+            if (loaded.failed.length) {
+              delete specsLoads[key];
+            }
+          },
+          function () {
+            delete specsLoads[key];
+          }
+        );
       }
       return specsLoads[key];
     });
   };
 
+  var buildIndex = function (raceId, units, specs) {
+    var race = gwoRaces.byId(raceId);
+    var isMla = gwoRaces.isMla(raceId);
+    var addonPaths = gwoRaces.addonUnitPaths();
+    var isAddon = function (path) {
+      return !!addonPaths[path];
+    };
+    var foreign = gwoRaces.foreignUnitPaths();
+    var member = isMla
+      ? function (types, path) {
+          return unitCells.vanillaMember(types) && isAddon(path);
+        }
+      : unitCells.raceMember(race.unitTypeBit);
+    return {
+      vanilla: unitCells.buildIndex(units, specs, function (types, path) {
+        return (
+          unitCells.vanillaMember(types) &&
+          unitCells.classifiable(types) &&
+          !isAddon(path) &&
+          !foreign[path]
+        );
+      }),
+      race: unitCells.buildIndex(
+        units,
+        specs,
+        member,
+        unitCells.exclusiveMember(gwoRaces.knownBits())
+      ),
+    };
+  };
+
+  var keepIndex = function (key, index, failed) {
+    if (!failed.length) {
+      indexes[key] = index;
+    }
+    return index;
+  };
+
   // Resolves to { vanilla, race } indexes, one per race per unit list. An
   // index with no race unit in it is a list read before the race's zip was
   // mounted: it is handed back but neither kept nor published, so the deal
-  // gate keeps dealing and a later read tries again.
+  // gate keeps dealing and a later read tries again. An index from a read in
+  // which a spec failed is handed back and published but not kept, so the
+  // deal gate has what was read and a later caller reads again.
   //
   // The `vanilla` half is the base game's units alone: an add-on's
   // vanilla-typed units are kept out of it, or they would fill the cells its
-  // gantries and towers sit in and no builder could ever reach those. For
+  // gantries and towers sit in and no builder could ever reach those, and so
+  // is every foreign unit a race's table lists, some of which carry no bit. For
   // MLA the `race` half is the add-on index: exactly those add-on units. No
   // add-on registered means no crawl, and a list with no add-on unit in it
   // (none mounted - the usual case) resolves undefined without a word. See
@@ -116,29 +168,7 @@ define([
     return load(units).then(function (loaded) {
       var key = race.id + "@" + signatureOf(loaded.units);
       if (!indexes[key]) {
-        var isAddon = function (path) {
-          return !!addonPaths[path];
-        };
-        var member = isMla
-          ? function (types, path) {
-              return unitCells.vanillaMember(types) && isAddon(path);
-            }
-          : unitCells.raceMember(race.unitTypeBit);
-        var index = {
-          vanilla: unitCells.buildIndex(
-            loaded.units,
-            loaded.specs,
-            function (types, path) {
-              return unitCells.vanillaMember(types) && !isAddon(path);
-            }
-          ),
-          race: unitCells.buildIndex(
-            loaded.units,
-            loaded.specs,
-            member,
-            unitCells.exclusiveMember(gwoRaces.knownBits())
-          ),
-        };
+        var index = buildIndex(race.id, loaded.units, loaded.specs);
         if (!index.race.units.length) {
           if (isMla) {
             return undefined;
@@ -152,15 +182,24 @@ define([
           );
           return index;
         }
-        indexes[key] = index;
+        if (_.isEmpty(index.vanilla.fieldable)) {
+          console.warn(
+            "gwoRaces: no stock unit is buildable from a commander - jobs" +
+              " off, " +
+              race.id +
+              "'s cells whole"
+          );
+        }
         gwoRaces.setCells(race.id, index);
+        return keepIndex(key, index, loaded.failed);
       }
       return indexes[key];
     });
   };
 
   // Deals are synchronous, so the player's index is built ahead of the first
-  // one; until it lands, races.cardUsable deals everything. `units` is passed
+  // one; until it lands, races.cardUsable deals every card that names a stock
+  // unit, and a race card by the race's own table. `units` is passed
   // when several races are primed together, so they share one list read - see
   // gw_play/races.js.
   var prime = function (raceId, units) {
@@ -183,6 +222,7 @@ define([
 
   return {
     load: load,
+    buildIndex: buildIndex,
     indexFor: indexFor,
     prime: prime,
   };

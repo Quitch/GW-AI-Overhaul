@@ -281,8 +281,9 @@ define([
         id: "gwaio_upgrade_grenadier",
         units: [gwoUnit.grenadier, gwoUnit.landMine],
       },
-      // Enables Lobs and reloads them with Booms; the Boom itself is unchanged.
-      { id: "gwaio_upgrade_boom", units: [gwoUnit.lob] },
+      // Enables Lobs and reloads them with the player's own Booms, so it is
+      // dealt only to a player who has Booms.
+      { id: "gwaio_upgrade_boom", units: [gwoUnit.lob, gwoUnit.boom] },
       { id: "gwaio_upgrade_holkins", units: [gwoUnit.holkins] },
       { id: "gwaio_upgrade_manhattan", units: [gwoUnit.manhattan] },
       { id: "gwaio_upgrade_colonel", units: [gwoUnit.colonel] },

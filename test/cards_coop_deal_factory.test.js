@@ -67,7 +67,7 @@ function setup(overrides = {}) {
     overrides
   );
 
-  const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
+  const calls = { deals: [], sent: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -77,11 +77,15 @@ function setup(overrides = {}) {
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
     gwCampaignConnectedClients: () => options.viewers,
     getCoopPlayerTechCardDealCount: (rec) => options.dealCount(rec),
-    send_message: options.sendMessage,
-    sendCampaignAction: (name, payload) => calls.actions.push([name, payload]),
+    send_message:
+      options.sendMessage ||
+      ((name, payload, done) => {
+        calls.sent.push([name, payload]);
+        done(true, {});
+      }),
   });
 
-  makeFactory({
+  const handle = makeFactory({
     game: {
       findCoopPlayerInventoryData: (query) => options.records[query.id],
       hostTechCardDealCount: () => 4,
@@ -142,10 +146,69 @@ function setup(overrides = {}) {
     },
   });
 
-  return { calls, options, restore: () => stubs.restoreGlobals() };
+  return { calls, options, handle, restore: () => stubs.restoreGlobals() };
 }
 
 const { build, release } = trackActive(setup);
+
+// The same deal for a player the host deals itself: a co-op AI player. See
+// coop.md, "AI players' tech".
+describe("pendingHandForRecord", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1" };
+
+  it("deals from the AI's own inventory, keyed by its id and the deal, its star card last", async () => {
+    const run = build({
+      records: {
+        gwo_ai_1: record("gwo_ai_1", {
+          gwaioStarCards: { cards: { 5: { id: "star_card" } } },
+        }),
+      },
+    });
+    const aiRecord = run.options.records.gwo_ai_1;
+    const star = { index: 5 };
+
+    const hand = await run.handle.pendingHandForRecord({
+      client: AI,
+      record: aiRecord,
+      dealIndex: 3,
+      starIndex: 5,
+      star: star,
+    });
+
+    assert.deepEqual(_.pluck(hand.cards, "id"), [
+      "dealt_0",
+      "dealt_1",
+      "star_card",
+    ]);
+    assert.equal(hand.star, 5);
+    assert.equal(hand.dealIndex, 3);
+    assert.equal(hand.cardsOffered, 3);
+    const request = run.calls.deals[0];
+    assert.deepEqual(request.rng, { playerKey: "gwo_ai_1", dealIndex: 3 });
+    assert.equal(request.star, star);
+    assert.notEqual(request.inventory.cards(), HOST_CARDS);
+    // Nothing is sent: the host keeps the hand.
+    assert.deepEqual(run.calls.sent, []);
+  });
+
+  it("deals a full hand when the AI holds no card for the star", async () => {
+    const run = build({ records: { gwo_ai_1: record("gwo_ai_1") } });
+
+    const hand = await run.handle.pendingHandForRecord({
+      client: AI,
+      record: run.options.records.gwo_ai_1,
+      dealIndex: 1,
+      starIndex: 2,
+      star: {},
+    });
+
+    assert.deepEqual(_.pluck(hand.cards, "id"), [
+      "dealt_0",
+      "dealt_1",
+      "dealt_2",
+    ]);
+  });
+});
 
 const deal = (starIndex, star, options) =>
   global.model.dealCoopPlayerPendingTechCards(
@@ -392,10 +455,17 @@ describe("dealCoopPlayerPendingTechCards - whose inventory", () => {
 // pinned against a bare inventory shape in cards_deal_helpers.test.js. Here the
 // real helper runs, against a viewer's inventory and a host holding both bonuses.
 describe("dealCoopPlayerPendingTechCards - the bonus rules", () => {
-  const viewerHolding = (cards, maxCards) => ({
+  // The apply rebuilds the slots from the cards, so the first card gives them,
+  // as a loadout's buff does.
+  const viewerHolding = (cards, slots) => ({
     realHelpers: true,
     records: {
-      alice: record("alice", { inventory: { cards, maxCards } }),
+      alice: record("alice", {
+        inventory: {
+          cards: [Object.assign({ slots }, cards[0])].concat(cards.slice(1)),
+          maxCards: slots,
+        },
+      }),
     },
   });
 
@@ -461,22 +531,17 @@ describe("dealCoopPlayerPendingTechCards - the treasure planet", () => {
 
 describe("dealCoopPlayerPendingTechCards - delivery", () => {
   it("sends the offers to the server with the host's deal bookkeeping", async () => {
-    let sent;
-    const { calls } = build({
-      sendMessage: (name, payload, done) => {
-        sent = [name, payload];
-        done(true, {});
-      },
-    });
+    const { calls } = build();
 
     const updates = await deal(1);
 
+    assert.equal(calls.sent.length, 1);
+    const sent = calls.sent[0];
     assert.equal(sent[0], "set_player_pending_tech_cards");
     assert.equal(sent[1].host_tech_card_deal_count, 4);
     assert.deepEqual(sent[1].host_tech_card_deal_history, ["star-1"]);
     assert.equal(sent[1].players.length, 1);
     assert.equal(updates.length, 1);
-    assert.deepEqual(calls.actions, []);
   });
 
   it("rejects when the server refuses the offers", async () => {
@@ -490,23 +555,11 @@ describe("dealCoopPlayerPendingTechCards - delivery", () => {
     );
   });
 
-  // A viewer has no send_message, so the same handler has to reach the host
-  // through the campaign action channel instead.
-  it("falls back to the campaign action channel", async () => {
-    const { calls } = build();
-
-    const updates = await deal(1);
-
-    assert.equal(calls.actions.length, 1);
-    assert.equal(calls.actions[0][0], "set_player_pending_tech_cards");
-    assert.equal(updates.length, 1);
-  });
-
   it("sends nothing when every viewer was skipped", async () => {
     const { calls } = build({ dealCount: () => 9 });
 
     assert.deepEqual(await deal(1, undefined, { dealIndex: 2 }), []);
 
-    assert.deepEqual(calls.actions, []);
+    assert.deepEqual(calls.sent, []);
   });
 });

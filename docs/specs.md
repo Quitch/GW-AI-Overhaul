@@ -66,6 +66,22 @@ gwoCard.mods(
 );
 ```
 
+Units do not agree on the slot order. Stock's Radar Jamming Station has its
+jammer in slot 2, and Legion's and Second Wave's jammers have underwater sight
+there. A mod re-aimed at a race or add-on unit keeps its path, so an index lands
+on whatever that unit keeps in the slot. To change one item, name it by layer and
+channel. `observerPath(layer, channel, field)` builds that path
+([Path segments](#path-segments)):
+
+```js
+gwoCard.mods(
+  gwoUnit.radarJammingStation,
+  "multiply",
+  [gwoCard.observerPath("surface_and_air", "radar_jammer", "radius")],
+  2
+);
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |
@@ -103,6 +119,16 @@ Noise at that volume buries any real typo, so a typo'd or stale path now fails
 silently instead. The split is also why
 `multiplyOrCreate` runs before `multiply` in the op ordering.
 
+An op at a path is handed a deep copy of the mod's `value`, never the value
+itself. One descriptor reaches several specs. It reaches every spec set built
+from the inventory: a co-op host's two referee hires, and the Guardians' specs
+beside the player's. In one spec set, it reaches each race and add-on file that
+stands for its stock file, because `shared/unit_cells.js` copies the descriptor
+shallowly for each. An op that stored the value would let a later mod, such as
+a `multiply` into a replaced object or a `tag` inside replaced `tools`, write
+into that one shared object, so the change would land once for every spec that
+holds it.
+
 `eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
 whatever code they like anyway, so the risk is not meaningful.
 
@@ -110,14 +136,25 @@ whatever code they like anyway, so the risk is not meaningful.
 
 No op ever learns whether the attribute was there. The path walker creates the leaf
 key _before_ it calls the op. The key is created as `undefined`, or as an empty
-container for `push`, `pull` and `merge`. An op therefore branches only on the value
+container for `push`, `pull` and `merge`. For `multiply`, `tag`, and `clone` it is
+not created at all (see below). An op therefore branches only on the value
 it was handed. Most ops treat a missing attribute and one that explicitly holds
 `null` alike. The two exceptions, `multiply` and `merge`, are noted under the table.
 
-The walker creates missing intermediate segments too. A path that goes several
-levels deeper than the stock spec therefore still lands. `replace` writes whatever it
-is given regardless. It is therefore the op to use, unless the new value has to be
-derived from the old one.
+The walker creates missing intermediate segments too, for every op but `multiply`,
+`tag`, and `clone`. A path that goes several levels deeper than the stock spec therefore
+still lands. `replace` writes whatever it is given regardless. It is therefore the
+op to use, unless the new value has to be derived from the old one.
+
+`multiply`, `tag`, and `clone` hand a missing target back unchanged. A container
+made on the way to one would therefore be left behind empty. So at a missing
+intermediate segment the walk stops, and nothing is written. The op is still handed
+the missing target, as at a missing leaf, so `tag` and `clone` warn and `multiply`
+stays silent. A `clone` of a missing target creates no copy, so a later mod that
+names the copy is dropped with `"Warning: File not found in mod"`. A radar
+card's `observerPaths(5, "radius")` therefore scales the observer items a unit has
+and adds none. A `multiply` of `gwoCard.paths.navigation` gives a structure no
+`navigation` at all.
 
 | Op                        | Attribute missing                             | Attribute present, holding `null` |
 | ------------------------- | --------------------------------------------- | --------------------------------- |
@@ -127,6 +164,8 @@ derived from the old one.
 | `push`, `prepend`, `pull` | Creates the array.                            | Creates the array.                |
 | `wipe`                    | Creates the string.                           | Creates the string.               |
 | `multiply`                | **Writes nothing, silently.**                 | **Warns, writes nothing.**        |
+| `tag`                     | **Warns, writes nothing.**                    | **Warns, writes nothing.**        |
+| `clone`                   | **Warns, creates no copy.**                   | **Warns, creates no copy.**       |
 | `merge`                   | Creates the object. The walker seeds it `{}`. | **Warns, writes nothing.**        |
 
 `multiply` is the one to watch. It deliberately does not create (see above), and it
@@ -202,17 +241,54 @@ declares them.
 
 ## Path segments
 
-A `path` walks into nested spec structure. There are two conventions:
+A `path` walks into nested spec structure. There are three conventions:
 
 - A **numeric** segment indexes into an array.
 - `"+"` **appends**. This is the base game's own convention for adding an array
   element.
+- `[layer=<layer>,channel=<channel>]` **selects** every item of an array whose
+  `layer` and `channel` equal those values. It is a GWO addition, made for
+  `recon.observer.items`.
+
+`specs.mod` resolves a selector against the spec as it stands when the mod
+applies, so it sees what earlier op buckets did, such as a whole-array
+`replace`. The mod then applies once for each matching item, with that item's
+index in place of the selector. A later selector in the path resolves inside
+each item. The walk to the selector only reads. A missing segment, a prefix that
+is not an array, or no matching item writes nothing and logs nothing, for every
+op, so a selector never creates an item or a container. A selector needs both
+keys, in that order. Any other form logs `Invalid selector in mod`, and the mod
+is skipped.
 
 When an intermediate segment is missing, the walker creates a container. It creates
-an array if the _next_ segment indexes into one, otherwise a plain object. The
-walker treats the leaf segment differently. The leaf is allowed to see a real
+an array if the _next_ segment indexes into one, otherwise a plain object.
+`multiply`, `tag`, and `clone` stop there instead, and to them a `"+"` is always missing
+([Creating an attribute that doesn't exist](#creating-an-attribute-that-doesnt-exist)).
+The walker treats the leaf segment differently. The leaf is allowed to see a real
 "missing" signal, so that ops like `multiplyOrCreate` and `add` can tell "absent"
 from "present".
+
+## A modded spec is flattened
+
+The first mod on a spec flattens it: `specs.mod` merges the spec's `base_spec`
+chain into it and drops `base_spec`. It reads each base as it stands at that
+moment, so a base that an earlier mod changed passes the change down. A child
+modded after its base therefore takes the change twice on every key it
+inherits: once from the base, and once as its own mod. A key that the child
+sets itself is not affected, because the child's value wins the merge.
+
+So a group that names a child and its base lists the child first.
+`gwoGroup.commanderAmmo` lists the main gun's ammo
+(`base_commander_ammo_bullet.json`, `base_commander_ammo_laser.json`) before
+`base_commander_ammo.json`. Both set their own `damage`. They inherit other
+keys, such as the `armor_damage_map` that the armour cards create. Ops run in
+buckets ([the op table](#the-op-table)), and each bucket keeps the list's
+order, so the rule holds for every op. `test/specs.test.js` pins both the
+doubling and this order.
+
+Without a mod, a spec keeps its `base_spec`. The engine then resolves the chain
+itself, and a key that the child sets replaces the key of the base. A mod on a
+base alone therefore never reaches a child that sets the same key.
 
 ## Arrays replace, they do not merge
 
@@ -234,13 +310,22 @@ arguments. The array replacer clones any array it returns.
 
 The game treats any unit with a `navigation` object as mobile, **even an empty
 one**. A mod that writes into `navigation` and then removes the value leaves
-`navigation: {}` behind, once JSON serialisation drops the now-`undefined` key. The
-result is a structure wrongly marked mobile, which adds needless Nav Agent load.
+`navigation: {}` behind, once JSON serialisation drops the now-`undefined` key. A
+`merge` of `{}` into a missing `navigation` leaves one too. The result is a
+structure wrongly marked mobile, which adds needless Nav Agent load.
 
-`pruneEmptyNavigation` handles this. It must inspect the _file's top-level_ spec.
-That is why the reference to that spec is captured before the path walk reassigns
-`spec` to a nested container. The first path segment (e.g. `"navigation"`) is
-always created on the top-level spec.
+A `multiply` of `navigation.*` on a structure never gets this far. It stops at the
+missing `navigation` and writes nothing
+([Creating an attribute that doesn't exist](#creating-an-attribute-that-doesnt-exist)).
+
+`pruneEmptyNavigation` handles the rest. It must inspect the _file's top-level_
+spec. That is why the reference to that spec is captured before the path walk
+reassigns `spec` to a nested container. The first path segment (e.g.
+`"navigation"`) is always a key of the top-level spec.
+
+Only `navigation` is pruned. Elsewhere an empty object can carry meaning:
+`teleportable: {}` makes a unit teleportable, and the Nomad loadout writes exactly
+that.
 
 Note that "empty" here means _empty after serialisation_. `JSON.stringify` drops a
 key whose value is `undefined`. `navigation` therefore counts as non-empty only if
@@ -255,7 +340,9 @@ parses each file at most once and reuses it across every tag.
 
 The invariant that makes it safe is this: **tag a clone, never the cached pristine
 copy.** A failed fetch is deliberately not cached. A later tag can therefore retry
-rather than inherit a permanent failure. `fetchRaw` hands a caller the pristine
+rather than inherit a permanent failure. A spec that fails to fetch or to tag, such
+as a file that parses to `null`, is logged and left out of that tag's set, so one
+bad file cannot stall the launch. `fetchRaw` hands a caller the pristine
 parsed spec through the same cache. `references` lists a spec's untagged references
 without touching it. `gw_play/race_cells.js` uses both to read every spec ahead of
 the referee, which then fetches nothing twice.
@@ -273,6 +360,47 @@ file again instead of inheriting the rejection.
 and `references` are both walks over it, so the two cannot disagree about what
 counts as a reference. Projectiles such as Lob ammo can spawn units when they
 expire, so `spawn_unit_on_death` is one of them.
+
+## The lobby overlay
+
+Every client of a Galactic War battle passes through stock's `gw_lobby`, which
+mounts the files the referee sent. A client that rejoins a battle passes
+through `gw_reconnect_loading`, which does the same with the files the server
+sends again. Before it mounts them, each scene's `buildLocalClientOverlayFiles`
+rebuilds every army tag from local files with stock `GW.specs.genUnitSpecs`.
+For a player tag (`.player`, and each `.player<N>` of per-player tech) it also
+applies the saved inventory's mods with stock `GW.specs.modSpecs`. An enemy AI's
+tag (`.ai<N>`) gets no mods at all, where the referee applied its AI tech. The
+result is mounted over the referee's files.
+
+Stock's `modSpecs` has no `wipe`, `prepend` or `multiplyOrCreate`, and it logs
+`Invalid operation in mod` for each of them. It cannot read a selector segment
+either: it logs `Invalid attribute encountered` and skips the mod. It has no op order, and it never
+lands a mod on race or add-on units. Its `tag` also tags a reference a second
+time after a skipped `prepend` (`.player.player`). So a client mounted specs
+that differed from the ones the referee built and the server ran, for players
+and enemy AIs alike.
+
+`gw_lobby/specs.js`, listed in both scenes, wraps the handler that receives
+the files (`gw_config` in `gw_lobby`, `memory_files` in
+`gw_reconnect_loading`). It holds the stock handler until it has swapped
+`GW.specs.genUnitSpecs` and `modSpecs` for the stand-ins in
+`shared/lobby_specs.js`. Stock looks both up on the module when it calls them,
+through the loader it chooses (`requireGW` when defined), so the script uses
+the same loader. If the modules fail to load, stock runs unchanged.
+
+- For a tag whose `/pa/units/unit_list.json<tag>` the referee sent,
+  `genUnitSpecs` resolves `{}` at once, so nothing is fetched. For a player
+  tag, `modSpecs` then deletes every file the referee also sent, so the
+  referee's copy is the one mounted. What is left is the tag's AI unit maps
+  that stock builds and the referee did not send, as before.
+- A tag the referee did not send goes to stock's `genUnitSpecs`. A player tag
+  of that kind then takes GWO's `gw_play/specs.js` `mod` in place of stock's
+  `modSpecs`: GWO's ops and their order, with no race expansion.
+
+The client therefore mounts exactly what the server runs for every army. A
+client's own skin mods no longer apply to the units of a battle's armies: the
+referee's files win.
 
 ## Where to look next
 

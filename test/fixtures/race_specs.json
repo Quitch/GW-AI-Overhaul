@@ -6251,7 +6251,9 @@
     "exiles": {
       "mods": ["com.pa.nik.exiles", "com.pa.ferretmaster.commander-merge"],
       "unitList": [
+        "/pa/units/air/base_flyer/base_flyer.json",
         "/pa/units/land/base_bot/base_bot.json",
+        "/pa/units/land/base_structure/base_structure.json",
         "/pa/units/land/base_vehicle/base_vehicle.json",
         "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json",
         "/pa/units/commanders/exiles_maxim/exiles_maxim.json",
@@ -6445,6 +6447,14 @@
               "UNITTYPE_Important"
             ],
             "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
+          },
+          "/pa/units/air/base_flyer/base_flyer.json": {
+            "display_name": "Base Flyer",
+            "unit_types": [
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Air",
+              "UNITTYPE_NoBuild"
+            ]
           },
           "/pa/units/air/fighter_stealth/fighter_stealth.json": {
             "display_name": "Kikimora",
@@ -6862,7 +6872,7 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_commander/base_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_build_arm.json",
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_weapon.json",
@@ -6909,7 +6919,7 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_commander/base_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_brainiac/exiles_brainiac_build_arm.json",
               "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_weapon.json",
@@ -6940,7 +6950,7 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_commander/base_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_maxim/exiles_maxim_build_arm.json",
               "/pa/units/commanders/exiles_maxim/exiles_maxim_tool_weapon.json",
@@ -6983,7 +6993,7 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_commander/base_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_taurus/exiles_taurus_build_arm.json",
               "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_weapon.json",
@@ -7102,6 +7112,9 @@
           },
           "/pa/units/exiles_base/base_exiles_bot.json": {
             "base_spec": "/pa/units/land/base_bot/base_bot.json"
+          },
+          "/pa/units/exiles_base/base_exiles_commander.json": {
+            "base_spec": "/pa/units/commanders/base_commander/base_commander.json"
           },
           "/pa/units/exiles_base/base_exiles_flyer.json": {
             "base_spec": "/pa/units/air/base_flyer/base_flyer.json"
@@ -7273,6 +7286,10 @@
               "UNITTYPE_Land",
               "UNITTYPE_NoBuild"
             ]
+          },
+          "/pa/units/land/base_structure/base_structure.json": {
+            "display_name": "Base Structure",
+            "unit_types": ["UNITTYPE_Structure", "UNITTYPE_NoBuild"]
           },
           "/pa/units/land/base_vehicle/base_vehicle.json": {
             "display_name": "Base Vehicle",
@@ -7745,12 +7762,13 @@
             "ammo_id": "/pa/units/land/shah/shah_ammo.json"
           },
           "/pa/units/land/stalker/stalker.json": {
-            "display_name": "!LOC:Cobra",
+            "display_name": "!LOC:Gremlin",
             "unit_types": [
               "UNITTYPE_Tank",
               "UNITTYPE_Vehicle",
               "UNITTYPE_Mobile",
               "UNITTYPE_Land",
+              "UNITTYPE_Hover",
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable",
@@ -8630,7 +8648,7 @@
             "ammo_id": "/pa/units/sea/scilla/scilla_ammo.json"
           },
           "/pa/units/sea/t_battleship/t_battleship.json": {
-            "display_name": "Leviathan",
+            "display_name": "Fangtooth",
             "unit_types": [
               "UNITTYPE_Custom6",
               "UNITTYPE_Naval",
@@ -8642,11 +8660,22 @@
             ],
             "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json"
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json"
             ]
+          },
+          "/pa/units/sea/t_battleship/t_battleship_ammo.json": {
+            "base_spec": "/pa/ammo/base_beam/base_beam.json"
+          },
+          "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/sea/t_battleship/t_battleship_ammo.json"
+          },
+          "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/sea/t_battleship/t_battleship_ammo.json"
           },
           "/pa/units/sea/t_hover_skiff/t_hover_skiff.json": {
             "display_name": "Skipper",

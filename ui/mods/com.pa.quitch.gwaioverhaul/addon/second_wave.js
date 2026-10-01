@@ -59,24 +59,18 @@ define(function () {
         "/pa/units/l_addon/adv_mass_generator/adv_mass_generator.json",
       advancedMassGeneratorDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMassGeneratorAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMassGeneratorBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalGenerator:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator.json",
       advancedMetalGeneratorDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMetalGeneratorAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMetalGeneratorBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalGeneratorBugs:
         "/pa/units/b_addon/adv_metal_generator/adv_metal_generator.json",
       advancedMetalGeneratorBugsDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMetalGeneratorBugsAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMetalGeneratorBugsBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalStorage:
@@ -93,16 +87,16 @@ define(function () {
         "/pa/units/addon/anti_missile_tower/anti_missile_tower_tool.json",
       antiMissileTowerAmmo:
         "/pa/units/addon/anti_missile_tower/anti_missile_tower_ammo.json",
-      antiMissileTowerTool2Weapon:
+      antiMissileTower2Weapon:
         "/pa/units/addon/anti_missile_tower/anti_missile_tower_tool_2.json",
-      antiMissileTowerAmmo2Ammo:
+      antiMissileTower2Ammo:
         "/pa/units/addon/anti_missile_tower/anti_missile_tower_ammo_2.json",
       beowulf: "/pa/units/l_addon/l_demi_titan_bot/l_demi_titan_bot.json",
       beowulfWeapon:
         "/pa/units/l_addon/l_demi_titan_bot/l_demi_titan_bot_weapon.json",
       beowulfAmmo:
         "/pa/units/l_addon/l_demi_titan_bot/l_demi_titan_bot_ammo.json",
-      beowulfAmmoDeathAmmo:
+      beowulfDeathAmmo:
         "/pa/units/l_addon/l_demi_titan_bot/l_demi_titan_bot_ammo_death.json",
       centaur: "/pa/units/addon/adv_heavy_bot/adv_heavy_bot.json",
       centaurWeapon: "/pa/units/addon/adv_heavy_bot/adv_heavy_bot_weapon.json",
@@ -121,12 +115,10 @@ define(function () {
         "/pa/units/l_addon/fab_turret/fab_turret_build_arm.json",
       gigasiloStorageDevice:
         "/pa/units/l_addon/l_adv_storage/l_adv_storage.json",
-      gigasiloStorageDeviceDeathAmmo:
-        "/pa/units/land/l_adv_storage/l_adv_storage_death_weapon.json",
       juno: "/pa/units/addon/demi_titan_bot/demi_titan_bot.json",
       junoWeapon: "/pa/units/addon/demi_titan_bot/demi_titan_bot_weapon.json",
       junoAmmo: "/pa/units/addon/demi_titan_bot/demi_titan_bot_ammo.json",
-      junoAmmoDeathAmmo:
+      junoDeathAmmo:
         "/pa/units/addon/demi_titan_bot/demi_titan_bot_ammo_death.json",
       kampela:
         "/pa/units/addon/naval_anti_orbital_ship/naval_anti_orbital.json",
@@ -141,7 +133,7 @@ define(function () {
       lynx: "/pa/units/l_addon/anti_orbital_armor/lynx.json",
       lynxWeapon: "/pa/units/l_addon/anti_orbital_armor/lynx_weapon.json",
       lynxAmmo: "/pa/units/l_addon/anti_orbital_armor/lynx_ammo.json",
-      lynxToolAntidropWeapon:
+      lynxAntidropWeapon:
         "/pa/units/l_addon/anti_orbital_armor/lynx_tool_antidrop.json",
       lynxAntidropAmmo:
         "/pa/units/l_addon/anti_orbital_armor/lynx_antidrop_ammo.json",
@@ -157,28 +149,24 @@ define(function () {
       massGenerator: "/pa/units/l_addon/mass_generator/mass_generator.json",
       massGeneratorDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      massGeneratorAmmo: "/pa/units/land/assault_bot/assault_bot_ammo.json",
       massGeneratorBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       metalGenerator: "/pa/units/addon/metal_generator/metal_generator.json",
       metalGeneratorDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      metalGeneratorAmmo: "/pa/units/land/assault_bot/assault_bot_ammo.json",
       metalGeneratorBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       metalGeneratorBugs:
         "/pa/units/b_addon/metal_generator/metal_generator.json",
       metalGeneratorBugsDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      metalGeneratorBugsAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       metalGeneratorBugsBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       orbitalAntiNukeCannon:
         "/pa/units/l_addon/orbital_anti_nuke/orbital_anti_nuke.json",
-      orbitalAntiNukeCannonWeaponLandWeapon:
+      orbitalAntiNukeCannonLandWeapon:
         "/pa/units/l_addon/orbital_anti_nuke/orbital_anti_nuke_weapon_land.json",
-      orbitalAntiNukeCannonAmmoLandAmmo:
+      orbitalAntiNukeCannonLandAmmo:
         "/pa/units/l_addon/orbital_anti_nuke/orbital_anti_nuke_ammo_land.json",
       orbitalAntiNukeCannonWeapon:
         "/pa/units/l_addon/orbital_anti_nuke/orbital_anti_nuke_weapon.json",
@@ -186,9 +174,9 @@ define(function () {
         "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke_ammo.json",
       orbitalAntiNukePlatform:
         "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke.json",
-      orbitalAntiNukePlatformWeaponOrbitalWeapon:
+      orbitalAntiNukePlatformOrbitalWeapon:
         "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke_weapon_orbital.json",
-      orbitalAntiNukePlatformAmmoOrbitalAmmo:
+      orbitalAntiNukePlatformOrbitalAmmo:
         "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke_ammo_orbital.json",
       orbitalAntiNukePlatformWeapon:
         "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke_weapon.json",
@@ -219,7 +207,7 @@ define(function () {
       rex: "/pa/units/addon/rex/rex.json",
       rexWeapon: "/pa/units/addon/rex/rex_tool_weapon.json",
       rexAmmo: "/pa/units/addon/rex/rex_ammo.json",
-      rexToolAntidropWeapon: "/pa/units/addon/rex/rex_tool_antidrop.json",
+      rexAntidropWeapon: "/pa/units/addon/rex/rex_tool_antidrop.json",
       rexAntidropAmmo: "/pa/units/addon/rex/rex_antidrop_ammo.json",
       saxon: "/pa/units/addon/adv_tank_hover/adv_tank_hover.json",
       saxonWeapon:
@@ -257,10 +245,9 @@ define(function () {
       swordfishAmmo: "/pa/units/addon/swordfish/swordfish_ammo.json",
       swordfishTorpedoWeapon:
         "/pa/units/addon/swordfish/swordfish_torpedo.json",
-      swordfishAmmoTorpedoAmmo:
+      swordfishTorpedoAmmo:
         "/pa/units/addon/swordfish/swordfish_ammo_torpedo.json",
-      swordfishToolBoomWeapon:
-        "/pa/units/addon/swordfish/swordfish_tool_boom.json",
+      swordfishBoomWeapon: "/pa/units/addon/swordfish/swordfish_tool_boom.json",
       swordfishBombAmmo: "/pa/units/addon/swordfish/swordfish_bomb_ammo.json",
     },
     unitNames: {

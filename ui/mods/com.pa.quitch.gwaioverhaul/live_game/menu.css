@@ -1,0 +1,6 @@
+/* The menu panel is cut to this container, which live_game.css fixes at 300px,
+   so let the container grow leftwards with the menu. */
+.div_game_menu.gwo-game-menu {
+  width: auto;
+  min-width: 300px;
+}

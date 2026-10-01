@@ -199,6 +199,55 @@ describe("getAIPathDestination - Queller", () => {
   });
 });
 
+describe("co-op AI paths", () => {
+  it("a Queller co-op AI reads and writes q_uber/, whatever the smart flag", () => {
+    for (const smartSubcommanders of [true, false]) {
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("coop", "Queller", {
+          smartSubcommanders: smartSubcommanders,
+        }),
+        "/pa/ai_queller/q_uber/"
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathSource("coop", "Queller", smartSubcommanders),
+        "/pa/ai_queller/q_uber/"
+      );
+    }
+  });
+
+  it("scopes the brain's own root with a sanitised token", () => {
+    assert.equal(
+      refereeAIPaths.getCoopAiPath("Titans", "coopai"),
+      "/pa/ai/player_coopai/"
+    );
+    assert.equal(
+      refereeAIPaths.getCoopAiPath("Penchant", "coopai_2"),
+      "/pa/ai_penchant/player_coopai_2/"
+    );
+    assert.equal(
+      refereeAIPaths.getCoopAiPath("Queller", ".player3"),
+      "/pa/ai_queller/q_uber/player_player3/"
+    );
+  });
+
+  it("is scoped even without a token", () => {
+    for (const token of [undefined, "", "..."]) {
+      assert.equal(
+        refereeAIPaths.getCoopAiPath("Titans", token),
+        "/pa/ai/player_coop/"
+      );
+    }
+  });
+
+  it("never takes the Cluster or subcommander trees", () => {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+      const path = refereeAIPaths.getCoopAiPath(aiInUse, "coopai");
+      assert.equal(path.indexOf("/pa/ai_cluster/"), -1, aiInUse);
+      assert.equal(path.indexOf("/pa/ai_subcommander/"), -1, aiInUse);
+    }
+  });
+});
+
 describe("getAIPathSource", () => {
   it("Penchant resolves to /pa/ai_penchant/", () => {
     assert.equal(
@@ -335,6 +384,10 @@ describe("race option", () => {
         ),
         "/pa/ai_subcommander_race_fixture/player_.player0/"
       );
+      assert.equal(
+        refereeAIPaths.getCoopAiPath("Queller", "coopai", "fixture"),
+        "/pa/ai_queller_race_fixture/q_uber/player_coopai/"
+      );
     } finally {
       races.reset();
     }
@@ -349,16 +402,27 @@ describe("race option", () => {
     }
   });
 
+  // Registered, so a source that consulted the race routing would move.
   it("never changes the source: the race tree is written from the brain's files", () => {
-    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
-      assert.equal(
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false),
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false)
-      );
-      assert.equal(
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false).indexOf("race"),
-        -1
-      );
+    races.register(FIXTURE_RACE);
+    try {
+      for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+        const source = refereeAIPaths.getAIPathSource("enemy", aiInUse, false);
+        assert.equal(
+          source,
+          refereeAIPaths.getAIPathDestination("enemy", aiInUse),
+          aiInUse + ": the source is the brain's own tree"
+        );
+        assert.notEqual(
+          source,
+          refereeAIPaths.getAIPathDestination("enemy", aiInUse, {
+            race: "fixture",
+          }),
+          aiInUse + ": the source is not the race's tree"
+        );
+      }
+    } finally {
+      races.reset();
     }
   });
 });

@@ -11,7 +11,10 @@
 const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -29,6 +32,20 @@ const {
   inventoryClass,
   rejection,
 } = require("../scripts/lib/coop-fixtures.js");
+
+// The gate is pinned in coop_publish.test.js; here it only matters what the
+// reroll asks it to publish.
+const published = { reasons: [] };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    publish: (reason, except) => {
+      published.reasons.push(except ? { reason, except } : reason);
+      return true;
+    },
+    settle: () => false,
+  }
+);
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
@@ -68,6 +85,7 @@ function setup(overrides = {}) {
   const options = Object.assign(
     {
       records: { alice: record() },
+      campaignActive: true,
       isHost: true,
       perPlayerTech: true,
       stars: [{ id: 0 }, { id: 1 }, { id: 2 }],
@@ -76,6 +94,7 @@ function setup(overrides = {}) {
       upsertOk: true,
       saveFails: false,
       manifestFails: false,
+      duringDeal: undefined,
     },
     overrides
   );
@@ -92,13 +111,18 @@ function setup(overrides = {}) {
     offerRerolls: [],
     bank: [],
     offerCounts: [],
+    viewerOperators: [],
+    published: [],
     prepared: 0,
   };
+  published.reasons = calls.published;
+  let rerollPending = false;
   const handlers = {};
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
   stubs.setGlobal("model", {
+    gwCampaignActive: () => options.campaignActive,
     isCampaignHost: () => options.isHost,
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
     registerCampaignViewerOperatorHandler: (name, fn) => {
@@ -110,7 +134,15 @@ function setup(overrides = {}) {
     sendCampaignHostOperator: (name, payload, meta) =>
       calls.hostOperators.push([name, payload, meta]),
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
-    gwoRerollPending: (value) => calls.rerollPending.push(value),
+    gwoRerollPending: (...value) => {
+      if (value.length) {
+        rerollPending = value[0];
+        calls.rerollPending.push(value[0]);
+      }
+      return rerollPending;
+    },
+    sendCampaignViewerOperator: (name, payload, meta) =>
+      calls.viewerOperators.push([name, payload, meta]),
     scanning: (value) => calls.scanning.push(value),
     gwoRerollsUsed: (value) => calls.rerollsUsed.push(value),
     gwoOfferRerolls: (value) => calls.offerRerolls.push(value),
@@ -133,11 +165,14 @@ function setup(overrides = {}) {
     inventory: () => ({ cards: () => HOST_CARDS }),
   };
 
-  makeFactory({
+  const handle = makeFactory({
     game,
     galaxy: { stars: () => options.stars },
     chooseCards: (request) => {
       calls.deals.push(request);
+      if (options.duringDeal) {
+        options.duringDeal(options.records);
+      }
       return resolved(
         Array.from({ length: request.count }, (unused, n) => ({
           id: "reroll_" + n,
@@ -183,11 +218,74 @@ function setup(overrides = {}) {
     calls,
     options,
     game,
+    handle,
     restore: () => stubs.restoreGlobals(),
   };
 }
 
 const { build, release } = trackActive(setup);
+
+// The same reroll for a player the host deals itself: a co-op AI player.
+// Nothing is stored, sent or saved; the driver writes the settled result.
+describe("rerollHandForRecord", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1" };
+  const aiRecord = () => ({
+    id: "gwo_ai_1",
+    playerId: "gwo_ai_1",
+    inventory: { cards: [] },
+  });
+
+  // The driver counts an AI's spent rerolls with the same function.
+  it("hands out the reroll count it deals by", () => {
+    const run = build();
+    assert.deepEqual(run.handle.computeRerollDeal(4, 3), {
+      rerollsUsed: 1,
+      nextRerollsUsed: 2,
+      cardCount: 2,
+      exhausted: false,
+    });
+  });
+
+  it("deals one card fewer from the reroll's stream, and keeps it in memory", async () => {
+    const run = build();
+    const rerolled = await run.handle.rerollHandForRecord({
+      record: aiRecord(),
+      client: AI,
+      pendingTechCards: pendingTechCards(),
+      star: { id: 2 },
+    });
+
+    assert.equal(rerolled.rerollsUsed, 1);
+    assert.equal(rerolled.pendingTechCards.cards.length, 2);
+    assert.equal(rerolled.pendingTechCards.rerollsUsed, 1);
+    assert.deepEqual(run.calls.deals[0].rng, {
+      playerKey: "gwo_ai_1",
+      dealIndex: 4,
+      rerollsUsed: 1,
+    });
+    assert.deepEqual(run.calls.upserts, []);
+    assert.deepEqual(run.calls.hostOperators, []);
+    assert.deepEqual(run.calls.snapshots, []);
+    assert.deepEqual(run.calls.published, []);
+    assert.deepEqual(run.calls.saves, []);
+  });
+
+  it("refuses once no reroll remains", async () => {
+    const run = build({ cardsOffered: 3 });
+    await assert.rejects(
+      run.handle.rerollHandForRecord({
+        record: aiRecord(),
+        client: AI,
+        pendingTechCards: Object.assign(pendingTechCards(), {
+          cards: [{ id: "last" }],
+          rerollsUsed: 2,
+        }),
+        star: { id: 2 },
+      }),
+      /no pending tech rerolls remain/
+    );
+  });
+});
 
 const operator = (extra) =>
   Object.assign(
@@ -225,7 +323,11 @@ describe("host reroll handler - refusals", () => {
   // No result is sent back here: a client that is not talking to a host with
   // per-player tech on has nothing to apply.
   it("rejects when this client is not a host running per-player tech", async () => {
-    for (const off of [{ isHost: false }, { perPlayerTech: false }]) {
+    for (const off of [
+      { campaignActive: false },
+      { isHost: false },
+      { perPlayerTech: false },
+    ]) {
       const { handlers, calls } = build(off);
       assert.match(
         await rejection(handlers[REQUEST](operator())),
@@ -433,12 +535,18 @@ describe("host reroll handler - the reroll", () => {
     assert.equal(calls.deals[0].count, 1);
   });
 
-  it("broadcasts and saves the new offer", async () => {
+  // Through the viewers' gate, never straight to the server: another
+  // viewer's choice in flight would otherwise be replaced there. The viewer
+  // who asked is left out of the test, as it waits with its offer hidden.
+  it("publishes the new offer through the viewers' gate, and saves it", async () => {
     const { handlers, calls } = build();
 
     await handlers[REQUEST](operator());
 
-    assert.deepEqual(calls.snapshots, [[REQUEST, true]]);
+    assert.deepEqual(calls.published, [
+      { reason: REQUEST, except: { id: "alice", name: "alice" } },
+    ]);
+    assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, [true]);
   });
 
@@ -478,6 +586,143 @@ describe("host reroll handler - the reroll", () => {
     await handlers[REQUEST](operator({ payload: {} }));
 
     assert.equal(calls.upserts.length, 1);
+  });
+
+  // A host win while the reroll was being dealt owes the record a re-deal;
+  // writing over the record as first read would drop that debt.
+  it("stores the new offer on the record as it is now", async () => {
+    const { handlers, calls } = build({
+      duringDeal: (records) => {
+        records.alice = Object.assign({}, records.alice, {
+          gwaioStarCards: { redealOwed: true },
+        });
+      },
+    });
+
+    await handlers[REQUEST](operator());
+
+    assert.equal(calls.upserts.length, 1);
+    assert.deepEqual(calls.upserts[0].gwaioStarCards, { redealOwed: true });
+    assert.equal(calls.upserts[0].pendingTechCards.rerollsUsed, 1);
+  });
+
+  it("refuses when the offer changed while the reroll was dealt", async () => {
+    const { handlers, calls } = build({
+      duringDeal: (records) => {
+        records.alice = Object.assign({}, records.alice, {
+          pendingTechCards: pendingTechCards({ dealIndex: 5 }),
+        });
+      },
+    });
+
+    await captureErrors(() => rejection(handlers[REQUEST](operator())));
+
+    assert.deepEqual(errorsSentBack(calls), ["stale pending tech cards"]);
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.saves, []);
+  });
+});
+
+describe("viewer reroll request", () => {
+  let timers;
+
+  before(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  after(() => timers.restore());
+
+  afterEach(() => {
+    timers.delayed.length = 0;
+  });
+
+  const replyTimeout = () =>
+    timers.delayed.filter((entry) => entry.wait === 120000);
+
+  // The host's answer to the viewer's nth request, as the server relays it:
+  // the request_id the viewer sent comes back on the envelope.
+  const answer = (calls, n, extra) => ({
+    request_id: calls.viewerOperators[n][2].request_id,
+    payload: Object.assign(
+      {
+        client_id: "alice",
+        client_name: "alice",
+        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
+      },
+      extra
+    ),
+  });
+
+  it("asks the host and holds the offer behind the scan", () => {
+    const { handle, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+
+    assert.deepEqual(calls.rerollPending, [true]);
+    assert.deepEqual(calls.scanning, [true]);
+    assert.equal(calls.viewerOperators.length, 1);
+    assert.equal(calls.viewerOperators[0][0], REQUEST);
+    assert.deepEqual(calls.viewerOperators[0][1], { star: 2, deal_index: 4 });
+  });
+
+  // No host, or a host reload mid-exchange, and no answer ever comes.
+  it("lets the offer go when the host never answers", async () => {
+    const { handle, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    const errors = await captureErrors(async () => {
+      assert.equal(replyTimeout().length, 1);
+      replyTimeout()[0].fn();
+    });
+
+    assert.deepEqual(calls.rerollPending, [true, false]);
+    assert.deepEqual(calls.scanning, [true, false]);
+    assert.match(errors[0], /pending tech reroll got no reply/);
+  });
+
+  it("leaves an answered request alone", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await handlers[RESULT](answer(calls, 0));
+    replyTimeout()[0].fn();
+
+    assert.deepEqual(calls.rerollPending, [true, false]);
+    assert.deepEqual(calls.scanning, [true]);
+    assert.equal(calls.upserts.length, 1);
+  });
+
+  it("does not cut short a newer request when an older one times out", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await handlers[RESULT](answer(calls, 0));
+    handle.requestReroll(pendingTechCards({ cards: [{ id: "x" }] }));
+    replyTimeout()[0].fn();
+
+    assert.deepEqual(calls.rerollPending, [true, false, true]);
+    assert.deepEqual(calls.scanning, [true, true]);
+  });
+
+  // Asked again after a timeout, the viewer must keep waiting for that answer:
+  // freed by the first, it could choose while the second still rerolls.
+  it("ignores an older request's answer while a newer one waits", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await captureErrors(async () => replyTimeout()[0].fn());
+    handle.requestReroll(pendingTechCards());
+
+    const errors = await captureErrors(() =>
+      handlers[RESULT](answer(calls, 0))
+    );
+    assert.match(errors[0], /pending tech reroll result for an older request/);
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.rerollPending, [true, false, true]);
+
+    await handlers[RESULT](answer(calls, 1));
+    assert.equal(calls.upserts.length, 1);
+    assert.deepEqual(calls.rerollPending, [true, false, true, false]);
   });
 });
 
@@ -619,6 +864,32 @@ describe("viewer reroll result handler", () => {
     assert.match(errors[0], /failed to apply pending tech reroll result/);
   });
 
+  // After the reply timeout the viewer may have chosen from the old hand. The
+  // server then holds no offer, so bringing one back would strand the viewer.
+  it("drops a late reply once the viewer has chosen", async () => {
+    const { handlers, calls } = build({
+      records: { alice: record({ pendingTechCards: undefined }) },
+    });
+
+    const errors = await captureErrors(() => handlers[RESULT](result()));
+
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.rerollsUsed, []);
+    assert.match(errors[0], /pending tech reroll result for a closed offer/);
+  });
+
+  it("drops a reply meant for an earlier deal", async () => {
+    const { handlers, calls } = build({
+      records: {
+        alice: record({ pendingTechCards: pendingTechCards({ dealIndex: 5 }) }),
+      },
+    });
+
+    await captureErrors(() => handlers[RESULT](result()));
+
+    assert.deepEqual(calls.upserts, []);
+  });
+
   // Returned rather than fired and forgotten, so the base campaign queue can
   // order the save against the next operator.
   it("returns work the campaign queue can wait on", async () => {
@@ -628,15 +899,17 @@ describe("viewer reroll result handler", () => {
     await returned;
   });
 
-  it("reports a failed manifest save without rejecting the handler", async () => {
+  it("reports a failed manifest save, and rejects so the campaign queue sees it", async () => {
     const { handlers } = build({ manifestFails: true });
+    let reason;
 
-    const errors = await captureErrors(() =>
-      rejection(handlers[RESULT](result()))
-    );
+    const errors = await captureErrors(async () => {
+      reason = await rejection(handlers[RESULT](result()));
+    });
 
     assert.ok(
       errors.some((message) => /failed to save rerolled tech/.test(message))
     );
+    assert.equal(reason && reason.message, "manifest failed");
   });
 });

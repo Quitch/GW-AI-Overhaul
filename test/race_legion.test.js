@@ -3,23 +3,20 @@
 // race/legion.js: the Legion Expansion descriptor, its unit table, and what
 // the capability cells make of Legion's units against GWO's cards. The cells
 // come from the harvested fixture (test/fixtures/unit_types.json), which
-// carries Legion's units when the mod's source tree was on disk at harvest.
+// carries Legion's units when the mod was on disk at harvest.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const path = require("node:path");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { userDataDir } = require("../scripts/lib/pa-install.js");
 
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const {
-  harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
+const { fixtureIndex, modFiles } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
@@ -32,14 +29,6 @@ const legionUnits = Object.keys(fixture).filter((unit) =>
   fixture[unit].includes("UNITTYPE_Custom1")
 );
 
-function legionZip() {
-  const candidates = [
-    process.env.GWO_LEGION_ZIP,
-    path.join(userDataDir(), "download", "com.pa.legion-expansion-server.zip"),
-  ];
-  return candidates.find((candidate) => candidate && fs.existsSync(candidate));
-}
-
 describe("the Legion descriptor", () => {
   it("is registered as shipped, with its six commanders and both AI layouts", () => {
     const race = races.byId("legion");
@@ -49,6 +38,22 @@ describe("the Legion descriptor", () => {
     assert.equal(race.unitTypeBit, "Custom1");
     assert.equal(race.commanderArtHue, 0);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom1");
+    assert.deepEqual(race.commanderTypes.metalExtractorNames, {
+      basic: "LegionEcoBasicMetalExtractor",
+      advanced: "LegionEcoAdvancedMetalExtractor",
+    });
+    assert.deepEqual(race.engineKeys, {
+      BasicVehicleFactory:
+        "/pa/units/land/l_vehicle_factory/l_vehicle_factory.json",
+      BasicBotFactory: "/pa/units/land/l_bot_factory/l_bot_factory.json",
+      BasicAirFactory: "/pa/units/air/l_air_factory/l_air_factory.json",
+      BasicNavalFactory: "/pa/units/sea/l_naval_factory/l_naval_factory.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/l_orbital_launcher/l_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/l_anti_nuke_launcher/l_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/land/l_control_module/l_control_module.json",
+    });
     assert.ok(race.ai.titans.sources.length >= 4);
     assert.deepEqual(race.ai.queller.exclude, ["/mla/", "/unit_maps/mla.json"]);
     assert.ok(race.playerIcon.fill && race.playerIcon.outline);
@@ -75,22 +80,20 @@ describe("the Legion descriptor", () => {
     );
   });
 
-  it("maps to files the installed Legion zip ships (skipped without one)", (t) => {
-    const zipPath = legionZip();
-    if (!zipPath) {
-      t.skip("no Legion zip installed");
+  it("maps to files the installed Legion mod ships (skipped without it)", (t) => {
+    const files = modFiles(legion.serverMods);
+    if (!files) {
+      t.skip("no Legion mod on disk");
       return;
     }
-    // A zip's central directory lists every entry name in plain text.
-    const bytes = fs.readFileSync(zipPath).toString("latin1");
     for (const [key, value] of Object.entries(legion.units)) {
       if (!/\/l_/.test(value)) {
         continue;
       }
-      assert.ok(bytes.includes(value.slice(1)), key + " -> " + value);
+      assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
     for (const commander of legion.commanders) {
-      assert.ok(bytes.includes(commander.spec.slice(1)), commander.spec);
+      assert.ok(files.has(commander.spec.slice(1)), commander.spec);
     }
   });
 });
@@ -98,7 +101,7 @@ describe("the Legion descriptor", () => {
 describe("Legion under capability cells", () => {
   before(() => {
     if (legionUnits.length) {
-      races.setCells("legion", harvestedIndex(fixture, undefined, "Custom1"));
+      races.setCells("legion", fixtureIndex("legion"));
     }
   });
   after(() => {

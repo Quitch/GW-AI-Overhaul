@@ -1,10 +1,10 @@
 "use strict";
 
 // shared/gwo_promise.js: settled, the adapter that turns an engine promise
-// into one jQuery waits for, and steps, a chain that a step's synchronous
-// throw rejects. See constraints.md.
+// into one jQuery waits for, steps, a chain that a step's synchronous throw
+// rejects, and within, a promise raced against a timeout. See constraints.md.
 
-const { describe, it, beforeEach, afterEach } = require("node:test");
+const { describe, it, beforeEach, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
@@ -49,6 +49,18 @@ describe("settled", () => {
     engine.reject(new Error("no"));
 
     assert.equal(await waiting, "fallback");
+  });
+
+  // So a caller can log why, as dealing the AI stars' cards does.
+  it("hands onFailure the reason the call failed", async () => {
+    const reasons = [];
+    const failed = Promise.reject(new Error("refresh failed"));
+
+    await gwoPromise.settled(failed, (reason) => {
+      reasons.push(reason.message);
+    });
+
+    assert.deepEqual(reasons, ["refresh failed"]);
   });
 
   it("resolves undefined when a failure has nothing to fall back on", async () => {
@@ -212,5 +224,71 @@ describe("steps under jQuery 2's Deferred", () => {
 
     assert.deepEqual(ran, []);
     assert.equal(reason.message, "no races");
+  });
+});
+
+describe("within", () => {
+  beforeEach(() => {
+    mock.timers.enable({ apis: ["setTimeout"] });
+  });
+
+  afterEach(() => {
+    mock.timers.reset();
+  });
+
+  it("settles as the promise does while there is time", async () => {
+    assert.equal(
+      await gwoPromise.within(Promise.resolve("built"), 50, "AI build"),
+      "built"
+    );
+    await assert.rejects(
+      gwoPromise.within(Promise.reject(new Error("broke")), 50, "AI build"),
+      (error) => error.message === "broke" && !error.gwoTimedOut
+    );
+  });
+
+  // The co-op AI driver tells a timeout from a failure by gwoTimedOut.
+  it("rejects once the time runs out, naming what timed out", async () => {
+    const raced = gwoPromise.within(new Promise(() => {}), 50, "write");
+    let settled = false;
+    raced.then(
+      () => {
+        settled = true;
+      },
+      () => {
+        settled = true;
+      }
+    );
+
+    mock.timers.tick(49);
+    await flush();
+    assert.equal(settled, false);
+
+    mock.timers.tick(1);
+    await assert.rejects(
+      raced,
+      (error) =>
+        error.message === "write timed out after 50ms" &&
+        error.gwoTimedOut === true
+    );
+  });
+
+  it("drops a result that lands after the time ran out", async () => {
+    let land;
+    const raced = gwoPromise.within(
+      new Promise((resolve) => {
+        land = resolve;
+      }),
+      50,
+      "AI build"
+    );
+
+    const rejected = assert.rejects(raced, /AI build timed out after 50ms/);
+
+    mock.timers.tick(50);
+    land("too late");
+    await flush();
+
+    await rejected;
   });
 });

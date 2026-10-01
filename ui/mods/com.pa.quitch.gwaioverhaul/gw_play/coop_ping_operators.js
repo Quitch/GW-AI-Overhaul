@@ -144,28 +144,22 @@ define([
       );
     };
 
-    // Drives both the button's visibility and the send, so a click that lands as
-    // the war moves on cannot get past it.
-    var canPing = function (star) {
-      if (
-        !model.isCampaignViewer() ||
-        !model.gwCampaignConnected() ||
-        model.canShowCampaignActionButtons() ||
-        model.hidingUI() ||
-        starValidationError(star, starCount())
-      ) {
-        return false;
-      }
-
+    // Whether the war takes a ping now, at any star, whoever sends it.
+    var warOpenForPing = function () {
       // An explore or a fight is the host's to finish. Testing for those rather
       // than for begin is deliberate: the turn state only returns to begin on
       // the next move, so a finished exploration rests at end - which is exactly
       // when somewhere to go next is worth pointing at.
-      if (
+      return !(
         model.testGameState({ explore: true, fight: true }, false) ||
         model.scanning() ||
         techChoicePending(pendingTechRecords())
-      ) {
+      );
+    };
+
+    // Whether the war and the star take a ping now, whoever sends it.
+    var starOpenForPing = function (star) {
+      if (starValidationError(star, starCount()) || !warOpenForPing()) {
         return false;
       }
 
@@ -173,6 +167,59 @@ define([
       // host for.
       var system = systemFor(star);
       return !!system && !system.star.explored();
+    };
+
+    // Drives both the button's visibility and the send, so a click that lands as
+    // the war moves on cannot get past it.
+    var canPing = function (star) {
+      if (
+        !model.isCampaignViewer() ||
+        !model.gwCampaignConnected() ||
+        model.canShowCampaignActionButtons() ||
+        model.hidingUI()
+      ) {
+        return false;
+      }
+
+      return starOpenForPing(star);
+    };
+
+    var hostingPings = function () {
+      return model.isCampaignHost() && model.gwCampaignConnected();
+    };
+
+    // A co-op AI player has no client to ping from, so the host pings for it.
+    // See coop.md, "AI pings".
+    var canPingAs = function (star) {
+      return hostingPings() && starOpenForPing(star);
+    };
+
+    // canPingAs at any star: the AI pings' window opens only inside it.
+    var canPingAsNow = function () {
+      return hostingPings() && warOpenForPing();
+    };
+
+    // sender: { id, name }. Returns whether the ping went out: the host's
+    // cooldown is kept per sender, as for a viewer.
+    var pingStarAs = function (star, sender) {
+      if (!sender || !canPingAs(star)) {
+        return false;
+      }
+
+      if (!hostCooldown.allow(clientKey(sender.id, sender.name), _.now())) {
+        return false;
+      }
+
+      // No target: the relay reads that as every connected viewer.
+      model.sendCampaignHostOperator(PING_BROADCAST, {
+        star: star,
+        ping_id: nextPingId(),
+        client_id: sender.id,
+        client_name: sender.name,
+      });
+
+      showPing(star, sender.name);
+      return true;
     };
 
     // The pinger renders locally rather than waiting for the relay to come back,
@@ -198,8 +245,8 @@ define([
       showPing(payload.star, model.displayName());
     };
 
-    // Returns nothing: a ping mutates no campaign state, so it must not join the
-    // queue the base game orders authoritative updates with.
+    // Returns nothing: stock queues every operator, and a ping mutates no
+    // campaign state, so later updates in that queue need not wait on it.
     var relayPingToViewers = function (operator) {
       // The handler is registered on every client, host or not.
       if (!model.isCampaignHost() || !model.gwCampaignConnected()) {
@@ -257,7 +304,13 @@ define([
       applyPingBroadcast
     );
 
-    return { canPing: canPing, pingStar: pingStar };
+    return {
+      canPing: canPing,
+      pingStar: pingStar,
+      canPingAs: canPingAs,
+      canPingAsNow: canPingAsNow,
+      pingStarAs: pingStarAs,
+    };
   };
 
   // Test-only hook - see testing.md.

@@ -29,19 +29,23 @@ nothing else. `validate:docs` checks this table against that block:
 | ---------------------------- | -------------------------------------------------------------------------------------------------- |
 | `gw_start`                   | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
 | `gw_play`                    | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
-| `gw_war_over`                | Victory/defeat bookkeeping: records the highest difficulty defeated.                               |
-| `live_game`                  | In-battle menu patches (surrender/continue with more than two teams).                              |
+| `gw_war_over`                | A won war only: records the highest difficulty won with its loadout, for the loadout's badge.      |
+| `live_game`                  | Menu patches (surrender/continue past two teams; Report a Galactic War Bug); win-conditions text.  |
 | `live_game_options_bar`      | Win-conditions text on the in-battle options bar.                                                  |
-| `shared_build`               | Planetary radar behaviour.                                                                         |
+| `shared_build`               | Moves the Deep Space Radar's build-bar slot off the radar jammer's.                                |
 | `start`                      | Main menu.                                                                                         |
 | `gw_coop_per_player_loadout` | Per-player loadout selection for co-op viewers.                                                    |
+| `gw_lobby`                   | The battle lobby: the referee's army specs win over stock's local rebuild.                         |
+| `gw_reconnect_loading`       | Rejoining a battle: the same as `gw_lobby`, for the files the server sends again.                  |
 | `global_mod_list`            | Every panel, before the scene's own scripts: translation registration only.                        |
 
 `gw_play` carries most of the entries. Two of its entries own a panel outright.
 `gwo_panel.js` builds GWO's own war panel. That panel shows the seed, the
 difficulty, the AI brains, the war's game options, and each client's colour for
 the next battle. `section_of_foreign_intelligence/` is the intel panel. It is
-vendored code under its own licence, so the attribution at its head stays.
+vendored code under its own licence, so the attribution at its head stays. Its
+threat measure lives in `shared/star_threat.js`, under the same attribution,
+because co-op AI players weigh it too.
 
 `shared/mod_translations.js` is the sole `global_mod_list` entry and is in no scene
 list: it registers GWO's translation files with the Mod Translations mod before the
@@ -95,6 +99,9 @@ This sequence ties most of the above together. `gw_play/referee.js` hijacks the
 base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
+0. `gw_play/referee.js` fixes the battle's co-op AI players as `ref.coopAis`,
+   from `model.gwoCoopAi.launchRoster()`. The steps below read the roster from
+   there, never from the war. See [`coop.md`](coop.md), "AI players".
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
    applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".
@@ -115,6 +122,10 @@ steps in order:
    galaxy.md, "Difficulty" and "AI personalities and penchants".
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
+6. Every client then enters stock's `gw_lobby`, which mounts the referee's files.
+   Stock first rebuilds each army tag's specs from local files, and that
+   overlay would replace the referee's. `gw_lobby/specs.js` keeps the referee's
+   copies. See [`specs.md`](specs.md), "The lobby overlay".
 
 Everything from the click to the hand-off to `connect_to_game` sits behind
 `gw_play/launch_progress.js`. That file wraps `model.fight` and shows a loading
@@ -124,6 +135,11 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   `stage(text)` and `end()` drive them. `begin()` is idempotent, and `stage()`
   is a no-op outside a launch. So a mod may report from work that also runs on
   scene entry.
+- Until `launch_progress_state.js` loads, the object is a placeholder whose
+  `begin()`, `stage()` and `end()` do nothing, so what a mod reports before
+  then is not shown. The loaded module replaces the object and keeps its
+  observables. A mod therefore reads `model.gwoLaunchProgress` each time it
+  reports, rather than keeping the object it first found.
 - The referee reports its own stages through `gwoReferee.prototype.stage`. A
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
   setup", so the repeat reads as intended.
@@ -132,11 +148,11 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   and stages during a launch. The mirroring wraps the methods themselves, so it
   also covers stages that other mods (e.g. GW Server Mods) report. Stage text
   arrives already localised in the host's language.
-- Stock sets `launchingFight` only after the war is saved. A mod may wrap
-  `model.fight` to do slow work first (GW Server Mods mounts server mods
-  there). The panel covers such a mod from the click only if GWO's wrapper is
-  outside the mod's own wrapper. That means the mod must load before GWO, with
-  a lower `priority` than GWO's 200. Such a mod resolves
+- Stock sets `launchingFight` only once its checks pass and it starts saving
+  the war. A mod may wrap `model.fight` to do slow work first (GW Server Mods
+  mounts server mods there). The panel covers such a mod from the click only if
+  GWO's wrapper is outside the mod's own wrapper. That means the mod must load
+  before GWO, with a lower `priority` than GWO's 200. Such a mod resolves
   `model.gwoLaunchProgress` at call time, never at load, because the object
   does not exist yet when that mod runs. If a later-loading mod wraps
   `model.fight` instead, the panel still appears, but only once
@@ -153,7 +169,10 @@ button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
 and each nested spec-fetch chain. `referee_biomes.js` runs each callback as a
 `gwoPromise.steps` step instead, so a rejection or a throw after an engine call
-rejects the step. The hire's own fail handler in `referee.js`
+rejects the step. `referee_ai.js` holds every tree listing and file read as a
+native promise, so a failed read, or a throw in the work on a file, rejects
+too. The one read it skips instead is a card's `load` file (see
+[`ai-pipeline.md`](ai-pipeline.md)). The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
@@ -254,26 +273,34 @@ fixed.
 Know the shape before you add a fix to it:
 
 - **A flag, not a version alone, gates a fix.** `treasurePlanetFixed`,
-  `clusterFixed`, `treasureLoadoutDerived` and `planetPositionFixed` live on
+  `treasureLoadoutDerived`, and `planetPositionFixed` live on
   `originSystem.gwaio`.
-  `gwaio_lucky_commander_fixed` lives in `localStorage`. Once a repair runs, or
+  `gwaio_lucky_commander_moved` lives in `localStorage`. Once a repair runs, or
   is ruled unnecessary, the flag says so. The file then skips the scan for good.
-- **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
+- **`checkIfPatchesNeeded` sets the war's flags from `gwoSettings.version`** via
   `atLeastVersion`. So a war created after a fix shipped never pays for the
   scan. A war with no recorded version compares as older than everything. That
   is the safe direction. `planetPositionFixed` has no version: its defect also
   comes from Shared Systems for GW, which replaces GWO's system loader, so a war
   of any version can need it. Each war pays for one sweep of its planets.
+  `gwaio_lucky_commander_moved` has no version either: it records the profile's
+  bank, which a war's version says nothing about, so its repair runs once per
+  profile. It replaced `gwaio_lucky_commander_fixed`, which versions up to 7.4.1
+  set from the war's version without moving the card. The repair removes the
+  card through the base game's `GW.bank`, not from `gw_bank` itself: that
+  bank read `gw_bank` when the scene loaded, and its next unlock writes its
+  whole list back.
 - **`applyFixes` sets the flags unconditionally after the sweep.** The reason is
   that "the thing this fix targets does not exist in this war" and "it has been
   fixed" want the same outcome. A war with no treasure planet should not re-scan
   forever.
 - It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
   than repaired again on the next visit.
-- **A repair edits only what the save still owns.** The Cluster commander repair
-  rewrites `ai.inventory` descriptors in place. A war that records
-  `typeOfBuffs` has no such descriptors. Its descriptors are built at launch
-  from the live Cluster mods, so the repair returns early for it.
+- **A repair edits only what a battle still reads.** A war that records
+  `typeOfBuffs` builds each army's spec mods from them at launch, and an AI's
+  baked `inventory` counts only where the war recorded no `typeOfBuffs` for it.
+  See galaxy.md, "AI tech". There is no repair of old wars' Cluster commander
+  mods.
 
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops

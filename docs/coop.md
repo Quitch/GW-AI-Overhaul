@@ -26,9 +26,9 @@ their own cards, and their own subcommanders. That changes several assumptions:
 
 The race is read per inventory, never from the host's. The loadout scene stamps
 a race onto the viewer's starting inventory. The per-player referee expands each
-viewer's units and mods onto that race's files by capability cell. It retags
-their commander (and its Sub Commanders') the way the Guardians' Unicorn is
-retagged. It routes their subcommanders to that race's tree. **Separate races**
+viewer's units and mods onto that race's files by capability cell and job. It
+retags their commander (and its Sub Commanders') the way the Guardians' Unicorn
+is retagged. It routes their subcommanders to that race's tree. **Separate races**
 decides which race is stamped. When it is off, every viewer gets the host's
 race. When it is on, each viewer gets their own pick. See
 [`races.md`](races.md).
@@ -47,6 +47,19 @@ Separate races deals and builds files for every viewer. A viewer may have picked
 any race the picker still offers, that is, the recorded races whose server mod
 is active. The host therefore primes exactly that offer.
 
+**Unique AI loadouts** is the next row of the same panel, and is also off by
+default. When it is on, a co-op AI player draws no loadout that another player
+in the war already has, unless every loadout it could take is in use ("AI
+players' tech"). The row always shows, but it reads OFF and cannot be set
+unless Separate loadout & tech is on, because an AI has a loadout of its own
+only under per-player tech. The draft is seeded and committed through the same
+two hijacks as Separate races (`gw_start/race_picker.js`). Like stock's own
+options in that panel, the choice is not saved between wars, so it lives in
+`model.gwoUniqueAiLoadouts` rather than in `gwoDifficultySettings`, which
+`gwo_previous_settings` saves. The war records it as
+`originSystem.gwaio.uniqueAiLoadouts`. A war saved before the setting existed
+has no field, which reads as off.
+
 ## The two referees
 
 A co-op host hires the referee **twice** per battle. The base game's
@@ -61,6 +74,12 @@ of that:
    adds them to that config. It builds a viewer's Sub Commander personalities
    the same way the host's are built: through `shared/ai_personality.js`, from
    each minion's recorded id and penchant.
+
+The local referee's files are mounted on the host alone. Stock deep-clones them
+first with lodash 3's `cloneDeep`, whose cost is quadratic in the objects it
+copies, and a battle mounts thousands of files. So the host's own pass hands its
+files over as JSON text (`gameFilePaths.cookFiles`), which clones in
+milliseconds. `mountFiles` would have made that text anyway.
 
 Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
 the host broadcasts. The war panel and the intelligence panel derive what they
@@ -98,18 +117,20 @@ viewer's subcommander build orders are written to a path scoped by their own
 tag. Two viewers can therefore never collide on build orders or `ai_unit_map`.
 See [`ai-paths.md`](ai-paths.md) for how the scope token is derived. That
 document also covers the sanitisation asymmetry: the subcommander path keeps the
-leading dot while the Cluster path does not.
+tag's leading dot. A viewer's Sub Commanders get no Cluster tree of their own:
+their scoped tree is already their isolation.
 
 The per-player pass skips the host's minions because the main referee already
-included them. The check is `tag === ".player"`.
+included them. The check is `playerTag === ".player"`.
 
 ## Colour allocation
 
 Human army colours come from the base game. `model.gwCoopPlayerColors` in
 `gw_play.js` is the authoritative source. It is a host-first record per
 connected client, and each record carries the `color` pair that client's army
-will get. `gwo_panel.js` reads it rather than computing the answer again. The
-swatch therefore cannot disagree with what the referee assigns.
+will get. The war panel reads it (`gw_play/gwo_panel_view.js`) rather than
+computing the answer again. The swatch therefore cannot disagree with what the
+referee assigns.
 
 Shared armies are a single army, so every co-op commander flies the host's
 colour: the `playerColor` global tag, written once at war creation.
@@ -124,16 +145,28 @@ of the palette. Before PA 124670 the palette was private to
 own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
+After its first entry, the faction colour, no `coopPlayerColors` entry is also
+in that faction's Sub Commander palette (below), so a player is never given
+the colour of a Sub Commander. Legonis Machina and Revenants each replace the
+one stock entry that broke this rule. Synchronous takes greens of GWO's own in
+place of stock's oranges, since its faction colour is GWO's green.
+
 Subcommander colours are a separate system and still GWO's own. See
 `gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 
-- `getOrderedSubcommanders(inventory, game, connectedClients)` returns every
-  allied AI commander that draws from the player faction's palette. The list is
-  **in the order the battle config numbers their colours**: the host's
-  subcommanders first, then each connected viewer's. Order in equals order out.
-  Callers that care which colour lands where must therefore pass clients
-  host-first (see this module's `clientsInPlayerOrder`). Callers that only want
-  a count can pass any order.
+- `getOrderedSubcommanders(inventory, game, connectedClients, aiInventories)`
+  returns every allied AI commander that draws from the player faction's
+  palette. The list is **in the order the battle config numbers their
+  colours**: the host's subcommanders first, then each connected viewer's,
+  then, under per-player tech, each AI player's in slot order. Order in equals
+  order out. Callers that care which colour lands where must therefore pass
+  clients host-first (see this module's `clientsInPlayerOrder`). Callers that
+  only want a count can pass any order.
+- A hire passes `aiInventories`, its own AI players
+  (`launchAiInventories(ref.coopAis)`), so its colours count the AIs it
+  fields. The referee's AI files and the Guardians' mods read the same list.
+  The war panel and the intelligence panel run without a hire, and leave it
+  out, so the AI players' records are read.
 - `alliedColourIndex(position)` returns `position + 1`. Index 0 is reserved for
   the player, whose army takes the faction's own colour pair rather than a
   palette entry.
@@ -148,8 +181,8 @@ duplication tech produces a single army with several commander slots.
 
 `gw_play/commander_colour.js` decides which palette entry lands where. It is
 shared rather than per-caller for a reason: `referee_config_setup.js`, the
-shadowed per-player-tech referee, `gwo_panel.js` and the intel panel must all
-agree. Otherwise the panel promises a colour the battle does not deliver. It
+shadowed per-player-tech referee, `gwo_panel_view.js` and the intel panel must
+all agree. Otherwise the panel promises a colour the battle does not deliver. It
 orders a palette by `contrastScore`, which is squared RGB distance plus a
 luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
@@ -161,20 +194,515 @@ let two armies collide.
 ## Resolving viewers
 
 `getConnectedViewerInventories(game, connectedClients)` returns
-`{client, inventory}` pairs for connected **viewer-role** clients. It drops any
-client whose inventory is not resolvable yet.
+`{client, inventory}` pairs for connected **viewer-role** clients. It drops,
+without a log line, any client whose record or inventory is not resolvable yet.
 
-It guards against two failure modes:
+Two cases are easy to misread:
 
 - If no authenticated user ever loaded a viewer's PA profile, that viewer has an
-  empty `uberId`/`displayName`. The function reports that rather than silently
-  mishandling it.
-- `game.findCoopPlayerInventoryData` never returns a record for the **host**.
-  The host's own loadout is resolved locally via `model.gwoLoadout`.
+  empty `uberId`/`displayName`. Records are keyed by that identity, so every
+  lookup for the viewer finds nothing, and the function drops it. The viewer's
+  own war panel logs the cause once (`gw_play/gwo_panel.js`).
+- The function leaves the **host** out by role, not by record. Under per-player
+  tech the host has a co-op record too (`gw_start/war_generation.js` writes it,
+  and stock's `syncHostCoopInventoryRecord` keeps it current), so
+  `game.findCoopPlayerInventoryData` can return it, and a walk over
+  `game.coopPlayerInventoryData()` meets it. The host's own loadout is resolved
+  locally via `model.gwoLoadout`.
 
 Minion counting deliberately includes players who are not currently in the game.
 The minions of a player who leaves and rejoins therefore do not vanish and
 reappear.
+
+## AI players
+
+A co-op host can drop an AI player into an open slot, so a war made for more
+players than turned up can still be fought. The AI fights beside the humans as
+an allied AI army. The logic is `gw_play/coop_ai_roster.js` and
+`gw_play/coop_ai_lobby.js`; `gw_play/coop_ai.js` is the scene glue. Under
+per-player tech each AI also has a loadout and tech cards of its own, which the
+host chooses for it. See "AI players' tech" below.
+
+### A slot is a count
+
+Stock keeps no list of slots. A slot is only `connected < max_clients`: the
+client's `gwCampaignHasEmptySlots` greys Fight while one is open, and the
+server refuses `launch_gw_battle`. So an AI **takes a slot by shrinking
+`max_clients` by one**, and GWO keeps the AI slots itself, as co-op records.
+
+`gw_play/coop_ai.js` wraps `model.savedCoopPlayers` to leave out the AIs that
+hold one of the war's own seats, as `max(1, stock − those AIs)`. Every session
+open seeds `max_clients` from it, and so does a locked war's slot limit, so an
+AI's slot never reopens to a human. An AI the host added into a slot opened
+with "+", past the seats the war was made with, is marked `gwaioAi.extraSeat`
+and takes none of the war's seats, so the human it sat beside keeps theirs at
+the next session. Which kind of seat an add fills is counted, not tracked: the
+open slots and the AIs in the war's seats, against the war's seats. An AI in a
+"+" seat is left out of that count, so the seat a player left is still the
+war's, and an AI that takes it holds it. The wrap is made synchronously at
+scene load, because a module callback lands after a new session's saved
+settings apply.
+
+`gwCampaignSlots` becomes stock's rows plus one row per AI. An AI row carries
+every field a stock row has, so the stock markup binds it unchanged. Its
+`canKick` and `canRemove` are false, so stock's own buttons never act on it;
+GWO's Kick does. `canAddGwCampaignSlot` counts the AIs against the server's
+limit. An open lobby's limit counts every slot, and a lock's already leaves the
+AIs out. Both are read from the server, not from the war, because stock's
+restart after a battle never re-sends the lock.
+
+### An AI is a record
+
+The AI's record is `{playerId, commander, updatedAt, gwaioAi}`, and under
+per-player tech it also holds the AI's tech ("AI players' tech"). `gwaioAi`
+holds the serial, the name, the personality template, and a Penchant AI's
+penchant. It is also the marker: a record is an AI's if and only if `gwaioAi` is
+a plain object. The id is `gwo_ai_<serial>`, and the serial comes from
+`originSystem.gwaio.coopAiSerial`, which only grows. An AI added after a kick
+therefore draws from a stream of its own, though the kicked AI's name and
+commander are free to be drawn again. A war without GWO's settings has nowhere
+to keep the serial, so it offers no Add AI.
+
+The record has **no `playerName`**. Stock finds a record by `playerId`, then by
+exact `playerName`, on the client and the server alike, so no human's lookup
+can land on an AI's record. A departed human's record is never touched either,
+which is what keeps their rejoin and their fresh-deal rules intact.
+
+Records are in the war's save and in every snapshot, so a viewer sees the rows
+too. Under shared tech viewers hold no tech state, so the host publishes a
+snapshot as soon as the roster changes. Under per-player tech the snapshot waits
+until every viewer is level ("AI players' tech"). With no viewer connected, it
+publishes nothing: a viewer who joins asks for a snapshot as its first step.
+
+The name is drawn from the skirmish lobby's own list,
+`server-script/ai_names_table.js`, which the client reads as text. It is never a
+connected player's name, a record's `playerName`, another AI's, or `Player`,
+case ignored. An AI whose name cannot be drawn is named by its serial. The
+commander is one of the host's owned MLA commanders that nobody fields yet, or,
+for an AI that fields a race, one of that race's own.
+
+An MLA commander is one that builds what MLA's base commander builds, read up
+its `base_spec` chain, so `gw_play` reads each owned commander's chain before
+the Add AI button turns on. Ownership alone lets other factions' commanders in:
+commander-merge lists every supported faction's commanders and gives several of
+them the catalog name of a commander everyone owns, and a client that is not
+signed in owns everything. A faction's commander builds only that faction's
+units, and without that faction's mod it has no model, which crashes every
+client when it lands.
+
+### Adding and kicking
+
+The host adds an AI from an empty slot's Add AI button. The lobby first has to
+be settled, because `gwCampaignMaxClients` can be stale. Stock's restart
+re-apply after a battle sends a `modify_settings` with no callback, and until
+the server answers it, the count still reads the fresh server's default.
+`gw_play/coop_ai.js` therefore wraps `model.send_message` and counts every
+`modify_settings` in flight, and Add AI waits for none. It also waits for the
+saved settings to have applied, for no player to be mid-setup, for no battle to
+be launching, and for the victory wait to be closed.
+
+After a battle, the humans who fought it come back one at a time, and each
+one's slot reads as empty until they do. So a session that came back from a
+battle offers Add AI only once `battle_launch_clients` humans are connected
+again, or a minute has passed. Without that, an AI could take the slot of a
+viewer still reconnecting, and turn them away with "No room".
+
+Stock's "+" and "−" send an absolute count read from `gwCampaignMaxClients`.
+While an add, a kick, or any other `modify_settings` is in flight that count is
+stale, and a "+" sent then would undo the add. While it is in flight, "+" is
+greyed out, and a press of either is dropped with a log line.
+
+The add asks the server for one slot fewer, and writes nothing before it
+answers. An answer with any other count abandons it. A human who joined
+meanwhile has taken the slot, and the server keeps `max_clients` at the number
+connected. The record is written through `enqueueGwCampaignStateApply`, so it
+cannot interleave with a viewer's queued record write. Under a lock the same
+count is sent again after the write, so the lock's limit leaves the new AI out.
+A failure after the server answered gives the slot back, unless the record was
+stored: the records' subscribers run inside the write, so one that throws does
+so after the AI is in, and the AI keeps its slot.
+
+Kicking is the only way an AI leaves, and it deletes the AI and its record for
+good. So its Kick asks first, like Delete Tech
+([`accessibility.md`](accessibility.md), 3.3.6). The first press arms that AI's
+Kick until the AI leaves the roster; a record write in between, which every
+settled deal makes, does not disarm it. The record goes before the slot comes
+back, so a lock's limit counts it. A subscriber that throws does so after the
+record is gone, so the kick is still saved and published, and the slot still
+comes back.
+
+A human whose slot an AI took is refused with "No room" when they come back,
+until the host kicks the AI or adds a slot. Stock has no hook that could tell
+them why.
+
+`gw_play/coop_ai_lobby.js` reads the rest of the scene from `model` when it is
+called, and takes from `coop_ai.js`:
+
+- `game`, and `gwaio()`, the war's `originSystem.gwaio`.
+- `createRecord(identity)`, which builds the new AI's record or a promise of it,
+  and `save(withStars)`, a promise.
+- `warSeats()`, the seats the war was made with (stock's `savedCoopPlayers`),
+  and `expectedBack()`, the humans still due back from the last battle, 0 once
+  none are.
+- The observables `busy`, `armed` (the AI whose Kick was pressed once), and
+  `inFlight` (the `modify_settings` requests the server has not answered).
+- `perPlayerReady()`: under per-player tech, whether the modules that build an
+  AI's tech are in.
+
+Tests also pass `buildTimeoutMs`.
+
+### Sitting out
+
+An AI is added only inside a session, but its record stays in the war's save.
+When the war is played without a session, the AI takes no part: the roster is
+empty outside an active session. That covers a host who resumes from the main
+menu without Call for Reinforcements, and a viewer who left and plays their
+local copy. When a session opens again, the wrap keeps the AI's slot, and the AI
+fights again. Under per-player tech it first settles the deals the host
+recorded meanwhile ("AI players' tech").
+
+### In a battle
+
+The first step of every hire (`gw_play/referee.js`) fixes the battle's roster
+as `ref.coopAis`, from `model.gwoCoopAi.launchRoster()`. A session whose war
+has AI records but whose AI modules did not load fails the hire, rather than
+fighting without its AI players. Fight is refused for the same reason, and
+while an add or kick is under way.
+
+Each AI is one army. Its slot is `ai: true` with a commander, it has
+`alliance_group: 1`, and its commander carries its spec tag already, because
+the army joins after `referee_config.js`'s tagging loop. It fights at the war's
+difficulty tier, with the players' economy: `setAdvEcoMod` is the enemy's eco
+cheat and is not applied. The personality template is `uber` under Queller and
+`absurd` otherwise. It takes no `GWAlly` tag: the build files use that to mark
+a Sub Commander, and an AI player plays as a player would. Its colour continues
+the players' sequence: the AIs take
+`resolvePlayerColorPairs(humanArmies + AIs).slice(humanArmies)`, and the stock
+resolver builds its pairs in order, so no human's colour moves.
+
+Under shared tech every AI fields the host's units under `.player`. Each AI's
+commander joins the `.player` specs, as the star's ally's does. The AIs share
+one AI tree on the war's Co-op brain, written with the host's AI mods. Race AIs
+read their race's tree, which takes those mods aimed at the race's keys
+([`ai-pipeline.md`](ai-pipeline.md), "Race trees"). The tree is identical for
+every AI, because they share the brain, race, AI mods and tag.
+See [`ai-paths.md`](ai-paths.md), "Co-op AI players". Under per-player tech
+each AI fields its own, on a tag and trees of its own ("AI players' tech").
+
+**The per-player tech referee is untouched.** An AI army has an `ai` slot, and
+stock's co-op referee and the server's lobby map humans onto non-AI armies only.
+So the per-player referee's player count and human armies still match, and it
+keeps the main referee's files and armies as they are. That holds under
+per-player tech too: the main referee builds everything an AI brings there, and
+its Sub Commanders' armies are `ai` armies as well.
+
+## AI players' tech
+
+Under per-player tech an AI player has its own loadout, inventory, and tech
+cards, as a viewer does. Nobody sits at its controls, so the host makes every
+choice a viewer would make. `gw_play/coop_ai_driver.js` settles the AI's deals.
+`gw_play/coop_ai_effects.js` and `shared/coop_ai_cards.js` judge its cards, as
+[`tech-cards.md`](tech-cards.md), "How AI players judge a card", describes.
+`gw_play/cards_coop_ai_tech.js` is the glue. All of it runs on the host alone,
+and only in a session.
+
+### The record
+
+An AI's record is complete from the moment it is written, so stock's inventory
+modal and every deal path take it at once. Beside the fields every AI record
+has, it holds:
+
+- `loadoutCardId`: the loadout the AI starts with, drawn by score.
+- `inventory`: its starting inventory, applied, and stored as the server stores
+  a viewer's: plain JSON with the global tags only, since every apply rebuilds
+  the card-context tags. It is made plain because `GWInventory.save()` is
+  `ko.toJS`, which copies the prototype's methods onto the result. A save
+  therefore still looks like a `GWInventory` to anything that tests for
+  `getTag`.
+- `techCardDealCount: 0`: it has settled no deal yet, so it owes every deal the
+  host has recorded.
+- `gwaioAi.race`: its race. The same race is stamped on the inventory as the
+  `playerRace` global tag, which is where `races.raceOf` reads it.
+
+Under Separate races the AI picks its race from those the war offers, which is
+the offer a viewer's picker gets, and prefers one that no player fields yet. The
+draw comes from the `race` child of its identity stream. Otherwise it fields the
+host's race. Its commander is then drawn as under shared tech, from its own
+race.
+
+Its loadout is drawn by what each loadout does. The candidates are the starting
+loadouts and every locked loadout the host has unlocked, less those the AI's
+race may not field and those an AI cannot use. An AI cannot use Warp
+Commander, whose mass teleport is an order, and an AI gives none; a mod adds
+its own to `model.gwoLoadoutsAiCannotUse` ([`tech-cards.md`](tech-cards.md),
+"Third-party card mods"). These are left out before any is built. A loadout
+that another mod registers in `gw_play` counts too. Each candidate is built as the per-player loadout scene builds a viewer's
+(`shared/starting_inventory.js`), with the General Commander's Sub Commanders
+drawn as a viewer's are (`cards_start_subcdr.js`'s `appendRecordMinions`), and
+applied. Then:
+
+1. **A candidate the AI could never fight with is dropped.** `gwc_minion.js`
+   deals a Sub Commander only to an army with a basic land factory and a metal
+   extractor, and `shared/ai.js`'s `armyGap` is that rule. A candidate is
+   dropped when it lacks an extractor, since no ordinary card grants one, or
+   when it lacks a land factory and its `dull` strips every basic land factory,
+   which would strip one a card granted too. Today that drops Tourist Commander
+   alone: its `dull` strips every extractor and the Jig. A candidate that lacks
+   only a land factory stays, and is given one at its first deal (below). The
+   starting vehicle, air, and bot loadouts always pass, so the drop never
+   empties the list.
+2. **Each candidate is scored** against the base start card alone, `gwc_start`,
+   by `scoreLoadout`: the tech-card scorer, less most of the worth of the units
+   a card could grant later ([`tech-cards.md`](tech-cards.md), "Scoring").
+3. **Under Unique AI loadouts, the loadouts in use are left out.** Those are the
+   first card of the host's inventory and of every co-op record, human or AI,
+   connected or not, where that card is still a loadout. If no candidate left
+   scores above 0, the draw takes from them all.
+4. **One candidate is drawn**, each with a chance in proportion to its score,
+   from the AI's `coop_ai_loadout` stream ([`galaxy.md`](galaxy.md),
+   "Play-scene streams"). The draw therefore differs by war and by AI, and a
+   reload draws the same. A candidate at 0 or less is never drawn.
+
+A candidate that cannot be built is skipped. If none can be drawn, the add fails
+and gives the slot back.
+
+That build takes seconds, so the lobby makes it after the server has answered
+and before the campaign state queue, which it would otherwise hold. It takes the
+serial first, because the loadout's stream is keyed by it. A build not settled
+within 60 seconds fails the add and gives the slot back, since the lobby is held
+until then, and a result that lands later is dropped. Add AI is offered
+under per-player tech only once the AI tech modules have loaded and a unit
+lookup is in.
+
+### Settling deals
+
+An AI **owes** a deal while its `techCardDealCount` is below
+`game.hostTechCardDealCount()`, which is the test the server makes of a viewer
+for catch-up. A pass of the driver starts whenever a session opens, the host
+records a deal, the records change, the unit lookup arrives, the deck and
+`card_units.js` finish loading, or a star-card refresh ends. No pass runs
+before that load, because the factory-card pick below reads
+`model.gwoCardsToUnits`. A pass with nothing owed does nothing. It serves the AIs in slot
+order, and settles each AI's owed deals one at a time, in the order of the
+host's history, yielding between them. For each deal it:
+
+1. **Deals the hand as a viewer's would be dealt.** `cards_coop_deal.js`'s
+   `pendingHandForRecord` is a viewer's deal with no message sent. It deals from
+   the AI's own inventory, at the star the host's history records for the deal,
+   from the AI's own `coop_deal` stream, and puts the AI's pre-dealt card for
+   that star last. A deal missing from the host's history is declined.
+2. **Judges each card by applying it.**
+3. **Rerolls, takes, swaps, or declines.** It declines a hand that holds a
+   loadout: a loadout is banked, never held, and an AI never banks. It rerolls
+   while its best card is poor and a reroll remains, through
+   `cards_coop_reroll.js`'s `rerollHandForRecord`, a viewer's reroll that
+   stores, sends, and saves nothing. It counts the rerolls spent from the
+   hand's length, as that reroll does, so a thin deck's short hand has fewer
+   left. It declines a best card worth nothing or
+   less, and takes one the bank has room for. With a full bank it judges each
+   held card by what its loss would cost once the best card is in, and deletes
+   the cheapest for a best card clearly better. It never deletes the loadout in
+   first place, nor a card whose loss would leave the AI without a basic land
+   factory or an extractor it has now ([`tech-cards.md`](tech-cards.md),
+   "Deciding"). Otherwise it declines.
+4. **Writes one patch.** The patch is the new `techCardDealCount`, plus the
+   applied inventory after a take or a swap. A decline still writes the count,
+   so the AI moves on.
+
+A deal that finds the AI without a basic land factory assigns it one in place
+of a hand. The driver picks one of `gwc_enable_air_t1`, `gwc_enable_bots_t1`,
+and `gwc_enable_vehicles_t1` with equal chance, from those in the war's deck
+(`model.gwoCards`) that the AI's race can use (`raceCanDeal`), less any whose
+factory the AI's cards strip (`armyGapClosable` over the card's
+`model.gwoCardsToUnits` entry). Each gives one
+basic land factory and the basic units of its domain: the least the AI needs to
+fight, so no advantage. The pick comes from the AI's `coop_ai_factory` stream,
+keyed by the deal, so a reload picks the same card. The card is dealt as
+`cheats.giveCard` deals one (`gwoDeal.dealCard`), added last, and applied, and
+the result is written as a take. The gap is there from the AI's first deal, so
+in practice this is deal 1, and the bank has room then, because every loadout
+leaves a free slot (`starting_inventory.js`). If no card qualifies, the bank is
+full, the card cannot be dealt, or the gap is still there after the apply (a
+third-party `dull` could strip the factory), the deal goes on to a hand as usual
+and the log says why. The same held-card rule then keeps the factory card until
+another card gives the AI a land factory.
+
+An AI holds only cards it was dealt, as `validateStartingInventory` requires, so
+the factory card waits for its first deal, and that comes with the host's first
+Explore. An AI added at war start therefore fights without a land factory in any
+battle the host fights before it explores.
+
+Only the settled result is written. The hand, rerolled or not, lives in memory,
+and the driver never writes `pendingTechCards` or `gwaioStarCards`. A reload
+mid-decision therefore reruns the deal from the start, on the same streams. The
+hand comes from the deal's own stream, a reroll from its `reroll.<n>` child, and
+a tie from the AI's `coop_ai_decision` stream, keyed by the deal and the
+rerolls spent ([`galaxy.md`](galaxy.md), "Play-scene streams"). The inventory
+written is always an applied one, so the record's units, mods, AI mods, and Sub
+Commanders are what its cards give. The referee builds the AI's battle files
+straight from them.
+
+The write runs inside the campaign state queue (`enqueueGwCampaignStateApply`),
+where every host record write runs, so it cannot interleave with a viewer's
+queued write. It re-reads the record first. It writes nothing if the AI has
+gone, if the deal was settled meanwhile, or if the AI's cards differ from those
+it decided on. A decision made on changed cards is redone, up to three times
+for each deal. The patch goes over the fresh record, so a star-card write made
+while the AI decided is kept.
+
+Each step is bounded. A deal not settled within 20 seconds falls back to a
+quick pick: the first card of the hand in play that is not a loadout, if the
+bank has room and its apply lands. Otherwise the deal is declined, and still
+counted. An error falls back the same way, but only a timeout counts against
+the AI. The decision a timeout abandons stops at its next step, so it queues no
+applies ahead of the next deal's and logs no choice that is never written. An
+AI whose deals time out twice declines the rest of its deals without
+dealing them, until `gw_play` next loads, because the driver keeps that count
+in memory. A write the queue has not run within 60 seconds is no longer waited
+for, and a later pass takes the deal up again. The write may still run, but
+every write checks the count first, so a deal is settled only once. Each of
+these is logged ([`live-testing.md`](live-testing.md), "AI players").
+
+After a pass that wrote anything, the host refreshes an open inventory modal,
+saves the war, and owes the viewers a snapshot ("Publishing to viewers").
+
+The driver reads nothing from the scene itself. `cards_coop_ai_tech.js` hands
+it:
+
+- `records()`, the AIs to serve in slot order, empty outside a hosted
+  per-player-tech session, and `find(playerId)`, an AI's record as it stands.
+- Stock's deal counters and history, `dealCount(record)`, `hostDealCount()`,
+  and `entryFor(dealIndex)`, and `starAt(starIndex)`, the galaxy star.
+- The viewer's deal and reroll cores: `dealHand`, `rerollHand`, and
+  `computeRerollDeal(cardsOffered, cardCount)`.
+- What judges a card: `effects` (a `coop_ai_effects.js` instance), `lookup()`,
+  the optional `fielded(saved, lookup)`, `teamDomains(playerId, lookup)`,
+  `namesUnits(cardId)`, `chanceOf(card, applied, star)`, `isLoadout(cardId)`,
+  and `rerollsRemain(rerollsUsed, cardsOffered)`.
+- `shared/ai.js`'s army rule, `armyGap` and `armyGapClosable`, and the factory
+  card's `factoryCards(record, applied)` and `dealCard(cardId, applied, star)`.
+- The streams, `decisionRng(record, dealIndex, rerollsUsed)` and
+  `factoryRng(record, dealIndex)`.
+- `enqueue(label, apply)`, the campaign state queue, and
+  `write(record, patch)`, which stores a patched copy and returns it, or
+  undefined.
+- `canRun()`, false while anything a pass must wait for is in flight;
+  `running`, an observable a pass holds true; and `afterPass()`, which saves
+  and publishes.
+
+Tests also pass `defer`, `decisionTimeoutMs`, and `writeTimeoutMs`.
+
+### Holding the war
+
+`model.gwoCoopAiDeciding` is true on the host while a pass runs, or while any AI
+owes a deal it has yet to start. It holds what a viewer choosing tech holds.
+Fight is blocked, with the tooltip "Waiting for players", and `fight` and
+`restartFight` refuse. `model.explore` refuses too, unless it is a replayed host
+action or a forced host reroll, and the Explore button greys as it does while a
+player sets up: `coop_ai.js` rebinds its disabled look to
+`model.gwoExploreBlocked` before `gw_play.js` binds it. The star-card refresh waits as well
+("Per-player pre-dealt cards").
+
+### Publishing to viewers
+
+Viewers learn of an AI's tech, as of its arrival and its departure, from a
+snapshot. Under per-player tech the server applies a viewer's tech choice to
+its own copy of the war before the host has it, and a snapshot replaces that
+copy whole. A snapshot sent in between drops the choice there, and the server
+then leaves that viewer picking, which blocks Explore and Fight until they
+reload.
+
+So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
+every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
+(`cards_coop_ai_tech.js`), a viewer's reroll (`cards_coop_reroll.js`), a
+viewer's General Commander setup (`cards_start_subcdr.js`), and a viewer's
+report of their loadouts (`treasure_loadouts.js`). The test is the star-card refresh's own,
+`viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
+the host is not exploring, no AI is deciding, and every viewer is loaded and
+level with the host's deal count. A viewer with an offer open is not level, so
+no choice can be in flight when the snapshot goes out. The module returns one
+object, so the scene has one debt, and a later reason replaces one still held.
+The module settles a held debt itself, from a computed over those inputs that
+it makes when it first holds one, so a held snapshot goes out even if the AI
+modules fail to load. With no viewer connected the debt is dropped, since a
+viewer who joins asks for a snapshot as its first step.
+
+A reroll is the one exception. The rerolling viewer waits for the host's reply
+with its offer hidden, so it cannot choose while the snapshot goes out. The
+reroll's snapshot therefore goes out at once when no other viewer has an offer
+open or deals to catch up, which with one viewer is always. Only while another
+viewer has one is it held, and then the server's copy of the rerolling viewer's
+hand, and the other viewers' view of it, wait until everyone has chosen. If the
+rerolling viewer's `gw_play` reloads in that window, the server shows it the old
+hand, and a pick from it gives a different card or is refused by the host.
+
+### Catching up
+
+A new AI owes every deal the host has recorded, from the first. It settles them
+all before the next battle, in history order, each at the star of the host's
+deal. At a star it holds no pre-dealt card for, its hand is a full one. An Add
+late in a war therefore takes longer.
+
+The same holds after a war played without a session. The host goes on recording
+deals while its AIs sit out, and their counts stay where they were. When a
+session opens again, each AI settles the deals it missed before the next battle.
+
+A kick deletes the record for good, so an AI added afterwards is a new record
+whose deal count starts again at 0. It inherits nothing from the kicked AI, and
+catches up on the whole war.
+
+### Star cards and the treasure planet
+
+The star-card refresh deals each AI its own card on every selectable AI star,
+as it does each viewer, and the driver puts that card last in the AI's hand at
+that star ("Per-player pre-dealt cards"). At the treasure planet an AI is dealt
+an ordinary hand rather than a loadout, because it counts as owning every
+loadout ("Treasure loadouts").
+
+### The inventory view
+
+Under per-player tech an AI's slot row shows stock's Inventory button. It opens
+stock's inventory modal on the AI's record, found by its id, once the record
+holds what the modal needs, which stock's own
+`validateGwCampaignInventoryRecord` decides. Records travel in every snapshot,
+so a viewer can open it too. The war panel's line for each AI names its own
+loadout and race.
+
+### A per-player AI in a battle
+
+Under per-player tech each AI fields its own inventory and race, and the main
+referee builds everything it brings. `launchAis` leaves out an AI record with no
+inventory. Each AI has:
+
+- **A tag of its own**: the next player tag after the humans',
+  `perPlayerTech.getPlayerTagGivenIndex(humans + slot)`, where `humans` counts
+  the clients connected at the hire. With the host and one viewer connected, the
+  first AI is `.player1`. The tag is not stored, so it can change from battle to
+  battle.
+- **Its own specs**: its units plus `model.gwoSpecs`, generated on its tag with
+  its own mods. Its units and mods follow its race's capability cells and
+  jobs, and its commanders are retagged, exactly as the host's are
+  (`referee_game_file_paths.specPlan`).
+- **Its own AI tree**: `player_coopai_<serial>/` on its co-op brain, so an MLA
+  AI's tree carries its own AI mods ([`ai-paths.md`](ai-paths.md), "Co-op AI
+  players").
+- **Its Sub Commanders**, built as a viewer's are
+  (`perPlayerTech.buildViewerSubcommanderArmies`), on its tag, and reading a Sub
+  Commander tree of its own with unit maps written for its tag. Their colours
+  come after every human's Sub Commanders and before the star's ally ("Colour
+  allocation").
+
+Each AI adds hundreds of files to a battle, which is why the host's own pass
+hands its files over as JSON text ("The two referees").
+
+An AI's cards count wherever GWO asks what any player holds, while a session is
+active: `anyPlayerHasCard` and `getAllConnectedPlayerCards` in `shared/cards.js`
+include them. So an AI's Tsunami Tech floods the battle's planets and its
+Bounty Tech turns on bounty mode, as a viewer's do. The Guardians, who turn the
+players' technology against them, take each AI's unit mods, AI mods, and cards
+along with every other player's. Race Guardians read a race tree, which takes
+those AI mods aimed at the race's keys ([`ai-pipeline.md`](ai-pipeline.md),
+"Race trees").
 
 ## Addressing a host's reply
 
@@ -195,9 +723,10 @@ same reason `gwo_streams.coopPlayerKey` prefers `record.playerId`.
 Every reply that concerns one player addresses itself, including the failure
 replies (`cards_coop_reroll.js`'s `failReroll`, `cards_start_subcdr.js`'s
 `failSetup`). An unaddressed error would put one viewer's refusal on every
-viewer's screen. Two host→viewer operators carry **no** target, and both are
-broadcasts by design. One is the ping, which self-identifies and deduplicates by
-`ping_id`. The other is the star-card name sync.
+viewer's screen. Four host→viewer operators carry **no** target, and all four
+are broadcasts by design: the ping, which self-identifies and deduplicates by
+`ping_id`, the star-card name sync, the launch progress (`gwo_launch_progress`),
+and the war end (`gwo_war_end`).
 
 ## Rerolls
 
@@ -209,6 +738,21 @@ offered cards.
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
+
+A viewer's request that gets no answer within 2 minutes is let go: the overlay
+drops and the offer shows again. No host may be connected, or the host may have
+reloaded mid-exchange. The request is not sent again; the viewer can reroll
+again. The viewer waits only on its newest request, so an answer to an older one
+is ignored while a newer one waits. A late answer is applied only while the
+offer it replaces is still open: once the viewer has chosen, the server holds no
+offer, so it is dropped. The timeout does not close every gap. A host whose
+campaign queue holds a request past it can still reroll a hand the viewer has
+since chosen from, and that reroll's snapshot reopens the offer on the server.
+
+The host re-reads the viewer's record after the deal and writes the new hand
+onto that copy. If the pending hand changed meanwhile, the reroll is refused as
+stale. Otherwise a debt a host win set in the window would be lost ("Per-player
+pre-dealt cards").
 
 ## General Commander setup
 
@@ -315,6 +859,10 @@ nothing left there to ask the host for. That observable travels in
 `syncViewerStarsFromGame`'s copy list, so a viewer's own copy is maintained
 rather than inferred.
 
+Every check but the connected viewer's lives in `starOpenForPing`, which the
+host's pings for its AI players share ("AI pings"). The checks of the war alone
+are `warOpenForPing`.
+
 It also refuses while the turn state is `explore` or `fight`. Once the host
 commits to a destination, where to go next is no longer a question. Testing for
 those two rather than for `begin` is deliberate. **The state only returns to
@@ -340,12 +888,99 @@ inside a `_.defer`. `systems.js` replaces `model.selection` wholesale, and a
 computed built at load time would subscribe to the observable that the
 replacement orphans.
 
+### AI pings
+
+A co-op AI player pings too, in either tech mode, so the players can see where
+it wants to go next. It has no client to send from, so the host pings for it.
+`gw_play/coop_ai_pings.js` holds the rules, and `gw_play/cards_coop_ai_pings.js`
+is the glue.
+
+**When.** An AI considers a ping once in each window. A window is keyed by the
+host's turn count, the current star, the host's deal count, and a digest of the
+cards every AI would find at every AI star. So a move, a won star, a deal, or a
+re-deal of the stars' cards opens a new one, and a judgement made on cards
+since replaced is dropped. It is open only while the host could ping at any
+star (`canPingAsNow`, below), so the window and the send make the same checks
+of the war. It is also open only while the session has an AI in it, the unit
+lookup is in, the current star is explored, no player is setting up
+(`gwCampaignPlayerSetupBlocked`, which also counts a viewer still loading or
+picking a loadout), no AI is settling its deals, the war is not over, and
+nothing is re-dealing the stars' cards: neither the deal of the selectable AI
+stars' cards, which a won star starts, nor the star-card refresh it ends with. An AI
+therefore judges the cards the stars will offer. The AIs settle in slot order,
+the first 1.5 seconds after the window opens and each after it 1.2 seconds
+later, so their pings do not land together. Judging takes time, so each checks
+the window again before it pings. A window that closes before an AI has settled
+reopens for it.
+
+**Which star.** The candidates are the unexplored AI stars the host can move
+to, other than the current one, and the treasure planet only when it is the
+only one. Each star's card is the one the AI would find there: its own
+pre-dealt card under per-player tech, and the star's card under shared tech.
+The AI judges that card as it would in a hand
+([`tech-cards.md`](tech-cards.md), "How AI players judge a card"), against its
+own inventory under per-player tech and the host's under shared tech. A star's
+threat is the intelligence panel's own measure, `shared/star_threat.js`, which
+the panel reads too, so an AI weighs what the players see. A star scores its
+card's value as a share of the best card's, less 0.6 of its threat as a share
+of the worst threat's. The best score wins, then the nearer star, then the
+lower index.
+
+**Only when it cares.** An AI pings when it **wants** its best star's card,
+which is worth 10 or more, about a factory's unlock. It also pings when its
+best star leads the runner-up by 0.25 or more, a clear **lead**. A lone
+candidate counts as a lead only when its threat is below the median of every
+AI star's. Otherwise it stays silent. It stays silent too for a star another
+AI pinged in the same window, and for the star it pinged last. A new star
+within 20 seconds of its last ping waits: the AI tries again once the 20
+seconds are up, in the same window. A ping the host refuses is logged and not
+tried again in that window.
+
+**Sending.** `pingStarAs(star, sender)` in `coop_ping_operators.js` is the
+host's send on another's behalf. `canPingAs` makes the viewer's checks of the
+war and the star (`starOpenForPing`), and asks that this client be a connected
+host rather than a viewer. `canPingAsNow` is the same without the star. The host's cooldown keys on the AI, as it does on a
+viewer. The broadcast is the viewer's own `gwo_ping_star_broadcast`, naming the
+AI as its sender, and the host shows the ping locally. So every client gets the
+marker and the chat line "`<AI name>`: Ping! `<star>`". `gw_play/coop_ping.js`
+exposes the send as `model.gwoPingStarAs` and `model.gwoCanPingStarAs`, and
+the window's check as `model.gwoCanPingAsNow`.
+
+Each settle logs one line ([`live-testing.md`](live-testing.md), "AI
+players").
+
+**The glue.** `cards_coop_ai_pings.js` hands `coop_ai_pings.js`:
+
+- `ais()`, the AI players in the session in slot order, as `{ id, name }`.
+- `windowKey()` and `windowOpen()`, the current window and whether it is open.
+- `candidates()`, the stars an AI may ping, as `{ star, hops, threat }`, and
+  `allThreats()`, every AI star's threat.
+- `cardFor(ai, star)`, the card the AI would find there, if any, and
+  `valueOf(ai, card, star, memo)`, its worth to the AI or a promise of it.
+- `ping(star, sender)`, true when the ping went out.
+
+Tests also pass `delay(fn, ms)` and `now()`.
+
+`valueOf` asks `coop_ai_pings.valueOfCard(judge, holder, card, star, memo)`.
+The `judge` is the driver's own judging tools: `effects` (a
+`coop_ai_effects.js` instance), `lookup()`, `teamDomains(playerId, lookup)`,
+`namesUnits(cardId)`, `chanceOf(card, applied, star)`, `isLoadout(cardId)`,
+and the optional `fielded(saved, lookup)`. The `holder` is
+`{ playerId, inventory, commander }`, with the saved inventory the card is
+judged against. The `star` is the galaxy star itself, which a card's `deal()`
+takes, and the `memo` is shared by the cards an AI judges in one window.
+
 ## Per-player pre-dealt cards
 
 Under per-player tech each viewer gets their **own** card on every selectable AI
 star. The host deals it from that viewer's inventory
 (`gw_play/cards_coop_star_cards.js`), and the card joins their hand when they
 explore. `star.cardList()` remains the host's own. A viewer never sees it.
+
+Each co-op AI player gets its own card the same way. The refresh walks the AIs
+as clients with the role `"ai"` and their record's id
+(`model.gwoCoopAi.clients()`), and the driver puts an AI's card last in its hand
+at that star ("AI players' tech").
 
 The transport is a top-level `gwaioStarCards` field on the co-op player
 inventory record, `{turn, cards: {"<star>": card}, redealOwed}`. `redealOwed` is
@@ -386,7 +1021,9 @@ the gate below turned away. `refresh()` itself reads `gwCampaignActive`,
 subscribe the computed. The gate's inputs are read by `runRefresh`, which
 starts a tick later, too late to subscribe it, so the computed reads them
 itself. `game.turnState()` is among them because the gate refuses every refresh
-during exploration, so the end of exploration is what retries.
+during exploration, so the end of exploration is what retries. So is
+`model.gwoCoopAiDeciding`: the gate also refuses while an AI player settles its
+deals, and the end of that catch-up retries in the same way.
 `game.stats().turns()` is deliberately not read: it changes on every hop, and a
 move must not disturb an offer already advertised. The first hop out of `end`
 still refreshes, through `turnState`, but that refresh only fills gaps unless a
@@ -399,11 +1036,13 @@ exactly when viewers hold `pendingTechCards`. A dropped re-deal left them with
 last turn's cards, which could duplicate cards they had just taken.
 
 The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
-A re-deal sets it on every viewer record, connected or not, before the gate is
-consulted. The write that stores a viewer's new cards drops it, so each debt
-clears only when that viewer's own re-deal succeeds. A viewer with nothing left
-to re-deal has the flag dropped on its own. Otherwise the first gap-filling
-refresh of the next turn would re-deal them.
+A re-deal sets it on every co-op record before the gate is consulted: every
+viewer's, connected or not, every AI player's, and the host's own. The host's
+flag is inert: the refresh walks only viewers and AI players, so nothing reads
+or clears it. The write that stores a viewer's new cards drops it, so each debt
+clears only when that viewer's own re-deal succeeds. A viewer with nothing left to re-deal has the flag dropped on
+its own. Otherwise the first gap-filling refresh of the next turn would re-deal
+them.
 
 The record is where the debt belongs for three reasons:
 
@@ -441,7 +1080,11 @@ The refresh depends on two ordering rules:
   predicate. That closes the loop: the snapshot a refresh publishes makes the
   server sweep every client for catch-up, and the gate guarantees that sweep
   finds nothing. Without it, a viewer rejoining ten deals behind would drive ten
-  full re-deals of every selectable star.
+  full re-deals of every selectable star. An AI player must be level too, which
+  it is once the host has settled its deals. It has no connection to load, so
+  the loading tests skip it, and the gate refuses outright while any AI is
+  settling its deals. The refresh in turn holds a `busy` flag while it runs,
+  and the driver starts no pass until it drops, so the two take turns.
 
 Hand sizing: the pre-dealt card is passed as `systemCards`, and the draw count
 is reduced by one. The stored hand is therefore still `cardsOffered` long.
@@ -456,6 +1099,12 @@ derived at exploration from the acting player's own locked pool. The same code
 serves the host and every viewer, and each is judged by their own unlock record
 (`gw_play/treasure_loadouts.js`). A player who owns every loadout gets an
 ordinary tech deal there instead.
+
+A co-op AI player counts as owning every loadout: `recordHasUnlockedLoadout` is
+true for any record that carries `gwaioAi`. It banks nothing, so a loadout would
+be wasted on it. It is therefore dealt an ordinary hand at the treasure planet,
+and it never holds a won war open for the loadout the Guardians still owe
+(`anyPlayerCanUnlockLoadout`, which `gw_play/victory.js` reads).
 
 Deriving rather than storing is what lets a catch-up deal replay a star for a
 viewer who was absent when it was explored. Keyed on `(player, star)` alone, the
@@ -473,18 +1122,17 @@ explore. The base game instead adds the card and a free slot to cover it
 The server already banks a viewer's loadout choice without touching the
 inventory, but only for ids that pass `isBaseLoadoutCardId`. It pushes every mod
 loadout into the viewer's war inventory instead. GWO therefore intercepts
-**every** loadout id on a viewer, banks it locally and submits `-1`. It cannot
-leave the base ids to the server, because banking is held shut on viewers for
-the reason below.
+**every** loadout id on a viewer, the base ones included. It banks the card
+locally and submits `-1`.
 
 ## The per-player loadout scene
 
 `gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
 war loadout and, under Separate races, their race. It has to build that
-loadout's starting inventory itself rather than inherit the host's. GWO puts
-three files in it: `shared/race_picker_view.js`,
-`gw_coop_per_player_loadout/race_picker.js` and
-`gw_coop_per_player_loadout/gwo_loadouts.js`.
+loadout's starting inventory itself rather than inherit the host's. GWO loads
+four scripts in it: `shared/race_picker_view.js`,
+`gw_coop_per_player_loadout/race_picker.js`,
+`gw_coop_per_player_loadout/gwo_loadouts.js`, and `shared/tooltips.js`.
 
 Four things about it are not obvious from the scene it sits in:
 
@@ -494,7 +1142,11 @@ Four things about it are not obvious from the scene it sits in:
   `GW.manifest.loadGame(model.activeGameId())` once and caches the promise for
   both scene scripts. It resolves
   `{ faction, colour, race, races, perPlayerRace }` always and never rejects,
-  because a loadout preview outside a war still has to render.
+  because a loadout preview outside a war still has to render. A war it cannot
+  read, such as an id stock's `loadGame` has not stored, is one with no races.
+  Both scripts wait on the same jQuery promise, and jQuery 2.1.4 runs no later
+  callback on a promise once one has thrown. So the race picker's callback
+  catches its own throw, or Join would wait for good.
 
   `colour` is the war's `global.playerColor`. It paints the commander preview
   the way the war setup's Commander picker does: the same
@@ -527,7 +1179,9 @@ Four things about it are not obvious from the scene it sits in:
   the chosen card produced exactly one card, in first position, with `maxCards`
   a number that leaves room beyond it. Anything else rejects the deferred,
   because a loadout that quietly banked tech would hand the viewer cards nobody
-  dealt them.
+  dealt them. The check and the build it guards live in
+  `shared/starting_inventory.js`, because the host builds a co-op AI player's
+  starting inventory the same way ("AI players' tech").
 
 Banking is the other half, and "Whose unlocks are whose" below covers it. A
 viewer banks its own war loadout from this scene. That is why the hold placed on
@@ -565,9 +1219,27 @@ loadout scene for its war loadout. Winning a war unlocks through `gw_war_over`,
 a different scene, and is unaffected.
 
 The mirror of this is the host collecting a _viewer's_ loadouts. It comes from
-the host applying each viewer's inventory to size their deals. Banking is
-suspended at each of those call sites (`cards_coop_deal.js`,
-`cards_coop_reroll.js`, `cards_coop_star_cards.js`).
+the host applying each viewer's inventory, and each co-op AI player's, to size
+their deals. Banking is suspended at each of those call sites
+(`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_coop_star_cards.js`).
+The host's General Commander setup (`cards_start_subcdr.js`) applies a viewer's
+inventory without the hold. That inventory is the General Commander loadout,
+first, and its Sub Commander cards, and a loadout in first place never banks.
+
+The host also applies an AI's inventory to judge its cards, in
+`gw_play/coop_ai_effects.js`, through `bank.applyInventoryHeld`. That holds
+banking the same way, and can release the hold when an apply hangs. The hold
+matters there. Judging a loadout puts it first, which pushes the AI's own
+loadout into second place, and a loadout in any place but the first banks
+itself in its `buff`. An AI never takes a loadout, so it never banks one.
+
+The release has one gap. An apply that is slow rather than hung runs the rest
+of its cards after the timeout, with banking back on, so a judged loadout's
+second place would bank into the host's own bank. The timeout keeps this out of
+reach rather than closing it: holding on until a late apply finished would
+refuse the host's own treasure loadout for the rest of the scene whenever one
+truly hangs. An apply in play takes a small fraction of the 10-second
+timeout.
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
@@ -647,5 +1319,6 @@ known synchronously from the URL at scene construction.
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md): per-viewer path scoping.
-- [`tech-cards.md`](tech-cards.md): why `deal()` must read the passed inventory.
+- [`tech-cards.md`](tech-cards.md): why `deal()` must read the passed inventory,
+  and how a co-op AI player judges a card.
 - [`shadowing.md`](shadowing.md): why the per-player-tech referee is shadowed.

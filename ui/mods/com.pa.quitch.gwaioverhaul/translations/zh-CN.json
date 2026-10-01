@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - 加快增援"
+  },
   "A map pack this war uses is missing": {
     "message": "本场战争所用的地图包缺失"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "军队/指挥官："
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "本场战争开始时启用、现已停用的附加模组："
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "高级防御科技可解锁更强大的防御工事。高级防御工事由高级建造兵建造。"
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "空军冷却科技可使所有空军工厂在两次建造之间的冷却时间减半。"
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "除非电脑玩家可选的配装都已被其他玩家占用，否则它不会以其他玩家持有的配装开局。需要启用“Separate loadout &amp; tech”。"
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "不支持某个种族的 AI 不会出现在该种族的选项中。"
@@ -170,6 +179,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER：陆军。以 Angel 和 Colonel 作为副指挥官，且无法建造它们。"
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "合作：主机加入合作会话的电脑玩家"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "指挥官运输："
   },
@@ -199,6 +211,9 @@
   },
   "Co-Op Settings": {
     "message": "合作设置"
+  },
+  "Co-op": {
+    "message": "合作"
   },
   "Co-op host setup": {
     "message": "合作主机设置"
@@ -236,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "钻石：您的配装强得离谱"
   },
+  "DIRE": {
+    "message": "惨淡"
+  },
   "Deck:": {
     "message": "牌组："
   },
@@ -244,6 +262,9 @@
   },
   "Delay in creating new bases.": {
     "message": "建立新基地的延迟。"
+  },
+  "Delete this Tech?": {
+    "message": "删除此科技？"
   },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "它们由 Hegemony 的秘密部队在 Century War 期间部署。从它们如今的扩散程度来看，它们要么在战争结束后自行获得了在星球上播种的能力，要么是 Xziphid 为避免战败而孤注一掷的产物。"
@@ -293,6 +314,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "快"
+  },
+  "FASTER": {
+    "message": "更快"
+  },
+  "FASTEST": {
+    "message": "最快"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "混战打法"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION：空军/海军"
   },
@@ -308,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "黄金：您已打赢 Queller AI 模组"
   },
+  "GOOD": {
+    "message": "良好"
+  },
   "GW Server Mods is not enabled": {
     "message": "未启用 GW Server Mods"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-新手"
+  },
+  "HEALTHY": {
+    "message": "健康"
+  },
+  "HUGE": {
+    "message": "很大"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "哈雷升级科技可使这种 delta-V 引擎的生命值翻倍，花费减半。"
@@ -325,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "AI 的侦察水平。"
+  },
+  "IMMEDIATELY": {
+    "message": "立即"
+  },
+  "IMMENSE": {
+    "message": "极大"
+  },
+  "INCREDIBLE": {
+    "message": "惊人"
   },
   "IRON: you no longer turtle": {
     "message": "黑铁：您不再一味龟缩"
@@ -350,6 +404,9 @@
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "Kessler 升级科技可使轨道地雷在不自毁的条件下爆炸。"
   },
+  "Kick this AI?": {
+    "message": "踢出此电脑？"
+  },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "北海巨妖升级科技可使这种高级潜艇的导弹攻击范围扩大200%。"
   },
@@ -359,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "可在任何地方着陆：玩家可在可用的起始星球上的任意位置开局。"
   },
+  "LATE ORBITAL": {
+    "message": "延后发展轨道"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA：载具"
+  },
+  "LONG": {
+    "message": "长"
+  },
+  "LOVES AIR": {
+    "message": "偏好空军"
+  },
+  "LOVES BOTS": {
+    "message": "偏好机器人"
+  },
+  "LOVES LAND": {
+    "message": "偏好陆军"
+  },
+  "LOVES ORBITAL": {
+    "message": "偏好轨道单位"
+  },
+  "LOVES TANKS": {
+    "message": "偏好坦克"
   },
   "Land Anywhere Tech": {
     "message": "可在任何地方着陆科技"
@@ -479,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "轨道冷却科技可使所有轨道工厂在两次建造之间的冷却时间减半。"
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT：更鲜明的个性"
   },
@@ -487,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "白金：一个敌人已不成挑战"
+  },
+  "POOR": {
+    "message": "较差"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "鹈鹕升级科技可使空中运输机运载指挥官。每个单位在被运输时都可以射击。"
@@ -557,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "以全新的低成本/低当量型号取代常规核弹，并在攻防两端都高度依赖它。为此放弃了大部分高级防御工事。"
   },
+  "Report a Galactic War Bug": {
+    "message": "报告银河战争漏洞"
+  },
   "SCOUTING:": {
     "message": "侦察："
   },
+  "SHORT": {
+    "message": "短"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "白银：您已打赢遭遇战 AI"
+  },
+  "SLOW": {
+    "message": "慢"
+  },
+  "SLOWER": {
+    "message": "更慢"
+  },
+  "SLOWEST": {
+    "message": "最慢"
+  },
+  "SPAWN ONLY": {
+    "message": "仅刷新点"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "骤死赛几率："
@@ -577,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "规模按："
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "独立"
@@ -650,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "科技星系："
   },
+  "TERRIBLE": {
+    "message": "糟糕"
+  },
+  "TINY": {
+    "message": "极小"
+  },
   "TITANS: base game AI": {
     "message": "TITANS：原版游戏 AI"
   },
@@ -674,14 +788,23 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "海军指挥官的配装内容为全部海军工厂。增加符合条件的星球上的水和熔岩数量。"
   },
-  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
-    "message": "只要派系、难度和游戏选项相同且安装了相同的模组，同一个种子就会重建相同的银河和相同的敌人。星球名称仍会不同。留空即可生成全新的银河。"
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "银河太小，无法让每个敌对派系都拥有母星系。请选择更大的银河，或启用“按比例调整派系数量”，让较小的银河拥有较少的派系。"
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "只要银河大小、玩家数、派系、难度和游戏选项相同且安装了相同的模组，同一个种子就会重建相同的银河和相同的敌人。星球名称仍会不同。保持不变即可生成全新的银河。"
   },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "您和您的副指挥官所使用的单位。每个种族的 AI 通过 AI 按钮选择。"
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "您和您的副指挥官所使用的单位。只能选择主机创建战争时使用的种族。"
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "由于程序漏洞，无法创建战争。请在 __url__ 报告，并附上战争种子（__seed__）和你的 PA 日志文件，该文件位于 __folder__。"
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "无法创建战争，因为在“Systems”下选择的来源无法加载，或没有可用的星系。请选择其他来源，或离开此界面后再返回，以便重新加载它们。"
   },
   "This card will be offered as part of the first draw.": {
     "message": "这张卡牌将在首次抽取时提供。"
@@ -722,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "UBER：您讨厌获胜"
   },
+  "UNHEALTHY": {
+    "message": "欠佳"
+  },
   "UNIT DELAY (MAX):": {
     "message": "单位延迟（最大）："
   },
   "UNIT DELAY (MIN):": {
     "message": "单位延迟（最小）："
+  },
+  "Unique AI loadouts": {
+    "message": "电脑玩家配装不重复"
   },
   "Unique Races": {
     "message": "独特种族"
@@ -754,6 +883,15 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "载具冷却科技可使所有载具工厂在两次建造之间的冷却时间减半。"
+  },
+  "View loadout and tech cards": {
+    "message": "查看配装和科技卡"
+  },
+  "WEAK": {
+    "message": "疲弱"
+  },
+  "Waiting for loadout": {
+    "message": "正在等待配装"
   },
   "Waiting for players": {
     "message": "正在等待玩家"

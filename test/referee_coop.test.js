@@ -3,11 +3,14 @@
 // Unit tests for gw_play/referee_coop.js's allied-commander ordering - the single
 // source of truth for which palette entry each player-faction ally gets. Four places
 // number colours from it (referee_config.js and its setup module, the per-player-tech
-// referee, gwo_panel.js and the intelligence panel), and all four are coverage-excluded
-// glue, so this is where that arithmetic is actually pinned down.
+// referee through per_player_tech.js, the war panel through gwo_panel_view.js, and
+// the intelligence panel). The intelligence panel is coverage-excluded glue and the
+// others only consume the order, so this is where that arithmetic is actually
+// pinned down.
 
-const { describe, it } = require("node:test");
+const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
+const _ = require("lodash");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   makeInventory,
@@ -32,7 +35,16 @@ function makeGame(options) {
     perPlayerTechCards: () => !!settings.perPlayerTechCards,
     findCoopPlayerInventoryData: (client) =>
       client ? records[client.id] : undefined,
+    coopPlayerInventoryData: () =>
+      _.values(records).concat(settings.aiRecords || []),
   };
+}
+
+function makeAiRecord(serial, minionNames) {
+  return Object.assign(makeRecord(minionNames), {
+    playerId: "gwo_ai_" + serial,
+    gwaioAi: { serial: serial },
+  });
 }
 
 function makeRecord(minionNames, cards) {
@@ -62,6 +74,8 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     minionsList: [{ name: "Alpha" }, { name: "Beta" }],
     cardsList: [{ id: "host_card" }],
   });
+
+  beforeEach(() => installModel(makeGame(), [HOST]));
 
   it("is the host's own subcommanders when per-player tech is off", () => {
     const game = makeGame({
@@ -175,8 +189,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     assert.deepEqual(ordered[2].cards, []);
   });
 
-  // referee_game_files.js and referee_config.js both call through without a
-  // client list, leaving it to read model.gwCampaignConnectedClients().
+  // referee_config.js and section_of_foreign_intelligence.js both call through
+  // without a client list, leaving it to read
+  // model.gwCampaignConnectedClients().
   it("reads the connected clients itself when given none", () => {
     const game = makeGame({
       perPlayerTechCards: true,
@@ -205,6 +220,108 @@ describe("referee_coop.getOrderedSubcommanders", () => {
       refereeCoop.alliedColourIndex(ordered.length),
       hostInventory.minions().length + 1
     );
+  });
+});
+
+describe("referee_coop co-op AI players", () => {
+  const hostInventory = makeInventory({ minionsList: [{ name: "Alpha" }] });
+
+  // Host, then viewers, then AIs in slot order; the star's ally follows all.
+  it("numbers the AI players' Sub Commanders after every viewer's", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: { "view-1": makeRecord(["Beta"]) },
+      aiRecords: [makeAiRecord(2, ["Delta"]), makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(game, [HOST, VIEWER_ONE]);
+
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(hostInventory, game, [
+          HOST,
+          VIEWER_ONE,
+        ])
+      ),
+      ["Alpha", "Beta", "Gamma", "Delta"]
+    );
+    assert.deepEqual(
+      _.map(refereeCoop.getCoopAiInventories(game), "record.playerId"),
+      ["gwo_ai_1", "gwo_ai_2"]
+    );
+  });
+
+  it("leaves AI players out under shared tech, and outside a session", () => {
+    const shared = makeGame({
+      perPlayerTechCards: false,
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(shared, [HOST]);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(shared), []);
+
+    const solo = makeGame({
+      perPlayerTechCards: true,
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(solo, []);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(solo), []);
+    assert.deepEqual(
+      names(refereeCoop.getOrderedSubcommanders(hostInventory, solo, [])),
+      ["Alpha"]
+    );
+  });
+
+  // A hire numbers the AI players it fields (ref.coopAis), not the records.
+  it("numbers a hire's own AI players in place of the records'", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: { "view-1": makeRecord(["Beta"]) },
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(game, [HOST, VIEWER_ONE]);
+    const coopAis = [
+      {
+        id: "gwo_ai_2",
+        perPlayer: true,
+        inventory: makeRecord(["Delta"]).inventory,
+      },
+      { id: "gwo_ai_3", perPlayer: false, inventory: hostInventory },
+    ];
+
+    const fielded = refereeCoop.launchAiInventories(coopAis);
+    assert.deepEqual(_.map(fielded, "id"), ["gwo_ai_2"]);
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(
+          hostInventory,
+          game,
+          [HOST, VIEWER_ONE],
+          fielded
+        )
+      ),
+      ["Alpha", "Beta", "Delta"]
+    );
+    // An empty list counts the humans' alone.
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(
+          hostInventory,
+          game,
+          [HOST, VIEWER_ONE],
+          []
+        )
+      ),
+      ["Alpha", "Beta"]
+    );
+    assert.deepEqual(refereeCoop.launchAiInventories(undefined), []);
+  });
+
+  it("skips an AI record with no inventory", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      aiRecords: [{ playerId: "gwo_ai_1", gwaioAi: { serial: 1 } }],
+    });
+    installModel(game, [HOST]);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(game), []);
   });
 });
 
@@ -244,5 +361,24 @@ describe("referee_coop.clientKey", () => {
     assert.equal(refereeCoop.clientKey("abc", "Alice"), "abc::Alice");
     assert.equal(refereeCoop.clientKey(undefined, "Alice"), "::Alice");
     assert.equal(refereeCoop.clientKey("abc", undefined), "abc::");
+  });
+});
+
+describe("referee_coop.hostingPerPlayerSession", () => {
+  const hosting = (active, host, perPlayer) => {
+    installModel(makeGame());
+    Object.assign(global.model, {
+      gwCampaignActive: () => active,
+      isCampaignHost: () => host,
+      gwCampaignPerPlayerTechCards: () => perPlayer,
+    });
+    return refereeCoop.hostingPerPlayerSession();
+  };
+
+  it("is true only for the host of a session played with per-player tech", () => {
+    assert.equal(hosting(true, true, true), true);
+    assert.equal(hosting(false, true, true), false);
+    assert.equal(hosting(true, false, true), false);
+    assert.equal(hosting(true, true, false), false);
   });
 });

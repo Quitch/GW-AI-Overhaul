@@ -3,8 +3,9 @@
 // Validates every tech card against the contract in tech-cards.md. Checks only the
 // shape of what define() returns, never calling deal/buff/dull.
 //
-// keep/discard are on no card today, but gw_inventory.js still calls them when
-// present, so one may reintroduce them.
+// keep/discard/releaseContext are on no card today, but shared/deal.js and
+// gw_start/war_generation.js still call keep and releaseContext when present,
+// and stock's gw_start/gw_dealer.js calls all three, so one may reintroduce them.
 
 const { listCardFiles, loadCard } = require("../lib/card-files.js");
 const { reportFailures } = require("../lib/report-failures.js");
@@ -18,7 +19,14 @@ const REQUIRED_FIELDS = [
   "buff",
   "dull",
 ];
-const OPTIONAL_FIELDS = ["audio", "getContext", "keep", "discard", "hint"];
+const OPTIONAL_FIELDS = [
+  "audio",
+  "getContext",
+  "keep",
+  "discard",
+  "releaseContext",
+  "hint",
+];
 const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 
 // Coverage floor. NOT_SHIPPED is swallowed generically below, so one broken

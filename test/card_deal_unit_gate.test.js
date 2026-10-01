@@ -32,6 +32,9 @@ const { byFile } = loadAllCards();
 const gwoUnit = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
 );
+const gwoGroup = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js"
+);
 const gwoCardsToUnits = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"
 );
@@ -44,9 +47,13 @@ const loadoutIds = loadCouiModule(
 // same reason. A card that quietly stopped being probed is the failure this exists
 // to catch.
 const MIN_PROBED = 190;
-// The one with no analogue in cards-contract.js, and the important one. Without it
-// a broken gw_common stub that made every deal() return 0 would leave MIN_PROBED
-// intact and every assertion below vacuously green.
+// The sweeps below read two things per card, the units it gates on and the
+// chances it reaches, and these two floors keep each from emptying unseen. A
+// grantedUnits that over-reported would leave no card a unit to gate on, and
+// each sweep would skip every card.
+const MIN_GATED = 177;
+// A gw_common stub that made every deal() return 0 fails this. It fails the
+// converse sweep too, but that sweep reads only cards with a unit to gate on.
 const MIN_DEALABLE = 169;
 
 // Cards with no card_units.js entry that are neither a loadout nor listed in
@@ -106,6 +113,28 @@ const OPENED_BY_UNRELATED_UNITS = {
       gwoUnit.ward,
     ],
     reason: "as gwc_damage_air: the vehicle fabbers and the Nyx carry no ammo",
+  },
+};
+
+// Unlock cards that are not offered to a starting player, and the units that
+// open each. An unlock card's buff grants every unit its entry names, so it has
+// none to gate on; these wait for a unit that builds what they grant. The
+// probe holds no cards, so a card that grants advanced tech, their other
+// route, is advanced_fabber_gates.test.js's.
+const UNLOCKS_WAITING_FOR_A_BUILDER = {
+  gwc_enable_defenses_t2: {
+    units: gwoGroup.fabbersAdvanced,
+    reason: "advanced fabricators build the advanced defences",
+  },
+  gwaio_enable_planetaryradar: {
+    units: gwoGroup.fabbersAdvanced,
+    reason: "advanced fabricators build the Planetary Radar",
+  },
+  gwc_enable_titans: {
+    units: gwoGroup.fabbersAdvanced.concat(gwoUnit.orbitalFactory),
+    reason:
+      "advanced fabricators build titans, and so does the orbital " +
+      "fabricator, whose route also asks for the orbital factory",
   },
 };
 
@@ -238,6 +267,11 @@ describe("the sweep is live", () => {
     assert.ok(probed.length >= MIN_PROBED, probed.length + " cards probed");
   });
 
+  it("finds a unit to gate on for most of them", () => {
+    const gated = probed.filter((entry) => entry.gated.length > 0).length;
+    assert.ok(gated >= MIN_GATED, gated + " cards have a unit to gate on");
+  });
+
   it("reaches a real chance for most of them", () => {
     const dealable = probed.filter(
       (entry) => entry.chanceOwningEverything > 0
@@ -265,6 +299,32 @@ describe("no card is offered to a player who owns none of its units", () => {
   });
 });
 
+// The sweeps skip a card with no unit to gate on: an unlock card, whose buff
+// grants every unit its entry names. It exists to be offered to a player who
+// owns none of them.
+describe("an unlock card is offered to a player who owns none of its units", () => {
+  it("offers every unlock card to a starting player", () => {
+    const withheld = probed
+      .filter(
+        (entry) =>
+          entry.gated.length === 0 &&
+          entry.chanceOwningNothing === 0 &&
+          !Object.prototype.hasOwnProperty.call(
+            UNLOCKS_WAITING_FOR_A_BUILDER,
+            entry.id
+          )
+      )
+      .map((entry) => entry.id);
+
+    assert.deepEqual(
+      withheld,
+      [],
+      "these unlock cards are never offered to a player who has none of the " +
+        "units they grant"
+    );
+  });
+});
+
 describe("a card is offered once its units are owned", () => {
   // The converse, and what catches a gate that tests the wrong unit: a card that
   // stays at zero for a player who owns everything it affects can only be reading
@@ -287,6 +347,114 @@ describe("a card is offered once its units are owned", () => {
       [],
       "these cards are never offered even to a player owning every unit they " +
         "affect - the gate is reading a different unit"
+    );
+  });
+});
+
+// Units a card gates on that do not open it held alone, and why.
+const FACTORY_UPGRADE =
+  "an upgrade of the factory, dealt to its owner: its entry names the units " +
+  "the factory builds because they get cheaper";
+const CLUSTER_SUB_COMMANDER =
+  "a Cluster player fields it as a Sub Commander, which makes it no air or " +
+  "bot player, so the card deals on its *NoCluster group";
+const NOT_OPENED_BY_ONE_UNIT = {
+  gwaio_upgrade_advancedairfactory: {
+    units: gwoGroup.airAdvancedMobile,
+    reason: FACTORY_UPGRADE,
+  },
+  gwaio_upgrade_advancedbotfactory: {
+    units: gwoGroup.botsAdvancedMobile,
+    reason: FACTORY_UPGRADE,
+  },
+  gwaio_upgrade_advancednavalfactory: {
+    units: gwoGroup.navalAdvancedMobile,
+    reason: FACTORY_UPGRADE,
+  },
+  gwaio_upgrade_advancedvehiclefactory: {
+    units: gwoGroup.vehiclesAdvancedMobile,
+    reason: FACTORY_UPGRADE,
+  },
+  gwaio_upgrade_orbitalfactory: {
+    units: gwoGroup.orbitalAdvancedMobile,
+    reason: FACTORY_UPGRADE,
+  },
+};
+for (const id of [
+  "gwc_combat_air",
+  "gwc_cost_air",
+  "gwc_damage_air",
+  "gwc_health_air",
+  "gwc_speed_air",
+]) {
+  NOT_OPENED_BY_ONE_UNIT[id] = {
+    units: [gwoUnit.angel],
+    reason: CLUSTER_SUB_COMMANDER,
+  };
+}
+for (const id of [
+  "gwc_combat_bots",
+  "gwc_cost_bots",
+  "gwc_damage_bots",
+  "gwc_health_bots",
+  "gwc_speed_bots",
+]) {
+  NOT_OPENED_BY_ONE_UNIT[id] = {
+    units: [gwoUnit.colonel],
+    reason: CLUSTER_SUB_COMMANDER,
+  };
+}
+
+describe("a card is offered for any one of its units", () => {
+  // Owning every unit a card affects satisfies a gate that reads only some of
+  // them, so each unit is also held alone.
+  it("is opened by each unit it gates on, held alone", () => {
+    const closed = [];
+    const stillClosed = new Set();
+
+    for (const entry of probed) {
+      // As in the drift sweep below: only a card dealable to an owner and not
+      // to a non-owner has a gate to test one unit at a time.
+      if (
+        entry.gated.length === 0 ||
+        entry.chanceOwningEverything === 0 ||
+        entry.chanceOwningNothing !== 0
+      ) {
+        continue;
+      }
+
+      const argued = NOT_OPENED_BY_ONE_UNIT[entry.id];
+      const units = entry.gated.filter((unit) => {
+        if (maxChance(entry.card, makeInventory([...STARTER, unit])) !== 0) {
+          return false;
+        }
+        if (argued && argued.units.includes(unit)) {
+          stillClosed.add(entry.id + " <- " + unit);
+          return false;
+        }
+        return true;
+      });
+
+      if (units.length) {
+        closed.push(entry.id + " <- " + units.join(", "));
+      }
+    }
+
+    assert.deepEqual(
+      closed,
+      [],
+      "the card affects each of these units, yet owning one alone does not " +
+        "make it dealable"
+    );
+
+    const stale = Object.entries(NOT_OPENED_BY_ONE_UNIT)
+      .flatMap(([id, argued]) => argued.units.map((unit) => id + " <- " + unit))
+      .filter((pair) => !stillClosed.has(pair));
+    assert.deepEqual(
+      stale,
+      [],
+      "these exceptions no longer hold: the card is not gated on the unit, " +
+        "or the unit now opens it alone"
     );
   });
 });
@@ -328,5 +496,40 @@ describe("no unit outside a card's affected set makes it dealable", () => {
       [],
       "owning these units makes the card dealable, but the card does not affect them"
     );
+  });
+
+  // Everything that opens an unlock card is outside its set, as it grants
+  // every unit it affects. So it must be exactly the units argued for it.
+  it("opens an unlock card that waits only on the units argued for it", () => {
+    for (const [id, argued] of Object.entries(UNLOCKS_WAITING_FOR_A_BUILDER)) {
+      const entry = probed.find((candidate) => candidate.id === id);
+      assert.ok(entry, id + " is not probed");
+
+      const openers = EVERY_UNIT.filter(
+        (unit) =>
+          !STARTER.has(unit) &&
+          maxChance(entry.card, makeInventory([...STARTER, unit])) > 0
+      );
+
+      assert.deepEqual(openers.sort(), [...argued.units].sort(), id);
+    }
+  });
+});
+
+// A card whose buff grants every unit its entry names has nothing in `gated`, so
+// the sweeps above skip it. Boom Upgrade Tech grants the Lob and loads it with
+// the player's Booms, whose tagged spec exists only while the Boom is held
+// (specs.md, "Writing a spec reference"), so it deals on the Boom. Its entry
+// names the Boom too, which keeps it inside the sweeps.
+describe("Boom Upgrade Tech", () => {
+  it("names the Boom its deal needs, so the sweeps probe it", () => {
+    const entry = probed.find(
+      (candidate) => candidate.id === "gwaio_upgrade_boom"
+    );
+
+    assert.ok(
+      maxChance(entry.card, makeInventory([...STARTER, gwoUnit.boom])) > 0
+    );
+    assert.deepEqual(entry.gated, [gwoUnit.boom]);
   });
 });

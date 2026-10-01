@@ -4,7 +4,14 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (dealHelpers, coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+], function (dealHelpers, coopHost, coopPublish, refereeCoop) {
+  // Well past a host's apply, deal and save, and past a busy campaign queue. A
+  // request the host never answers - no host, or a host reload mid-exchange -
+  // would otherwise hide the offer behind the scan until the page reloads.
+  var REPLY_TIMEOUT_MS = 120000;
+
   // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
     var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
@@ -80,9 +87,101 @@ define([
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
+    // The request_id of the request the viewer waits on, until it is answered
+    // or times out.
+    var awaiting;
+
+    // A viewer asks the host to reroll its pending offer; the result handler
+    // below clears what this sets.
+    var requestReroll = function (pendingTechCards) {
+      var request = _.uniqueId("gwo_reroll_");
+      awaiting = request;
+      model.gwoRerollPending(true);
+      model.scanning(true);
+      model.sendCampaignViewerOperator(
+        rerollPendingTechRequest,
+        {
+          star: pendingTechCards.star,
+          deal_index: pendingTechCards.dealIndex,
+        },
+        {
+          request_id: request,
+        }
+      );
+      _.delay(function () {
+        if (awaiting !== request) {
+          return;
+        }
+        awaiting = undefined;
+        console.error("[GW COOP] pending tech reroll got no reply");
+        model.gwoRerollPending(false);
+        model.scanning(false);
+      }, REPLY_TIMEOUT_MS);
+    };
+
+    // A player's rerolled hand, weighed on their own applied inventory: one card
+    // fewer, from the stream of the deal it replaces. Resolves { pendingTechCards,
+    // rerollsUsed, cardsOffered }, or rejects when no reroll remains.
+    var rerolledHandFor = function (params) {
+      var result = $.Deferred();
+      var pendingTechCards = params.pendingTechCards;
+      var cardsOffered = helpers.cardsOfferedCount(
+        numCardsToOffer,
+        params.inventory
+      );
+      var rerollState = computeRerollDeal(
+        cardsOffered,
+        pendingTechCards.cards.length
+      );
+
+      if (rerollState.exhausted) {
+        result.reject("no pending tech rerolls remain");
+        return result.promise();
+      }
+
+      var nextRerollsUsed = rerollState.nextRerollsUsed;
+      chooseCards({
+        inventory: params.inventory,
+        count: rerollState.cardCount,
+        star: params.star,
+        systemCards: [],
+        rng: pendingTechRerollRng({
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          record: params.record,
+          client: params.client,
+          pendingTechCards: pendingTechCards,
+          rerollsUsed: nextRerollsUsed,
+        }),
+      }).then(function (cards) {
+        result.resolve({
+          pendingTechCards: {
+            star: pendingTechCards.star,
+            cards: cards || [],
+            dealIndex: pendingTechCards.dealIndex,
+            cardsOffered: cardsOffered,
+            rerollsUsed: nextRerollsUsed,
+            updatedAt: _.now(),
+          },
+          rerollsUsed: nextRerollsUsed,
+          cardsOffered: cardsOffered,
+        });
+      });
+
+      return result.promise();
+    };
 
     var applyPendingTechRerollResult = function (operator) {
       var payload = (operator && operator.payload) || {};
+      // An answer to an older request, while a newer one waits, is overtaken
+      // by the newer one's.
+      if (awaiting && operator && operator.request_id !== awaiting) {
+        console.error(
+          "[GW COOP] pending tech reroll result for an older request"
+        );
+        return;
+      }
+      awaiting = undefined;
       model.gwoRerollPending(false);
 
       if (payload.error) {
@@ -108,6 +207,20 @@ define([
           "[GW COOP] missing inventory for pending tech reroll result"
         );
         model.scanning(false);
+        return;
+      }
+
+      // A reply that lands after the viewer stopped waiting and chose must not
+      // bring the offer back: the server no longer has it.
+      var open = record.pendingTechCards;
+      if (
+        !open ||
+        open.star !== pendingTechCards.star ||
+        open.dealIndex !== pendingTechCards.dealIndex
+      ) {
+        console.error(
+          "[GW COOP] pending tech reroll result for a closed offer"
+        );
         return;
       }
 
@@ -168,7 +281,7 @@ define([
         result.reject(error);
       };
 
-      if (!model.isCampaignHost() || !model.gwCampaignPerPlayerTechCards()) {
+      if (!refereeCoop.hostingPerPlayerSession()) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
       }
@@ -198,66 +311,50 @@ define([
         return result.promise();
       }
 
-      var dealCards = function (playerInventory) {
-        var cardsOffered = helpers.cardsOfferedCount(
-          numCardsToOffer,
-          playerInventory
-        );
-        var rerollState = computeRerollDeal(
-          cardsOffered,
-          pendingTechCards.cards.length
-        );
-
-        if (rerollState.exhausted) {
-          failReroll("no pending tech rerolls remain");
+      var storeRerolled = function (rerolled) {
+        // Re-read: the apply and the deal are async, and a host win can
+        // have owed this record a re-deal since it was read above.
+        var fresh = coopHost.recordFor(game, operator);
+        if (!fresh || !_.isEqual(fresh.pendingTechCards, pendingTechCards)) {
+          failReroll("stale pending tech cards");
           return;
         }
 
-        var nextRerollsUsed = rerollState.nextRerollsUsed;
-        chooseCards({
-          inventory: playerInventory,
-          count: rerollState.cardCount,
-          star: star,
-          systemCards: [],
-          rng: pendingTechRerollRng({
-            gwoStreams: gwoStreams,
-            warRng: warRng,
-            record: record,
-            client: { id: operator.client_id, name: operator.client_name },
-            pendingTechCards: pendingTechCards,
-            rerollsUsed: nextRerollsUsed,
-          }),
-        }).then(function (cards) {
-          var updatedAt = _.now();
-          var nextPendingTechCards = {
-            star: pendingTechCards.star,
-            cards: cards || [],
-            dealIndex: pendingTechCards.dealIndex,
-            cardsOffered: cardsOffered,
-            rerollsUsed: nextRerollsUsed,
-            updatedAt: updatedAt,
-          };
-          var stored = coopHost.upsertRecord(game, record, {
-            pendingTechCards: nextPendingTechCards,
-            updatedAt: updatedAt,
-          });
-          if (!stored) {
-            failReroll("failed to store rerolled pending tech");
-            return;
-          }
-
-          model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
-          coopHost.reply(rerollPendingTechResult, operator, {
-            pendingTechCards: nextPendingTechCards,
-            rerolls_used: nextRerollsUsed,
-            offer_rerolls: dealHelpers.rerollsRemain(
-              nextRerollsUsed,
-              cardsOffered
-            ),
-            updated_at: updatedAt,
-          });
-          gwoSave(game, false).then(resolveResult, rejectResult);
+        var nextPendingTechCards = rerolled.pendingTechCards;
+        var updatedAt = nextPendingTechCards.updatedAt;
+        var stored = coopHost.upsertRecord(game, fresh, {
+          pendingTechCards: nextPendingTechCards,
+          updatedAt: updatedAt,
         });
+        if (!stored) {
+          failReroll("failed to store rerolled pending tech");
+          return;
+        }
+
+        coopPublish.publish(rerollPendingTechRequest, {
+          id: operator.client_id,
+          name: operator.client_name,
+        });
+        coopHost.reply(rerollPendingTechResult, operator, {
+          pendingTechCards: nextPendingTechCards,
+          rerolls_used: rerolled.rerollsUsed,
+          offer_rerolls: dealHelpers.rerollsRemain(
+            rerolled.rerollsUsed,
+            rerolled.cardsOffered
+          ),
+          updated_at: updatedAt,
+        });
+        gwoSave(game, false).then(resolveResult, rejectResult);
+      };
+
+      var dealCards = function (playerInventory) {
+        rerolledHandFor({
+          record: record,
+          client: { id: operator.client_id, name: operator.client_name },
+          pendingTechCards: pendingTechCards,
+          inventory: playerInventory,
+          star: star,
+        }).then(storeRerolled, failReroll);
       };
 
       gwoBank.applyRecordInventory(GWInventory, record, stockBank, dealCards);
@@ -274,6 +371,28 @@ define([
       rerollPendingTechResult,
       applyPendingTechRerollResult
     );
+
+    return {
+      requestReroll: requestReroll,
+      computeRerollDeal: computeRerollDeal,
+      // The same reroll for a player the host deals itself - a co-op AI player -
+      // storing, sending and saving nothing. params: record, client,
+      // pendingTechCards (the hand held in memory), star.
+      rerollHandForRecord: function (params) {
+        var result = $.Deferred();
+        gwoBank.applyRecordInventory(
+          GWInventory,
+          params.record,
+          stockBank,
+          function (inventory) {
+            rerolledHandFor(
+              _.assign({}, params, { inventory: inventory })
+            ).then(result.resolve, result.reject);
+          }
+        );
+        return result.promise();
+      },
+    };
   };
 
   // Test-only hook - see testing.md.

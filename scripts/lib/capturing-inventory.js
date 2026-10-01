@@ -6,6 +6,11 @@
 // is auto-stubbed so a call a card starts making later needs no fixture update.
 
 const { createAutoStub } = require("./auto-stub.js");
+const { loadCouiModule } = require("./amd-loader.js");
+
+const unitCells = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js"
+);
 
 function createCapturingInventory({ answers, capture }) {
   const target = Object.assign({}, answers);
@@ -34,4 +39,12 @@ function recordInto(list) {
   };
 }
 
-module.exports = { createCapturingInventory, recordInto };
+// addUnits flattens a group nested in the list and ignores a whole race
+// table, as gw_inventory.js does.
+function recordUnitsInto(list) {
+  return function (value) {
+    list.push(...unitCells.unitPaths(value));
+  };
+}
+
+module.exports = { createCapturingInventory, recordInto, recordUnitsInto };

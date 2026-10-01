@@ -11,17 +11,20 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const exiles = loadCouiModule(MOD_ROOT + "/race/exiles.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
-  harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
+const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json");
 
-// Exiles fields no orbital unit beyond its launcher, so every card naming
-// only orbital units is withheld. A change here is a balance decision.
-const WITHHELD_BY_CELLS = [
+// Exiles has no orbital unit beyond its launcher, which builds MLA's, so the
+// cards naming only orbital units are dealt for those. A change here is a
+// balance decision.
+const ORBITAL_CARDS = [
   "gwaio_cooldown_orbital",
   "gwc_combat_orbital",
   "gwc_cost_orbital",
@@ -36,6 +39,9 @@ const exilesUnits = Object.keys(fixture.units).filter((unit) =>
   fixture.units[unit].includes("UNITTYPE_Custom6")
 );
 
+const TELEPORTER = "/pa/units/land/teleporter/teleporter.json";
+const METAL_EXTRACTOR = "/pa/units/land/metal_extractor/metal_extractor.json";
+
 describe("the Exiles descriptor", () => {
   it("is registered as shipped, with four commanders and the Titans layout only", () => {
     const race = races.byId("exiles");
@@ -46,6 +52,23 @@ describe("the Exiles descriptor", () => {
     assert.equal(race.unitTypeBit, "Custom6");
     assert.equal(race.commanderArtHue, 200);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom6");
+    assert.deepEqual(race.commanderTypes.metalExtractorNames, {
+      basic: "ExilesBasicMetalExtractor",
+      advanced: "ExilesAdvancedMetalExtractor",
+    });
+    assert.deepEqual(race.engineKeys, {
+      BasicVehicleFactory: "/pa/units/land/t_tank_fac/t_tank_fac.json",
+      BasicBotFactory: "/pa/units/land/t_bot_fac/t_bot_fac.json",
+      BasicAirFactory: "/pa/units/air/t_air_fac/t_air_fac.json",
+      BasicNavalFactory: "/pa/units/sea/t_naval_fac/t_naval_fac.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/t_orbital_launcher/t_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
+    });
+    assert.deepEqual(race.stockUnits, [TELEPORTER, METAL_EXTRACTOR]);
+    assert.deepEqual(races.stockUnitsFor("exiles"), race.stockUnits);
     assert.equal(race.ai.titans.sources.length, 4);
     assert.equal(race.ai.queller, undefined);
     assert.equal(races.brainFor("Queller", "exiles"), "Titans");
@@ -69,10 +92,7 @@ describe("the Exiles descriptor", () => {
 describe("Exiles under capability cells", () => {
   before(() => {
     if (exilesUnits.length) {
-      races.setCells(
-        "exiles",
-        harvestedIndex(fixture.units, fixture.buildable, "Custom6")
-      );
+      races.setCells("exiles", fixtureIndex("exiles"));
     }
   });
   after(() => {
@@ -112,15 +132,65 @@ describe("Exiles under capability cells", () => {
     assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 4);
   });
 
-  it("withholds the MLA-only cards and the orbital cards", (t) => {
+  it("fields the fabrication complex from a basic fabber, past the Deep Space Radar stub (skipped without Exiles in the fixture)", (t) => {
+    if (!exilesUnits.length) {
+      t.skip("fixture harvested without Exiles");
+      return;
+    }
+    const index = races.cellsOf("exiles");
+    assert.equal(
+      index.vanilla.cellOf[gwoUnit.deepSpaceOrbitalRadar],
+      undefined
+    );
+    assert.ok(
+      cells
+        .raceUnitsFor([gwoUnit.botFabber], index.vanilla, index.race)
+        .includes(exiles.units.fabricationComplex)
+    );
+  });
+
+  it("fields MLA's teleporter and basic metal extractor beside its own when it fields a builder of them (skipped without Exiles in the fixture)", (t) => {
+    if (!exilesUnits.length) {
+      t.skip("fixture harvested without Exiles");
+      return;
+    }
+    const index = races.cellsOf("exiles");
+    const held = [TELEPORTER, METAL_EXTRACTOR];
+    const withFabber = races.fieldedFor(
+      "exiles",
+      held.concat(gwoUnit.orbitalFabber),
+      index
+    );
+    const without = races.fieldedFor("exiles", held, index);
+
+    assert.ok(withFabber.includes(TELEPORTER));
+    assert.ok(withFabber.includes(METAL_EXTRACTOR));
+    assert.ok(withFabber.includes(exiles.units.teleporter));
+    assert.ok(withFabber.includes(exiles.units.basicMetalExtractor));
+    assert.deepEqual(
+      without.sort(),
+      [exiles.units.teleporter, exiles.units.basicMetalExtractor].sort()
+    );
+    // A kept Colonel builds them too: the retag leaves its build list stock.
+    assert.ok(
+      races
+        .fieldedFor("exiles", held.concat(gwoUnit.colonel), index)
+        .includes(TELEPORTER)
+    );
+  });
+
+  it("withholds the MLA-only cards, and deals the orbital cards for the MLA units its launcher builds", (t) => {
     if (!exilesUnits.length) {
       t.skip("fixture harvested without Exiles");
       return;
     }
     const withheld = withheldCards("exiles");
 
-    assert.deepEqual(withheld, expectedWithheld(WITHHELD_BY_CELLS));
+    assert.deepEqual(withheld, expectedWithheld([]));
     assert.ok(!withheld.includes("gwc_combat_bots"));
+    for (const card of ORBITAL_CARDS) {
+      assert.ok(!withheld.includes(card), card);
+    }
   });
 
   it("names every unit the tooltip lists for a card Exiles can be dealt (skipped without Exiles in the fixture)", (t) => {

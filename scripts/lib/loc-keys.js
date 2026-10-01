@@ -1,12 +1,13 @@
 "use strict";
 
-// Every "!LOC:" key GWO's ui/ tree asks loc() for, with where and how it is
-// used. The i18n:* scripts and validate:translations all read the tree through
-// this one walk, so the catalog, the missing lists and the validator agree on
-// what a key is. See docs/translations.md.
+// Every key GWO's ui/ tree asks the game to translate, with where and how it
+// is used. The i18n:* scripts and validate:translations all read the tree
+// through this one walk, so the catalog, the missing lists and the validator
+// agree on what a key is. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
+const espree = require("espree");
 
 const { REPO_ROOT } = require("./amd-loader.js");
 const { walkFiles } = require("./walk.js");
@@ -74,6 +75,10 @@ const ROLE_WINDOW = 600;
 
 const LOC_LITERAL = /(["'])!LOC:((?:\\.|(?!\1).)*)\1/g;
 const LOC_TAG = /<loc\b([^>]*)>([\s\S]*?)<\/loc\s*>/g;
+const CONTROL_TAG = /<(option|input)\b/gi;
+const OPTION_END = /<\/?(?:option|optgroup|select|datalist)\b/gi;
+const ATTRIBUTE = /([^\s=]+)(?:\s*=\s*(["'])([\s\S]*?)\2)?/g;
+const LETTER = /\p{L}/u;
 const HTML_COMMENT = /<!--[\s\S]*?-->/g;
 const ENTITIES = {
   amp: "&",
@@ -235,16 +240,16 @@ function htmlElement(source, index) {
     return source.slice(Math.max(0, index - 100), index + 100);
   }
   const tag = /^<([a-zA-Z][\w-]*)/.exec(source.slice(open));
-  const tagEnd = source.indexOf(">", index);
-  if (!tag || tagEnd < 0) {
+  const openEnd = tagEnd(source, open);
+  if (!tag || openEnd >= source.length) {
     return source.slice(open, index + 100);
   }
-  const close = source.indexOf("</" + tag[1] + ">", tagEnd);
-  const nextOpen = source.indexOf("<" + tag[1], tagEnd);
+  const close = source.indexOf("</" + tag[1] + ">", openEnd);
+  const nextOpen = source.indexOf("<" + tag[1], openEnd);
   if (close >= 0 && (nextOpen < 0 || close < nextOpen)) {
     return source.slice(open, close + tag[1].length + 3);
   }
-  return source.slice(open, tagEnd + 1);
+  return source.slice(open, openEnd + 1);
 }
 
 function fileFacts(file, source) {
@@ -290,43 +295,89 @@ function closingBrace(source, from) {
   return source.length;
 }
 
-const CARD_MARKERS = [
-  ["summarize", "card-name"],
-  ["describe", "card-description"],
-  ["lockedHint(", "card-hint"],
-  ["hint:", "card-hint"],
-  ["name:", "card-name"],
-  ["description:", "card-description"],
-];
+const CARD_PROPERTIES = {
+  summarize: "card-name",
+  name: "card-name",
+  describe: "card-description",
+  description: "card-description",
+};
 
-function lastIndexIn(window, marker) {
-  return window.lastIndexOf(marker);
+// Map<offset, ancestors>: each string literal by where it starts, with the
+// nodes around it, innermost first.
+function stringLiterals(file, source) {
+  let ast;
+  try {
+    ast = espree.parse(source, {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      range: true,
+    });
+  } catch (error) {
+    throw new Error(file + ": " + error.message, { cause: error });
+  }
+  const literals = new Map();
+  const stack = [];
+  const visit = (node) => {
+    if (node.type === "Literal" && typeof node.value === "string") {
+      literals.set(node.range[0], stack.slice().reverse());
+    }
+    stack.push(node);
+    for (const key of espree.VisitorKeys[node.type]) {
+      for (const child of [node[key]].flat()) {
+        if (child) {
+          visit(child);
+        }
+      }
+    }
+    stack.pop();
+  };
+  visit(ast);
+  return literals;
 }
 
-// A card literal's role: the nearest marker before it, with a description
-// that sits under a hint read as the hint.
-function cardRole(window) {
-  let best = null;
-  for (const [marker, role] of CARD_MARKERS) {
-    const at = lastIndexIn(window, marker);
-    if (at >= 0 && (!best || at > best.at)) {
-      best = { at: at, role: role, marker: marker };
+function calleeName(node) {
+  if (node.type !== "CallExpression") {
+    return undefined;
+  }
+  const callee = node.callee;
+  if (callee.type === "MemberExpression" && !callee.computed) {
+    return callee.property.name;
+  }
+  return callee.type === "Identifier" ? callee.name : undefined;
+}
+
+function propertyKey(node) {
+  if (node.type !== "Property" || node.computed) {
+    return undefined;
+  }
+  return node.key.type === "Identifier" ? node.key.name : node.key.value;
+}
+
+// A card literal's role, from the property it is the value of. A card's spec
+// mods carry a unit's own display_name and description, not the card's, so
+// anything inside a mods() or …Mods() call is neither.
+function cardRole(ancestors) {
+  if (!ancestors) {
+    return "loc-call";
+  }
+  if (ancestors.some((node) => /^mods$|Mods$/.test(calleeName(node) || ""))) {
+    return "loc-call";
+  }
+  if (
+    ancestors.some(
+      (node) =>
+        propertyKey(node) === "hint" || calleeName(node) === "lockedHint"
+    )
+  ) {
+    return "card-hint";
+  }
+  for (const node of ancestors) {
+    const key = propertyKey(node);
+    if (Object.hasOwn(CARD_PROPERTIES, key)) {
+      return CARD_PROPERTIES[key];
     }
   }
-  if (best && best.marker === "description:") {
-    const hintAt = Math.max(
-      lastIndexIn(window, "hint:"),
-      lastIndexIn(window, "lockedHint(")
-    );
-    const otherAt = Math.max(
-      lastIndexIn(window, "summarize"),
-      lastIndexIn(window, "describe")
-    );
-    if (hintAt > otherAt) {
-      return "card-hint";
-    }
-  }
-  return best ? best.role : "loc-call";
+  return "loc-call";
 }
 
 // A race file's literal: a unit name inside its unitNames block, else the
@@ -342,11 +393,11 @@ function raceRole(facts, window, index) {
   return /\bname:\s*$/.test(window) ? "race-name" : undefined;
 }
 
-function jsRole(facts, source, index) {
-  const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
-  if (facts.card) {
-    return cardRole(window);
+function jsRole(facts, source, index, cardLiterals) {
+  if (cardLiterals) {
+    return cardRole(cardLiterals.get(index));
   }
+  const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";
   }
@@ -409,7 +460,11 @@ function addSite(map, key, site) {
   map.get(key).sites.push(site);
 }
 
-function scanLiterals(map, facts, source, isHtml) {
+function scanLiterals(map, facts, source, isHtml, options) {
+  const cardLiterals =
+    facts.card && path.extname(facts.file) === ".js"
+      ? stringLiterals(facts.file, source)
+      : undefined;
   LOC_LITERAL.lastIndex = 0;
   let match;
   while ((match = LOC_LITERAL.exec(source)) !== null) {
@@ -421,8 +476,8 @@ function scanLiterals(map, facts, source, isHtml) {
     const end = start + match[0].length;
     const role = isHtml
       ? htmlRole(source, start)
-      : jsRole(facts, source, start);
-    if (EXCLUDED_ROLES.includes(role)) {
+      : jsRole(facts, source, start, cardLiterals);
+    if (!options.keepExcluded && EXCLUDED_ROLES.includes(role)) {
       continue;
     }
     const snippet = squash(
@@ -475,6 +530,104 @@ function scanTags(map, facts, html) {
       context: contextFor(facts, key, match[0]),
     });
   }
+}
+
+// The `>` that closes the open tag scanned from `from`; a quoted attribute
+// value may hold a `>` of its own.
+function tagEnd(source, from) {
+  let quote = null;
+  for (let at = from; at < source.length; at += 1) {
+    const ch = source[at];
+    if (quote) {
+      quote = ch === quote ? null : quote;
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+    } else if (ch === ">") {
+      return at;
+    }
+  }
+  return source.length;
+}
+
+// An open tag's attributes by lower-cased name, values decoded and a bare
+// attribute reading "". The first of a repeated name wins, as in the browser.
+// Prettier quotes every value in GWO's HTML.
+function attributes(text) {
+  const attrs = {};
+  ATTRIBUTE.lastIndex = 0;
+  let match;
+  while ((match = ATTRIBUTE.exec(text)) !== null) {
+    const name = match[1].toLowerCase();
+    if (!Object.hasOwn(attrs, name)) {
+      attrs[name] = decodeEntities(match[3] || "");
+    }
+  }
+  return attrs;
+}
+
+// An <option>'s text runs to the next tag that ends it, closing or not.
+function optionText(source, from) {
+  OPTION_END.lastIndex = from;
+  const end = OPTION_END.exec(source);
+  return decodeEntities(
+    withoutTags(source.slice(from, end ? end.index : source.length))
+  );
+}
+
+// What locTree looks up for the control, as [role, text] pairs, skipping what
+// it skips.
+function controlTexts(source, from, tag, attrs) {
+  if (tag.toLowerCase() === "option") {
+    return Object.hasOwn(attrs, "data-noloc")
+      ? []
+      : [["html-control", optionText(source, from)]];
+  }
+  const texts = [];
+  // locTree skips a button when attr("noloc") is truthy, and a bare noloc
+  // reads "".
+  if ((attrs.type || "").toLowerCase() === "button" && !attrs.noloc) {
+    texts.push(["html-control", attrs.value || ""]);
+  }
+  // A placeholder is skipped by data-noloc, as an option is.
+  if (
+    Object.hasOwn(attrs, "placeholder") &&
+    !Object.hasOwn(attrs, "data-noloc")
+  ) {
+    texts.push(["placeholder", attrs.placeholder]);
+  }
+  return texts;
+}
+
+// Stock locTree also looks up an <option>'s text, an input[type=button]'s
+// value, and an input[placeholder]'s value, as they stand. See
+// docs/translations.md, "Tooling".
+function scanControls(map, facts, html) {
+  const source = withoutComments(html);
+  CONTROL_TAG.lastIndex = 0;
+  let match;
+  while ((match = CONTROL_TAG.exec(source)) !== null) {
+    const end = tagEnd(source, CONTROL_TAG.lastIndex);
+    const attrs = attributes(source.slice(CONTROL_TAG.lastIndex, end));
+    const texts = controlTexts(source, end + 1, match[1], attrs);
+    CONTROL_TAG.lastIndex = end;
+    for (const [role, text] of texts) {
+      addControl(map, facts, source, match.index, role, text.trim());
+    }
+  }
+}
+
+function addControl(map, facts, source, index, role, key) {
+  if (!LETTER.test(key)) {
+    return;
+  }
+  const snippet = squash(htmlElement(source, index + 1));
+  addSite(map, key, {
+    file: facts.file,
+    line: lineAt(source, index),
+    role: role,
+    snippet: snippet,
+    context: contextFor(facts, key, snippet),
+  });
 }
 
 // Card names and descriptions of the same card, so a translator sees the
@@ -535,20 +688,34 @@ function sourceFiles() {
 }
 
 // Map<key, { sites: [{ file, line, role, snippet, context }] }>, sites in
-// file-then-line order.
-function extractKeys() {
+// file-then-line order. `options.keepExcluded` keeps the EXCLUDED_ROLES
+// sites, and the keys seen only there.
+function extractKeys(options) {
+  return extractFrom(
+    sourceFiles().map((file) => ({
+      file: file,
+      source: fs.readFileSync(file, "utf8"),
+    })),
+    options
+  );
+}
+
+// extractKeys over `sources`: [{ file, source }], each `file` absolute.
+function extractFrom(sources, options) {
   const map = new Map();
-  for (const file of sourceFiles()) {
-    const source = fs.readFileSync(file, "utf8");
+  for (const { file, source } of sources) {
     const facts = fileFacts(file, source);
     const isHtml = path.extname(file) === ".html";
-    scanLiterals(map, facts, source, isHtml);
+    scanLiterals(map, facts, source, isHtml, options || {});
     if (isHtml) {
       scanTags(map, facts, source);
+      scanControls(map, facts, source);
     }
   }
   for (const entry of map.values()) {
-    entry.sites.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+    entry.sites.sort(
+      (a, b) => codeUnitCompare(a.file, b.file) || a.line - b.line
+    );
   }
   addSiblings(map);
   return map;
@@ -569,10 +736,12 @@ function sortedKeys(iterable) {
 module.exports = {
   CATALOG_LOCALE,
   codeUnitCompare,
+  EXCLUDED_ROLES,
   MOD_ID,
   PA_LOCALES,
   SHIPPED_LOCALES,
   TRANSLATIONS_DIR,
+  extractFrom,
   extractKeys,
   sortedKeys,
 };

@@ -7,7 +7,7 @@
 
 const path = require("node:path");
 const prettier = require("prettier");
-const { byCodePoint } = require("./mod-roots.js");
+const { codeUnitCompare } = require("./loc-keys.js");
 const { TABLES, ADDON_BIT_WORDS } = require("./race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
@@ -192,9 +192,33 @@ function raceRows(input, source, reader) {
   });
 }
 
+// A table holds the files the race's or add-on's own mod ships; a base-game
+// file its units reuse is left out, and so is a part no mod ships. See
+// races.md, "Unit tables".
+function isBaseGame(reader, specPath) {
+  const spec = reader.read(specPath);
+  return Boolean(spec) && spec.mod === undefined;
+}
+
+function modShips(reader, specPath) {
+  const spec = reader.read(specPath);
+  return Boolean(spec) && spec.mod !== undefined;
+}
+
+function pinned(input, reader, entries) {
+  for (const [key, specPath] of entries) {
+    if (isBaseGame(reader, specPath)) {
+      throw new Error(
+        input.id + ": " + key + " pins the base-game file " + specPath
+      );
+    }
+  }
+  return entries;
+}
+
 function sortedEntries(object) {
   return Object.keys(object)
-    .sort(byCodePoint)
+    .sort(codeUnitCompare)
     .map((key) => [key, object[key]]);
 }
 
@@ -265,7 +289,7 @@ function keyClash(id, key, unit) {
 function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
-    if (reader.read(part) && !table.has(part)) {
+    if (modShips(reader, part) && !table.has(part)) {
       const free = freeKey(key + raceSuffix(input, stem, part), (candidate) =>
         table.taken(candidate, part)
       );
@@ -280,10 +304,18 @@ function addRaceParts(input, reader, table, { key, unit, stem }) {
 function buildRaceTable(input, source) {
   const reader = specsReader(source);
   const table = raceTableBuilder(input, reader);
-  for (const [key, specPath] of Object.entries(input.units || {})) {
+  for (const [key, specPath] of pinned(
+    input,
+    reader,
+    Object.entries(input.units || {})
+  )) {
     table.addUnit(key, specPath);
   }
-  for (const [key, specPath] of Object.entries(input.parts || {})) {
+  for (const [key, specPath] of pinned(
+    input,
+    reader,
+    Object.entries(input.parts || {})
+  )) {
     table.addPart(key, specPath);
   }
 
@@ -293,7 +325,7 @@ function buildRaceTable(input, source) {
       const stem = stemOf(unit);
       let key = raceUnitKey(input, reader, unit, stem);
       if (table.taken(key, unit)) {
-        key += camelKeepCase(dirOf(unit));
+        key += upperFirst(camelKeepCase(dirOf(unit)));
       }
       if (table.taken(key, unit)) {
         throw keyClash(input.id, key, unit);
@@ -315,6 +347,15 @@ function buildRaceTable(input, source) {
 
 // --- Add-ons ---------------------------------------------------------------
 
+// The words of a part's file name that its role already says, wherever they
+// sit; a number after one stays ("ammo_2" and "tool2" give "2"). "death" is
+// a role word only on a death weapon: the Metal Generator's death_range.json
+// is a weapon.
+const ROLE_WORDS = /(^|_)(build_arm|tool|weapon|ammo)(?=\d*(_|$))/g;
+const DEATH_WORD = /(^|_)death(?=\d*(_|$))/g;
+
+// The owner's key, what the part's file name adds past the owner's
+// directory or stem and the role words, then the role.
 function addonPartKey(entry, partPath, role) {
   let rest = stemOf(partPath);
   for (const prefix of [dirOf(partPath), stemOf(entry.unit)]) {
@@ -322,14 +363,10 @@ function addonPartKey(entry, partPath, role) {
       rest = rest.slice(prefix.length);
     }
   }
-  rest = rest
-    .replace(/_?tool$/, "")
-    .replace(/_?tool_weapon$/, "")
-    .replace(/_?ammo$/, "")
-    .replace(/_?build_arm$/, "")
-    .replace(/_?weapon$/, "")
-    .replace(/_?death$/, "")
-    .replace(/^_/, "");
+  rest = rest.replaceAll(ROLE_WORDS, "$1");
+  if (role === "DeathAmmo") {
+    rest = rest.replaceAll(DEATH_WORD, "$1");
+  }
   return entry.key + upperFirst(camelLower(rest)) + role;
 }
 
@@ -408,7 +445,7 @@ function buildAddonTable(id, source, baseUnits) {
   const reader = specsReader(source);
   const entries = addonEntries(source, baseUnits, reader);
   resolveAddonKeys(entries);
-  entries.sort((a, b) => byCodePoint(a.key, b.key));
+  entries.sort((a, b) => codeUnitCompare(a.key, b.key));
 
   const units = {};
   const unitNames = [];
@@ -424,6 +461,9 @@ function buildAddonTable(id, source, baseUnits) {
       entry.spec,
       reader.chain
     )) {
+      if (!modShips(reader, partPath)) {
+        continue;
+      }
       const key = freeKey(
         addonPartKey(entry, partPath, role),
         (candidate) => units[candidate]
@@ -489,15 +529,14 @@ async function renderFile(input, table, current) {
 // Every table's file as the generator writes it, { file: content }, given a
 // reader for a file's current content.
 async function generateAll(fixture, readCurrent) {
-  const out = {};
-  for (const input of TABLES) {
-    out[input.file] = await renderFile(
-      input,
-      buildTable(input, fixture),
-      readCurrent(input.file)
-    );
-  }
-  return out;
+  const rendered = await Promise.all(
+    TABLES.map(async (input) =>
+      renderFile(input, buildTable(input, fixture), readCurrent(input.file))
+    )
+  );
+  return Object.fromEntries(
+    TABLES.map((input, index) => [input.file, rendered[index]])
+  );
 }
 
 module.exports = {

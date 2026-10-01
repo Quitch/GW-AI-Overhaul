@@ -29,7 +29,12 @@ define([
       var sightMods = gwoCard.flatMapMods(
         gwoGroup.combatMobile,
         "multiply",
-        gwoCard.observerPaths(2, "radius"),
+        _.map(
+          ["surface_and_air", "underwater", "orbital", "celestial"],
+          function (layer) {
+            return gwoCard.observerPath(layer, "sight", "radius");
+          }
+        ),
         percentageIncrease
       );
       var rangeMods = gwoCard.flatMapMods(

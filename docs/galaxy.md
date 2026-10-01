@@ -1,14 +1,22 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js`. It generates the galaxy and places
-AIs. `gw_start/ai_population.js` assigns their personalities and minions, and
-`gw_start/war_record.js` builds the settings GWO stamps onto the save.
+War creation happens in `gw_start/war_generation.js`, which `gw_start/setup.js`
+runs. It generates the galaxy and places AIs. `gw_start/ai_population.js`
+assigns their personalities and minions, and `gw_start/war_record.js` builds the
+settings GWO stamps onto the save.
 
 ## Generation order
 
 GWO deliberately replaces `model.makeGame` with an empty function. As a result, a
 change to a setting does not regenerate the galaxy. Generation instead happens once,
 when the player clicks **Go To War**.
+
+Generation reads the seed, the galaxy size, and the AI brains once, at the click.
+Shared Systems for Galactic War rerolls the seed whenever a source is toggled, and the
+player can do that while a war generates. Go To War stays disabled until generation
+fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
+stock's first `makeGame` leaves set under Shared Systems. Each step still checks that
+`makeGameBusy` holds its run's token, and only the end of the run clears it.
 
 Roughly, the order is:
 
@@ -45,8 +53,19 @@ edges are precisely the hull edges the strip removed. Restoring them reconnects 
 star to both hull neighbours. Two isolated stars can share a hull edge, so the repair
 restores each edge only once.
 
-This can push a neighbouring star one connection above `config.maxConnections`.
-GWO knowingly accepts that trade: an over-connected star beats an unreachable one.
+GWO's copy of `buildGraph` makes the repair before `reduceConnections`, which then
+trims the restored edges like any others. The order is load-bearing. Stock's
+`Graph.isConnected()` walks from star 0 and counts every star up to the highest one
+with an edge. It never reaches an isolated star below that one, so every trial
+removal reads as a disconnection and is put back, and the galaxy keeps every inner
+edge. The repair used to run after the build, which left about one galaxy in fifty
+with far too many gates, most often a small one. Moving it changed those galaxies,
+and a few whose isolated star was the highest, so their seeds now build different
+wars.
+
+Star 0 still ends above `config.maxConnections` in about half of all galaxies, which
+is stock's doing: `reduceConnections` builds its `nodesToReduce` with `_.compact`,
+which drops index 0.
 
 `getConnections()` is **sparse**: a star that never appeared in any edge has no
 entry at all rather than an empty one. Both cases mean "no gates", which is why the
@@ -54,22 +73,25 @@ check is `!links || links.length === 0`.
 
 ## Determinism and the war seed
 
-The same seed rebuilds the same galaxy and the same enemies, given the same player
-faction, difficulty, game options and mod set. The player enters the seed in the lobby
-(`#game-seed`, which stock hides and `gw_start/ui.js` un-hides). GWO records the seed
-on the save as `originSystem.gwaio.seed` and shows it in the `gw_play` panel.
+The same seed rebuilds the same galaxy and the same enemies, given the same galaxy
+size, co-op player count, player faction, difficulty, game options, and mod set.
+The player enters the seed in the lobby (`#game-seed`, which stock hides and
+`gw_start/ui.js` un-hides). GWO records the seed on the save as
+`originSystem.gwaio.seed` and shows it in the `gw_play` panel.
 
 **Out of the seed's reach**, deliberately or unavoidably:
 
 - **Planet names**: `api.game.getRandomPlanetName()` is an engine call with no seed.
 - **Unlocked loadouts**, which decide what the treasure planet can offer each player.
 - **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
-- **The mod set**, and **the player faction**, which is an input rather than an output.
+- **The mod set**, **the galaxy size**, **the co-op player count**, and **the player
+  faction**, which are inputs rather than outputs.
 
-`gwo_system_templates.generate()` keeps stock's unseeded fallback. The module is a
-drop-in for `template-loader.js`, and a non-GWO caller may reach it without a seed.
-It `console.warn`s when it does. If it silently used `Math.random()` there, it would
-produce a war that looks reproducible and is not.
+`gwo_system_templates.generate()` keeps stock's unseeded fallback for a call with
+no seed. The module is a copy of `template-loader.js` in GWO's namespace, not a
+shadow, and only GWO's war generation reaches it; both of its callers pass a
+seed. It `console.warn`s on a call without one. If it silently used
+`Math.random()` there, it would produce a war that looks reproducible and is not.
 
 ### Why a bespoke PRNG
 
@@ -114,9 +136,10 @@ its siblings first. Two consequences are worth relying on:
 The `factions` stream is the odd one out, because faction data is loaded, not
 generated. Each `gw_faction_*.js` declares its random choices as a
 `gwaioRandomSpec` and ships a fixed default alongside. `faction/faction_seed.js`
-resolves the spec against the stream. `gw_start/setup.js` calls `reseed()` once
-per war and **before anything reads `GWFactions`**. The order matters: `getTeam`
-shallow-copies a team and snapshots `systemDescription` by value.
+resolves the spec against the stream. `gw_start/war_generation.js` calls
+`reseed()` once per war and **before anything reads `GWFactions`**. The order
+matters: `getTeam` shallow-copies a team and snapshots `systemDescription` by
+value.
 
 `workers` is a single ordered stream rather than a keyed one, because the breeder's
 spread loop is synchronous. Every `$.when` in it wraps an already-resolved value, which
@@ -134,22 +157,28 @@ That scene re-derives the root from the seed stamped on the save:
 `gwoRng.create(originSystem.gwaio.seed)`.
 
 Every parent key lives in `gw_play/gwo_streams.js`, so a reader can check this table
-against one place. Two children are minted where they are drawn: `minion.<n>` in
-`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, and the `landing_*` streams in
-`referee_config_setup.js`.
+against one place. Some children are minted where they are drawn: `minion.<n>` in
+`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, the `landing_*` streams in
+`referee_config_setup.js`, a co-op AI player's `name`, `commander`, and
+`penchant` in `coop_ai_roster.js`'s `buildAiRecord`, and its `race` in
+`coop_ai.js`'s `createRecord`.
 
-| Stream                                            | Consumers                                          |
-| ------------------------------------------------- | -------------------------------------------------- |
-| `general_commander.<player>` → `minion.<n>`       | the General Commander loadout's two Sub Commanders |
-| `explore.<star>` → `turn.<n>` → `reroll.<n>`      | the host's own tech offer at that star             |
-| `ai_star.<star>` → `turn.<n>`                     | the card shown on a selectable AI star that turn   |
-| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>` | that star's card for one co-op viewer              |
-| `treasure_loadout.<player>` → `star.<n>`          | that player's treasure-planet loadout offer        |
-| `coop_deal.<player>` → `deal.<index>`             | a co-op viewer's pending offer                     |
-| ↳ `reroll.<n>`                                    | that viewer's rerolled offer                       |
-| ↳ `iteration.<i>`                                 | the roll picking the i-th card of a hand           |
-| ↳↳ `<cardId>`                                     | that card's own draws inside `deal()`              |
-| `battle.<star>` → `turn.<n>` → `landing_*`        | each army's landing policy                         |
+| Stream                                                              | Consumers                                               |
+| ------------------------------------------------------------------- | ------------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`                         | the General Commander loadout's two Sub Commanders      |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>`                        | the host's own tech offer at that star                  |
+| `ai_star.<star>` → `turn.<n>`                                       | the card shown on a selectable AI star that turn        |
+| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>`                   | that star's card for one co-op viewer or AI player      |
+| `treasure_loadout.<player>` → `star.<n>`                            | that player's treasure-planet loadout offer             |
+| `coop_deal.<player>` → `deal.<index>`                               | a co-op viewer's pending offer, or an AI player's hand  |
+| ↳ `reroll.<n>`                                                      | that player's rerolled offer                            |
+| ↳ `iteration.<i>`                                                   | the roll picking the i-th card of a hand                |
+| ↳↳ `<cardId>`                                                       | that card's own draws inside `deal()`                   |
+| `battle.<star>` → `turn.<n>` → `landing_*`                          | each army's landing policy                              |
+| `coop_ai_player.<serial>` → `name`, `commander`, `penchant`, `race` | a co-op AI player's name, commander, penchant, and race |
+| `coop_ai_loadout.<serial>`                                          | a new AI player's starting loadout, drawn by score      |
+| `coop_ai_factory.<serial>` → `deal.<index>`                         | the T1 factory card an AI player without one is given   |
+| `coop_ai_decision.<serial>` → `deal.<index>` → `reroll.<n>`         | a tie between the best cards of an AI player's hand     |
 
 The goal is a war that reproduces **only when it is played the same way**. That
 means the same seed, visiting the same stars, in the same order, winning at the same
@@ -180,9 +209,29 @@ The rest of the components are:
   what that viewer would have seen. The host's own draw uses the literal player key
   `host`. See [`coop.md`](coop.md).
 - **`<player>`**: this is `record.playerId`, the uberId, not `client_id`. A viewer who
-  reconnects must get their own minions and offers back. Whitespace in any label is
-  squashed to `_`, because `gwo_rng` joins a label and index with a space. Otherwise
-  `stream("a b")` would collide with `stream("a", "b")`.
+  reconnects must get their own minions and offers back. Whitespace in a player
+  key or a card id is squashed to `_`. That prevents no collision, because
+  `gwo_rng` separates a label from its index with NUL, and it gives `a b` and
+  `a_b` one key. It stays because every live war's streams are keyed with it. A
+  co-op AI player's `record.playerId` is its `gwo_ai_<serial>`, so under
+  per-player tech its hands, star cards, and General Commander Sub Commanders
+  come from streams of its own.
+- **`coop_ai_player.<serial>`**: `gw_play/coop_ai_roster.js` draws a co-op AI
+  player's identity from it when the host adds one, each part from its own
+  child. The serial never repeats, so an AI added after a kick draws from a
+  stream of its own. It can still land on the kicked AI's name or commander:
+  the kick returned both to the pool the draw picks from. Under Separate races
+  its race comes from the `race` child, drawn in `gw_play/coop_ai.js`.
+- **`coop_ai_loadout.<serial>`**, **`coop_ai_decision.<serial>`**, and
+  **`coop_ai_factory.<serial>`**: under per-player tech a co-op AI player
+  chooses its starting loadout and its cards by score ([`coop.md`](coop.md),
+  "AI players' tech"). The loadout stream draws the loadout, each with a chance
+  in proportion to its score, so the draw differs by war and by AI. The
+  decision stream only breaks a tie between equal scores. It is keyed by the
+  deal and the rerolls spent on it, like the hand it judges, so a reload
+  mid-decision settles the same way. The factory stream picks the T1 factory
+  card an AI without a basic land factory is given in place of a hand, keyed by
+  the deal, so a reload gives the same card.
 - **`<cardId>`**: a deal calls `deal()` on every card in the deck and keeps one result.
   A shared sequential rng would therefore couple every card's draws to every other
   card's draw count. With a key per card id, adding or removing a draw inside one card
@@ -201,7 +250,7 @@ and would make a hand depend on the order in which cards were acquired.
 | `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed. See below.                                                                                                                                      |
 | `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                        |
 | `shared/deal.js setupGwoDeck`                                            | Appended each card as `requireGW` resolved it, so the deck's array order was the loader's rather than `model.gwoCards`'. A deal walks the deck in array order subtracting each chance, so the same roll picked a different card run to run. Seeding the roll alone would have changed nothing.                                      |
-| `gw_play/cards.js chooseCards`                                           | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                              |
+| `gw_play/cards_dealer.js chooseCards`                                    | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                              |
 | `gw_play/referee_config_setup.js`                                        | `setupAIArmy` shuffled the three landing policies with `_.shuffle` at every battle launch, so replaying the same battle from the same save gave the AI different landing behaviour.                                                                                                                                                 |
 
 ### Copies, not shadows
@@ -253,8 +302,34 @@ whenever that module carries `loadOptions`, and GWO's seeded copy otherwise. Tha
 same capability check `loadSystemBrackets` uses.
 
 With that mod active, the systems are real `.pas` files chosen by
-`gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds. The loader
-is therefore only reached for boss systems built from a `systemTemplate`.
+`gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
+`loadSystemBrackets` in `gw_start/war_generation.js` settles each selected source
+on its own, so a source that fails to load drops only its own systems. While no
+source is selected, `gw_start/setup.js` keeps Go To War disabled.
+
+That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
+makes it for a boss system built from a `systemTemplate`, which it builds from the
+template without waiting for any source. `gw_start/galaxy_build.js` makes it for every
+star when there are no brackets. Making the loader loads every selected source again,
+and it deselects each source that fails. It has no failure path: a failed source
+leaves it waiting for good, and Go To War with it.
+
+So `loadSystemBrackets` rejects with the `SYSTEM_SOURCES` cause from
+`gw_start/war_generation_failure.js`, which fails the war before any star reaches
+that loader, when:
+
+- the list of sources failed to load, or `loadOptions` threw;
+- no selected source gave a system: each failed, threw, or was empty, or none was
+  selected;
+- a source failed, and the rest gave only systems the brackets drop.
+
+The message says that the selected sources could not be loaded or have no usable star
+systems, and to choose others, or to leave the screen and come back to try them again:
+Shared Systems for Galactic War keeps a source's failed result until the screen
+reloads. It does not ask for a bug report. The stars still reach
+the loader when every source loaded but the brackets dropped every system, for its
+biomes or its army count. That loader then applies its own rules to the same
+systems. When those leave nothing, the war fails with the bug-report message.
 
 ### Retries
 
@@ -270,8 +345,13 @@ that war back on the first attempt.
 
 When generation gives up, the seed is put back to `<base>`, and a message appears
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
-on Faction Scaling. Anything else is a bug, so the message asks the player to report
-it with the seed and the PA log.
+on Faction Scaling. For Shared Systems for Galactic War sources that gave nothing to
+build from, it says to choose other sources (see above). Anything else is a bug, so
+the message asks the player to report it with the seed and the PA log. The steps run
+on `shared/gwo_promise.js`'s `steps`, so a throw in any step reaches that message.
+Code that runs in a callback of its own, such as the start card's deal, Shared
+Systems' sources, and the placement of each star's system, still turns a throw into
+a rejection itself.
 
 ## System scaling
 
@@ -319,6 +399,32 @@ this order:
 
 A system that yields none of them is dropped with a warning.
 
+The quantity is armies, not humans. Map makers use `players` to count humans, and
+humans share an army, so a declared `[2,10]` on two landing zones is two armies of
+five. The zone count caps the declared maximum, and the minimum follows it down rather
+than inverting. Without that cap, two structurally identical maps land eight brackets
+apart purely because one carries a `players` key.
+
+Two rules make the brackets cover the galaxy. The lowest-minimum, smallest-range bracket
+has its minimum set to **0**, because `star.distance()` starts at 0 and no derived range
+starts below 2. A distance above every bracket **clamps** to the highest. That is the
+same membership-plus-clamp shape the stock template-loader uses.
+
+Selection is **ordered consumption**, not a draw. The pool is ordered by maximum armies
+(shuffled within equal maxima, from the seeded `rng`, once). Stars are served in
+distance order, and each takes the first unused system that still fits. Nearer stars
+therefore claim the smaller systems, and no system repeats until every eligible one is
+placed. A pool smaller than the galaxy exhausts and starts reusing rather than leaving
+a star empty.
+
+`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
+for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
+resolve. It pushes remote servers and map packs in completion order, so the order
+differs between scene loads. This was observed directly, with one source moving from
+third to twelfth. The shuffle keys above are assigned in pool order. Without the sort,
+the same seed would therefore place different systems whenever more than one source
+was selected.
+
 A system is also dropped, with a warning naming the biome, when any planet's
 `generator.biome` is not one the Galactic War server can load. Map packs carry biomes
 from server mods (`oasis` from _multiple Biomes for System Designers_, for one). GW
@@ -345,6 +451,11 @@ textures) is a provider only with GW Server Mods active, which mounts every acti
 server mod for a GW battle. Without GW Server Mods such a system is dropped as before.
 `selectorFor` stamps the providing mods onto the placed copy as `gwoBiomeMods`, so
 battle launch reads that stamp instead of resolving again.
+
+This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
+blocklists no longer apply, and the screen above replaces its stock-biome whitelist.
+The `starting_planet` backfill is reproduced on the returned copy. The pool is never
+mutated, because My Systems is a live IndexedDB row.
 
 ### Biome mods in a GW battle
 
@@ -415,38 +526,6 @@ mod later is enough.
 
 A co-op viewer needs no biome mod installed to join such a battle. It reads the
 cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
-`api.file.zip.catalog` returns `[{name, crc32, size}]`.
-
-The quantity is armies, not humans. Map makers use `players` to count humans, and
-humans share an army, so a declared `[2,10]` on two landing zones is two armies of
-five. The zone count caps the declared maximum, and the minimum follows it down rather
-than inverting. Without that cap, two structurally identical maps land eight brackets
-apart purely because one carries a `players` key.
-
-Two rules make the brackets cover the galaxy. The lowest-minimum, smallest-range bracket
-has its minimum set to **0**, because `star.distance()` starts at 0 and no derived range
-starts below 2. A distance above every bracket **clamps** to the highest. That is the
-same membership-plus-clamp shape the stock template-loader uses.
-
-Selection is **ordered consumption**, not a draw. The pool is ordered by maximum armies
-(shuffled within equal maxima, from the seeded `rng`, once). Stars are served in
-distance order, and each takes the first unused system that still fits. Nearer stars
-therefore claim the smaller systems, and no system repeats until every eligible one is
-placed. A pool smaller than the galaxy exhausts and starts reusing rather than leaving
-a star empty.
-
-`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
-for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
-resolve. It pushes remote servers and map packs in completion order, so the order
-differs between scene loads. This was observed directly, with one source moving from
-third to twelfth. The shuffle keys above are assigned in pool order. Without the sort,
-the same seed would therefore place different systems whenever more than one source
-was selected.
-
-This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
-blocklists no longer apply, and the screen above replaces its stock-biome whitelist.
-The `starting_planet` backfill is reproduced on the returned copy. The pool is never
-mutated, because My Systems is a live IndexedDB row.
 
 ## Factions
 
@@ -510,9 +589,11 @@ These consequences surface elsewhere:
 
 A faction's race is the unit faction it fields. It is drawn per faction from the
 `teams` stream's `races` child once the factions are shuffled, and stamped onto
-every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
-race's commanders from `warRng.stream("race", faction)`. The boss keeps its
-Pumpkin and the Guardians keep the Unicorn, retagged at launch.
+every AI that faction spawns (`ai.race`). Each system AI but the boss takes one
+of the race's commanders from `warRng.stream("race", faction)`, keyed by spawn
+order. A minion, an FFA foe, or an ally draws its commander from its own stream
+under `ai.<team>`. The boss keeps its Pumpkin and the Guardians keep the
+Unicorn, retagged at launch.
 
 Cluster draws a race like any other faction, and takes a Unique Races slot. Under
 Unique Races the first pass through the pool is seeded with the player's race
@@ -632,11 +713,14 @@ on every boss, worker and foe. `gw_play/ai_tech.js`'s `loadoutFor()` builds the
 descriptors from the live tables at launch (`referee_game_file_paths.js`'s
 `armyInventory()`), so a rebalance reaches wars in progress.
 
-A war saved before this carries the built descriptors as `ai.inventory` and no
-`typeOfBuffs` on its foes. `armyInventory()` uses those as they are, and
-`gw_play/bugfixes.js`'s Cluster commander repair only ever touches such a baked
-inventory. The Guardians take the faction tech of the worker they replaced but never
-the Cluster commander mods. They field the Unicorn, which those mods do not name.
+A war saved before this also carries the descriptors it built, as each AI's
+`inventory`. `armyInventory()` builds from `typeOfBuffs` wherever the war recorded
+it, and uses a baked `inventory` as it is only where the war recorded none: on the
+foes of such a war, and on every AI of a war from before `typeOfBuffs` was
+recorded at all. Nothing repairs a baked `inventory`, so a Cluster foe keeps the
+commander mods of the version that made its war. The Guardians take the faction
+tech of the worker they replaced but never the Cluster commander mods. They field
+the Unicorn, which those mods do not name.
 
 Two modules are involved:
 

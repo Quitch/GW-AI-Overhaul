@@ -32,6 +32,11 @@ define(function () {
     var originalApplyCampaignAction = model.applyCampaignAction;
 
     model.applyCampaignAction = function () {
+      // The tracking ignores replayed writes, so a star the host has since
+      // moved onto is let go here.
+      if (followsHost(chosenStar, game.currentStar())) {
+        chosenStar = undefined;
+      }
       var star = chosenStar;
       var result = originalApplyCampaignAction.apply(model, arguments);
 

@@ -18,12 +18,26 @@ Run one file with `node --test test/specs.test.js`. Run one test with
 `scripts/lib/amd-loader.js` loads shipped modules by stubbing `define()` and a
 handful of engine globals.
 
-The whole loader rests on one invariant. **Shipped files reference engine globals
+The whole loader rests on one rule. **Shipped files reference engine globals
 only inside function bodies, never at the top level of a `define()` factory.**
 The loader therefore deliberately leaves `api`, `model`, `ko`, `$`, `createjs`,
-`window` and `requireGW` _unstubbed_ at define time. A file that violates the
-rule then fails loudly and specifically. It does not silently pass against a
-fake engine.
+`window` and `requireGW` _unstubbed_ at define time. A file that breaks the rule
+then fails loudly and specifically. It does not silently pass against a fake
+engine.
+
+Two kinds of file are sanctioned exceptions:
+
+- **A module that seeds a `model.gwo*` modder-API array at load**:
+  `shared/loadouts.js`, `gw_play/referee_game_files.js`, and the shadowed
+  `gw_per_player_tech_referee.js`.
+- **A singleton built at load**: `shared/bank.js` and `gw_start/favourites.js`
+  construct their one instance at load, from `ko` observables, and the bank
+  reads `localStorage` then too.
+
+A test that loads such a file, or anything that requires one, sets those
+globals first: `model` for the first kind, `ko` (and `localStorage` for the
+bank) for the second. `scripts/lib/global-stubs.js` sets and restores them, and
+`scripts/lib/fake-knockout.js` supplies a `ko`.
 
 The loader has two entry points, and the difference between them matters:
 
@@ -50,11 +64,12 @@ depend on `shared/gw_common`. Some sweeps would test nothing if they skipped
 those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
-`scripts/lib/card-probe.js` takes that hatch, and so does `validate:ai-mods`.
-With `shared/gw_common` stubbed, every card loads. That sits oddly beside
-`validate:cards`'s `MIN_CHECKED` floor until you notice that they answer
-different questions. The validator refuses the hatch on purpose. Its number is
-therefore what can be checked with no stand-in at all.
+`scripts/lib/card-probe.js` takes that hatch, and so do `validate:ai-mods` and
+five tests: `coop_ai_effects`, `cost_artillery`, `host_war`, `modder_api`, and
+`save` (each `test/<name>.test.js`). With `shared/gw_common` stubbed, every card
+loads. That sits oddly beside `validate:cards`'s `MIN_CHECKED` floor until you
+notice that they answer different questions. The validator refuses the hatch on
+purpose. Its number is therefore what can be checked with no stand-in at all.
 
 A bare `catch` around a load also swallows syntax errors and genuine breakage.
 The validators therefore discriminate on the reason. A bare catch once reported
@@ -66,17 +81,17 @@ Every `validate:*` script that `npm run validate` runs has a row here.
 `validate:docs` checks that it does. `validate:race-trees` is local-only and is
 described separately below.
 
-| Command                 | Catches                                                                                                                                                                                                                     |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `validate:json`         | Any `.json` in the repo that does not parse. The check is cheap. Otherwise this class of bug breaks the game silently, with no error until something loads that exact file.                                                 |
-| `validate:manifest`     | `modinfo.json` `scenes` entries that point at files that no longer exist. This fails silently in-game.                                                                                                                      |
-| `validate:cards`        | Every card exports the fixed contract shape.                                                                                                                                                                                |
-| `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                       |
-| `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                      |
-| `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                                                                           |
-| `validate:sonar`        | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                                                                         |
-| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                       |
-| `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the tree's `!LOC:` keys, other files a subset of it, placeholders and style codes preserved. |
+| Command                 | Catches                                                                                                                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `validate:json`         | Any `.json` in the repo that does not parse. The check is cheap. Otherwise this class of bug breaks the game silently, with no error until something loads that exact file.                                                                      |
+| `validate:manifest`     | `modinfo.json` `scenes` entries that point at files that no longer exist. This fails silently in-game.                                                                                                                                           |
+| `validate:cards`        | Every card exports the fixed contract shape.                                                                                                                                                                                                     |
+| `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                                            |
+| `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                                           |
+| `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles and fabber/factory `to_build` keys against the unit maps.                                                                                                          |
+| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every issue-ignore criterion listed and complete, every analysed file is UTF-8.                                                                                            |
+| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                                            |
+| `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the keys the tree asks the game to translate, other files a subset of it, placeholders and style codes preserved. |
 
 Several are worth understanding rather than just running.
 
@@ -90,7 +105,9 @@ therefore runs a loadout down that path, with both banks stubbed to accept and
 keep nothing. Every card runs twice: once on the stub's answers, and once as a
 Cluster player who holds no cards. The stub alone never takes the Cluster side
 of `playerIsCluster()` or the "not held" side of `hasCard()`, so the second run
-checks the AI mods added only there. `MIN_CARDS_CHECKED` counts cards, not runs.
+checks the AI mods added only there. The validator fails if `playerIsCluster()`
+does not read the second run's answers as Cluster, or if no card asks it.
+`MIN_CARDS_CHECKED` counts cards, not runs.
 It fails the run when fewer cards add AI mods than do today, and an excluded
 card is listed by name.
 
@@ -102,17 +119,17 @@ primitive conversion traps. Arithmetic on a stubbed value
 is fine here.
 
 **`validate:schemas` carries `KNOWN_TEST_TYPES`**, every `test_type` the engine
-implements. That list is harvested from the base game's own AI data. The engine
-does not report an unrecognised value as an error. The condition simply never
-validates, so the build entry silently never fires. That is how
-`HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`) went unnoticed.
+implements. That list was collected by hand from the base game's own AI data:
+no script harvests it. The engine does not report an unrecognised value as an
+error. The condition simply never validates, so the build entry silently never
+fires. That is how `HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`)
+went unnoticed.
 
-CI has no base install, so this list has to be committed. **Re-harvest it after
-a PA patch adds tests.** `UnitCountonPlanet` is a base-game spelling variant. It
-stays in the list because the engine accepts what its own data ships.
+CI has no base install, so this list has to be committed. **Collect it again, by
+hand, after a PA patch adds tests.**
 
-**`test/fixtures/unit_types.json` is harvested the same way.**
-`npm run harvest:unit-types` writes it. It holds every listed unit's
+**`test/fixtures/unit_types.json` is harvested from the install too, by a
+script.** `npm run harvest:unit-types` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
 installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
 disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
@@ -120,12 +137,20 @@ The mods are the shipped descriptors' `serverMods`, every race's and then
 every add-on's, as `validate:race-trees` layers them. A companion mod that a
 descriptor does not list, such as the Bugs commander-merge, is in
 `scripts/lib/server-mods.js`. The mods are read in that order.
+`GWO_RACE_ROOTS`, a list of mod folders separated by the platform's path
+delimiter, adds each folder's `pa/` after every other source.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
 Legion's cells, and `test/addon_second_wave.test.js` can see what an add-on
 brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
-does). With a PA install present, the test asserts that the fixture is fresh.
+does). `test/unit_jobs.test.js` checks the job rule over every registered
+race's index: a job pinned for each mobile combat unit and each defence and
+superweapon structure `shared/units.js` names, a vanilla unit a card can grant
+standing for each race unit of those cells, and no bit on a unit of those cells
+that the rule does not know. With a PA
+install present, `test/unit_groups_cells.test.js` re-harvests and asserts that
+the fixture is fresh, its `buildable_types` as well as its `unit_types`.
 **Re-harvest it after a PA, race or add-on patch.**
 
 **`test/fixtures/race_specs.json` is the race tables' source, harvested the
@@ -140,14 +165,17 @@ broken unit cannot drop out of a table unseen.
 parts. `test/race_tables.test.js` calls `generateAll` from
 `scripts/lib/race-tables.js`, the generator behind
 `scripts/generate-race-tables.js`, in memory and requires every `race/` and
-`addon/` file to come out byte for byte as committed. After a re-harvest,
+`addon/` file to come out byte for byte as committed. It also requires every
+path a table names to be a spec the harvest found in the table's own mods,
+and, where those mods are on disk, a file they ship. Every commander a
+descriptor offers must be such a spec too. After a re-harvest,
 `npm run generate:race-tables` rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
-**`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
-read the game's own translation tables from the PA install (`--pa <path>`, or
-as below) to list what each language still lacks and how the stock UI renders
-shared terms. `validate:translations` needs no install and runs in `verify`. See
+**`i18n:missing`, `i18n:glossary` and `i18n:playglot` are local-only for the
+same reason.** They read the game's own translation tables from the PA install
+(`--pa <path>`, or as below) to list what each language still lacks, how the
+stock UI renders shared terms, and the game's text for the Playglot export. `validate:translations` needs no install and runs in `verify`. See
 [translations.md](translations.md).
 
 **`npm run validate:race-trees` is local-only for the same reason.** It runs
@@ -158,9 +186,10 @@ add-ons, so the validator activates every registered one itself, matching
 its own `descriptorLayers()`. The check requires the Titans race
 tree to match that merge exactly, minus every other layer. An MLA pass then
 requires the sweep into `/pa/ai/player_guardians/` to hold the base files
-and MLA's add-on files, untagged add-on maps included, and no race layer. It
-then re-runs with every mod mounted to prove that no other layer leaks into
-any tree, and checks each mounted descriptor's `unitMaps` and `sources`
+and MLA's add-on files, untagged add-on maps included, and no race layer but
+its templates. It then re-runs with every mod mounted to prove that no other
+layer's files but its templates leak into any tree, and that every platoon
+build in each tree finds its template there. It also checks each mounted descriptor's `unitMaps` and `sources`
 against the merge, so a descriptor that has gone stale fails rather than
 silently claiming nothing. The reverse holds too: every AI file an add-on's
 server mod ships must be claimed by one of its layers, so a layer the mod
@@ -168,9 +197,16 @@ grows upstream (Second Wave's Bugs layer in 0.16.1) fails here instead of
 being dropped from every tree.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
-listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
-it after a PA, race or add-on patch. Also run it after you change
-`races.treeFilter`, `races.raceLayerTest` or `referee_ai.js`'s tree writing.
+listings (`test/race_trees.test.js`, `test/races.test.js`,
+`test/referee_ai_file_processing.test.js`). Run it after a PA, race or add-on
+patch. Also run it after you change `race_trees.treeFilter`,
+`race_trees.raceLayerTest` or `referee_ai.js`'s tree writing.
+
+The validator runs the referee without the races' capability cells, so the
+race trees it checks keep the stock factory and fabber lists whole. Their
+stripping (`races.md`, "Race trees") is pinned by unit tests alone
+(`test/referee_game_files_ai_paths.test.js`,
+`test/referee_ai_race_trees.test.js`).
 
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
@@ -178,7 +214,10 @@ data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
 The two harvests and `validate:race-trees` read `pa/` files through
 `scripts/lib/mod-roots.js`. A server mod mounts as its `download/` zip, then any
-`server_mods/` build, which shadows the zip.
+`server_mods/` build, which shadows the zip. The race and add-on tests that
+check a mod's files read them the same way, through `scripts/lib/addon-fixture.js`'s
+`modFiles`, so they see what the harvests saw. Without the mod on disk in
+either form, those tests are skipped.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
@@ -202,6 +241,11 @@ coverage settings are real config. But nothing else reads it. Its paths
 therefore drift silently and only fail on SonarCloud after a push. A rename out
 from under an exclusion once put a GBK-encoded readme back into analysis.
 
+The scanner applies only the issue-ignore criteria that
+`sonar.issue.ignore.multicriteria` lists. So the validator also checks that the
+list names every criterion, and that each criterion it names has both a
+`ruleKey` and a `resourceKey`.
+
 The validator sees only what `git ls-files` returns. A new file that needs an
 exclusion is invisible to it until git tracks it, so run `git add -N <file>`
 before `npm run verify`.
@@ -220,11 +264,12 @@ fails loudly.
 
 Two details are load-bearing:
 
-- It passes `configFile` rather than importing the config module. The test
-  therefore exercises the file the CLI actually resolves. It also asserts that
-  `.stylelintrc.json` is **absent**. That name ranks third in cosmiconfig's
-  order and `stylelint.config.mjs` ranks last. A resurrected JSON would
-  therefore silently shadow the whole profile while every other assertion here
+- It passes `configFile` rather than importing the config module. It also
+  asserts that stylelint's own config search, run for a file under `ui/`,
+  resolves to that same config, so the lint cases exercise the file the CLI
+  actually uses. cosmiconfig ranks twenty names above `stylelint.config.mjs` and
+  searches upward from each file. Any of them, at the root or under `ui/`, would
+  otherwise silently shadow the whole profile while every other assertion here
   still passed.
 - `require("stylelint")` works even though stylelint 17 is ESM-only. Node's
   `require(ESM)` interop on the pinned Node version makes that possible.
@@ -238,9 +283,11 @@ denylist would therefore rewrite working CSS into CSS the engine drops.
 `scripts/lib/ai-path-fixtures.js` holds the shared scenario matrix, so no test
 file reinvents its own list. Two things about it are load-bearing:
 
-- `buildGame()`/`installModel()` return the **same object references** on every
-  call. That matches production code, which calls `model.game()`/`game.galaxy()`
-  repeatedly rather than caching a snapshot.
+- `model.game()` returns the same game on every call, and the game's
+  `inventory()`, and its star's `system()` and `ai()`, the same objects. That
+  matches production code, which calls them repeatedly rather than caching a
+  snapshot. `galaxy()` is the exception: each call builds a new wrapper, around
+  the same star.
 - A suite passes connected clients separately to
   `installModel(game, connectedClients)`, **not** through `buildGame`'s options.
   `useModel()` is the same installer with the `afterEach` restore built in. A
@@ -248,31 +295,76 @@ file reinvents its own list. Two things about it are load-bearing:
   the usual list, a host and viewers `v1` and `v2`. It also sets the game's
   `findCoopPlayerInventoryData` to return each viewer's inventory.
 
+The game from `buildGame()` answers `coopPlayerInventoryData()` from its
+`coopRecords` option, which is empty by default, so a test can put co-op AI
+players' records in the war. `installModel()` answers `gwCampaignActive()` too,
+true while any client is connected, because an AI player counts only in a
+session.
+
 `scripts/lib/fake-jquery.js` covers only the `$`/`api` subset the shipped code
 under test uses. A request for a URL with no configured resolver rejects. A
-test's fixtures therefore cannot silently drift from what the code actually asks
-for.
+fixture that drifts from what the code actually asks for therefore sends the
+code down its error path. Like any failure the fake passes on, the rejection
+reports nothing by itself, so a test asserts on what the code does next.
 
 By default it returns the Promise itself rather than an object with a `then`
-property. That keeps `.then` the real inherited `Promise.prototype.then`. An
-object with its own `then` property is the shape that SonarLint's "objects
-should not have a then property" rule warns about. What `.then` gives back also
-carries `promise`/`done`/`fail`/`always`, as jQuery's does.
+property. That keeps `.then` chaining on the real inherited
+`Promise.prototype.then`. An object with its own `then` property is the shape
+that SonarLint's "objects should not have a then property" rule warns about.
+What `.then` gives back also carries `promise`/`done`/`fail`/`always`, as
+jQuery's does.
 
-The default `when` keeps jQuery 2's shape: one argument resolves to that value,
-and several arguments resolve to the array. It identifies a promise by a
-`promise` **method**. An argument without one therefore passes straight
-through, and `when` never waits for it, exactly as `constraints.md` describes.
-That is why it is hand-built rather than wrapped around `Promise.all`. A native
-promise resolved with a thenable adopts it, which would wait after all.
+The default `when` keeps jQuery 2's shape: its callbacks get each argument's
+value as an argument of its own, which is what shipped code that reads
+`_.toArray(arguments)` expects. It identifies a promise by a `promise`
+**method**. An argument without one therefore passes straight through, and
+`when` never waits for it, exactly as `constraints.md` describes. That is why it
+is hand-built rather than wrapped around `Promise.all`. A native promise
+resolved with a thenable adopts it, which would wait after all.
+
+The default `.then` applies the same test to what a callback returns. jQuery 2
+waits for the returned value only when it has a `promise` method, and passes an
+engine or native promise on as a value, unwaited. The inherited `.then` would
+adopt it and wait, so the fake fails the test instead. The callback throws,
+and the fake reports that throw as it reports any other (see below), so a
+`.fail()` further down cannot swallow the error. What a `done`, `fail` or
+`always` callback returns is not tested, because jQuery ignores it.
+`$.getJSON` returns a Promise carrying the
+same members as a Deferred's, as jQuery's does, so a callback may return it.
+
+An error callback given to the default `.then` cannot recover the chain by
+returning a value. jQuery 2 fails the next promise with whatever that callback
+returns, `undefined` included, unless it has a `promise` method. The inherited
+`.then` would resolve the next promise instead, so the fake fails it. Only a
+returned jQuery promise, such as `$.Deferred().resolve().promise()`, decides
+the outcome. `$.when`'s `.then` does the same.
+
+A failed jQuery Deferred reports nothing in the game, whether or not anything is
+chained to it, and however many steps with no error callback pass the failure
+on. The fake therefore marks every promise it makes as handled, `$.when`'s
+included, and Node reports none of them as an unhandled rejection. A test of
+shipped `x.done(update)` whose `x` fails needs no `fail` handler of its own.
+What the fake does report is a callback's throw. In jQuery 2.1.4 that throw
+escapes through the call that settled the Deferred, and no `.fail()` further
+down sees it. The fake rejects the chain with it, as the inherited `.then`
+does, and throws it again out of band. The test therefore fails even when a
+`.fail()` further down handles the rejection.
+
+A chain that shipped code first wraps in `Promise.resolve`, as the referee's
+tree cache does, is native in the game: a jqXHR is not a `Promise`, so the
+wrapper adopts it. The fake's promises are real Promises, which
+`Promise.resolve` and `await` would hand back unwrapped, jQuery rules and all.
+So the fake clears their `constructor`, and both wrap them as they wrap a jqXHR.
 
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
-jQuery 2.1.4 itself, and a `when` that takes exactly one argument. Its callbacks
+jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument
+without a tick. Its callbacks
 run inside `resolve()` and `reject()`, a callback's throw escapes through the
 call that settled it, and the Deferred is stuck afterwards. The default fake
-runs callbacks a tick later and turns a callback's throw into a rejection, so it
-cannot show a bug that depends on either. Use the sync mode for such code, as
-`race_mods.test.js` and `gwo_promise.test.js` do.
+runs callbacks a tick later, reports a callback's throw out of band rather than
+through the call that settled it, and never sticks, so it cannot show a bug
+that depends on any of those. Use the sync mode for such code, as
+`race_mods.test.js`, `gwo_promise.test.js`, and `gwo_breeder.test.js` do.
 
 Modelling thenables is the file's whole job. `sonar-project.properties`
 therefore scopes Sonar's `javascript:S7739` ("Do not add `then` to an object")
@@ -281,13 +373,18 @@ out of this one file. The rule stays active everywhere else.
 `installFakeJQuery` puts a callable `$` carrying the lot behind a suite's global
 stubs. The file also exports `enginePromise()`. That is the
 `then`-and-nothing-else shape every `api.*` call returns. Hold one pending to
-prove that the code under test waits for it. The file also exports
+prove that the code under test waits for it. `failedEngineCall(reason)` is a
+failed `api.*` call, chained as PA's `coherent.js` chains one: a `.then` given
+an error callback gets the failure, and the promise a `.then` given none
+returns never settles. The file also exports
 `resolved()`/`rejected()`. Those are jQuery-shaped settled promises for a fixture
 that stands in for stock code that returns one.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
-share a restore stack. `trackActive(setup)` is the factory-test scaffold built on
+share a restore stack. It saves each global's property rather than reading its
+value, because Node 26 defines `localStorage` as an accessor whose getter warns
+when it is read. `trackActive(setup)` is the factory-test scaffold built on
 it. Its `build()` runs the suite's setup and keeps the result. The `afterEach`
 that the helper registers can then call the result's `restore()`.
 
@@ -314,19 +411,25 @@ deliberately refuses to do. Four decisions in it are load-bearing:
   A change to `gwoGroup.orbitalBasic` therefore moves the baseline instead of
   silently disagreeing with it.
 
-The test carries three coverage floors: `MIN_PROBED`, `MIN_DEALABLE` and the
-partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with
-no analogue in `validate:cards`. Without it, a broken `gw_common` stub that made
-every `deal()` return 0 would leave the card count intact and every assertion
-vacuously green. Raise the floors when coverage genuinely rises. Never lower one
-to make a run pass.
+The test carries four coverage floors: `MIN_PROBED`, `MIN_GATED`,
+`MIN_DEALABLE` and the partition assertion that no card is unclassified. The
+sweeps read two things for each card: the units it gates on and the chances it
+reaches. `MIN_GATED` and `MIN_DEALABLE` keep each of them from emptying unseen.
+A `grantedUnits` that over-reported would leave no card a unit to gate on, and
+each sweep would then skip every card. A broken `gw_common` stub that made
+every `deal()` return 0 would leave no card a chance. The sweep that offers a
+card to a player who owns its units also fails then, but it reads only the
+cards with a unit to gate on. Raise the floors when coverage genuinely rises.
+Never lower one to make a run pass.
 
 `scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch
 under test. A recorder captures the calls the sweep is collecting. Everything
 else is auto-stubbed, so a new call a card makes needs no fixture update.
-`recordInto` is the recorder for `addMods`/`addAIMods`/`addUnits`. Those methods
-concat, and so they take a bare descriptor as readily as an array.
+`recordInto` is the recorder for `addMods`/`addAIMods`. Those methods concat, and
+so they take a bare descriptor as readily as an array. `recordUnitsInto` records
+`addUnits` as `gw_inventory.js` reads it: a group nested in the list flattened,
+and a whole race table ignored.
 
 `scripts/lib/fake-knockout.js` is enough knockout for what shipped code does with
 an observable. That is read, write, subscribe, `push`/`remove`,
@@ -339,13 +442,45 @@ time and the callback reaches `api.tally`.
 `scripts/lib/coop-fixtures.js` holds what the tests for the co-op card factory
 share. It holds a connected `viewer` and its inventory `record`. It holds the
 `inventoryClass` stand-in for the base game's `GWInventory`, which only loads a
-record's saved cards, counts them and applies them. It holds `rejection`,
+record's saved cards, counts them and applies them. Its apply rebuilds the
+slots from the cards alone, as `applyCards` does, since an apply is handed a
+copy of the cards and tags and nothing else. It holds `rejection`,
 because those host handlers reject with a plain string that `assert.rejects`
 will not take as an error. The `HOST_CARDS` trap stays in each file. It hangs
 off that test's own game stub.
 
+`scripts/lib/coop-ai-fixtures.js` holds what the co-op AI player tests share:
+an AI's co-op record as the lobby writes it, one entry of the battle roster
+`coop_ai_roster.launchAis` builds, and a colour resolver shaped like the base
+game's `resolvePlayerColorPairs`. Where the PA install is present,
+`test/coop_ai_roster.test.js` also runs against the stock resolver and the stock
+AI name list.
+
+The tests of a co-op AI player's tech pin behaviour rather than weights.
+`test/coop_ai_cards.test.js` asserts orderings and policies, because the
+weights in `shared/coop_ai_cards.js` are tuning. `test/coop_ai_driver.test.js`
+drives the driver through a fake apply over a small unit table, so each test
+reads off what the AI did. `test/coop_ai_effects.test.js` is the one that
+applies for real. It loads the shadowed `gw_inventory.js` with the shipped cards
+and bank, and stubs only `shared/gw_common`, `shared/gw_bank`,
+`shared/gw_game_patches`, and `shared/gw_factions`. Its `ko.toJS` copies the
+prototype's methods as knockout's does, so a save carries `GWInventory`'s
+methods as it does in the game. Three fixture cards stand in for a card mod:
+one grants a unit that it names nowhere else, one throws, and one writes to a
+tag of its own and to its params. It also checks the copies an apply makes
+([`tech-cards.md`](tech-cards.md), "Applying the card") against a whole deep
+copy, on an inventory of some 2000 mods. `test/coop_ai_units.test.js` checks the
+spec lookup on a small spec table and the group lookup on the shipped unit
+groups. `test/coop_ai_fielded.test.js` checks a race AI's view of what its army
+fields on the harvested fixture's specs and cells, through
+`scripts/lib/addon-fixture.js`'s `fixtureIndex`, and scores with it. `test/starting_inventory.test.js` covers the build that the per-player
+loadout scene and the host share. `test/coop_ai_pings.test.js` drives an AI's
+ping windows through fake timers and values, and `test/star_threat.test.js`
+pins the threat the intelligence panel and the pings share.
+
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
-`harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
+Each file builds its race's cell index from `unit_types.json` with
+`scripts/lib/addon-fixture.js`'s `fixtureIndex`, as `race_cells.js` builds it.
 `withheldCards` and `expectedWithheld` compare the cards the race is not dealt
 with the MLA-only cards plus the race's own list. `unnamedCardUnits` lists each
 tooltip unit that has no name. What each race expects stays in its own file.
@@ -360,8 +495,10 @@ context bound to a recording `setTimeout`, with an optional driven clock behind
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally.
 A test that asserts which paths were walked therefore needs no second, subtly
-different, local installer. The three tests that use it would otherwise each
-have grown one.
+different, local installer. Four test files and `validate:race-trees` use it,
+and each would otherwise have grown one. As in `fake-jquery.js`, a listing or
+file that no option answers rejects, so a test configures every path the
+referee reads.
 
 ## Coverage
 
@@ -402,10 +539,12 @@ Files that are pure `model`/`ko`/`api` glue are coverage-excluded. Their testabl
 logic is extracted into measured sibling modules. See
 [`shadowing.md`](shadowing.md).
 
-Each sibling is a plain `define()` over lodash and `console` only. It has no
-engine globals and no dependency the repo does not ship, so it loads under the
-Node AMD harness. Where a helper needs one of the excluded file's injected
-modules, it takes it as an explicit parameter rather than closing over it.
+Each sibling is a `define()` with no dependency the repo does not ship, so it
+loads under the Node AMD harness. Several read engine globals (`model`, `ko`,
+`api`, `$`) at call time. Their tests stub those with
+`scripts/lib/global-stubs.js` (see "Test fixtures"). Where a helper needs one
+of the excluded file's injected modules, it takes it as an explicit parameter
+rather than closing over it.
 
 The glue file depends on the unshipped `shared/gw_common`. That dependency is
 what stops it loading in the harness in the first place.
@@ -417,11 +556,16 @@ this page is not a second copy of it.
 Several scene scripts are not modules at all. `gw_play/cards.js` is
 self-invoking and never calls `define()`, so the harness cannot load it in
 place. Its pure logic is extracted into `define()` modules. The siblings
-`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js` and
-`cards_cheats.js` each return a factory that `cards.js` calls with its
-collaborators. `shared/cards_deal_helpers.js` returns its helpers directly, and
-`shared/loadouts.js` requires it too. `gw_play/bugfixes.js` is self-invoking
-too, and its Cluster repair lives in `cluster_repair.js`.
+`cards_dealer.js`, `cards_ai_star_deal.js`, `cards_explore.js`, `cards_win.js`,
+`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js`,
+`cards_cheats.js`, `cards_coop_ai_tech.js`, `cards_coop_ai_pings.js`,
+`coop_ai_driver.js`, and `coop_ai_effects.js` each return a factory that
+`cards.js`, or another of them, calls with its collaborators.
+`shared/cards_deal_helpers.js` returns its helpers directly, and
+`shared/loadouts.js` requires it too. The per-player loadout scene's
+`gwo_loadouts.js` is self-invoking too, and the starting inventory it builds
+lives in `shared/starting_inventory.js`, which `gw_play/cards_coop_ai_tech.js`
+uses for a co-op AI player's.
 
 Where a helper inside such a module is not reachable through the returned
 factory, it is re-exported through:
@@ -429,6 +573,7 @@ factory, it is re-exported through:
 ```js
 // eslint-disable-next-line no-undef
 if (typeof module !== "undefined" && module.exports) {
+  // eslint-disable-next-line no-undef
   module.exports = { applyAiMods: applyAiMods };
 }
 ```
@@ -443,14 +588,41 @@ never returns. A search for `typeof module` under `ui/` lists them all.
 
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left has nothing the
-harness can reach, and no test. `gw_play/coop_ping.js` injects a button and
-calls `requireGW`, and nothing else.
+AMD harness can reach, and usually no test. `gw_play/coop_ping.js` injects a
+button, defines the `model` members it binds to, and hands the modules it loads
+through `requireGW` their collaborators.
 
 That is expected, but it only stays visible if the tests around it are named
 honestly. `coop_ping_operators.test.js` and `coop_ping_marker.test.js` say which
 module each covers. By saying it, they leave `coop_ping.js` conspicuously
 unclaimed. A `coop_ping.test.js` covering the operators would read as though the
 bootstrap were tested.
+
+### Scene scripts
+
+Where the fault is in the glue itself, `scripts/lib/scene-script.js` runs the
+shipped scene script. `runSceneScript(entry)` reads the file and runs it in the
+test's own context, so the script reads the globals the test stubbed through
+`global-stubs.js`, `requireGW` included. The test answers `requireGW` with
+stand-ins for the modules the script asks for. It suits what a script does
+before its `requireGW` callback, or a callback small enough to stub:
+`test/bugfixes.test.js`, `test/gwo_panel.test.js`,
+`test/per_player_loadout_race_picker.test.js`, and
+`test/race_picker_view.test.js` use it. A callback that needs
+dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
+gets no such test. Its testable logic is extracted instead.
+
+`test/gw_start_setup.test.js` is the exception. War generation fails on timing
+across its steps: a seed read late, a run another has replaced, a source that
+fails while the rest load. `test/war_generation.test.js` pins the steps in
+`gw_start/war_generation.js`, but only the script shows them against the Go To
+War gate that `gw_start/setup.js` keeps. The test answers 21 of the script's 25
+modules with stand-ins, holds Shared Systems for Galactic War's sources and the
+galaxy build, and acts while they wait. It uses the sync fake jQuery, so
+settling a held step runs the rest of the chain in that call.
+
+A file run this way stays coverage-excluded, because most of it is still glue
+that no test reaches.
 
 `test/version.test.js` deliberately covers the one-line version bump. The
 SonarCloud new-code baseline is the previous version, so a bump always lands

@@ -33,8 +33,6 @@ function setup(overrides = {}) {
       perPlayerTech: false,
       isViewer: false,
       coop: false,
-      // Undefined stands for a scene where the wait module never loaded.
-      playersReturned: undefined,
       records: [{ gwaioUnlockedStartCardIds: [] }],
       stars: [],
     },
@@ -65,6 +63,19 @@ function setup(overrides = {}) {
   };
 
   stubs = createGlobalStubs();
+  // A real _.defer fires after the test that scheduled it, into whichever test
+  // runs then, on a setTimeout lodash 3 bound at load. The factory's deferred
+  // checks are held here instead, and run only when a test calls flush().
+  const deferred = [];
+  stubs.setGlobal(
+    "_",
+    global._.runInContext({ setTimeout: (fn) => deferred.push(fn) })
+  );
+  const flush = () => {
+    while (deferred.length) {
+      deferred.shift()();
+    }
+  };
   stubs.setGlobal("$", {
     Deferred: makeDeferred,
     when: (value) => {
@@ -127,13 +138,20 @@ function setup(overrides = {}) {
     treasure,
     stockBank: "stock-bank",
     gwoBank: "gwo-bank",
-    playersReturned:
-      options.playersReturned === "pending"
-        ? { wait: (onDone) => calls.waits.push(onDone) }
-        : options.playersReturned,
+    playersReturned: { wait: (onDone) => calls.waits.push(onDone) },
   });
 
-  return { victory, game, calls, saves, stats, gateWrites, exitGate, options };
+  return {
+    victory,
+    game,
+    calls,
+    saves,
+    stats,
+    gateWrites,
+    exitGate,
+    options,
+    flush,
+  };
 }
 
 // Whether the deferred jQuery hands back has run its always() handlers yet.
@@ -232,11 +250,22 @@ describe("ending a won war", () => {
     assert.equal(saves.length, 1);
   });
 
-  it("ends a war won while the scene is open", async () => {
-    const { game, saves } = setup({ gameState: "active" });
+  it("ends a war won while the scene is open", () => {
+    const { game, saves, flush } = setup({ gameState: "active" });
 
     game.gameState("won");
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
+
+    assert.equal(game.turnState(), "end");
+    assert.equal(saves.length, 1);
+  });
+
+  // gw_play applies a real battle's result before mod scripts load, so the war
+  // is already won when the factory runs and gameState never changes after.
+  it("ends a war already won when the scene opens", () => {
+    const { game, saves, flush } = setup();
+
+    flush();
 
     assert.equal(game.turnState(), "end");
     assert.equal(saves.length, 1);
@@ -320,10 +349,10 @@ describe("co-op", () => {
     assert.deepEqual(calls.operators, [[WAR_END, {}]]);
   });
 
-  it("leaves a viewer waiting for that message", async () => {
-    const { game, calls, saves } = setup({ isViewer: true });
+  it("leaves a viewer waiting for that message", () => {
+    const { game, calls, saves, flush } = setup({ isViewer: true });
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
 
     assert.equal(game.turnState(), "begin");
     assert.deepEqual(calls.operators, []);
@@ -340,10 +369,7 @@ describe("co-op", () => {
 // before the viewers are, and a war-end operator sent then never reaches them.
 describe("waiting for the players to return", () => {
   it("holds the operator and the turn end until everyone is back", () => {
-    const { victory, game, calls, saves } = setup({
-      coop: true,
-      playersReturned: "pending",
-    });
+    const { victory, game, calls, saves } = setup({ coop: true });
 
     victory.endWarIfWon();
 
@@ -360,10 +386,7 @@ describe("waiting for the players to return", () => {
   });
 
   it("asks once, however often the win is noticed", () => {
-    const { victory, calls } = setup({
-      coop: true,
-      playersReturned: "pending",
-    });
+    const { victory, calls } = setup({ coop: true });
 
     victory.endWarIfWon();
     victory.endWarIfWon();
@@ -375,10 +398,7 @@ describe("waiting for the players to return", () => {
   });
 
   it("does not wait in a solo war", () => {
-    const { victory, game, calls } = setup({
-      coop: false,
-      playersReturned: "pending",
-    });
+    const { victory, game, calls } = setup({ coop: false });
 
     victory.endWarIfWon();
 
@@ -386,25 +406,11 @@ describe("waiting for the players to return", () => {
     assert.equal(game.turnState(), "end");
   });
 
-  it("does not wait on a viewer", async () => {
-    const { calls } = setup({
-      coop: true,
-      isViewer: true,
-      playersReturned: "pending",
-    });
+  it("does not wait on a viewer", () => {
+    const { calls, flush } = setup({ coop: true, isViewer: true });
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
 
     assert.equal(calls.waits.length, 0);
-  });
-
-  // Async, so the factory's deferred check runs before the globals go.
-  it("ends at once when the wait module never loaded", async () => {
-    const { victory, game } = setup({ coop: true });
-
-    victory.endWarIfWon();
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    assert.equal(game.turnState(), "end");
   });
 });

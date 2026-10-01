@@ -3,10 +3,11 @@
 // Per shipped locale, the catalog keys the game's own tables do not translate.
 // Local-only: reads the PA install (--pa, else PA_MEDIA, else the default).
 // Prints counts; --out writes work lists to
-// scripts/i18n/out/missing.<L>.<n>.json in --chunk sized pieces; --all writes
-// every key instead, with PA's current text as `existing`, for reviewing
-// shipped translations; --report lists entries in GWO's own files that
-// override a PA entry. See docs/translations.md.
+// scripts/i18n/out/missing.<L>.<n>.json in --chunk sized pieces, replacing the
+// locale's earlier ones; --all writes every key instead, with PA's current
+// text as `existing`, for reviewing shipped translations; --report lists
+// entries in GWO's own files that override a PA entry. See
+// docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -43,8 +44,36 @@ function option(argv, name, fallback) {
   return at >= 0 && argv[at + 1] ? argv[at + 1] : fallback;
 }
 
-function writeChunks(locale, entries, chunk) {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
+// --all is a kind of --out: its work lists hold every key, not only the
+// missing ones.
+function parseArgs(argv) {
+  const all = argv.includes("--all");
+  const given = option(argv, "--chunk", String(DEFAULT_CHUNK));
+  const chunk = Number(given);
+  if (!Number.isInteger(chunk) || chunk < 1) {
+    throw new Error("--chunk takes a whole number above 0, not " + given);
+  }
+  return {
+    out: all || argv.includes("--out"),
+    all: all,
+    report: argv.includes("--report"),
+    chunk: chunk,
+  };
+}
+
+// The locale's work lists from an earlier run are removed first, so a stale
+// chunk cannot reach i18n:merge.
+function writeChunks(dir, locale, entries, chunk) {
+  fs.mkdirSync(dir, { recursive: true });
+  const prefix = "missing." + locale + ".";
+  for (const name of fs.readdirSync(dir)) {
+    if (
+      name.startsWith(prefix) &&
+      /^\d+\.json$/.test(name.slice(prefix.length))
+    ) {
+      fs.rmSync(path.join(dir, name));
+    }
+  }
   const keys = Object.keys(entries);
   let written = 0;
   for (let i = 0; i < keys.length; i += chunk) {
@@ -52,10 +81,7 @@ function writeChunks(locale, entries, chunk) {
     for (const key of keys.slice(i, i + chunk)) {
       piece[key] = entries[key];
     }
-    const file = path.join(
-      OUT_DIR,
-      "missing." + locale + "." + (i / chunk + 1) + ".json"
-    );
+    const file = path.join(dir, prefix + (i / chunk + 1) + ".json");
     fs.writeFileSync(file, JSON.stringify(piece, null, 2) + "\n");
     written += 1;
   }
@@ -63,13 +89,10 @@ function writeChunks(locale, entries, chunk) {
 }
 
 function main(argv) {
+  const { out, all, report, chunk } = parseArgs(argv);
   const install = paMedia(argv);
   const cat = catalog();
   const keys = Object.keys(cat);
-  const out = argv.includes("--out");
-  const all = argv.includes("--all");
-  const report = argv.includes("--report");
-  const chunk = Number(option(argv, "--chunk", DEFAULT_CHUNK));
   const locales = SHIPPED_LOCALES.filter((l) => l !== CATALOG_LOCALE);
 
   console.log(
@@ -130,7 +153,7 @@ function writeWorkList(locale, line, pa, keys, options) {
       entries[key].existing = pa[key].message;
     }
   }
-  const files = writeChunks(locale, entries, options.chunk);
+  const files = writeChunks(OUT_DIR, locale, entries, options.chunk);
   console.log(
     line +
       (options.all ? ", all " + keys.length + " keys" : "") +
@@ -141,9 +164,13 @@ function writeWorkList(locale, line, pa, keys, options) {
   );
 }
 
-try {
-  main(process.argv.slice(2));
-} catch (e) {
-  console.error("i18n:missing: " + e.message);
-  process.exitCode = 1;
+if (require.main === module) {
+  try {
+    main(process.argv.slice(2));
+  } catch (e) {
+    console.error("i18n:missing: " + e.message);
+    process.exitCode = 1;
+  }
 }
+
+module.exports = { parseArgs, writeChunks };

@@ -1,7 +1,8 @@
 "use strict";
 
-// The reroll-count arithmetic and request validation of cards_coop_reroll.js,
-// reached through the module's test-only hook. The rest is exercised in-game.
+// The reroll-count arithmetic, request validation and reroll stream of
+// cards_coop_reroll.js, reached through the module's test-only hook. The two
+// operator handlers are pinned in cards_coop_reroll_factory.test.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

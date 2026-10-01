@@ -1,7 +1,7 @@
-// Capability cells: a unit's domain, tier and class read off its unit_types,
-// so a race player owns the race's units in the cells the vanilla units held
-// occupy, and a mod on a vanilla file lands on the race files of the same
-// cell and role. Pure: no engine globals, no model. See races.md.
+// Capability cells: a unit's domain, tier, class and job read off its
+// unit_types, so a race player owns the race units the vanilla units held
+// stand for, and a mod on a vanilla file lands on the race files of those
+// stand-ins in the same role. Pure: no engine globals, no model. See races.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/build_types.js",
 ], function (buildTypes) {
@@ -11,6 +11,8 @@ define([
   var STRIP =
     /^(Custom\d+|FactoryBuild|CmdBuild|FabBuild|FabAdvBuild|FabOrbBuild|CombatFab\w*Build|CannonBuildable|Important|Interplanetary|NoBuild|Debug)$/;
   var COMMANDER = "Commander";
+  var COMBAT = "Combat";
+  var INTEL = "Intel";
   var MAX_CHAIN = 16;
 
   var bare = function (type) {
@@ -23,6 +25,13 @@ define([
     return _.filter(_.map(types || [], bare), function (type) {
       return _.isString(type) && type.length && !STRIP.test(type);
     });
+  };
+
+  // Whether the types say what the unit is for. The Deep Space Radar's stub
+  // carries only its faction bit, which classify would put in the basic
+  // fabrication tower's cell. See races.md, "Add-ons".
+  var classifiable = function (types) {
+    return stripTypes(types).length > 0;
   };
 
   // First match wins. Orbital before Land keeps the launcher orbital; Land
@@ -43,15 +52,84 @@ define([
     ["Metal", ["MetalProduction"]],
     ["Energy", ["EnergyProduction"]],
     ["Storage", ["Economy"]],
-    ["Intel", ["Recon", "Radar", "RadarJammer"]],
+    [INTEL, ["Recon", "Radar", "RadarJammer"]],
     ["Teleporter", ["Teleporter"]],
   ];
+  // A mobile combat unit's jobs, in this order. See races.md, "Jobs".
+  var JOBS = [
+    ["Heavy", ["Heavy"]],
+    ["SelfDestruct", ["SelfDestruct"]],
+    ["Fighter", ["Fighter"]],
+    ["Bomber", ["Bomber"]],
+    ["Gunship", ["Gunship"]],
+    ["LaserPlatform", ["LaserPlatform"]],
+    ["Tactical", ["Tactical"]],
+    ["AirDefense", ["AirDefense"]],
+    ["OrbitalDefense", ["OrbitalDefense"]],
+    ["MissileDefense", ["MissileDefense"]],
+    ["NukeDefense", ["NukeDefense"]],
+    ["Defense", ["Defense"]],
+    ["SurfaceDefense", ["SurfaceDefense"]],
+    ["Shield", ["Shield"]],
+    ["Artillery", ["Artillery"]],
+    ["TacticalDefense", ["TacticalDefense"]],
+    ["Transport", ["Transport"]],
+    ["Teleporter", ["Teleporter"]],
+    ["Scout", ["Scout", "Recon"]],
+    ["RadarJammer", ["RadarJammer"]],
+    ["Radar", ["Radar"]],
+    ["Construction", ["Construction"]],
+    ["Deconstruction", ["Deconstruction"]],
+    ["MetalProduction", ["MetalProduction"]],
+    ["EnergyProduction", ["EnergyProduction"]],
+    ["Economy", ["Economy"]],
+    ["Hover", ["Hover"]],
+    ["WaterHover", ["WaterHover"]],
+    ["Amphibious", ["Amphibious"]],
+    ["Sub", ["Sub"]],
+  ];
+  // A defence or superweapon structure's jobs, in this order. Defense is
+  // their class tag, so it is no job. See races.md, "Jobs".
+  var STRUCTURE_JOBS = [
+    ["Wall", ["Wall"]],
+    ["Nuke", ["Nuke"]],
+    ["ControlModule", ["ControlModule"]],
+    ["PlanetEngine", ["PlanetEngine"]],
+    ["Tactical", ["Tactical"]],
+    ["AirDefense", ["AirDefense"]],
+    ["OrbitalDefense", ["OrbitalDefense"]],
+    ["NukeDefense", ["NukeDefense"]],
+    ["SurfaceDefense", ["SurfaceDefense"]],
+    ["Artillery", ["Artillery"]],
+  ];
+  // An intel structure's jobs. Every intel structure carries Recon, so it is
+  // no job. See races.md, "Jobs".
+  var INTEL_JOBS = [
+    ["Radar", ["Radar"]],
+    ["RadarJammer", ["RadarJammer"]],
+  ];
+  // The classes whose cells split by job, and the table each reads.
+  var JOB_TABLES = {
+    Combat: JOBS,
+    Defense: STRUCTURE_JOBS,
+    Superweapon: STRUCTURE_JOBS,
+    Intel: INTEL_JOBS,
+  };
 
   var firstMatch = function (table, has, fallback) {
     var found = _.find(table, function (row) {
       return _.some(row[1], has);
     });
     return found ? found[0] : fallback;
+  };
+
+  var jobsFrom = function (table, has) {
+    return _.pluck(
+      _.filter(table, function (row) {
+        return _.some(row[1], has);
+      }),
+      0
+    );
   };
 
   var classify = function (types) {
@@ -68,19 +146,22 @@ define([
     } else if (has("Mobile")) {
       // A mobile builder without a weapon is a fabber; every other mobile,
       // the combat fabbers included, fights.
-      cls = has("Construction") && !has("Offense") ? "Fabber" : "Combat";
+      cls = has("Construction") && !has("Offense") ? "Fabber" : COMBAT;
     } else {
       cls = firstMatch(STRUCTURE_CLASSES, has, "Structure");
     }
 
     var domain = firstMatch(DOMAINS, has, "Land");
     var tier = has("Advanced") ? "Advanced" : "Basic";
+    var table = JOB_TABLES[cls];
+    var jobs = table ? jobsFrom(table, has) : [];
 
     return {
       domain: domain,
       tier: tier,
       cls: cls,
       key: domain + "/" + tier + "/" + cls,
+      jobs: jobs,
     };
   };
 
@@ -202,6 +283,32 @@ define([
     };
   };
 
+  var isCommanderCell = function (cell) {
+    return _.endsWith(cell || "", "/" + COMMANDER);
+  };
+
+  var commandersOf = function (index) {
+    return _.filter(index.units, function (unit) {
+      return isCommanderCell(index.cellOf[unit]);
+    });
+  };
+
+  // What `commanders` can build, and what that builds in turn, among the
+  // units `tagsOf` holds.
+  var reachFrom = function (commanders, tagsOf, buildableOf) {
+    var tagsFor = function (unit) {
+      return tagsOf[unit];
+    };
+    return buildTypes.reach(commanders, _.keys(tagsOf), buildableOf, tagsFor);
+  };
+
+  // What the index's commanders can build, and what that builds in turn.
+  var buildReach = function (index) {
+    return reachFrom(commandersOf(index), index.tagsOf, function (unit) {
+      return index.buildableOf[unit];
+    });
+  };
+
   // `member(types, path)` says what is indexed; an optional
   // `exclusive(types)` marks units that get a cell, tags and build list but
   // sit in `exclusive` rather than `units` or `unitsByCell`, so nothing
@@ -210,6 +317,7 @@ define([
     var index = {
       units: [],
       cellOf: {},
+      jobsOf: {},
       unitsByCell: {},
       partsByUnit: {},
       partIndex: {},
@@ -217,6 +325,9 @@ define([
       tagsOf: {},
       buildableOf: {},
       exclusive: {},
+      // What a commander can build: only these define jobs. See races.md,
+      // "Jobs".
+      fieldable: {},
     };
 
     _.forEach(_.uniq(unitPaths || []), function (path) {
@@ -228,8 +339,10 @@ define([
       if (!isExclusive && !member(types, path)) {
         return;
       }
-      var cell = classify(types).key;
+      var classified = classify(types);
+      var cell = classified.key;
       index.cellOf[path] = cell;
+      index.jobsOf[path] = classified.jobs;
       index.tagsOf[path] = _.map(types, bare);
       var buildable = chainValue(path, specs, "buildable_types");
       if (_.isString(buildable) && buildable.length) {
@@ -248,23 +361,24 @@ define([
       _.forEach(parts, function (part) {
         index.partIndex[part.path] = index.partIndex[part.path] || {
           role: part.role,
-          cells: [],
+          units: [],
+          home: [],
         };
         var entry = index.partIndex[part.path];
-        if (!_.includes(entry.cells, cell)) {
-          entry.cells.push(cell);
+        if (!_.includes(entry.units, path)) {
+          entry.units.push(path);
         }
-        // A part shared by units of several cells (the Dox's ammo also arms
-        // an advanced vehicle) belongs to the unit whose directory holds it.
-        if (_.startsWith(part.path, dir)) {
-          entry.home = cell;
+        // A part shared by several units (the Dox's ammo also arms an
+        // advanced vehicle) belongs to the unit whose directory holds it.
+        if (_.startsWith(part.path, dir) && !_.includes(entry.home, path)) {
+          entry.home.push(path);
         }
       });
     });
 
     _.forEach(index.partIndex, function (entry) {
-      if (entry.home) {
-        entry.cells = [entry.home];
+      if (entry.home.length) {
+        entry.units = entry.home;
       }
       delete entry.home;
     });
@@ -273,11 +387,9 @@ define([
       units.sort();
     });
 
-    return index;
-  };
+    index.fieldable = buildReach(index);
 
-  var isCommanderCell = function (cell) {
-    return _.endsWith(cell || "", "/" + COMMANDER);
+    return index;
   };
 
   // A cell no buildable vanilla unit occupies: empty, or held only by NoBuild
@@ -286,6 +398,34 @@ define([
     return _.every(vanilla.unitsByCell[cell] || [], function (unit) {
       return _.includes(vanilla.tagsOf[unit], "NoBuild");
     });
+  };
+
+  // `granted` plus each candidate that something in it can build, each
+  // builder by `buildable(unit)`, until nothing more is reachable.
+  var addBuildable = function (granted, candidates, tagsOf, buildable) {
+    var result = granted.slice();
+    var pending = candidates;
+    var added = true;
+
+    while (added && pending.length) {
+      added = false;
+      var builders = _.filter(result, function (unit) {
+        return !!buildable(unit);
+      });
+      pending = _.filter(pending, function (candidate) {
+        var tags = tagsOf[candidate];
+        var reachable = _.some(builders, function (builder) {
+          return buildTypes.matches(buildable(builder), tags);
+        });
+        if (reachable) {
+          result.push(candidate);
+          added = true;
+        }
+        return !reachable;
+      });
+    }
+
+    return result;
   };
 
   // The race's units in cells no vanilla unit occupies, and its exclusive
@@ -311,90 +451,222 @@ define([
         );
       }
     );
-    var result = granted.slice();
-    var added = true;
 
-    while (added && orphans.length) {
-      added = false;
-      var builders = _.filter(result, function (unit) {
-        return !!buildable(unit);
-      });
-      orphans = _.filter(orphans, function (orphan) {
-        var tags = race.tagsOf[orphan];
-        var reachable = _.some(builders, function (builder) {
-          return buildTypes.matches(buildable(builder), tags);
+    return addBuildable(granted, orphans, race.tagsOf, buildable);
+  };
+
+  // `fielded` plus each unit of `stock` that is held and that something
+  // fielded can build, MLA builders included: stock units a race builds
+  // although a race unit shares their cell. See races.md, "Units a race
+  // builds itself".
+  var buildableStockUnits = function (
+    fielded,
+    heldPaths,
+    stock,
+    vanilla,
+    race
+  ) {
+    var candidates = _.filter(_.uniq(stock || []), function (unit) {
+      return (
+        _.includes(heldPaths || [], unit) &&
+        !_.includes(fielded, unit) &&
+        Object.prototype.hasOwnProperty.call(vanilla.tagsOf, unit)
+      );
+    });
+
+    return addBuildable(fielded, candidates, vanilla.tagsOf, function (unit) {
+      return race.buildableOf[unit] || vanilla.buildableOf[unit];
+    });
+  };
+
+  // The vanilla units the race can build, as a skirmish reaches them: what
+  // its commanders build, and what that builds in turn, each builder by its
+  // own list. See races.md, "Capability cells".
+  var raceBuiltVanilla = function (vanilla, race) {
+    var reached = reachFrom(
+      commandersOf(race),
+      _.assign({}, vanilla.tagsOf, race.tagsOf),
+      function (unit) {
+        return race.buildableOf[unit] || vanilla.buildableOf[unit];
+      }
+    );
+    return _.pick(reached, function (value, unit) {
+      return Object.prototype.hasOwnProperty.call(vanilla.cellOf, unit);
+    });
+  };
+
+  var classOfCell = function (cell) {
+    return cell.slice(cell.lastIndexOf("/") + 1);
+  };
+
+  var splitCell = function (cell) {
+    return Object.prototype.hasOwnProperty.call(JOB_TABLES, classOfCell(cell));
+  };
+
+  var intelCell = function (cell) {
+    return classOfCell(cell) === INTEL;
+  };
+
+  // A lookup from a vanilla unit to the race units it stands for. See
+  // races.md, "Jobs" and "Units a race builds itself".
+  var buildStandIns = function (vanilla, race) {
+    var plans = {};
+    var raceBuilt;
+    var builtVanilla = function () {
+      if (!raceBuilt) {
+        raceBuilt = raceBuiltVanilla(vanilla, race);
+      }
+      return raceBuilt;
+    };
+
+    var jobOf = function (unit) {
+      return vanilla.jobsOf[unit][0];
+    };
+
+    var planFor = function (cell) {
+      if (!plans[cell]) {
+        var fielded = _.filter(vanilla.unitsByCell[cell], function (unit) {
+          return vanilla.fieldable[unit];
         });
-        if (reachable) {
-          result.push(orphan);
-          added = true;
+        var jobs = _.compact(_.map(fielded, jobOf));
+        // Exiles' one advanced intel unit both sees and jams.
+        var matchAll = intelCell(cell);
+        var matchOf = {};
+        _.forEach(race.unitsByCell[cell] || [], function (unit) {
+          var shared = _.filter(race.jobsOf[unit], function (job) {
+            return _.includes(jobs, job);
+          });
+          matchOf[unit] = matchAll ? shared : _.take(shared);
+        });
+        var matched = _.flatten(_.values(matchOf));
+        var jobless = _.reject(fielded, jobOf);
+        var leftover = _.reject(fielded, function (unit) {
+          return _.includes(matched, jobOf(unit));
+        });
+        var homes = fielded;
+        if (jobless.length) {
+          homes = jobless;
+        } else if (leftover.length) {
+          homes = leftover;
         }
-        return !reachable;
+        plans[cell] = { matchOf: matchOf, homes: homes };
+      }
+      return plans[cell];
+    };
+
+    var cellStandIns = function (unit) {
+      var cell = vanilla.cellOf[unit];
+      var raceUnits = race.unitsByCell[cell] || [];
+      if (!vanilla.fieldable[unit] || !splitCell(cell)) {
+        return raceUnits;
+      }
+      var plan = planFor(cell);
+      var job = jobOf(unit);
+      var home = _.includes(plan.homes, unit);
+      return _.filter(raceUnits, function (raceUnit) {
+        var match = plan.matchOf[raceUnit];
+        return match.length ? _.includes(match, job) : home;
       });
+    };
+
+    // A builder stands for itself only when it can build something the army
+    // fields: MLA's fabrication barge builds only the mine and teleporter,
+    // which Bugs field as their own.
+    var selfBuilt;
+    var buildsFielded = function (unit) {
+      var buildable = vanilla.buildableOf[unit];
+      if (!buildable) {
+        return true;
+      }
+      if (!selfBuilt) {
+        selfBuilt = _.filter(_.keys(builtVanilla()), function (built) {
+          return !cellStandIns(built).length;
+        });
+      }
+      var matches = function (tagsOf) {
+        return function (target) {
+          return (
+            target !== unit && buildTypes.matches(buildable, tagsOf[target])
+          );
+        };
+      };
+      return (
+        _.some(selfBuilt, matches(vanilla.tagsOf)) ||
+        _.some(race.units, matches(race.tagsOf))
+      );
+    };
+
+    return function (unit) {
+      var standIns = cellStandIns(unit);
+      return standIns.length || !builtVanilla()[unit] || !buildsFielded(unit)
+        ? standIns
+        : [unit];
+    };
+  };
+
+  // The deal asks once per card, so the last few index pairs are kept.
+  var STAND_INS_KEPT = 4;
+  var standInsKept = [];
+
+  // buildStandIns, kept per index pair by instance.
+  var standInsFor = function (vanilla, race) {
+    var kept = _.find(
+      standInsKept,
+      // By instance, not by the deep equality the shorthand would use.
+      // eslint-disable-next-line lodash/matches-shorthand
+      function (entry) {
+        return entry.vanilla === vanilla && entry.race === race;
+      }
+    );
+    if (kept) {
+      return kept.standIns;
     }
 
-    return result;
+    var standIns = buildStandIns(vanilla, race);
+    standInsKept.push({ vanilla: vanilla, race: race, standIns: standIns });
+    if (standInsKept.length > STAND_INS_KEPT) {
+      standInsKept.shift();
+    }
+    return standIns;
+  };
+
+  // The race units the held vanilla units stand for, a commander-class unit
+  // aside.
+  var heldStandIns = function (heldPaths, vanilla, race) {
+    var standIns = standInsFor(vanilla, race);
+
+    return _(heldPaths || [])
+      .uniq()
+      .filter(function (path) {
+        var cell = vanilla.cellOf[path];
+        return !_.isUndefined(cell) && !isCommanderCell(cell);
+      })
+      .map(standIns)
+      .flatten()
+      .value();
   };
 
   // What a race player fields for the vanilla units held. See races.md,
   // "Capability cells".
   var raceUnitsFor = function (heldPaths, vanilla, race) {
-    var kept = [];
-    var cells = [];
-
-    _.forEach(heldPaths || [], function (path) {
+    var kept = _.filter(heldPaths || [], function (path) {
       var cell = vanilla.cellOf[path];
-      if (_.isUndefined(cell)) {
-        if (!vanilla.partIndex[path]) {
-          kept.push(path);
-        }
-      } else if (isCommanderCell(cell)) {
-        kept.push(path);
-      } else if (!_.includes(cells, cell)) {
-        cells.push(cell);
-      }
+      return _.isUndefined(cell)
+        ? !vanilla.partIndex[path]
+        : isCommanderCell(cell);
     });
-
-    var granted = _.uniq(
-      kept.concat(
-        _.flatten(
-          _.map(cells, function (cell) {
-            return race.unitsByCell[cell] || [];
-          })
-        )
-      )
-    );
+    var granted = _.uniq(kept.concat(heldStandIns(heldPaths, vanilla, race)));
 
     return buildableOrphans(granted, vanilla, race);
   };
 
   // What an MLA player fields with add-ons active: everything held, plus the
-  // add-on units of every cell a held vanilla unit occupies, plus what those
-  // and the held vanilla builders can build. Nothing is taken away. See
-  // races.md, "Add-ons".
+  // add-on units each held vanilla unit stands for, plus what those and the
+  // held vanilla builders can build. Nothing is taken away. See races.md,
+  // "Add-ons".
   var addonUnitsFor = function (heldPaths, vanilla, addon) {
     var held = _.uniq(heldPaths || []);
-    var cells = [];
-
-    _.forEach(held, function (path) {
-      var cell = vanilla.cellOf[path];
-      if (
-        !_.isUndefined(cell) &&
-        !isCommanderCell(cell) &&
-        !_.includes(cells, cell)
-      ) {
-        cells.push(cell);
-      }
-    });
-
-    var granted = _.uniq(
-      held.concat(
-        _.flatten(
-          _.map(cells, function (cell) {
-            return addon.unitsByCell[cell] || [];
-          })
-        )
-      )
-    );
+    var granted = _.uniq(held.concat(heldStandIns(held, vanilla, addon)));
 
     return buildableOrphans(granted, vanilla, addon, function (unit) {
       return addon.buildableOf[unit] || vanilla.buildableOf[unit];
@@ -410,34 +682,37 @@ define([
     );
   };
 
-  var racePartsIn = function (race, cells, role) {
-    return _(cells)
-      .map(function (cell) {
-        return _.map(race.unitsByCell[cell] || [], function (unit) {
-          return _.pluck(
-            _.filter(race.partsByUnit[unit], { role: role }),
-            "path"
-          );
-        });
+  // A vanilla part's targets: the parts of the same role under the stand-ins
+  // of the units that mount it.
+  var racePartsFor = function (part, race, standIns) {
+    return _(part.units)
+      .map(standIns)
+      .flatten()
+      .uniq()
+      .map(function (unit) {
+        return _.pluck(
+          _.filter(race.partsByUnit[unit], { role: part.role }),
+          "path"
+        );
       })
-      .flattenDeep()
+      .flatten()
       .uniq()
       .value();
   };
 
-  var targetsFor = function (file, vanilla, race) {
+  var targetsFor = function (file, vanilla, race, standIns) {
     if (Object.prototype.hasOwnProperty.call(vanilla.cellOf, file)) {
-      return race.unitsByCell[vanilla.cellOf[file]] || [];
+      return standIns(file);
     }
     var part = vanilla.partIndex[file];
     if (part) {
-      return racePartsIn(race, part.cells, part.role);
+      return racePartsFor(part, race, standIns);
     }
     return undefined;
   };
 
-  // Spec mods re-aimed at the race by cell, once per pass. Identity mods stay
-  // on their own unit. See races.md, "Capability cells".
+  // Spec mods re-aimed at the race's stand-ins, once per pass. Identity mods
+  // stay on their own unit. See races.md, "Capability cells".
   var IDENTITY_PATH =
     /^(unit_types|buildable_types|base_spec|tools|command_caps|si_name|model|display_name|description|transportable|transporter|attachable)(\.|$)/;
 
@@ -461,10 +736,13 @@ define([
     return files;
   };
 
-  var expandMods = function (mods, vanilla, race, has) {
+  // `passThrough` ({ path: true }) names files changed as named, never
+  // re-aimed: a race's own files, some of which carry no faction bit.
+  var expandMods = function (mods, vanilla, race, has, passThrough) {
     var passes = {};
     var out = [];
     var remade = remadeFiles(mods || []);
+    var standIns = standInsFor(vanilla, race);
 
     _.forEach(mods || [], function (mod) {
       if (!mod || !_.isString(mod.file) || remade[mod.file]) {
@@ -472,51 +750,97 @@ define([
         return;
       }
 
-      var targets = targetsFor(mod.file, vanilla, race);
+      // Kept on the file it names, and outside the passes, so no other
+      // card's change can stand in for it. See tech-cards.md, "Which races a
+      // card reaches".
+      if (mod.stockOnly === true) {
+        if (!_.isFunction(has) || has(mod.file)) {
+          out.push(mod);
+        }
+        return;
+      }
+
+      var targets =
+        passThrough && passThrough[mod.file]
+          ? undefined
+          : targetsFor(mod.file, vanilla, race, standIns);
       if (_.isUndefined(targets)) {
         out.push(mod);
         return;
       }
 
-      if (_.isFunction(has) && has(mod.file)) {
-        out.push(mod);
-      }
-
       var change = [mod.path, mod.op, JSON.stringify(mod.value)].join("|");
-      _.forEach(targets, function (target) {
+      // A kept original joins the passes too: a race can mount the vanilla
+      // file itself (Legion's commanders fire the stock AA ammo), and that
+      // file must take the change once, not once as itself and again as a
+      // race part.
+      var land = function (target, landed) {
         var key = target + "|" + change;
         var pass = passes[key];
         if (!pass || pass[mod.file]) {
           pass = passes[key] = {};
-          out.push(_.assign({}, mod, { file: target }));
+          out.push(landed);
         }
         pass[mod.file] = true;
+      };
+
+      var kept = _.isFunction(has) && has(mod.file);
+      if (kept) {
+        land(mod.file, mod);
+      }
+      // A unit that stands for itself takes the mod only as kept.
+      _.forEach(targets, function (target) {
+        if (target !== mod.file) {
+          land(target, _.assign({}, mod, { file: target }));
+        }
       });
     });
 
     return out;
   };
 
-  // A card is worth offering when the race owns something in a cell it names.
+  // One path, a list, or groups nested in a list, in order, as a new list; a
+  // whole gwoUnit race table names nothing. See races.md, "Capability cells".
+  var unitPaths = function (units) {
+    if (_.isString(units)) {
+      return [units];
+    }
+    if (_.isArray(units) && _.every(units, _.isString)) {
+      return units.slice();
+    }
+    return _([units || []])
+      .flattenDeep()
+      .reject(_.isPlainObject)
+      .value();
+  };
+
+  var unitList = function (units) {
+    return _.uniq(unitPaths(units));
+  };
+
+  // A card is worth offering when a unit it names stands for a race unit.
   var cardUsable = function (cardUnits, vanilla, race) {
-    return _.some(cardUnits || [], function (unit) {
-      var cell = vanilla.cellOf[unit];
-      return !!cell && !_.isEmpty(race.unitsByCell[cell]);
+    var standIns = standInsFor(vanilla, race);
+
+    return _.some(unitList(cardUnits), function (unit) {
+      return !!vanilla.cellOf[unit] && !_.isEmpty(standIns(unit));
     });
   };
 
-  // The units a card reaches for a race player: the race's units of each cell
-  // a named vanilla unit occupies. A path with no cell, or in a Commander
-  // cell, is kept as raceUnitsFor keeps it. No build reach: a factory card
-  // lists factories, not what they build.
+  // The units a card reaches for a race player: the race units each named
+  // vanilla unit stands for. A path with no cell, or in a Commander cell, is
+  // kept as raceUnitsFor keeps it. No build reach: a factory card lists
+  // factories, not what they build.
   var cardUnitsFor = function (cardUnits, vanilla, race) {
-    return _(cardUnits || [])
+    var standIns = standInsFor(vanilla, race);
+
+    return _(unitList(cardUnits))
       .map(function (unit) {
         var cell = vanilla.cellOf[unit];
         if (_.isUndefined(cell) || isCommanderCell(cell)) {
           return [unit];
         }
-        return race.unitsByCell[cell] || [];
+        return standIns(unit);
       })
       .flatten()
       .uniq()
@@ -524,18 +848,15 @@ define([
   };
 
   // The units a card reaches for an MLA player with add-ons: the card's own
-  // vanilla units and the add-on units of their cells.
+  // vanilla units and the add-on units they stand for.
   var addonCardUnitsFor = function (cardUnits, vanilla, addon) {
     return _.uniq(
-      (cardUnits || []).concat(cardUnitsFor(cardUnits, vanilla, addon))
+      unitList(cardUnits).concat(cardUnitsFor(cardUnits, vanilla, addon))
     );
   };
 
-  // A merged unit map's spec_ids the race maps did not set, re-pointed from a
-  // vanilla unit to the first race unit of its cell, so a key the engine reads
-  // itself resolves to something the army can own. `avoid` ({ path: true })
-  // names units to pass over while the cell offers another: an add-on's,
-  // which the race's own AI data does not know. Returns a copy.
+  // A copy of a merged unit map, its spec_ids the race maps did not set
+  // re-pointed to a race unit. See races.md, "Jobs" and "Add-ons".
   var unitMapFallback = function (map, raceMaps, vanilla, race, avoid) {
     if (!map || !map.unit_map) {
       return map;
@@ -546,6 +867,7 @@ define([
         raceKeys[key] = true;
       });
     });
+    var standIns = standInsFor(vanilla, race);
     var preferred = function (candidates) {
       return (
         _.find(candidates, function (unit) {
@@ -558,7 +880,10 @@ define([
     _.forEach(map.unit_map, function (entry, key) {
       var cell =
         entry && _.isString(entry.spec_id) && vanilla.cellOf[entry.spec_id];
-      var stand = cell && !raceKeys[key] ? race.unitsByCell[cell] : undefined;
+      var stand = cell && !raceKeys[key] ? standIns(entry.spec_id) : undefined;
+      if (stand && !stand.length && intelCell(cell)) {
+        stand = race.unitsByCell[cell] || [];
+      }
       unitMap[key] =
         stand && stand.length
           ? _.assign({}, entry, { spec_id: preferred(stand) })
@@ -570,8 +895,11 @@ define([
 
   return {
     COMMANDER: COMMANDER,
+    bare: bare,
     stripTypes: stripTypes,
+    classifiable: classifiable,
     classify: classify,
+    chainValue: chainValue,
     effectiveTypes: effectiveTypes,
     partsOf: partsOf,
     raceMember: raceMember,
@@ -579,10 +907,15 @@ define([
     exclusiveMember: exclusiveMember,
     buildIndex: buildIndex,
     isCommanderCell: isCommanderCell,
+    standInsFor: standInsFor,
     raceUnitsFor: raceUnitsFor,
+    buildableStockUnits: buildableStockUnits,
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
+    remadeFiles: remadeFiles,
     expandMods: expandMods,
+    unitPaths: unitPaths,
+    unitList: unitList,
     cardUsable: cardUsable,
     cardUnitsFor: cardUnitsFor,
     addonCardUnitsFor: addonCardUnitsFor,

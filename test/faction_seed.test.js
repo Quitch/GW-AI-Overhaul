@@ -97,7 +97,6 @@ describe("faction_seed reseedFaction", () => {
     factionSeed.reseedFaction(built, gwoRng.create("baseline"));
     const minion = randomMinion(built);
     assert.equal(minion.factionWide, "kept");
-    assert.equal(minion.factionWide, "kept");
     assert.equal(minion.name, "Aryst0krat");
     assert.equal(minion.character, "!LOC:Random");
   });
@@ -164,19 +163,28 @@ describe("faction_seed reseedFaction", () => {
     assert.equal(generator.radius, 650);
   });
 
-  it("is a no-op without a spec, without teams, or without an rng", () => {
+  it("is a no-op without a spec or without an rng", () => {
     const noSpec = faction({ withoutSpec: true });
     factionSeed.reseedFaction(noSpec, gwoRng.create("x"));
     assert.deepEqual(noSpec, faction({ withoutSpec: true }));
 
-    const noTeams = faction({ withoutTeams: true });
-    factionSeed.reseedFaction(noTeams, gwoRng.create("x"));
-    assert.equal(noTeams.teams, undefined);
-    assert.equal(randomMinion(noTeams).factionWide, "kept");
-
     const noRng = faction();
     factionSeed.reseedFaction(noRng, undefined);
     assert.deepEqual(noRng, faction());
+  });
+
+  it("still reseeds the minions without teams, writing no description", () => {
+    const noTeams = faction({ withoutTeams: true });
+    const before = randomMinion(noTeams);
+    factionSeed.reseedFaction(noTeams, gwoRng.create("x"));
+
+    assert.equal(noTeams.teams, undefined);
+    assert.notEqual(
+      randomMinion(noTeams),
+      before,
+      "the minion was not rebuilt"
+    );
+    assert.equal(randomMinion(noTeams).factionWide, "kept");
   });
 
   it("keeps the shipped default when the pool is empty", () => {
@@ -194,25 +202,23 @@ describe("faction_seed reseedFaction", () => {
 
 describe("faction_seed reseed", () => {
   it("keys by position, so reordering changes each faction's picks", () => {
-    const inOrder = [faction(), faction()];
-    factionSeed.reseed(inOrder, gwoRng.create("war").stream("factions"));
+    const rng = () => gwoRng.create("war").stream("factions");
+    const named = (name) => Object.assign(faction(), { name: name });
+    const picks = (built) => [
+      randomMinion(built).personality,
+      built.teams[0].systemDescription,
+    ];
 
-    const swapped = [faction(), faction()];
-    factionSeed.reseed(swapped, gwoRng.create("war").stream("factions"));
+    const inOrder = [named("A"), named("B")];
+    factionSeed.reseed(inOrder, rng());
+    const swapped = [named("B"), named("A")];
+    factionSeed.reseed(swapped, rng());
 
-    // Same position, same result.
-    assert.deepEqual(randomMinion(inOrder[0]), randomMinion(swapped[0]));
-    // Different position, different stream.
-    assert.notDeepEqual(
-      [
-        randomMinion(inOrder[0]).personality,
-        inOrder[0].teams[0].systemDescription,
-      ],
-      [
-        randomMinion(inOrder[1]).personality,
-        inOrder[1].teams[0].systemDescription,
-      ]
-    );
+    // Each position draws the same picks, whichever faction holds it...
+    assert.deepEqual(picks(swapped[0]), picks(inOrder[0]));
+    assert.deepEqual(picks(swapped[1]), picks(inOrder[1]));
+    // ...so A, moved from first to second, draws something else.
+    assert.notDeepEqual(picks(swapped[1]), picks(inOrder[0]));
   });
 
   it("does nothing without an rng", () => {

@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - MONTÉE PLUS RAPIDE"
+  },
   "A map pack this war uses is missing": {
     "message": "Un pack de cartes utilisé par cette guerre est manquant"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "ARMÉES/COMMANDEURS :"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "Mods d'extension actifs au début de cette guerre et désactivés depuis :"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "La Technologie de défense avancée permet des défenses plus puissantes. Les défenses avancées sont construites par les bâtisseurs avancés."
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "La Technologie de recharge aérienne divise par deux le temps de recharge entre deux constructions pour toutes les usines aériennes."
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "Un joueur IA ne commence jamais avec un arsenal qu'un autre joueur possède, sauf si tous ceux qu'il pourrait choisir sont déjà attribués. Nécessite « Separate loadout &amp; tech »."
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "Une IA qui ne connaît pas une race n'est pas proposée pour celle-ci."
@@ -170,6 +179,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER : terrestre. Utilise des Angels et des Colonels comme Sous-Commandeurs et ne peut pas les construire."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "COOP : les joueurs IA qu'un hôte ajoute à une session en coopération"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "TRANSPORT DU COMMANDEUR :"
   },
@@ -199,6 +211,9 @@
   },
   "Co-Op Settings": {
     "message": "Paramètres de coopération"
+  },
+  "Co-op": {
+    "message": "Coop"
   },
   "Co-op host setup": {
     "message": "Préparation de l'hôte en coopération"
@@ -236,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "DIAMANT : vos arsenaux sont cheatés"
   },
+  "DIRE": {
+    "message": "DÉSASTREUSE"
+  },
   "Deck:": {
     "message": "Deck :"
   },
@@ -244,6 +262,9 @@
   },
   "Delay in creating new bases.": {
     "message": "Délai de création de nouvelles bases."
+  },
+  "Delete this Tech?": {
+    "message": "Effacer cette technologie ?"
   },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "Déployés par des forces secrètes de l'Hegemony pendant toute la durée de la Century War, leur niveau actuel de prolifération indique qu'ils ont développé la capacité d'ensemencer des planètes par eux-mêmes après la fin de la guerre, ou qu'il s'agit d'une tentative désespérée des Xziphid pour conjurer la défaite."
@@ -293,6 +314,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "RAPIDE"
+  },
+  "FASTER": {
+    "message": "PLUS RAPIDE"
+  },
+  "FASTEST": {
+    "message": "LA PLUS RAPIDE"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "COMPORTEMENT FFA"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION : aérien/naval"
   },
@@ -308,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "OR : vous avez vaincu le mod d'IA Queller"
   },
+  "GOOD": {
+    "message": "BONNE"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods n'est pas activé"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-DÉBUTANT"
+  },
+  "HEALTHY": {
+    "message": "SAINE"
+  },
+  "HUGE": {
+    "message": "ÉNORME"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "La Technologie de mise à niveau du Halley double les PV du moteur delta-V et divise son coût par deux."
@@ -325,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "Qualité de la reconnaissance de l'IA."
+  },
+  "IMMEDIATELY": {
+    "message": "IMMÉDIATEMENT"
+  },
+  "IMMENSE": {
+    "message": "IMMENSE"
+  },
+  "INCREDIBLE": {
+    "message": "INCROYABLE"
   },
   "IRON: you no longer turtle": {
     "message": "FER : vous ne campez plus dans votre base"
@@ -350,6 +404,9 @@
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "La Technologie de mise à niveau du Kessler permet aux mines orbitales d'exploser sans s'autodétruire."
   },
+  "Kick this AI?": {
+    "message": "Exclure cette IA ?"
+  },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "La Technologie de mise à niveau du Kraken augmente la portée des missiles du sous-marin avancé de 200 %."
   },
@@ -359,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "ATTERRIR N'IMPORTE OÙ : les joueurs peuvent démarrer n'importe où sur les planètes de départ viables."
   },
+  "LATE ORBITAL": {
+    "message": "ORBITAL TARDIF"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA : véhicules"
+  },
+  "LONG": {
+    "message": "LONG"
+  },
+  "LOVES AIR": {
+    "message": "PRÉFÈRE L'AVIATION"
+  },
+  "LOVES BOTS": {
+    "message": "PRÉFÈRE LES ROBOTS"
+  },
+  "LOVES LAND": {
+    "message": "PRÉFÈRE LE TERRESTRE"
+  },
+  "LOVES ORBITAL": {
+    "message": "PRÉFÈRE L'ORBITAL"
+  },
+  "LOVES TANKS": {
+    "message": "PRÉFÈRE LES CHARS"
   },
   "Land Anywhere Tech": {
     "message": "Technologie Atterrir n'importe où"
@@ -479,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "La Technologie de recharge orbitale divise par deux le temps de recharge entre deux constructions pour toutes les usines orbitales."
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT : personnalité plus marquée"
   },
@@ -487,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "PLATINE : un seul ennemi n'est pas un défi"
+  },
+  "POOR": {
+    "message": "MAUVAISE"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "La Technologie de mise à niveau du Pelican permet aux transports aériens de porter des Commandeurs. Toutes les unités peuvent tirer pendant leur transport."
@@ -557,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "Remplace les missiles nucléaires classiques par une nouvelle variante bon marché et de faible puissance, sur laquelle il compte fortement en attaque comme en défense. Renonce pour cela à la plupart des défenses avancées."
   },
+  "Report a Galactic War Bug": {
+    "message": "Signaler un bug de la Guerre galactique"
+  },
   "SCOUTING:": {
     "message": "RECONNAISSANCE :"
   },
+  "SHORT": {
+    "message": "COURT"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "ARGENT : vous avez vaincu l'IA d'escarmouche"
+  },
+  "SLOW": {
+    "message": "LENTE"
+  },
+  "SLOWER": {
+    "message": "PLUS LENTE"
+  },
+  "SLOWEST": {
+    "message": "LA PLUS LENTE"
+  },
+  "SPAWN ONLY": {
+    "message": "POINT D'APPARITION SEUL"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "PROBABILITÉ DE MORT SUBITE :"
@@ -577,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "Mise à l'échelle pour :"
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "Séparés"
@@ -650,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "SYSTÈME DE TECHNOLOGIE :"
   },
+  "TERRIBLE": {
+    "message": "TERRIBLE"
+  },
+  "TINY": {
+    "message": "MINUSCULE"
+  },
   "TITANS: base game AI": {
     "message": "TITANS : IA du jeu de base"
   },
@@ -674,14 +788,23 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "L'arsenal du Commandeur naval contient tous les chantiers navals. Augmente la quantité d'eau et de lave sur les planètes éligibles."
   },
-  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
-    "message": "La même valeur reconstruit la même galaxie et les mêmes ennemis, à condition que la faction, la difficulté et les options de jeu correspondent et que les mêmes mods soient installés. Les noms des planètes varient quand même. Laissez le champ tel quel pour une nouvelle galaxie."
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "La galaxie est trop petite pour que chaque faction ennemie ait un système d'origine. Choisissez une galaxie plus grande ou activez « Mise à l'échelle des factions » pour que les petites galaxies aient moins de factions."
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "La même valeur reconstruit la même galaxie et les mêmes ennemis, à condition que la taille de la galaxie, le nombre de joueurs, la faction, la difficulté et les options de jeu correspondent et que les mêmes mods soient installés. Les noms des planètes varient quand même. Laissez le champ tel quel pour une nouvelle galaxie."
   },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "Les unités que vous et vos Sous-Commandeurs engagez. L'IA de chaque race se choisit avec le bouton IA."
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "Les unités que vous et vos Sous-Commandeurs engagez. Seules les races avec lesquelles la guerre de l'hôte a été créée peuvent être choisies."
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "La guerre n'a pas pu être créée à cause d'un bug. Veuillez le signaler sur __url__ en indiquant la valeur initiale de la guerre (__seed__) et en joignant votre fichier journal de PA, qui se trouve dans __folder__."
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "La guerre n'a pas pu être créée, car les sources sélectionnées sous « Systems » n'ont pas pu être chargées ou ne contiennent aucun système stellaire utilisable. Sélectionnez d'autres sources, ou quittez cet écran et revenez pour qu'elles soient rechargées."
   },
   "This card will be offered as part of the first draw.": {
     "message": "Cette carte sera proposée lors du premier tirage."
@@ -722,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "UBER : vous détestez gagner"
   },
+  "UNHEALTHY": {
+    "message": "PEU SAINE"
+  },
   "UNIT DELAY (MAX):": {
     "message": "DÉLAI ENTRE UNITÉS (MAX) :"
   },
   "UNIT DELAY (MIN):": {
     "message": "DÉLAI ENTRE UNITÉS (MIN) :"
+  },
+  "Unique AI loadouts": {
+    "message": "Arsenaux d'IA uniques"
   },
   "Unique Races": {
     "message": "Races uniques"
@@ -754,6 +883,15 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "La Technologie de recharge des véhicules divise par deux le temps de recharge entre deux constructions pour toutes les usines de véhicules."
+  },
+  "View loadout and tech cards": {
+    "message": "Voir l'arsenal et les cartes technologiques"
+  },
+  "WEAK": {
+    "message": "FAIBLE"
+  },
+  "Waiting for loadout": {
+    "message": "En attente de l'arsenal"
   },
   "Waiting for players": {
     "message": "En attente des joueurs"

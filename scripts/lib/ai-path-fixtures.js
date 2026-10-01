@@ -3,8 +3,9 @@
 // Shared fixtures for testing ai_path resolution: the minimal model.game()-shaped
 // surface those files read, not a full GW.Game.
 //
-// buildGame()/installModel() return the same object references on every call,
-// matching production code, which re-reads rather than snapshotting.
+// model.game(), and the game's inventory() and its star's system() and ai(),
+// return the same objects on every call, matching production code, which
+// re-reads rather than snapshotting. galaxy() builds a new wrapper each call.
 
 var afterEach = require("node:test").afterEach;
 
@@ -74,15 +75,10 @@ function makeAiDescriptor(overrides) {
   );
 }
 
-// -> { game, star, ai, inventory }. The non-obvious options:
-//   subcommanderType drives inventory's global:playerFaction tag
-//   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
-//   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
-//
 // The origin star's system: its gwaio settings block only when a brain is
 // recorded, as a war saved before GWO existed carries none.
 function buildSystem(opts, aiInUse, aiAllyInUse) {
-  if (!aiInUse && !aiAllyInUse && !opts.aiByRace) {
+  if (!aiInUse && !aiAllyInUse && !opts.aiByRace && !opts.aiCoopInUse) {
     return {};
   }
   var gwaio = {};
@@ -91,6 +87,11 @@ function buildSystem(opts, aiInUse, aiAllyInUse) {
   }
   if (aiAllyInUse) {
     gwaio.aiAlly = aiAllyInUse;
+  }
+  // The co-op AI players' war-wide brain. Absent means a war saved before it
+  // existed, whose co-op side follows the enemy's.
+  if (opts.aiCoopInUse) {
+    gwaio.aiCoop = opts.aiCoopInUse;
   }
   // The per-race brain table as gw_start records it:
   // { raceId: { enemy, ally } }. Absent means a war saved before it existed.
@@ -110,6 +111,12 @@ function buildSystem(opts, aiInUse, aiAllyInUse) {
   return { gwaio: gwaio };
 }
 
+// -> { game, star, ai, inventory }. The non-obvious options:
+//   subcommanderType drives inventory's global:playerFaction tag
+//   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
+//   minions are the player's Sub Commanders, inventory.minions()
+//   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
+//
 // Connected clients go to installModel(), not here.
 function buildGame(options) {
   var opts = options || {};
@@ -142,9 +149,11 @@ function buildGame(options) {
 
   var inventory = makeInventory({
     aiModsList: aiMods,
+    modsList: opts.mods || [],
     cardsList: smartSubcommanders
       ? [{ id: "gwaio_upgrade_subcommander_tactics" }]
       : [],
+    minionsList: opts.minions || [],
     tags: tags,
   });
 
@@ -193,6 +202,10 @@ function buildGame(options) {
     findCoopPlayerInventoryData: function (client) {
       return viewerInventoryData[client && client.id];
     },
+    // The co-op records a war's AI players keep; none unless a test adds them.
+    coopPlayerInventoryData: function () {
+      return opts.coopRecords || [];
+    },
   };
 
   return { game: game, star: star, ai: ai, inventory: inventory };
@@ -216,7 +229,8 @@ function withTwoViewers(game, viewer1Inventory, viewer2Inventory, names) {
   ];
 }
 
-// Call restore() in afterEach or the stub leaks into the next test.
+// Call restore() in afterEach or the stub leaks into the next test. A session
+// is active while any client is connected.
 function installModel(game, connectedClients) {
   var previousModel = global.model;
   global.model = {
@@ -225,6 +239,9 @@ function installModel(game, connectedClients) {
     },
     gwCampaignConnectedClients: function () {
       return connectedClients || [];
+    },
+    gwCampaignActive: function () {
+      return !!(connectedClients && connectedClients.length);
     },
   };
   return function restore() {

@@ -110,7 +110,32 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     );
   }
 
-  // An empty navigation object marks a structure as mobile. See specs.md.
+  function isSelector(segment) {
+    return _.startsWith(segment, "[");
+  }
+
+  // "[layer=<layer>,channel=<channel>]", or undefined for any other form.
+  function parseSelector(segment) {
+    if (!_.endsWith(segment, "]")) {
+      return undefined;
+    }
+    var pairs = _.map(segment.slice(1, -1).split(","), function (pair) {
+      return pair.split("=");
+    });
+    var isValid =
+      pairs.length === 2 &&
+      _.every(pairs, function (pair, index) {
+        return (
+          pair.length === 2 &&
+          pair[0] === ["layer", "channel"][index] &&
+          pair[1] !== ""
+        );
+      });
+    return isValid ? { layer: pairs[0][1], channel: pairs[1][1] } : undefined;
+  }
+
+  // A mod that writes into navigation and a later one that removes the value
+  // leave it empty, which marks a structure as mobile. See specs.md.
   function pruneEmptyNavigation(spec) {
     if (!_.isPlainObject(spec) || !_.isPlainObject(spec.navigation)) {
       return;
@@ -205,6 +230,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return new Function("attribute", value)(attribute);
         },
         clone: function (attribute, value) {
+          if (isNullish(attribute)) {
+            console.warn(
+              "clone: attribute is missing or null. Not creating " +
+                JSON.stringify(value + specTag)
+            );
+            return attribute;
+          }
           var loaded = _.isString(attribute) ? load(attribute) : attribute;
           if (loaded) {
             loaded = _.cloneDeep(loaded);
@@ -288,6 +320,61 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         clone: true,
       };
 
+      // These return a missing target unchanged, so a container made on the
+      // way to one would be left behind empty. See specs.md.
+      var opsThatDoNotCreate = {
+        multiply: true,
+        tag: true,
+        clone: true,
+      };
+
+      // The mods a path's first selector stands for: one per matching item,
+      // its index in place of the selector. Only reads, so no match writes
+      // nothing. Undefined when the path has no selector. See specs.md.
+      var resolveSelector = function (mod, spec) {
+        var segments = (mod.path || "").split(".");
+        var at = _.findIndex(segments, isSelector);
+        if (at === -1) {
+          return undefined;
+        }
+        var selector = parseSelector(segments[at]);
+        if (!selector) {
+          console.error("Invalid selector in mod " + JSON.stringify(mod));
+          return [];
+        }
+        var items = spec;
+        _.forEach(segments.slice(0, at), function (segment) {
+          items =
+            _.isObject(items) &&
+            Object.prototype.hasOwnProperty.call(items, segment)
+              ? items[segment]
+              : undefined;
+          if (_.isString(items)) {
+            items = load(items);
+          }
+          return items !== undefined;
+        });
+        if (!_.isArray(items)) {
+          return [];
+        }
+        return _.reduce(
+          items,
+          function (resolved, item, index) {
+            if (
+              _.isObject(item) &&
+              item.layer === selector.layer &&
+              item.channel === selector.channel
+            ) {
+              var path = segments.slice();
+              path[at] = String(index);
+              resolved.push(_.assign({}, mod, { path: path.join(".") }));
+            }
+            return resolved;
+          },
+          []
+        );
+      };
+
       var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
@@ -299,6 +386,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.error(
             "Invalid operation in mod " + JSON.stringify(mod)
           );
+        }
+
+        var resolved = resolveSelector(mod, spec);
+        if (resolved) {
+          _.forEach(resolved, applyMod);
+          return;
         }
 
         // Captured before the path walk reassigns `spec` to a nested container.
@@ -378,27 +471,62 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             : cookObjectStep(step, op);
         };
 
-        while (path.length > 1) {
-          var level = cookStep(path.pop());
+        // Whether cookStep would have to make `step`.
+        var isMissing = function (step) {
+          if (!_.isArray(spec)) {
+            return !Object.prototype.hasOwnProperty.call(spec, step);
+          }
+          var index = Number(step);
+          return (
+            step === "+" ||
+            (!Number.isNaN(index) &&
+              !Object.prototype.hasOwnProperty.call(spec, index))
+          );
+        };
 
+        // The op still sees undefined, so tag warns.
+        var stopsAt = function (step) {
+          if (!opsThatDoNotCreate[mod.op] || !isMissing(step)) {
+            return false;
+          }
+          ops[mod.op](undefined, mod.value);
+          return true;
+        };
+
+        var stepInto = function (level) {
           if (_.isString(spec[level])) {
             var newSpec = load(spec[level]);
             if (!newSpec) {
               reportError("Undefined mod spec encountered,", level);
-              return;
+              return false;
             }
             spec = newSpec;
           } else if (_.isObject(spec[level])) {
             spec = spec[level];
           } else {
             reportError("Invalid attribute encountered,", level);
+            return false;
+          }
+          return true;
+        };
+
+        while (path.length > 1) {
+          if (stopsAt(path[path.length - 1])) {
+            return;
+          }
+          if (!stepInto(cookStep(path.pop()))) {
             return;
           }
         }
 
         if (path.length && path[0]) {
+          if (stopsAt(path[0])) {
+            return;
+          }
           var leaf = cookStep(path[0], mod.op);
-          spec[leaf] = ops[mod.op](spec[leaf], mod.value);
+          // A card's descriptor is shared by every spec set built from the
+          // inventory, so no op may store its value. See specs.md.
+          spec[leaf] = ops[mod.op](spec[leaf], _.cloneDeep(mod.value));
         } else if (opsWithoutPath[mod.op]) {
           ops[mod.op](spec, mod.value);
         } else {

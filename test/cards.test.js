@@ -48,12 +48,24 @@ describe("hasUnit", () => {
     assert.equal(cards.hasUnit(["a", "b"], ["c", "b"]), true);
     assert.equal(cards.hasUnit(["a", "b"], ["c", "d"]), false);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasUnit(["a", "b"], [["c", ["b"]], "d"]), true);
+    assert.equal(cards.hasUnit(["a", "b"], [["c"], "d"]), false);
+  });
 });
 
 describe("hasAllUnits", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasAllUnits(["a", "b"], "b"), true);
     assert.equal(cards.hasAllUnits(["a", "b"], "c"), false);
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasAllUnits(["a", "b", "c"], [["a", ["c"]], "b"]), true);
+    assert.equal(cards.hasAllUnits(["a", "b"], [["a", "c"]]), false);
+    assert.equal(cards.missingUnit(["a"], [["a", "c"]]), true);
+    assert.equal(cards.missingAllUnits(["a"], [["b", ["a"]]]), false);
   });
 
   it("requires every unit of an array to be present", () => {
@@ -251,10 +263,12 @@ describe("navalWeight", () => {
     assert.equal(cards.navalWeight(holding("gwaio_start_air"), 30), 12);
   });
 
-  it("rounds the fallback to a whole chance", () => {
+  it("rounds the fallback to the nearest whole chance", () => {
     // No shipped card passes a base that divides unevenly, so this pins the
     // rounding for one that later does rather than describing today's callers.
+    // 13.2 rounds down and 13.6 up, so neither floor nor ceil passes both.
     assert.equal(cards.navalWeight(holding(), 33), 13);
+    assert.equal(cards.navalWeight(holding(), 34), 14);
   });
 
   it("uses an explicit dry chance in place of the fallback, including 0", () => {
@@ -345,6 +359,44 @@ describe("farForSize", () => {
       true
     );
   });
+
+  // The tier stops at the last entry of the shorter table. One past the end of
+  // the size table picks the next threshold; one past the end of the
+  // thresholds finds none, and `distance > undefined` is false at every
+  // distance.
+  it("clamps a galaxy larger than a short size table to its last tier", () => {
+    const baseSizes = [18, 24, 36, 54, 78];
+    assert.equal(
+      cards.farForSize(systemAt(50), { totalSize: 234 }, baseSizes, thresholds),
+      false
+    );
+    assert.equal(
+      cards.farForSize(systemAt(51), { totalSize: 234 }, baseSizes, thresholds),
+      true
+    );
+  });
+
+  it("clamps to a thresholds table shorter than the size table", () => {
+    const fiveThresholds = thresholds.slice(0, 5);
+    assert.equal(
+      cards.farForSize(
+        systemAt(50),
+        { totalSize: 234 },
+        numberOfSystems,
+        fiveThresholds
+      ),
+      false
+    );
+    assert.equal(
+      cards.farForSize(
+        systemAt(51),
+        { totalSize: 234 },
+        numberOfSystems,
+        fiveThresholds
+      ),
+      true
+    );
+  });
 });
 
 describe("travelled* distance wrappers", () => {
@@ -426,19 +478,13 @@ describe("antiTechDeal", () => {
     );
   });
 
-  it("returns the full base chance when no anti_ tech is held yet", () => {
+  // The host holds anti_ tech, so a co-op viewer's offer weighted on the
+  // host's inventory rather than the viewer's own would be halved.
+  it("returns the full base chance when the player holds no anti_ tech yet", () => {
     installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
-    );
-  });
-
-  it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
-    installAntiAirHost();
-    assert.deepEqual(
-      cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
-      40
     );
   });
 });
@@ -501,15 +547,19 @@ describe("loadout", () => {
     assert.deepEqual(h.calls, [["setTag", "buffCount", 2]]);
   });
 
-  it("runs always on every buff of the start card, with the context", () => {
+  // The dull clears buffCount after every pass (applyDulls), so in game each
+  // pass buffs the start card as a first buff. always must run there too.
+  it("runs always on every buff of the start card, with the card's params", () => {
     const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
-    h.options.always = (inventory, context) =>
-      h.calls.push(["always", context]);
+    h.options.always = (inventory, params) => h.calls.push(["always", params]);
     const frame = cards.loadout(CARD, h.options);
     frame.buff(h.inventory, "first");
-    h.calls.length = 0;
-    cards.loadout(CARD, h.options).buff(h.inventory, "again");
+    frame.buff(h.inventory, "again");
     assert.deepEqual(h.calls, [
+      ["start"],
+      ["apply"],
+      ["always", "first"],
+      ["setTag", "buffCount", 1],
       ["maxCards", 5],
       ["always", "again"],
       ["setTag", "buffCount", 2],
@@ -737,6 +787,15 @@ describe("observerPaths", () => {
   });
 });
 
+describe("observerPath", () => {
+  it("names the field of the observer items of one layer and channel", () => {
+    assert.equal(
+      cards.observerPath("surface_and_air", "radar_jammer", "radius"),
+      "recon.observer.items.[layer=surface_and_air,channel=radar_jammer].radius"
+    );
+  });
+});
+
 describe("eachPath", () => {
   it("builds a props map so other keys can be merged in", () => {
     assert.deepEqual(
@@ -794,38 +853,26 @@ describe("flatMapMods", () => {
   it("returns an empty array for no files", () => {
     assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
   });
-});
 
-describe("isEnglish", () => {
-  function detecting(language) {
-    setGlobal("i18n", { detectLanguage: () => language });
-  }
-
-  // The two English locales PA ships in ui/main/_i18n/locales.
-  it("accepts the bare English locale", () => {
-    detecting("en");
-    assert.equal(cards.isEnglish(), true);
+  it("reads a group nested in the list", () => {
+    assert.deepEqual(
+      cards.flatMapMods([["a.json"], "b.json"], "replace", { x: 1 }),
+      cards.flatMapMods(["a.json", "b.json"], "replace", { x: 1 })
+    );
   });
 
-  it("accepts a regional English locale", () => {
-    detecting("en-US");
-    assert.equal(cards.isEnglish(), true);
+  it("emits nothing for a missing list", () => {
+    assert.deepEqual(cards.flatMapMods(undefined, "replace", { x: 1 }), []);
   });
 
-  // detectLanguage reads the querystring, a cookie, then navigator.language, none of
-  // which the engine is obliged to supply. Falling through to the non-English arm would
-  // show English players the text the English arm exists to correct.
-  it("treats an undetected language as English", () => {
-    detecting(undefined);
-    assert.equal(cards.isEnglish(), true);
-  });
-
-  it("rejects the other locales the game ships", () => {
-    ["ar", "cs-CZ", "da", "de", "de-AT", "es-ES", "fi", "fr", "hu-HU"].forEach(
-      (language) => {
-        detecting(language);
-        assert.equal(cards.isEnglish(), false, language);
-      }
+  it("keeps a file named twice, and ignores a table", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", ["a.json"], { t: "b.json" }], "replace", {
+        x: 1,
+      }),
+      cards
+        .mods("a.json", "replace", { x: 1 })
+        .concat(cards.mods("a.json", "replace", { x: 1 }))
     );
   });
 });
@@ -925,16 +972,78 @@ describe("hasT2Access", () => {
     );
   });
 
-  it("is false when no held card grants advanced tech", () => {
+  // Every caller calls it inside a card's deal(), which under per-player tech
+  // runs against a viewer's inventory.
+  it("is false when no held card grants advanced tech, whatever the host holds", () => {
     installGrantingHost();
     assert.equal(cards.hasT2Access(inventoryWithCards(["gwc_minion"])), false);
   });
+});
 
-  // Its one caller, cards/gwc_enable_defenses_t2.js, calls it inside deal(),
-  // which under per-player tech runs against a viewer's inventory.
-  it("reads a co-op viewer's own cards, not the host's", () => {
-    installGrantingHost();
-    assert.equal(cards.hasT2Access(inventoryWithCards([])), false);
+describe("hasAdvancedFabber", () => {
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const CLUSTER = 4;
+
+  function inventoryWith(units, faction) {
+    return {
+      units: () => units,
+      getTag: (context, name) =>
+        context === "global" && name === "playerFaction" ? faction : undefined,
+    };
+  }
+
+  it("is true for any advanced fabber the player holds", () => {
+    for (const unit of [
+      gwoUnit.airFabberAdvanced,
+      gwoUnit.botFabberAdvanced,
+      gwoUnit.navalFabberAdvanced,
+      gwoUnit.vehicleFabberAdvanced,
+    ]) {
+      assert.equal(cards.hasAdvancedFabber(inventoryWith([unit], 0)), true);
+      assert.equal(
+        cards.hasAdvancedFabber(inventoryWith([unit], CLUSTER)),
+        true
+      );
+    }
+  });
+
+  it("is false for the combat fabbers and the basic fabbers", () => {
+    for (const unit of [
+      gwoUnit.angel,
+      gwoUnit.mend,
+      gwoUnit.barnacle,
+      gwoUnit.stitch,
+      gwoUnit.botFabber,
+      gwoUnit.orbitalFabber,
+    ]) {
+      assert.equal(cards.hasAdvancedFabber(inventoryWith([unit], 0)), false);
+    }
+  });
+
+  // Cluster turns the Colonel into a Sub Commander that builds only what a
+  // commander builds (faction/cluster_setup.js).
+  it("counts the Colonel for every player but a Cluster player", () => {
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], 0)),
+      true
+    );
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], CLUSTER)),
+      false
+    );
+  });
+
+  it("reads a co-op viewer's own units and faction, not the host's", () => {
+    const host = inventoryWith([gwoUnit.botFabberAdvanced], CLUSTER);
+    setGlobal("model", { game: () => ({ inventory: () => host }) });
+
+    assert.equal(cards.hasAdvancedFabber(inventoryWith([], 0)), false);
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], 0)),
+      true
+    );
   });
 });
 
@@ -1026,6 +1135,69 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
     );
   });
 
+  // A co-op AI player has no connection, yet fights in the session's battles.
+  describe("co-op AI players", () => {
+    function installAiModel(active) {
+      const hostInventory = { cards: () => [], hasCard: () => false };
+      const game = {
+        coopPlayerInventoryData: () => [
+          {
+            playerId: "gwo_ai_1",
+            gwaioAi: { serial: 1 },
+            inventory: { cards: [{ id: "ai_card" }] },
+          },
+          { playerId: "gwo_ai_2", gwaioAi: { serial: 2 } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+        gwCampaignActive: () => active,
+      });
+      return { hostInventory, game };
+    }
+
+    it("counts an AI player's cards while a session is active", () => {
+      const { hostInventory, game } = installAiModel(true);
+      assert.deepEqual(cards.getAllConnectedPlayerCards(hostInventory, game), [
+        { id: "ai_card" },
+      ]);
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        true
+      );
+    });
+
+    it("leaves an AI player out of a war played without a session", () => {
+      const { hostInventory, game } = installAiModel(false);
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        false
+      );
+    });
+
+    it("leaves an AI player out in a scene with no session at all", () => {
+      const hostInventory = { cards: () => [] };
+      const game = {
+        coopPlayerInventoryData: () => [
+          { gwaioAi: {}, inventory: { cards: [{ id: "ai_card" }] } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+      });
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+    });
+  });
+
   // section_of_foreign_intelligence.js calls anyPlayerHasCard with two
   // arguments, so the `game || model.game()` fallback is the live path there
   // while referee_config.js always passes one.
@@ -1114,15 +1286,12 @@ describe("uniqueValue", () => {
   );
 
   // gw_inventory.hasCard tests !card.unique, so a zero would permanently stop
-  // that card being dealt again for that seed.
-  it("is always truthy for a seeded rng", () => {
-    const rng = gwoRng.create("unique-seed");
-    for (let i = 0; i < 10000; i++) {
-      const value = cards.uniqueValue(rng);
-      assert.ok(value, `draw ${i} yielded ${value}`);
-      assert.ok(value >= 1, `draw ${i} fell below 1: ${value}`);
-      assert.ok(value < 2, `draw ${i} reached 2 or above: ${value}`);
-    }
+  // that card being dealt again for that seed. gwo_rng.test.js pins the draw's
+  // range; this pins the offset that keeps a draw of zero truthy.
+  it("offsets a seeded draw by one, so a draw of zero is still truthy", () => {
+    const drawing = (value) => () => value;
+    assert.equal(cards.uniqueValue(drawing(0)), 1);
+    assert.equal(cards.uniqueValue(drawing(0.5)), 1.5);
   });
 
   it("reproduces the same value for the same seed", () => {
@@ -1145,5 +1314,27 @@ describe("uniqueValue", () => {
     } finally {
       Math.random = priorRandom;
     }
+  });
+});
+
+describe("stockOnly", () => {
+  it("flags every descriptor, as a copy, and leaves the input alone", () => {
+    const input = cards.mods(
+      "/pa/units/land/assault_bot/assault_bot.json",
+      "multiply",
+      {
+        max_health: 1.5,
+        "navigation.move_speed": 1.2,
+      }
+    );
+    const flagged = cards.stockOnly(input);
+
+    assert.deepEqual(
+      flagged,
+      input.map((mod) => Object.assign({}, mod, { stockOnly: true }))
+    );
+    assert.equal(input[0].stockOnly, undefined);
+    assert.notEqual(flagged[0], input[0]);
+    assert.deepEqual(cards.stockOnly(undefined), []);
   });
 });
