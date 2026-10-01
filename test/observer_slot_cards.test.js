@@ -3,7 +3,9 @@
 // The cards that change one recon.observer item name it by layer and channel,
 // so a race or add-on unit that orders its items differently takes the same
 // change. The reordered specs are Second Wave's jammer_titan and Legion's
-// l_jammer_station, which share one order (GWO #447).
+// l_jammer_station, which share one order (GWO #447). Many other race units
+// put radar or a jammer in slot 0 or 1, which Protocol: Blindness must keep
+// (GWO #466).
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -138,6 +140,85 @@ describe("Protocol: Blindness on radars", () => {
         item("surface_and_air", "sight", 100),
       ]),
       [600, 450, 0]
+    );
+  });
+});
+
+describe("Protocol: Blindness", () => {
+  const id = "gwaio_protocol_blindness";
+
+  it("zeroes a reordered jammer's sight and keeps its radar and jammer", () => {
+    assert.deepEqual(
+      applied(id, gwoUnit.radarJammingStation, reordered()),
+      [0, 500, 0, 500]
+    );
+  });
+
+  it("zeroes the stock jammer's sight and keeps its jammer", () => {
+    assert.deepEqual(
+      applied(id, gwoUnit.radarJammingStation, [
+        item("surface_and_air", "sight", 100),
+        item("underwater", "sight", 100),
+        item("surface_and_air", "radar_jammer", 200),
+      ]),
+      [0, 0, 200]
+    );
+  });
+
+  it("zeroes an orbital unit's sight on every layer", () => {
+    assert.deepEqual(
+      applied(id, gwoUnit.avenger, [
+        item("orbital", "sight", 250),
+        item("surface_and_air", "sight", 100),
+        item("underwater", "sight", 100),
+        item("celestial", "sight", 100),
+      ]),
+      [0, 0, 0, 0]
+    );
+  });
+
+  it("leaves mine sight alone", () => {
+    assert.deepEqual(
+      applied(id, gwoUnit.radarJammingStation, [
+        item("surface_and_air", "sight", 100),
+        item("mine", "sight", 50),
+      ]),
+      [0, 50]
+    );
+  });
+
+  it("keeps the Planetary Radar's orbital sight and radar", () => {
+    const file = gwoUnit.deepSpaceOrbitalRadar;
+    const data = {
+      [file]: {
+        recon: {
+          observer: {
+            items: [
+              item("surface_and_air", "sight", 150),
+              item("orbital", "sight", 1200),
+              item("orbital", "radar", 9999),
+            ],
+          },
+        },
+      },
+    };
+    const mods = buffMods("gwaio_enable_planetaryradar")
+      .concat(buffMods(id))
+      .filter((mod) => mod.file === file);
+    specs.mod(data, mods, "");
+    assert.deepEqual(
+      data[file].recon.observer.items.map((entry) => [
+        entry.layer,
+        entry.channel,
+        entry.radius,
+      ]),
+      [
+        ["surface_and_air", "sight", 0],
+        ["underwater", "sight", 0],
+        ["orbital", "sight", 1200],
+        ["surface_and_air", "radar", 9999],
+        ["underwater", "radar", 9999],
+      ]
     );
   });
 });
