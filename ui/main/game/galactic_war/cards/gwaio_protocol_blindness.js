@@ -32,21 +32,20 @@ define([
         max_velocity: rangePercentageIncrease,
       });
 
-      // Radar is excluded: its vision slots are ordered differently.
+      // Radars keep their orbital and underwater sight.
       var unitsExcludingRadarScoutsCommanders = _.difference(gwoGroup.units, [
         gwoUnit.antiNukeLauncher,
         gwoUnit.arkyd,
         gwoUnit.commander,
+        gwoUnit.deepSpaceOrbitalRadar,
         gwoUnit.firefly,
         gwoUnit.hermes,
         gwoUnit.manhattan,
         gwoUnit.nyx,
-        // gwoUnit.deepSpaceOrbitalRadar - uses slot 3+ for radar vision
         gwoUnit.radar,
         gwoUnit.radarAdvanced,
         gwoUnit.radarSatelliteAdvanced,
         gwoUnit.skitter,
-        // gwoUnit.stingray - uses slot 2+ for radar vision
         gwoUnit.torpedoLauncher,
         gwoUnit.torpedoLauncherAdvanced,
         gwoUnit.ward,
@@ -64,11 +63,25 @@ define([
         gwoUnit.ward,
       ];
 
-      // can't use replace due to Planetary Radar using it - multiply runs later
       var blindMods = gwoCard.flatMapMods(
         unitsExcludingRadarScoutsCommanders,
         "multiply",
-        gwoCard.observerPaths(2, "radius"),
+        _.map(
+          ["surface_and_air", "underwater", "orbital", "celestial"],
+          function (layer) {
+            return gwoCard.observerPath(layer, "sight", "radius");
+          }
+        ),
+        0
+      );
+      // can't use replace due to Planetary Radar using it - multiply runs later
+      var planetaryRadarMods = gwoCard.mods(
+        gwoUnit.deepSpaceOrbitalRadar,
+        "multiply",
+        [
+          gwoCard.observerPath("surface_and_air", "sight", "radius"),
+          gwoCard.observerPath("underwater", "sight", "radius"),
+        ],
         0
       );
       var radarMods = gwoCard.flatMapMods(
@@ -89,6 +102,7 @@ define([
           rangeMods,
           ammoMods,
           blindMods,
+          planetaryRadarMods,
           radarMods,
           aresFixMods
         )
