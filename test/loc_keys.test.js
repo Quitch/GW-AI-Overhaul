@@ -20,6 +20,11 @@ function at(rel, lines) {
   };
 }
 
+// A card file: define() around `body`.
+function cardFile(body) {
+  return at(CARD, ["define([], function () {", ...body, "});"]);
+}
+
 function sitesOf(keys, key) {
   assert.ok(keys.has(key), "no key " + JSON.stringify(key));
   return keys.get(key).sites;
@@ -165,23 +170,15 @@ describe("card roles", () => {
     });
   });
 
-  it("reads a property that only ends in name as no card property", () => {
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
-        '  var unit = { display_name: "!LOC:Loose Unit" };',
-        "  return unit;",
-        "});",
-      ]),
-    ]);
-
-    assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
-  });
-
-  it("takes the role from the property, however far back it is", () => {
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
+  const cases = [
+    [
+      "reads a property that only ends in name as no card property",
+      ['  return { display_name: "!LOC:Loose Unit" };'],
+      { "Loose Unit": "loc-call" },
+    ],
+    [
+      "takes the role from the property, however far back it is",
+      [
         "  return {",
         '    "summarize": function () {',
         '      return "!LOC:Long Tech";',
@@ -191,86 +188,60 @@ describe("card roles", () => {
         '        + "!LOC:Tail"',
         "    ),",
         "  };",
-        "});",
-      ]),
-    ]);
-
-    assert.equal(sitesOf(keys, "Long Tech")[0].role, "card-name");
-    assert.equal(sitesOf(keys, "Tail")[0].role, "card-description");
-  });
-
-  it("reads a lockedHint() call and anything under a hint as the hint", () => {
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
+      ],
+      { "Long Tech": "card-name", Tail: "card-description" },
+    ],
+    [
+      "reads anything under a hint as the hint",
+      [
         "  return {",
-        '    summarize: _.constant("!LOC:Hinted Tech"),',
         "    hint: function () {",
-        "      return {",
-        '        icon: "img.png",',
-        '        description: "!LOC:Found near stars.",',
-        "      };",
+        '      return { icon: "img.png", description: "!LOC:Found." };',
         "    },",
         "  };",
-        "});",
-      ]),
-      at("ui/main/game/galactic_war/cards/gwaio_test_locked.js", [
-        "define([], function () {",
-        "  return {",
-        '    hint: gwoCard.lockedHint("!LOC:Locked away."),',
-        "  };",
-        "});",
-      ]),
-    ]);
+      ],
+      { "Found.": "card-hint" },
+    ],
+    [
+      "reads a lockedHint() call as the hint",
+      ['  return { hint: gwoCard.lockedHint("!LOC:Locked away.") };'],
+      { "Locked away.": "card-hint" },
+    ],
+    [
+      "reads anything inside a …Mods() helper as the unit's",
+      [
+        "  inventory.addMods(",
+        '    gwoCard.renameMods(unit, { description: "!LOC:Renamed." }),',
+        '    gwoCard.renameMods(unit, { name: _.constant("!LOC:Wrapped") })',
+        "  );",
+      ],
+      { "Renamed.": "loc-call", Wrapped: "loc-call" },
+    ],
+    [
+      "reads a literal with no card property above it as a loc call",
+      [
+        '  var name = "!LOC:Hoisted Name";',
+        '  // summarize: "!LOC:Commented Out"',
+        "  return { summarize: _.constant(name) };",
+      ],
+      { "Hoisted Name": "loc-call", "Commented Out": "loc-call" },
+    ],
+  ];
 
-    assert.equal(sitesOf(keys, "Found near stars.")[0].role, "card-hint");
-    assert.equal(sitesOf(keys, "Locked away.")[0].role, "card-hint");
-  });
+  for (const [title, body, roles] of cases) {
+    it(title, () => {
+      const keys = extractFrom([cardFile(body)]);
 
-  it("reads a …Mods() helper's literals as the unit's", () => {
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
-        "  return {",
-        "    buff: function (inventory) {",
-        "      inventory.addMods(",
-        '        gwoCard.renameMods(unit, { description: "!LOC:Renamed." }),',
-        "        gwoCard.renameMods(unit, {",
-        '          description: _.constant("!LOC:Wrapped."),',
-        "        })",
-        "      );",
-        "    },",
-        "  };",
-        "});",
-      ]),
-    ]);
-
-    assert.equal(sitesOf(keys, "Renamed.")[0].role, "loc-call");
-    assert.equal(sitesOf(keys, "Wrapped.")[0].role, "loc-call");
-  });
+      for (const [key, role] of Object.entries(roles)) {
+        assert.equal(sitesOf(keys, key)[0].role, role, key);
+      }
+    });
+  }
 
   it("names the card file it cannot parse", () => {
-    assert.throws(
-      () => extractFrom([at(CARD, ["define([], function () {", "  return {"])]),
-      { message: new RegExp("^" + CARD + ": ") }
-    );
-  });
-
-  it("reads a literal with no card property above it as a loc call", () => {
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
-        '  var name = "!LOC:Hoisted Name";',
-        "  return {",
-        '    // summarize: "!LOC:Commented Out"',
-        "    summarize: _.constant(name),",
-        "  };",
-        "});",
-      ]),
-    ]);
-
-    assert.equal(sitesOf(keys, "Hoisted Name")[0].role, "loc-call");
-    assert.equal(sitesOf(keys, "Commented Out")[0].role, "loc-call");
+    assert.throws(() => extractFrom([cardFile(["  return {"])]), {
+      message: new RegExp("^" + CARD + ": "),
+    });
   });
 });
 
