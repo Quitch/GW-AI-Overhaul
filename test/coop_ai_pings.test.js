@@ -491,27 +491,16 @@ describe("the ping window", () => {
     ]);
   });
 
-  it("tries a refused ping again, a few times at most", async () => {
-    const { pings, calls, flush } = setup({ pingResult: false });
-    pings.update();
-    for (let tries = 0; tries <= coopAiPings.MAX_RETRIES + 1; tries++) {
-      await flush();
-    }
-
-    assert.equal(calls.pings.length, coopAiPings.MAX_RETRIES + 1);
-    assert.equal(calls.log.length, coopAiPings.MAX_RETRIES + 1);
-    assert.deepEqual(calls.delays, []);
-
-    // The window is spent: it is not tried again.
-    pings.update();
-    assert.deepEqual(calls.delays, []);
-  });
-
   it("says so when the host refuses the ping, and does not count it", async () => {
     const { pings, state, calls, flush } = setup({ pingResult: false });
     pings.update();
     await flush();
     assert.match(calls.log[0], /-> no ping \(refused\)$/);
+
+    // The window is spent: it is not tried again.
+    assert.deepEqual(calls.delays, []);
+    pings.update();
+    assert.deepEqual(calls.delays, []);
 
     state.pingResult = true;
     state.key = "2:0:1";
@@ -612,13 +601,19 @@ describe("the ping window", () => {
   });
 
   it("logs a retry that cannot be scheduled", async () => {
-    const { pings, state, calls, flush } = setup({ pingResult: false });
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    await flush();
+
+    state.key = "2:0:1";
+    state.values = { 2: 1, 3: 20 };
+    state.now += 5000;
     pings.update();
     state.delayThrows = true;
     await flush();
 
-    assert.match(calls.log[0], /-> no ping \(refused\)$/);
-    assert.deepEqual(calls.log.slice(1), [
+    assert.match(calls.log[1], /-> no ping \(pinged 2 too recently\)$/);
+    assert.deepEqual(calls.log.slice(2), [
       "[GW COOP AI] Tank ping failed: no timer",
     ]);
   });
