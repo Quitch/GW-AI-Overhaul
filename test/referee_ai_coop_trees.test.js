@@ -274,7 +274,7 @@ describe("co-op AI trees", () => {
     assert.equal(requests[1].request.clusterPresence, "None");
   });
 
-  it("gives a race AI's Sub Commanders its race's tree under per-player tech", () => {
+  it("gives a race AI's Sub Commanders its race's tree, and no MLA tree, under per-player tech", () => {
     races.register(FIXTURE_RACE);
     const fixture = buildGame({ aiInUse: "Titans" });
     installModel(fixture.game, []);
@@ -288,6 +288,7 @@ describe("co-op AI trees", () => {
       path: gwoAI.getCoopAiPath("fixture", "coopai_1"),
     });
 
+    assert.deepEqual(coopAiTreeRequests([entry], { aiPaths: {} }), []);
     const destinations = raceTreeJobs(fixture.game, [], [entry]).map(
       (job) => job.destination
     );
