@@ -17,16 +17,12 @@ define([
 
     var windowOpen = function () {
       var star = galaxy.stars()[game.currentStar()];
-      var turn = game.turnState();
       return (
-        params.hostingSession() &&
+        model.gwoCanPingAsNow() &&
         model.gwoCoopAi.count() > 0 &&
         !!params.lookup() &&
-        turn !== "explore" &&
-        turn !== "fight" &&
         !!star &&
         star.explored() &&
-        !model.scanning() &&
         !model.gwCampaignPlayerSetupBlocked() &&
         !model.gwoCoopAiDeciding() &&
         !params.starCardsBusy() &&
@@ -128,7 +124,7 @@ define([
               }
             : {
                 playerId: ai.id,
-                inventory: params.plain(params.inventory.save()),
+                inventory: params.plainSave(params.inventory),
                 commander: params.inventory.getTag("global", "commander"),
               };
         }

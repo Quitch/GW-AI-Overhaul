@@ -184,10 +184,21 @@ define([
       });
     };
 
+    var hostSaved = function () {
+      return {
+        cards: inventory.cards(),
+        units: inventory.units(),
+        mods: inventory.mods(),
+        tags: {
+          global: { commander: inventory.getTag("global", "commander") },
+        },
+      };
+    };
+
     // Everyone fighting beside the AI: the host, the connected
     // viewers, and the other AIs.
     var teamDomains = function (playerId, current) {
-      var others = [inventory].concat(
+      var others = [hostSaved()].concat(
         _.pluck(refereeCoop.getConnectedViewerInventories(game), "inventory"),
         _.pluck(
           _.reject(model.gwoCoopAi.records(), { playerId: playerId }),
@@ -279,11 +290,10 @@ define([
     cardsCoopAiPings({
       galaxy: galaxy,
       inventory: inventory,
-      hostingSession: hostingSession,
       lookup: lookup,
       starCardsBusy: params.starCardsBusy,
       aiStarDealing: params.aiStarDealing,
-      plain: coopAiEffects.plain,
+      plainSave: coopAiEffects.plainSave,
       judge: {
         effects: effects,
         lookup: lookup,
@@ -298,6 +308,12 @@ define([
     if (!perPlayer) {
       return;
     }
+
+    // The deck and card_units.js are in: factoryCards reads model.gwoCardsToUnits.
+    var cardsLoaded = ko.observable(false);
+    params.loaded.then(function () {
+      cardsLoaded(true);
+    });
 
     var driver = coopAiDriver({
       records: function () {
@@ -349,6 +365,7 @@ define([
       canRun: function () {
         return (
           hosting() &&
+          cardsLoaded() &&
           !!lookup() &&
           !params.starCardsBusy() &&
           !model.gameOver()
@@ -371,6 +388,7 @@ define([
       game.coopPlayerInventoryData();
       model.gwoCoopAi.records();
       lookup();
+      cardsLoaded();
       params.starCardsBusy();
       _.defer(driver.run);
     });
@@ -454,7 +472,7 @@ define([
       var star = galaxy.stars()[game.currentStar()];
       var used = params.gwoAI.originSettings(game).uniqueAiLoadouts
         ? roster.loadoutsInUse(
-            [inventory].concat(
+            [hostSaved()].concat(
               _.pluck(game.coopPlayerInventoryData(), "inventory")
             ),
             helpers.isStartLoadoutCardId

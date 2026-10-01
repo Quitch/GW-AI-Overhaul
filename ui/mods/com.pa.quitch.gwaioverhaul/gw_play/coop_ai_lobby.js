@@ -41,14 +41,7 @@ define([
     return !!(wait && _.isFunction(wait.visible) && wait.visible());
   };
 
-  // params: game, gwaio() (the war's originSystem.gwaio), createRecord(identity)
-  // (builds the new AI's record, or a promise of it), save(withStars) (a
-  // promise), warSeats() (the seats the war was made with, stock's
-  // savedCoopPlayers), expectedBack() (the humans still due back from the last
-  // battle, 0 once none are), and the observables busy, armed (the AI whose
-  // Kick was pressed once) and inFlight (the modify_settings requests the
-  // server has not answered). Under per-player tech, perPlayerReady() says the
-  // modules that build an AI's tech are in. buildTimeoutMs is for tests.
+  // params: see coop.md, "Adding and kicking".
   var factory = function (params) {
     var game = params.game;
     var buildTimeoutMs = params.buildTimeoutMs || BUILD_TIMEOUT_MS;

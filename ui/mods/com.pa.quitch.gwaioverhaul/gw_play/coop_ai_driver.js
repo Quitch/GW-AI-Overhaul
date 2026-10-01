@@ -86,37 +86,7 @@ define([
       : { pool: scored, fullPool: true };
   };
 
-  // params:
-  // - records() - the AI records to serve now, slot order; empty outside a
-  //   hosted per-player-tech session
-  // - find(playerId) - that AI's record as it stands
-  // - dealCount(record), hostDealCount(), entryFor(dealIndex) - the stock
-  //   deal counters and history
-  // - starAt(starIndex) - the galaxy star
-  // - dealHand(params), rerollHand(params), computeRerollDeal(cardsOffered,
-  //   cardCount) - cards_coop_deal.js's and cards_coop_reroll.js's cores
-  // - effects - a coop_ai_effects.js instance
-  // - lookup() - the current shared/coop_ai_units.js lookup
-  // - fielded(saved, lookup) - resolves the shared/coop_ai_fielded.js view
-  //   for the saved inventory's race, or undefined where the AI fields what
-  //   it holds; optional
-  // - teamDomains(playerId, lookup) - the domains the AI's teammates field
-  // - namesUnits(cardId), chanceOf(card, applied, star) - for a card with no
-  //   effect to see
-  // - isLoadout(cardId), rerollsRemain(rerollsUsed, cardsOffered)
-  // - armyGap(units), armyGapClosable(gap, strippedUnits) - shared/ai.js's
-  //   rule for an army that can fight
-  // - factoryCards(record, applied) - the T1 factory card ids the AI may be
-  //   assigned
-  // - dealCard(cardId, applied, star) - resolves that card as dealt
-  // - decisionRng(record, dealIndex, rerollsUsed), factoryRng(record,
-  //   dealIndex)
-  // - enqueue(label, apply) - the campaign state queue
-  // - write(record, patch) - stores a patched copy, returns it or undefined
-  // - canRun() - nothing the pass must wait for is in flight
-  // - running - an observable the pass holds true
-  // - afterPass() - saves and publishes; runs once per pass that wrote
-  // - defer, decisionTimeoutMs, writeTimeoutMs - for tests
+  // params: see coop.md, "Settling deals".
   var factory = function (params) {
     var defer = params.defer || _.defer;
     var decisionTimeoutMs = params.decisionTimeoutMs || DECISION_TIMEOUT_MS;

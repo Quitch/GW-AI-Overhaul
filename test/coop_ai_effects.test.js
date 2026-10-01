@@ -486,6 +486,17 @@ describe("coop_ai_effects copies", () => {
     stored = coopAiDriver.storedInventory(hostSave);
   });
 
+  // The pings judge and the teammates read the host's inventory this way
+  // rather than through save()'s ko.toJS.
+  it("reads a live inventory as a plain copy of its save, methods left out", async () => {
+    const live = await lateWarInventory();
+
+    assert.equal(
+      JSON.stringify(makeEffects.plainSave(live)),
+      JSON.stringify(makeEffects.plain(live.save()))
+    );
+  });
+
   it("applies a late war's inventory as a whole copy of it applies", async () => {
     assert.ok(stored.mods.length > 2000);
     assert.equal(stored.minions.length, 2);

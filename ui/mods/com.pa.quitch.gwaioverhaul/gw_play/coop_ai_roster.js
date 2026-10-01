@@ -269,41 +269,27 @@ define([
   };
 
   // The loadouts the war's players hold, for Unique AI loadouts: the first
-  // card of each inventory, a GWInventory or a saved one, if it is still a
-  // loadout, since any card can be deleted.
+  // card of each saved inventory, if it is still a loadout, since any card can
+  // be deleted.
   var loadoutsInUse = function (inventories, isLoadout) {
     return _(inventories)
       .compact()
       .map(function (inventory) {
-        var cards = _.isFunction(inventory.cards)
-          ? inventory.cards()
-          : inventory.cards;
-        return _.get(cards, "0.id");
+        return _.get(inventory, "cards.0.id");
       })
       .filter(isLoadout)
       .uniq()
       .value();
   };
 
-  // The units, commander and mods of each of an AI's teammates, from a
-  // GWInventory or a saved inventory, for the team factor in its card scores.
+  // The units, commander and mods of each of an AI's teammates, from their
+  // saved inventories, for the team factor in its card scores.
   var teammates = function (inventories) {
     return _.map(_.compact(inventories), function (inventory) {
-      var saved = _.isFunction(inventory.units)
-        ? {
-            units: inventory.units(),
-            commander: inventory.getTag("global", "commander"),
-            mods: inventory.mods(),
-          }
-        : {
-            units: inventory.units,
-            commander: _.get(inventory, "tags.global.commander"),
-            mods: inventory.mods,
-          };
       return {
-        units: saved.units || [],
-        commander: saved.commander,
-        mods: saved.mods || [],
+        units: inventory.units || [],
+        commander: _.get(inventory, "tags.global.commander"),
+        mods: inventory.mods || [],
       };
     });
   };
