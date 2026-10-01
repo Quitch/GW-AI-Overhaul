@@ -244,8 +244,11 @@ carries. So `writeRaceTree` first aims the descriptors at the race's keys
 (`shared/race_ai_mods.js`). It works from the context
 `referee_game_file_paths.raceKeysFor` resolves: the brain's stock maps, the
 race's maps, the stock keys the army's map re-points, the race's cells, and
-its `engineKeys`. Without the race's cells nothing is aimed, and the tree takes
-no AI mods.
+its `engineKeys`. The cells are the tree's own read, through
+`race_cells.indexFor`, not the ones `gw_play/races.js` primes, so a tree does
+not depend on priming having finished before Fight. Without the race's cells
+(no race unit in the unit list read) nothing is aimed, and the tree takes no AI
+mods. A failed unit list read fails the battle.
 
 **A key's targets.** Each `toBuild` and each builder key is aimed by the first
 rule that fits:

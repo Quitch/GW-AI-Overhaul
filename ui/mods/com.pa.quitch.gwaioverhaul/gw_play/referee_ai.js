@@ -8,6 +8,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_trees.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
 ], function (
   gwoAI,
   gwoCard,
@@ -17,7 +18,8 @@ define([
   gameFilePaths,
   unitCells,
   raceTrees,
-  raceAiMods
+  raceAiMods,
+  raceCells
 ) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
@@ -760,12 +762,15 @@ define([
           _.flatten(_.map(inventories, getRefereeInventoryMods))
         ),
         keys: function () {
-          return gameFilePaths.raceKeysFor({
-            race: race,
-            brain: brain,
-            source: source,
-            unitCells: unitCells,
-            gwoRaces: gwoRaces,
+          return raceCells.indexFor(race).then(function (cells) {
+            return gameFilePaths.raceKeysFor({
+              race: race,
+              brain: brain,
+              source: source,
+              cells: cells,
+              unitCells: unitCells,
+              gwoRaces: gwoRaces,
+            });
           });
         },
       };
