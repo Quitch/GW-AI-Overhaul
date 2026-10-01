@@ -440,11 +440,12 @@ vanilla unit that stands for no race unit, but that the race can build, stands
 for itself. "Can build" is `unit_cells.raceBuiltVanilla`: what the race's
 `Commander`-cell units build, and what that builds in turn, each builder by
 its own `buildable_types`, MLA builders included. Each distinct expression is
-evaluated once, and the result is kept for the last few index pairs, because
-the deal asks once per card. A builder stands for itself only when it can build
-something the army fields, another such unit or a race unit. MLA's fabrication
-barge builds only the mine and teleporter, which Bugs field as their own, so a
-Bugs army does not field the barge.
+evaluated once. `standInsFor` keeps its lookup, and so this answer, for the
+last few index pairs, because the deal asks once per card. A builder stands
+for itself only when it can build something the army fields, another such
+unit or a race unit. MLA's fabrication barge builds only the mine and
+teleporter, which Bugs field as their own, so a Bugs army does not field the
+barge.
 
 Every reader of `standInsFor` follows. The army fields such a unit only when
 it holds it, so tech gating is unchanged. The deal (`cardUsable`) and the
@@ -558,7 +559,10 @@ files, from one read of the race's layers per tree (`race_trees.treeContext`):
 
 The referee's "no race build orders" warning fires when the race mod itself
 contributed nothing to the tree (`race_trees.raceLayerFilter`). The base layer is
-always present, so an empty tree can no longer show that.
+always present, so an empty tree can no longer show that. Where the race's
+`ai` block names `sources`, the filter matches those alone, not the race's
+whole layer, because the warning is about the race mod: an active add-on's
+files for the race do not silence it.
 
 The engine lists `unit_maps/` and loads each file it finds with the army's tag
 appended. The referee therefore never copies the race's map as a file. It
@@ -608,6 +612,17 @@ cell is the brain of the AI players a co-op host adds
 `gwoDifficultySettings.aiByRace`, and the war records them, coerced, as
 `gwaio.aiByRace` beside the strings. An unset co-op brain follows the
 opponent's, and so does a row stored before the column.
+
+Each row shows its stored cell where that brain is still offered, and the
+seeded default otherwise (`brain_table.rowsFor`). A stored race that is no
+longer installed follows as a disabled row, so a remembered choice stays
+visible. A row's co-op cell follows its opponent (`coopFollows`) when it has
+no brain of its own:
+
+- The MLA row, and a race row with nothing stored, when the war has no
+  `aiCoop`. `resolve` gives such a race row the war-wide co-op brain.
+- A stored race row whose co-op brain is not offered.
+- A disabled row with no stored co-op brain.
 
 `shared/ai.js`'s `warBrain(alignment, race)` reads the race's row, and
 otherwise uses the strings. So a war saved before the table behaves exactly as

@@ -851,11 +851,16 @@ define([
   // with its AI mods, as a viewer's Sub Commanders' is. Nothing else is
   // written: the scope is its isolation, so no Cluster routing either. AIs
   // sharing a tree share one walk. Under per-player tech its Sub Commanders
-  // get a tree of their own too, exactly as a viewer's do.
+  // get a tree of their own too, exactly as a viewer's do. A race AI's trees
+  // are race tree jobs (raceTreeJobs).
   var coopAiTreeRequests = function (coopAis, launch) {
     var requests = {};
 
     _.forEach(coopAis, function (coopAi) {
+      if (!gwoRaces.isMla(coopAi.race)) {
+        return;
+      }
+
       if (coopAi.perPlayer) {
         var source = gwoAI.getAIPathSource(
           "subcommander",
@@ -880,7 +885,7 @@ define([
         };
       }
 
-      if (!gwoRaces.isMla(coopAi.race) || requests[coopAi.path]) {
+      if (requests[coopAi.path]) {
         return;
       }
       requests[coopAi.path] = {

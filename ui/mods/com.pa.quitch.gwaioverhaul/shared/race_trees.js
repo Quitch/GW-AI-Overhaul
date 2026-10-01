@@ -25,10 +25,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   };
 
   // One race tree job's inputs, read once and shared by its three filters.
-  // The race's own files are two sets on purpose: `ownLayer`, its `ai` block
-  // plus its active add-ons' layers for it, is what its tree lays over the
-  // base; `modSources`, the `ai` block's alone, is what raceLayerFilter
-  // matches, because its warning is about the race mod.
+  // See races.md, "Race trees".
   var treeContext = function (raceId, brain, sourceRoot) {
     var race = gwoRaces.byId(raceId);
     var brainKey = gwoRaces.brainKeyOf(brain);
