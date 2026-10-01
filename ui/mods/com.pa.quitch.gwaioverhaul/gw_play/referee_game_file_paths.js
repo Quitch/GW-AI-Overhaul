@@ -150,12 +150,13 @@ define([
 
   // What a race tree's orders are fitted by, over the brain's classic and
   // Titans maps: the keys the race's army maps re-point, the stock and race
-  // unit_maps, the cells and the race's engine keys, or null without cells.
-  // params: race, brain, source, unitCells, gwoRaces, and cells, the race's
-  // published cells by default.
+  // unit_maps, the cells and the race's engine keys, or null without cells or
+  // a race unit in them.
+  // params: race, brain, source, cells (race_cells.indexFor), unitCells,
+  // gwoRaces.
   var raceKeysFor = function (params) {
-    var cells = params.cells || params.gwoRaces.cellsOf(params.race);
-    if (!cells) {
+    var cells = params.cells;
+    if (!cells || _.isEmpty(cells.race.units)) {
       return Promise.resolve(null);
     }
 

@@ -909,7 +909,7 @@ describe("race army maps", () => {
     assert.equal(refereeGameFiles.stripStockBuilds(templates, {}), templates);
   });
 
-  it("raceKeysFor unions the classic and Titans maps' re-pointed and stock keys, merges the race maps, or resolves null without the race's cells", async () => {
+  it("raceKeysFor unions the classic and Titans maps' re-pointed and stock keys, merges the race maps, or resolves null without cells or a race unit in them", async () => {
     const stubs = createGlobalStubs();
     const maps = {
       "spec://pa/ai_penchant/unit_maps/ai_unit_map.json": base,
@@ -925,9 +925,8 @@ describe("race army maps", () => {
       return jqResolved(JSON.stringify(maps[url]));
     };
     stubs.setGlobal("parse", JSON.parse);
+    const cells = { vanilla: {}, race: { units: ["/pa/units/r_tank.json"] } };
     const gwoRaces = {
-      cellsOf: (race) =>
-        race === "fixture" ? { vanilla: {}, race: {} } : undefined,
       unitMapsFor: (race, brain, source) => {
         assert.deepEqual(
           [race, brain, source],
@@ -942,22 +941,26 @@ describe("race army maps", () => {
     };
     const unitCells = { unitMapFallback: fallback };
     try {
-      assert.equal(
-        await refereeGameFiles.raceKeysFor({
-          race: "nope",
-          brain: "Penchant",
-          source: "/pa/ai_penchant/",
-          unitCells,
-          gwoRaces,
-        }),
-        null
-      );
+      for (const without of [undefined, { vanilla: {}, race: { units: [] } }]) {
+        assert.equal(
+          await refereeGameFiles.raceKeysFor({
+            race: "fixture",
+            brain: "Penchant",
+            source: "/pa/ai_penchant/",
+            cells: without,
+            unitCells,
+            gwoRaces,
+          }),
+          null
+        );
+      }
       assert.deepEqual(gets, []);
 
       const keys = await refereeGameFiles.raceKeysFor({
         race: "fixture",
         brain: "Penchant",
         source: "/pa/ai_penchant/",
+        cells,
         unitCells,
         gwoRaces,
       });
@@ -973,7 +976,7 @@ describe("race army maps", () => {
         Object.keys(base.unit_map).concat("Launcher")
       );
       assert.deepEqual(keys.race, raceMap.unit_map);
-      assert.deepEqual(keys.cells, { vanilla: {}, race: {} });
+      assert.equal(keys.cells, cells);
       assert.deepEqual(keys.engineKeys, {
         Launcher: "/pa/units/r_launcher.json",
       });
@@ -982,12 +985,15 @@ describe("race army maps", () => {
     }
   });
 
-  it("raceKeysFor builds on the cells it is given over the race's own", async () => {
+  it("raceKeysFor fits both maps by the vanilla half of the cells it is given", async () => {
     const stubs = createGlobalStubs();
     const $ = installFakeJQuery(stubs);
     $.get = () => jqResolved(JSON.stringify(base));
     stubs.setGlobal("parse", JSON.parse);
-    const given = { vanilla: { given: true }, race: {} };
+    const given = {
+      vanilla: { given: true },
+      race: { units: ["/pa/units/r_tank.json"] },
+    };
     const seen = [];
     try {
       const keys = await refereeGameFiles.raceKeysFor({
@@ -1002,7 +1008,6 @@ describe("race army maps", () => {
           },
         },
         gwoRaces: {
-          cellsOf: () => undefined,
           unitMapsFor: () => [],
           isMla: () => false,
           addonUnitPaths: () => ({}),

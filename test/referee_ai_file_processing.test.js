@@ -599,6 +599,10 @@ describe("race trees", () => {
   const races = loadCouiModule(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
   );
+  const raceCells = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js"
+  );
+  let indexFor;
   const {
     FIXTURE_RACE,
     FIXTURE_ADDON,
@@ -637,8 +641,14 @@ describe("race trees", () => {
     races.register(RIVAL_RACE);
     races.registerAddon(FIXTURE_ADDON);
     races.activateAddons(["fixture_addon"]);
+    indexFor = mock.method(raceCells, "indexFor", () =>
+      Promise.resolve(undefined)
+    );
   });
-  afterEach(() => races.reset());
+  afterEach(() => {
+    indexFor.mock.restore();
+    races.reset();
+  });
 
   it("layers a race enemy's files and its add-on layer over the brain's base files at the race root, dropping other layers", async () => {
     const fixture = buildGame({
