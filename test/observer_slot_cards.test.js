@@ -5,7 +5,7 @@
 // change. The reordered specs are Second Wave's jammer_titan and Legion's
 // l_jammer_station, which share one order (GWO #447). Many other race units
 // put radar or a jammer in slot 0 or 1, which Protocol: Blindness must keep
-// (GWO #466).
+// (GWO #466) and Protocol: Wrath and Precision must not scale (GWO #469).
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -220,6 +220,43 @@ describe("Protocol: Blindness", () => {
         ["underwater", "radar", 9999],
       ]
     );
+  });
+});
+
+describe("Protocol: Wrath", () => {
+  it("cuts the Manhattan's sight and keeps its radar", () => {
+    assert.deepEqual(
+      applied("gwaio_protocol_wrath", gwoUnit.manhattan, [
+        item("surface_and_air", "sight", 100),
+        item("surface_and_air", "radar", 150),
+        item("underwater", "sight", 100),
+      ]),
+      [90, 150, 90]
+    );
+  });
+});
+
+describe("Protocol: Precision", () => {
+  const id = "gwaio_protocol_precision";
+
+  it("raises the Ward's sight and keeps its radar", () => {
+    assert.deepEqual(
+      applied(id, gwoUnit.ward, [
+        item("surface_and_air", "sight", 100),
+        item("surface_and_air", "radar", 310),
+        item("underwater", "sight", 100),
+      ]),
+      [100 * 1.15, 310, 100 * 1.15]
+    );
+  });
+
+  it("raises a reordered unit's sight and keeps its radar and jammer", () => {
+    assert.deepEqual(applied(id, gwoUnit.dox, reordered()), [
+      200 * 1.15,
+      500,
+      200 * 1.15,
+      500,
+    ]);
   });
 });
 
