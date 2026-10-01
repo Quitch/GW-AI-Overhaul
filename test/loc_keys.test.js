@@ -20,6 +20,11 @@ function at(rel, lines) {
   };
 }
 
+// A card file: define() around `body`.
+function cardFile(body) {
+  return at(CARD, ["define([], function () {", ...body, "});"]);
+}
+
 function sitesOf(keys, key) {
   assert.ok(keys.has(key), "no key " + JSON.stringify(key));
   return keys.get(key).sites;
@@ -165,21 +170,78 @@ describe("card roles", () => {
     });
   });
 
-  it("does not take the end of a longer property name for a marker", () => {
-    // The second literal sits 600 characters (the role window) after its
-    // name:, so the window starts inside display_name.
-    const keys = extractFrom([
-      at(CARD, [
-        "define([], function () {",
-        '  var unit = { display_name: "!LOC:Loose Unit" };',
-        "  var far = { display_name:" + " ".repeat(595) + '"!LOC:Far Unit" };',
-        "  return unit;",
-        "});",
-      ]),
-    ]);
+  const cases = [
+    [
+      "reads a property that only ends in name as no card property",
+      ['  return { display_name: "!LOC:Loose Unit" };'],
+      { "Loose Unit": "loc-call" },
+    ],
+    [
+      "takes the role from the property, however far back it is",
+      [
+        "  return {",
+        '    "summarize": function () {',
+        '      return "!LOC:Long Tech";',
+        "    },",
+        "    describe: _.constant(",
+        '      "!LOC:' + "Long. ".repeat(120) + '"',
+        '        + "!LOC:Tail"',
+        "    ),",
+        "  };",
+      ],
+      { "Long Tech": "card-name", Tail: "card-description" },
+    ],
+    [
+      "reads anything under a hint as the hint",
+      [
+        "  return {",
+        "    hint: function () {",
+        '      return { icon: "img.png", description: "!LOC:Found." };',
+        "    },",
+        "  };",
+      ],
+      { "Found.": "card-hint" },
+    ],
+    [
+      "reads a lockedHint() call as the hint",
+      ['  return { hint: gwoCard.lockedHint("!LOC:Locked away.") };'],
+      { "Locked away.": "card-hint" },
+    ],
+    [
+      "reads anything inside a …Mods() helper as the unit's",
+      [
+        "  inventory.addMods(",
+        '    gwoCard.renameMods(unit, { description: "!LOC:Renamed." }),',
+        '    gwoCard.renameMods(unit, { name: _.constant("!LOC:Wrapped") })',
+        "  );",
+      ],
+      { "Renamed.": "loc-call", Wrapped: "loc-call" },
+    ],
+    [
+      "reads a literal with no card property above it as a loc call",
+      [
+        '  var name = "!LOC:Hoisted Name";',
+        '  // summarize: "!LOC:Commented Out"',
+        "  return { summarize: _.constant(name) };",
+      ],
+      { "Hoisted Name": "loc-call", "Commented Out": "loc-call" },
+    ],
+  ];
 
-    assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
-    assert.equal(sitesOf(keys, "Far Unit")[0].role, "loc-call");
+  for (const [title, body, roles] of cases) {
+    it(title, () => {
+      const keys = extractFrom([cardFile(body)]);
+
+      for (const [key, role] of Object.entries(roles)) {
+        assert.equal(sitesOf(keys, key)[0].role, role, key);
+      }
+    });
+  }
+
+  it("names the card file it cannot parse", () => {
+    assert.throws(() => extractFrom([cardFile(["  return {"])]), {
+      message: new RegExp("^" + CARD + ": "),
+    });
   });
 });
 
