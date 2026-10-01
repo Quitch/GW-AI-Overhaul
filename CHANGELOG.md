@@ -75,7 +75,7 @@
 - With Shared Systems for Galactic War, a system source that fails to load, such as a remote server that is down, no longer leaves Go To War stuck: the war is made from the other selected sources, and when none of them can be loaded, a message says so and Go To War is available again
 - An Exiles player's tech card tooltips now name the Hippo, Battle Fabricator, and Vulture, rather than showing Unknown Unit, Hover Fabricator, and Eagle-Owl
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
-- The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy
+- The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy; in Spanish, Polish, and Chinese it no longer says to leave the field blank for a new galaxy, which gave the same galaxy every time
 - Anti tech held with the Galata upgrade no longer compounds on the Galata
 - Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
 - At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
