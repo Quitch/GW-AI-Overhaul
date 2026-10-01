@@ -318,7 +318,7 @@ function stringLiterals(source) {
     }
     stack.push(node);
     for (const key of espree.VisitorKeys[node.type]) {
-      for (const child of [].concat(node[key])) {
+      for (const child of [node[key]].flat()) {
         if (child) {
           visit(child);
         }
