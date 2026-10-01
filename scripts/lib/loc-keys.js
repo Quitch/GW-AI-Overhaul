@@ -304,12 +304,17 @@ const CARD_PROPERTIES = {
 
 // Map<offset, ancestors>: each string literal by where it starts, with the
 // nodes around it, innermost first.
-function stringLiterals(source) {
-  const ast = espree.parse(source, {
-    ecmaVersion: "latest",
-    sourceType: "script",
-    range: true,
-  });
+function stringLiterals(file, source) {
+  let ast;
+  try {
+    ast = espree.parse(source, {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      range: true,
+    });
+  } catch (error) {
+    throw new Error(file + ": " + error.message, { cause: error });
+  }
   const literals = new Map();
   const stack = [];
   const visit = (node) => {
@@ -349,14 +354,13 @@ function propertyKey(node) {
 }
 
 // A card literal's role, from the property it is the value of. A card's spec
-// mods carry a unit's own display_name and description, not the card's: the
-// innermost call around the literal is mods() or a …Mods() helper.
+// mods carry a unit's own display_name and description, not the card's, so
+// anything inside a mods() or …Mods() call is neither.
 function cardRole(ancestors) {
   if (!ancestors) {
     return "loc-call";
   }
-  const call = ancestors.find((node) => node.type === "CallExpression");
-  if (call && /^mods$|Mods$/.test(calleeName(call) || "")) {
+  if (ancestors.some((node) => /^mods$|Mods$/.test(calleeName(node) || ""))) {
     return "loc-call";
   }
   if (
@@ -459,7 +463,7 @@ function addSite(map, key, site) {
 function scanLiterals(map, facts, source, isHtml, options) {
   const cardLiterals =
     facts.card && path.extname(facts.file) === ".js"
-      ? stringLiterals(source)
+      ? stringLiterals(facts.file, source)
       : undefined;
   LOC_LITERAL.lastIndex = 0;
   let match;

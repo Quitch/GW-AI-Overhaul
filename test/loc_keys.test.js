@@ -234,7 +234,10 @@ describe("card roles", () => {
         "  return {",
         "    buff: function (inventory) {",
         "      inventory.addMods(",
-        '        gwoCard.renameMods(unit, { description: "!LOC:Renamed." })',
+        '        gwoCard.renameMods(unit, { description: "!LOC:Renamed." }),',
+        "        gwoCard.renameMods(unit, {",
+        '          description: _.constant("!LOC:Wrapped."),',
+        "        })",
         "      );",
         "    },",
         "  };",
@@ -243,6 +246,14 @@ describe("card roles", () => {
     ]);
 
     assert.equal(sitesOf(keys, "Renamed.")[0].role, "loc-call");
+    assert.equal(sitesOf(keys, "Wrapped.")[0].role, "loc-call");
+  });
+
+  it("names the card file it cannot parse", () => {
+    assert.throws(
+      () => extractFrom([at(CARD, ["define([], function () {", "  return {"])]),
+      { message: new RegExp("^" + CARD + ": ") }
+    );
   });
 
   it("reads a literal with no card property above it as a loc call", () => {
