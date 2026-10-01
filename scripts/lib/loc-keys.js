@@ -7,6 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const espree = require("espree");
 
 const { REPO_ROOT } = require("./amd-loader.js");
 const { walkFiles } = require("./walk.js");
@@ -294,71 +295,85 @@ function closingBrace(source, from) {
   return source.length;
 }
 
-const CARD_MARKERS = [
-  ["summarize", "card-name"],
-  ["describe", "card-description"],
-  ["lockedHint(", "card-hint"],
-  ["hint:", "card-hint"],
-  ["name:", "card-name"],
-  ["description:", "card-description"],
-];
+const CARD_PROPERTIES = {
+  summarize: "card-name",
+  name: "card-name",
+  describe: "card-description",
+  description: "card-description",
+};
 
-// The last `marker` in `window` that starts a word, so the `name:` of a
-// `display_name:` is not the card's. `before` is the character ahead of the
-// window, "" at the start of the file.
-function lastIndexIn(window, marker, before) {
-  let at = window.lastIndexOf(marker);
-  while (at >= 0 && /\w/.test(at > 0 ? window[at - 1] : before)) {
-    at = at > 0 ? window.lastIndexOf(marker, at - 1) : -1;
-  }
-  return at;
+// Map<offset, ancestors>: each string literal by where it starts, with the
+// nodes around it, innermost first.
+function stringLiterals(source) {
+  const ast = espree.parse(source, {
+    ecmaVersion: "latest",
+    sourceType: "script",
+    range: true,
+  });
+  const literals = new Map();
+  const stack = [];
+  const visit = (node) => {
+    if (node.type === "Literal" && typeof node.value === "string") {
+      literals.set(node.range[0], stack.slice().reverse());
+    }
+    stack.push(node);
+    for (const key of espree.VisitorKeys[node.type] || []) {
+      for (const child of [].concat(node[key])) {
+        if (child) {
+          visit(child);
+        }
+      }
+    }
+    stack.pop();
+  };
+  visit(ast);
+  return literals;
 }
 
-// A card's spec mods carry a unit's own display_name and description, not the
-// card's: the innermost call around the literal, through any object and array
-// literals, is mods() or a …Mods() helper.
-function inModsCall(source, index) {
-  let depth = 0;
-  for (let at = index - 1; at >= 0; at -= 1) {
-    const ch = source[at];
-    if (!"()[]{}".includes(ch) || inString(source, at)) {
-      continue;
-    }
-    if (")]}".includes(ch)) {
-      depth += 1;
-    } else if (depth > 0) {
-      depth -= 1;
-    } else if (ch === "(") {
-      return /(?:\bmods|Mods)\s*$/.test(source.slice(Math.max(0, at - 40), at));
-    }
+function calleeName(node) {
+  if (node.type !== "CallExpression") {
+    return undefined;
   }
-  return false;
+  const callee = node.callee;
+  if (callee.type === "MemberExpression" && !callee.computed) {
+    return callee.property.name;
+  }
+  return callee.type === "Identifier" ? callee.name : undefined;
 }
 
-// A card literal's role: the nearest marker before it, with a description
-// that sits under a hint read as the hint.
-function cardRole(window, before) {
-  let best = null;
-  for (const [marker, role] of CARD_MARKERS) {
-    const at = lastIndexIn(window, marker, before);
-    if (at >= 0 && (!best || at > best.at)) {
-      best = { at: at, role: role, marker: marker };
+function propertyKey(node) {
+  if (node.type !== "Property" || node.computed) {
+    return undefined;
+  }
+  return node.key.type === "Identifier" ? node.key.name : node.key.value;
+}
+
+// A card literal's role, from the property it is the value of. A card's spec
+// mods carry a unit's own display_name and description, not the card's: the
+// innermost call around the literal is mods() or a …Mods() helper.
+function cardRole(ancestors) {
+  if (!ancestors) {
+    return "loc-call";
+  }
+  const call = ancestors.find((node) => node.type === "CallExpression");
+  if (call && /^mods$|Mods$/.test(calleeName(call) || "")) {
+    return "loc-call";
+  }
+  if (
+    ancestors.some(
+      (node) =>
+        propertyKey(node) === "hint" || calleeName(node) === "lockedHint"
+    )
+  ) {
+    return "card-hint";
+  }
+  for (const node of ancestors) {
+    const key = propertyKey(node);
+    if (Object.hasOwn(CARD_PROPERTIES, key)) {
+      return CARD_PROPERTIES[key];
     }
   }
-  if (best && best.marker === "description:") {
-    const hintAt = Math.max(
-      lastIndexIn(window, "hint:", before),
-      lastIndexIn(window, "lockedHint(", before)
-    );
-    const otherAt = Math.max(
-      lastIndexIn(window, "summarize", before),
-      lastIndexIn(window, "describe", before)
-    );
-    if (hintAt > otherAt) {
-      return "card-hint";
-    }
-  }
-  return best ? best.role : "loc-call";
+  return "loc-call";
 }
 
 // A race file's literal: a unit name inside its unitNames block, else the
@@ -374,14 +389,11 @@ function raceRole(facts, window, index) {
   return /\bname:\s*$/.test(window) ? "race-name" : undefined;
 }
 
-function jsRole(facts, source, index) {
-  const start = Math.max(0, index - ROLE_WINDOW);
-  const window = source.slice(start, index);
-  if (facts.card) {
-    return inModsCall(source, index)
-      ? "loc-call"
-      : cardRole(window, source.charAt(start - 1));
+function jsRole(facts, source, index, cardLiterals) {
+  if (cardLiterals) {
+    return cardRole(cardLiterals.get(index));
   }
+  const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";
   }
@@ -445,6 +457,8 @@ function addSite(map, key, site) {
 }
 
 function scanLiterals(map, facts, source, isHtml, options) {
+  const cardLiterals =
+    facts.card && !isHtml ? stringLiterals(source) : undefined;
   LOC_LITERAL.lastIndex = 0;
   let match;
   while ((match = LOC_LITERAL.exec(source)) !== null) {
@@ -456,7 +470,7 @@ function scanLiterals(map, facts, source, isHtml, options) {
     const end = start + match[0].length;
     const role = isHtml
       ? htmlRole(source, start)
-      : jsRole(facts, source, start);
+      : jsRole(facts, source, start, cardLiterals);
     if (!options.keepExcluded && EXCLUDED_ROLES.includes(role)) {
       continue;
     }

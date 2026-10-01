@@ -165,21 +165,101 @@ describe("card roles", () => {
     });
   });
 
-  it("does not take the end of a longer property name for a marker", () => {
-    // The second literal sits 600 characters (the role window) after its
-    // name:, so the window starts inside display_name.
+  it("reads a property that only ends in name as no card property", () => {
     const keys = extractFrom([
       at(CARD, [
         "define([], function () {",
         '  var unit = { display_name: "!LOC:Loose Unit" };',
-        "  var far = { display_name:" + " ".repeat(595) + '"!LOC:Far Unit" };',
         "  return unit;",
         "});",
       ]),
     ]);
 
     assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
-    assert.equal(sitesOf(keys, "Far Unit")[0].role, "loc-call");
+  });
+
+  it("takes the role from the property, however far back it is", () => {
+    const keys = extractFrom([
+      at(CARD, [
+        "define([], function () {",
+        "  return {",
+        "    summarize: function () {",
+        '      return "!LOC:Long Tech";',
+        "    },",
+        "    describe: _.constant(",
+        '      "!LOC:' + "Long. ".repeat(120) + '"',
+        '        + "!LOC:Tail"',
+        "    ),",
+        "  };",
+        "});",
+      ]),
+    ]);
+
+    assert.equal(sitesOf(keys, "Long Tech")[0].role, "card-name");
+    assert.equal(sitesOf(keys, "Tail")[0].role, "card-description");
+  });
+
+  it("reads a lockedHint() call and anything under a hint as the hint", () => {
+    const keys = extractFrom([
+      at(CARD, [
+        "define([], function () {",
+        "  return {",
+        '    summarize: _.constant("!LOC:Hinted Tech"),',
+        "    hint: function () {",
+        "      return {",
+        '        icon: "img.png",',
+        '        description: "!LOC:Found near stars.",',
+        "      };",
+        "    },",
+        "  };",
+        "});",
+      ]),
+      at("ui/main/game/galactic_war/cards/gwaio_test_locked.js", [
+        "define([], function () {",
+        "  return {",
+        '    hint: gwoCard.lockedHint("!LOC:Locked away."),',
+        "  };",
+        "});",
+      ]),
+    ]);
+
+    assert.equal(sitesOf(keys, "Found near stars.")[0].role, "card-hint");
+    assert.equal(sitesOf(keys, "Locked away.")[0].role, "card-hint");
+  });
+
+  it("reads a …Mods() helper's literals as the unit's", () => {
+    const keys = extractFrom([
+      at(CARD, [
+        "define([], function () {",
+        "  return {",
+        "    buff: function (inventory) {",
+        "      inventory.addMods(",
+        '        gwoCard.renameMods(unit, { description: "!LOC:Renamed." })',
+        "      );",
+        "    },",
+        "  };",
+        "});",
+      ]),
+    ]);
+
+    assert.equal(sitesOf(keys, "Renamed.")[0].role, "loc-call");
+  });
+
+  it("reads a literal with no card property above it as a loc call", () => {
+    const keys = extractFrom([
+      at(CARD, [
+        "define([], function () {",
+        '  var name = "!LOC:Hoisted Name";',
+        "  return {",
+        '    // summarize: "!LOC:Commented Out"',
+        "    summarize: _.constant(name),",
+        "  };",
+        "});",
+      ]),
+    ]);
+
+    assert.equal(sitesOf(keys, "Hoisted Name")[0].role, "loc-call");
+    assert.equal(sitesOf(keys, "Commented Out")[0].role, "loc-call");
   });
 });
 
