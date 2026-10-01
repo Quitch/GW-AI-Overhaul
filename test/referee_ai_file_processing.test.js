@@ -716,7 +716,8 @@ describe("race trees", () => {
     ]);
   });
 
-  it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
+  // A race host under Guardians, with one viewer of the same race.
+  const runRaceHostAndViewer = async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyType: "guardians",
@@ -743,6 +744,11 @@ describe("race trees", () => {
 
     const filesObj = {};
     await run(filesObj);
+    return { filesObj, listCalls };
+  };
+
+  it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
+    const { filesObj, listCalls } = await runRaceHostAndViewer();
 
     assert.ok(filesObj["/pa/ai_race_fixture/player_guardians/ai_config.json"]);
     // Under Guardians the host subcommander shares the brain root, as for MLA.
@@ -790,32 +796,7 @@ describe("race trees", () => {
   // A race viewer's Sub Commanders read their race tree, so an MLA copy at
   // their MLA path would ship unread.
   it("gives a race viewer its race tree and no MLA tree", async () => {
-    const fixture = buildGame({
-      aiInUse: "Titans",
-      enemyType: "guardians",
-      playerRace: "fixture",
-      aiMods: [{ op: "load" }],
-      perPlayerTech: true,
-      viewerInventoryData: {
-        v1: {
-          inventory: makeInventory({
-            aiModsList: [{ op: "load" }],
-            tags: { "global:playerRace": "fixture" },
-          }),
-        },
-      },
-    });
-    installModel(fixture.game, [
-      { id: "host", name: "Host", role: "host" },
-      { id: "v1", name: "Viewer1", role: "viewer" },
-    ]);
-    installFakes({
-      fileListByPath: { "/pa/ai/": TITANS_FILES },
-      getJSON: (url) => ({ from: url }),
-    });
-
-    const filesObj = {};
-    await run(filesObj);
+    const { filesObj } = await runRaceHostAndViewer();
 
     const viewerRoots = new Set(
       Object.keys(filesObj)
