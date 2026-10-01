@@ -459,8 +459,8 @@ describe("loadoutCandidates", () => {
 describe("loadoutsInUse", () => {
   const isLoadout = (id) => typeof id === "string" && id.includes("_start_");
 
-  it("lists each player's loadout once, from a GWInventory or a saved inventory", () => {
-    const host = { cards: () => [{ id: "gwc_start_bot" }, { id: "x" }] };
+  it("lists each player's loadout once", () => {
+    const host = { cards: [{ id: "gwc_start_bot" }, { id: "x" }] };
     const records = [
       { cards: [{ id: "gwaio_start_hoarder" }] },
       { cards: [{ id: "gwc_start_bot" }] },
@@ -485,13 +485,13 @@ describe("loadoutsInUse", () => {
 });
 
 describe("teammates", () => {
-  it("reads the units, commander and mods of a GWInventory or a saved inventory", () => {
+  it("reads the units, commander and mods of each saved inventory", () => {
     const hostMod = { file: "/u/a", path: "unit_types", op: "push" };
     const aiMod = { file: "/u/b", path: "buildable_types", op: "add" };
-    const live = {
-      units: () => ["/u/a"],
-      mods: () => [hostMod],
-      getTag: (context, name) => (name === "commander" ? "/c/host" : undefined),
+    const host = {
+      units: ["/u/a"],
+      mods: [hostMod],
+      tags: { global: { commander: "/c/host" } },
     };
     const saved = {
       units: ["/u/b"],
@@ -499,7 +499,7 @@ describe("teammates", () => {
       tags: { global: { commander: "/c/ai" } },
     };
 
-    assert.deepEqual(roster.teammates([live, saved, undefined]), [
+    assert.deepEqual(roster.teammates([host, saved, undefined]), [
       { units: ["/u/a"], commander: "/c/host", mods: [hostMod] },
       { units: ["/u/b"], commander: "/c/ai", mods: [aiMod] },
     ]);

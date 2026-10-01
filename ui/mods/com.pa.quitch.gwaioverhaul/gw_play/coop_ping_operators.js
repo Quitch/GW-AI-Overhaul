@@ -144,21 +144,22 @@ define([
       );
     };
 
-    // Whether the war and the star take a ping now, whoever sends it.
-    var starOpenForPing = function (star) {
-      if (starValidationError(star, starCount())) {
-        return false;
-      }
-
+    // Whether the war takes a ping now, at any star, whoever sends it.
+    var warOpenForPing = function () {
       // An explore or a fight is the host's to finish. Testing for those rather
       // than for begin is deliberate: the turn state only returns to begin on
       // the next move, so a finished exploration rests at end - which is exactly
       // when somewhere to go next is worth pointing at.
-      if (
+      return !(
         model.testGameState({ explore: true, fight: true }, false) ||
         model.scanning() ||
         techChoicePending(pendingTechRecords())
-      ) {
+      );
+    };
+
+    // Whether the war and the star take a ping now, whoever sends it.
+    var starOpenForPing = function (star) {
+      if (starValidationError(star, starCount()) || !warOpenForPing()) {
         return false;
       }
 
@@ -183,14 +184,19 @@ define([
       return starOpenForPing(star);
     };
 
+    var hostingPings = function () {
+      return model.isCampaignHost() && model.gwCampaignConnected();
+    };
+
     // A co-op AI player has no client to ping from, so the host pings for it.
     // See coop.md, "AI pings".
     var canPingAs = function (star) {
-      return (
-        model.isCampaignHost() &&
-        model.gwCampaignConnected() &&
-        starOpenForPing(star)
-      );
+      return hostingPings() && starOpenForPing(star);
+    };
+
+    // canPingAs at any star: the AI pings' window opens only inside it.
+    var canPingAsNow = function () {
+      return hostingPings() && warOpenForPing();
     };
 
     // sender: { id, name }. Returns whether the ping went out: the host's
@@ -302,6 +308,7 @@ define([
       canPing: canPing,
       pingStar: pingStar,
       canPingAs: canPingAs,
+      canPingAsNow: canPingAsNow,
       pingStarAs: pingStarAs,
     };
   };

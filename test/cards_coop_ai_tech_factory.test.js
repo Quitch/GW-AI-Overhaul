@@ -31,6 +31,7 @@ const seen = {};
 const answers = {};
 
 const plain = (value) => JSON.parse(JSON.stringify(value));
+const plainSave = (inventory) => ({ savedFrom: inventory.owner });
 const specMod = function () {
   // Stands in for gw_play/specs.js's op engine; only its identity matters.
 };
@@ -52,7 +53,7 @@ registerModuleStub(
       seen.effectsOptions = options;
       return { name: "effects" };
     },
-    { plain }
+    { plain, plainSave }
   )
 );
 registerModuleStub(MOD + "/shared/coop_ai_cards.js", {
@@ -158,6 +159,12 @@ const OTHER_AI = {
   inventory: { owner: "ai_2" },
   gwaioAi: { serial: 4, name: "Kohr" },
 };
+const HOST_SAVED = {
+  cards: [{ id: "gwc_start_vehicle" }],
+  units: ["/pa/units/host.json"],
+  mods: [{ op: "host" }],
+  tags: { global: { commander: "global:commander" } },
+};
 const VIEWER_RECORD = { playerId: "uber_v1", inventory: { owner: "viewer" } };
 
 // A deferred the test settles, as raceCells.load()'s promise.
@@ -184,6 +191,7 @@ function setup(overrides = {}) {
       startingCards: undefined,
       newStartCards: undefined,
       aiCannotUse: undefined,
+      cardsLoaded: true,
     },
     overrides
   );
@@ -261,6 +269,9 @@ function setup(overrides = {}) {
   };
   const hostInventory = {
     owner: "host",
+    cards: () => HOST_SAVED.cards,
+    units: () => HOST_SAVED.units,
+    mods: () => HOST_SAVED.mods,
     getTag: (context, name) => context + ":" + name,
   };
   const loadedInventories = [];
@@ -271,6 +282,18 @@ function setup(overrides = {}) {
     };
   }
   const starCardsBusy = makeObservable(false);
+  // cards.js's $.when of the deck and card_units.js.
+  const cardsLoaded = [];
+  const loaded = {
+    name: "deck loaded",
+    then: (fn) => {
+      if (options.cardsLoaded) {
+        fn();
+      } else {
+        cardsLoaded.push(fn);
+      }
+    },
+  };
   const handle = {
     appendRecordMinions: (saved, playerKey) => ({ saved, playerKey }),
   };
@@ -318,7 +341,7 @@ function setup(overrides = {}) {
     galaxy: { stars: () => stars },
     inventory: hostInventory,
     cards: options.cards,
-    loaded: { name: "deck loaded" },
+    loaded,
     races: { raceOf: (saved) => saved.race, isMla: (race) => race === "mla" },
     helpers: {
       isStartLoadoutCardId: (id) => /_start_/.test(id),
@@ -352,6 +375,7 @@ function setup(overrides = {}) {
     hostInventory,
     loadedInventories,
     starCardsBusy,
+    cardsLoaded,
     driver: seen.driverParams,
     pings: seen.pingsParams,
     lookup: () => seen.pingsParams.lookup(),
@@ -470,7 +494,7 @@ describe("the unit lookup a co-op AI player judges by", () => {
 });
 
 describe("what a co-op AI player's cards are judged with", () => {
-  it("hands the pings the session, the lookup and the judge", () => {
+  it("hands the pings the lookup and the judge", () => {
     const run = build();
     const pings = run.pings;
 
@@ -478,16 +502,13 @@ describe("what a co-op AI player's cards are judged with", () => {
     assert.equal(pings.inventory, run.hostInventory);
     assert.equal(pings.starCardsBusy, run.params.starCardsBusy);
     assert.equal(pings.aiStarDealing, run.params.aiStarDealing);
-    assert.equal(pings.plain, plain);
+    assert.equal(pings.plainSave, plainSave);
     assert.equal(pings.judge.lookup, pings.lookup);
     assert.equal(
       pings.judge.isLoadout,
       run.params.helpers.isStartLoadoutCardId
     );
     assert.deepEqual(pings.judge.effects, { name: "effects" });
-    assert.equal(pings.hostingSession(), true);
-    run.state.session = false;
-    assert.equal(pings.hostingSession(), false);
   });
 
   it("applies cards on the stock bank, abandoning an apply after 10 seconds", () => {
@@ -507,7 +528,7 @@ describe("what a co-op AI player's cards are judged with", () => {
 
     assert.deepEqual(domains, {
       teammates: {
-        teammates: [run.hostInventory, { owner: "viewer" }, { owner: "ai_2" }],
+        teammates: [HOST_SAVED, { owner: "viewer" }, { owner: "ai_2" }],
       },
       lookup: "lookup",
     });
@@ -812,6 +833,19 @@ describe("the co-op AI driver's wiring", () => {
     assert.equal(run.driver.canRun(), false);
   });
 
+  // factoryCards reads model.gwoCardsToUnits, which card_units.js fills.
+  it("waits for the deck and card_units.js before it runs", async () => {
+    const run = build({
+      specs: Promise.resolve({ units: [] }),
+      cardsLoaded: false,
+    });
+    await settle();
+
+    assert.equal(run.driver.canRun(), false);
+    run.cardsLoaded.forEach((fn) => fn());
+    assert.equal(run.driver.canRun(), true);
+  });
+
   it("has no lookup to run with before the specs or the groups are in", () => {
     const run = build();
 
@@ -970,13 +1004,13 @@ describe("a new co-op AI player's starting tech", () => {
     ]);
     assert.deepEqual(candidates.aiCannotUse, ["gwaio_start_warp", "mod_warp"]);
     assert.deepEqual(chosen.teamDomains.teammates.teammates, [
-      run.hostInventory,
+      HOST_SAVED,
       { owner: "viewer" },
       { owner: "ai_1" },
       { owner: "ai_2" },
     ]);
     assert.deepEqual(chosen.used.inventories, [
-      run.hostInventory,
+      HOST_SAVED,
       { owner: "viewer" },
       { owner: "ai_1" },
       { owner: "ai_2" },

@@ -154,6 +154,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
   factory.MAX_CACHED = MAX_CACHED;
   factory.digestOf = digestOf;
   factory.plain = plain;
+  factory.plainSave = plainSave;
   factory.addCard = addCard;
   factory.removeCard = removeCard;
 

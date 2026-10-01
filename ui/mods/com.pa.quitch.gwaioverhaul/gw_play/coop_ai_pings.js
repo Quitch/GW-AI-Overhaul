@@ -142,14 +142,7 @@ define([
     return String((error && error.message) || error);
   };
 
-  // What a card is worth to an AI, judged as it would judge it in a hand.
-  // judge: effects (a coop_ai_effects.js instance), lookup(),
-  // teamDomains(playerId, lookup), namesUnits(cardId), chanceOf(card,
-  // applied, star), isLoadout(cardId), and optionally fielded(saved, lookup)
-  // (gw_play/coop_ai_driver.js's). holder: { playerId, inventory,
-  // commander }, the saved inventory the card is judged against. star: the
-  // galaxy star itself, which a card's deal() takes. memo: shared by the
-  // cards an AI judges in one window.
+  // What a card is worth to an AI, judged as in a hand. See coop.md, "AI pings".
   var valueOfCard = function (judge, holder, card, star, memo) {
     var lookup = judge.lookup();
     if (!lookup || !holder.inventory) {
@@ -174,16 +167,7 @@ define([
     });
   };
 
-  // params:
-  // - ais() - [{ id, name }], the AI players in the session, slot order
-  // - windowKey(), windowOpen() - the current window, and whether the war is
-  //   quiet enough to ping in it
-  // - candidates() - [{ star, hops, threat }], the stars an AI may ping
-  // - allThreats() - every AI star's threat
-  // - cardFor(ai, star) - the card the AI would find there, if any
-  // - valueOf(ai, card, star, memo) - its worth to the AI, or a promise of it
-  // - ping(star, sender) - true when the ping went out
-  // - delay(fn, ms), now() - for tests
+  // params: see coop.md, "AI pings".
   var factory = function (params) {
     var delay = params.delay || _.delay;
     var now = params.now || _.now;

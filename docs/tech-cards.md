@@ -590,8 +590,11 @@ Four rules keep this affordable and safe:
   `cloneDeep` is quadratic in what it copies, and an inventory's mods run to
   thousands. An inventory with no cards is not applied, so it is copied whole.
   The host's applies of a viewer's record copy the same way. The applied
-  inventory is read off its observables with one JSON copy, not through
-  `GWInventory.save()`, whose `ko.toJS` is quadratic too.
+  inventory is read off its observables with one JSON copy
+  (`coop_ai_effects.plainSave`), not through `GWInventory.save()`, whose
+  `ko.toJS` is quadratic too. The pings read the host's own inventory the same
+  way; the team factor reads its units, mods and commander straight off the
+  observables, with no copy.
 
 The apply also notes every unit that a card's `removeUnits` takes away. Those
 that no card grants back are the inventory's **stripped** units: the units a

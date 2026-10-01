@@ -93,15 +93,13 @@ function setup(overrides = {}) {
   handed.length = 0;
   valued.length = 0;
   updates.length = 0;
-  const calls = { saves: 0, pinged: [] };
+  const calls = { saved: [], pinged: [] };
   const state = {
-    hostingSession: true,
+    canPingAsNow: true,
     lookup: { via: "groups" },
     starCardsBusy: false,
     aiStarDealing: 0,
-    turn: "end",
     currentStar: 0,
-    scanning: false,
     setupBlocked: false,
     deciding: false,
     gameOver: false,
@@ -111,7 +109,6 @@ function setup(overrides = {}) {
   const stars = makeStars();
   const game = {
     currentStar: () => state.currentStar,
-    turnState: () => state.turn,
     stats: () => ({ turns: () => state.turns }),
     hostTechCardDealCount: () => state.deals,
   };
@@ -131,7 +128,7 @@ function setup(overrides = {}) {
       count: () => options.records.length,
       records: () => options.records,
     },
-    scanning: () => state.scanning,
+    gwoCanPingAsNow: () => state.canPingAsNow,
     gwCampaignPlayerSetupBlocked: () => state.setupBlocked,
     gwoCoopAiDeciding: () => state.deciding,
     gameOver: () => state.gameOver,
@@ -145,21 +142,19 @@ function setup(overrides = {}) {
   stubs.setGlobal("model", model);
 
   const hostInventory = {
-    save: () => {
-      calls.saves += 1;
-      return { saved: true, method: () => "dropped" };
-    },
     getTag: (context, name) => context + ":" + name,
   };
   const judge = { name: "judge" };
   makeGlue({
     galaxy: { stars: () => stars },
     inventory: hostInventory,
-    hostingSession: () => state.hostingSession,
     lookup: () => state.lookup,
     starCardsBusy: () => state.starCardsBusy,
     aiStarDealing: () => state.aiStarDealing,
-    plain: (value) => JSON.parse(JSON.stringify(value)),
+    plainSave: (inventory) => {
+      calls.saved.push(inventory);
+      return { saved: true };
+    },
     judge,
   });
 
@@ -169,6 +164,7 @@ function setup(overrides = {}) {
     stars,
     game,
     model,
+    hostInventory,
     judge,
     computeds,
     timers,
@@ -191,13 +187,10 @@ describe("the co-op AI pings' window", () => {
 
   it("closes for anything that makes the war busy", () => {
     const closers = [
-      ["no session", (state) => (state.hostingSession = false)],
+      ["host may not ping", (state) => (state.canPingAsNow = false)],
       ["no lookup", (state) => (state.lookup = undefined)],
-      ["exploring", (state) => (state.turn = "explore")],
-      ["fighting", (state) => (state.turn = "fight")],
       ["no star", (state) => (state.currentStar = 99)],
       ["unexplored star", (state) => (state.currentStar = 1)],
-      ["scanning", (state) => (state.scanning = true)],
       ["player setting up", (state) => (state.setupBlocked = true)],
       ["AI deciding", (state) => (state.deciding = true)],
       ["star cards dealing", (state) => (state.starCardsBusy = true)],
@@ -360,7 +353,7 @@ describe("what the co-op AI pings judge", () => {
     await run.params.valueOf(ai, { id: "card_1" }, 1, memo);
     await run.params.valueOf(ai, { id: "card_2" }, 2, memo);
 
-    assert.equal(run.calls.saves, 1);
+    assert.deepEqual(run.calls.saved, [run.hostInventory]);
     assert.deepEqual(memo.holder, {
       playerId: "gwo_ai_1",
       inventory: { saved: true },

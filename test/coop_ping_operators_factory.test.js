@@ -509,6 +509,26 @@ describe("pinging for a co-op AI player", () => {
     assert.equal(api.canPingAs(-1), false);
   });
 
+  // The AI pings' window, so a window never opens where every ping is refused.
+  it("answers canPingAs at any star: the host and the war, not the star", () => {
+    const { api } = build({ isViewer: false, explored: true });
+    assert.equal(api.canPingAsNow(), true);
+    release();
+
+    for (const off of [
+      { isHost: false },
+      { connected: false },
+      { turnState: "explore" },
+      { turnState: "fight" },
+      { scanning: true },
+      { pendingTechRecords: [{ pendingTechCards: { star: 2, cards: [] } }] },
+    ]) {
+      const { api: closed } = build(off);
+      assert.equal(closed.canPingAsNow(), false, JSON.stringify(off));
+      release();
+    }
+  });
+
   it("sends the ping to every viewer, and shows it on the host under the AI's name", () => {
     const { api, calls } = build({ isViewer: false });
 

@@ -29,6 +29,9 @@
     model.gwoCanPingStarAs = function (star) {
       return !!ping() && ping().canPingAs(star);
     };
+    model.gwoCanPingAsNow = function () {
+      return !!ping() && ping().canPingAsNow();
+    };
     model.gwoPingStarAs = function (star, sender) {
       return !!ping() && ping().pingStarAs(star, sender);
     };
