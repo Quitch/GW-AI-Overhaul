@@ -235,6 +235,17 @@ describe("rerollHandForRecord", () => {
     inventory: { cards: [] },
   });
 
+  // The driver counts an AI's spent rerolls with the same function.
+  it("hands out the reroll count it deals by", () => {
+    const run = build();
+    assert.deepEqual(run.handle.computeRerollDeal(4, 3), {
+      rerollsUsed: 1,
+      nextRerollsUsed: 2,
+      cardCount: 2,
+      exhausted: false,
+    });
+  });
+
   it("deals one card fewer from the reroll's stream, and keeps it in memory", async () => {
     const run = build();
     const rerolled = await run.handle.rerollHandForRecord({

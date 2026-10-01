@@ -8,6 +8,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_trees.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
 ], function (
   gwoAI,
   gwoCard,
@@ -17,7 +18,8 @@ define([
   gameFilePaths,
   unitCells,
   raceTrees,
-  raceAiMods
+  raceAiMods,
+  raceCells
 ) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
@@ -268,21 +270,25 @@ define([
   };
 
   // Every other player's inventory: the connected viewers' and, under
-  // per-player tech, the co-op AI players'.
-  var getConnectedClientInventories = function (game, connectedClients) {
+  // per-player tech, the hire's co-op AI players' (ref.coopAis).
+  var getConnectedClientInventories = function (
+    game,
+    connectedClients,
+    coopAis
+  ) {
     return _.pluck(
       refereeCoop
         .getConnectedViewerInventories(game, connectedClients)
-        .concat(refereeCoop.getCoopAiInventories(game)),
+        .concat(refereeCoop.launchAiInventories(coopAis)),
       "inventory"
     );
   };
 
-  var getConnectedClientAiMods = function (game, connectedClients) {
+  var getConnectedClientAiMods = function (game, connectedClients, coopAis) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      getConnectedClientInventories(game, connectedClients),
+      getConnectedClientInventories(game, connectedClients, coopAis),
       function (inventory) {
         connectedClientAiMods = connectedClientAiMods.concat(
           getRefereeInventoryAiMods(inventory)
@@ -296,10 +302,11 @@ define([
   var getInventoryWithAllPlayerAiMods = function (
     inventory,
     game,
-    connectedClients
+    connectedClients,
+    coopAis
   ) {
     var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
-      getConnectedClientAiMods(game, connectedClients)
+      getConnectedClientAiMods(game, connectedClients, coopAis)
     );
 
     return {
@@ -728,7 +735,7 @@ define([
     var playerRace = gwoRaces.raceOf(inventory);
     var guardians = ai.mirrorMode;
     var everyPlayer = [inventory].concat(
-      getConnectedClientInventories(game, connectedClients)
+      getConnectedClientInventories(game, connectedClients, coopAis)
     );
     var jobs = {};
 
@@ -760,12 +767,15 @@ define([
           _.flatten(_.map(inventories, getRefereeInventoryMods))
         ),
         keys: function () {
-          return gameFilePaths.raceKeysFor({
-            race: race,
-            brain: brain,
-            source: source,
-            unitCells: unitCells,
-            gwoRaces: gwoRaces,
+          return raceCells.indexFor(race).then(function (cells) {
+            return gameFilePaths.raceKeysFor({
+              race: race,
+              brain: brain,
+              source: source,
+              cells: cells,
+              unitCells: unitCells,
+              gwoRaces: gwoRaces,
+            });
           });
         },
       };
@@ -1023,11 +1033,13 @@ define([
     var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
     var connectedClients = refereeCoop.getConnectedClients();
+    var coopAis = self.coopAis || [];
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
           game,
-          connectedClients
+          connectedClients,
+          coopAis
         )
       : game.inventory();
 
@@ -1089,7 +1101,6 @@ define([
       }
     );
 
-    var coopAis = self.coopAis || [];
     _.forEach(coopAiTreeRequests(coopAis, launch), function (tree) {
       promises.push(processDirectories(tree.source, tree.request));
     });
