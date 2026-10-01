@@ -16,7 +16,7 @@
 
     model.gwoGameModifiersText = ko.computed(function () {
       var build = buildText();
-      return build ? build(model.gwoGameOptions(), loc) : "";
+      return build ? build(model.gwoGameOptions()) : "";
     });
 
     // This document's own pixels are never composited to the screen - only
