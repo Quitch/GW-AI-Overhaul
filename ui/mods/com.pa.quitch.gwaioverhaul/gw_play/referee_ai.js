@@ -1074,6 +1074,10 @@ define([
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
       function (viewer, viewerIndex) {
+        // A race viewer's tree is a race tree job (raceTreeJobs).
+        if (!gwoRaces.isMla(gwoRaces.raceOf(viewer.inventory))) {
+          return;
+        }
         var viewerInventory = viewer.inventory;
         var viewerPlayerTag = ".player" + viewerIndex;
         // Read from the viewer's own tier, which its destination is built

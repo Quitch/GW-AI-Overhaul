@@ -314,7 +314,7 @@ A co-op AI player of a race counts only the AI mods its race's tree takes
 ## The tree cache
 
 One launch walks the same trees repeatedly: the enemy tree, the subcommander tree,
-and one more pass per connected viewer. `createTreeCache()` memoises
+and one more pass per connected MLA viewer. `createTreeCache()` memoises
 `api.file.list` per path and `$.getJSON` per file. That makes the co-op launch
 cost flat instead of growing with player count.
 

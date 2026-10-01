@@ -784,6 +784,47 @@ describe("race trees", () => {
       ],
       undefined
     );
+    assert.ok(filesObj["/pa/ai/player_.player0/ai_config.json"]);
+  });
+
+  // A race viewer's Sub Commanders read their race tree, so an MLA copy at
+  // their MLA path would ship unread.
+  it("gives a race viewer its race tree and no MLA tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      playerRace: "fixture",
+      aiMods: [{ op: "load" }],
+      perPlayerTech: true,
+      viewerInventoryData: {
+        v1: {
+          inventory: makeInventory({
+            aiModsList: [{ op: "load" }],
+            tags: { "global:playerRace": "fixture" },
+          }),
+        },
+      },
+    });
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const viewerRoots = new Set(
+      Object.keys(filesObj)
+        .filter((key) => key.includes("/player_.player0/"))
+        .map((key) => key.slice(0, key.indexOf("/player_.player0/")))
+    );
+    assert.deepEqual([...viewerRoots], ["/pa/ai_subcommander_race_fixture"]);
+    assert.ok(filesObj["/pa/ai_race_fixture/player_guardians/ai_config.json"]);
+    assert.ok(filesObj["/pa/ai_race_fixture/ai_config.json"]);
   });
 
   it("warns when the race mod itself has no build orders under the source, base layer or not", async () => {
