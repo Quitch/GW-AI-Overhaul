@@ -787,6 +787,15 @@ describe("observerPaths", () => {
   });
 });
 
+describe("observerPath", () => {
+  it("names the field of the observer items of one layer and channel", () => {
+    assert.equal(
+      cards.observerPath("surface_and_air", "radar_jammer", "radius"),
+      "recon.observer.items.[layer=surface_and_air,channel=radar_jammer].radius"
+    );
+  });
+});
+
 describe("eachPath", () => {
   it("builds a props map so other keys can be merged in", () => {
     assert.deepEqual(

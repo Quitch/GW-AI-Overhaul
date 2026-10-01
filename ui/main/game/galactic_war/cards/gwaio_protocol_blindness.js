@@ -51,16 +51,14 @@ define([
         gwoUnit.torpedoLauncherAdvanced,
         gwoUnit.ward,
       ]);
-      var radarsWithRadarVisionInSlot0 = [
-        gwoUnit.arkyd,
-        gwoUnit.radarSatelliteAdvanced,
-      ];
-      var radarsWithRadarVisionInSlot1 = [
+      var radars = [
         gwoUnit.antiNukeLauncher,
+        gwoUnit.arkyd,
         gwoUnit.manhattan,
         gwoUnit.nyx,
         gwoUnit.radar,
         gwoUnit.radarAdvanced,
+        gwoUnit.radarSatelliteAdvanced,
         gwoUnit.torpedoLauncher,
         gwoUnit.torpedoLauncherAdvanced,
         gwoUnit.ward,
@@ -73,19 +71,11 @@ define([
         gwoCard.observerPaths(2, "radius"),
         0
       );
-      var radarsWithRadarVisionInSlot1Mods = gwoCard.flatMapMods(
-        radarsWithRadarVisionInSlot1,
+      var radarMods = gwoCard.flatMapMods(
+        radars,
         "replace",
-        {
-          "recon.observer.items.0.radius": 0,
-        }
-      );
-      var radarsWithRadarVisionInSlot0Mods = gwoCard.flatMapMods(
-        radarsWithRadarVisionInSlot0,
-        "replace",
-        {
-          "recon.observer.items.1.radius": 0,
-        }
+        [gwoCard.observerPath("surface_and_air", "sight", "radius")],
+        0
       );
 
       // Ares needs a high arc to reach the extended range
@@ -99,8 +89,7 @@ define([
           rangeMods,
           ammoMods,
           blindMods,
-          radarsWithRadarVisionInSlot1Mods,
-          radarsWithRadarVisionInSlot0Mods,
+          radarMods,
           aresFixMods
         )
       );

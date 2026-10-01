@@ -502,6 +502,19 @@ define([
       });
     },
 
+    // `field` on every recon.observer item of that layer and channel, wherever
+    // the unit puts it. See specs.md, "Path segments".
+    observerPath: function (layer, channel, field) {
+      return (
+        "recon.observer.items.[layer=" +
+        layer +
+        ",channel=" +
+        channel +
+        "]." +
+        field
+      );
+    },
+
     // mods() over every file, flattened: one file's entries before the next's.
     // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
