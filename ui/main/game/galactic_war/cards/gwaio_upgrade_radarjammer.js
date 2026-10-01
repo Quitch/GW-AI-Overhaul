@@ -11,9 +11,12 @@ define([
     requires: gwoUnit.radarJammingStation,
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.mods(gwoUnit.radarJammingStation, "multiply", {
-          "recon.observer.items.2.radius": 2,
-        })
+        gwoCard.mods(
+          gwoUnit.radarJammingStation,
+          "multiply",
+          [gwoCard.observerPath("surface_and_air", "radar_jammer", "radius")],
+          2
+        )
       );
     },
   });

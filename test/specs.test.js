@@ -1253,3 +1253,192 @@ describe("specs.mod - a card's value is not shared", () => {
     assert.equal(mods[0].value[0].spec_id, "/pa/tools/arm/arm.json");
   });
 });
+
+describe("specs.mod - selecting an observer item by layer and channel", () => {
+  const JAMMER =
+    "recon.observer.items.[layer=surface_and_air,channel=radar_jammer]";
+  const item = (layer, channel, radius) => ({ layer, channel, radius });
+  const unit = (items) => ({ "unit.json": { recon: { observer: { items } } } });
+  const radii = (data) =>
+    data["unit.json"].recon.observer.items.map((entry) => entry.radius);
+
+  it("changes every matching item, and only those", () => {
+    const data = unit([
+      item("surface_and_air", "radar_jammer", 100),
+      item("underwater", "sight", 200),
+      item("surface_and_air", "sight", 300),
+      item("surface_and_air", "radar_jammer", 400),
+    ]);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(radii(data), [200, 200, 300, 800]);
+  });
+
+  it("writes nothing when no item matches, for replace and multiply", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = unit([item("surface_and_air", "sight", 100)]);
+    const before = structuredClone(data);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+        { file: "unit.json", path: JAMMER, op: "replace", value: {} },
+      ],
+      ""
+    );
+    assert.deepEqual(data, before);
+    assert.equal(errorMock.mock.callCount(), 0);
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it("creates nothing on a missing prefix or a prefix that is not an array", () => {
+    const data = {
+      "unit.json": { max_health: 10 },
+      "scalar.json": { recon: { observer: { items: 5 } } },
+    };
+    const before = structuredClone(data);
+    specs.mod(
+      data,
+      ["unit.json", "scalar.json"].map((file) => ({
+        file,
+        path: JAMMER + ".radius",
+        op: "replace",
+        value: 1,
+      })),
+      ""
+    );
+    assert.deepEqual(data, before);
+  });
+
+  it("matches against the array an earlier whole-array replace left", () => {
+    const data = unit([item("surface_and_air", "radar_jammer", 100)]);
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: "unit.json",
+          path: "recon.observer.items",
+          op: "replace",
+          value: [
+            item("surface_and_air", "sight", 50),
+            item("surface_and_air", "radar_jammer", 300),
+          ],
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(radii(data), [50, 600]);
+  });
+
+  for (const segment of [
+    "[layer=surface_and_air]",
+    "[channel=radar_jammer,layer=surface_and_air]",
+    "[layer=surface_and_air,channel=]",
+    "[layer=surface_and_air,channel=radar_jammer",
+    "[layer=surface_and_air,channel=radar_jammer,shape=capsule]",
+  ]) {
+    it("logs and skips a malformed selector: " + segment, () => {
+      const errorMock = mock.method(console, "error", () => {});
+      const data = unit([item("surface_and_air", "radar_jammer", 100)]);
+      specs.mod(
+        data,
+        [
+          {
+            file: "unit.json",
+            path: "recon.observer.items." + segment + ".radius",
+            op: "multiply",
+            value: 2,
+          },
+        ],
+        ""
+      );
+      assert.deepEqual(radii(data), [100]);
+      assert.equal(errorMock.mock.callCount(), 1);
+      assert.match(errorMock.mock.calls[0].arguments[0], /Invalid selector/);
+    });
+  }
+
+  it("reaches a selector in a referenced spec through its reference", () => {
+    const data = {
+      "unit.json": { recon: "recon.json" },
+      "recon.json": {
+        observer: { items: [item("surface_and_air", "radar_jammer", 100)] },
+      },
+    };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: JAMMER + ".radius",
+          op: "multiply",
+          value: 3,
+        },
+      ],
+      ""
+    );
+    assert.equal(data["recon.json"].observer.items[0].radius, 300);
+    assert.equal(data["unit.json"].recon, "recon.json");
+  });
+
+  it("resolves a later selector inside each matched item", () => {
+    const data = {
+      "unit.json": {
+        groups: [
+          {
+            layer: "a",
+            channel: "b",
+            items: [item("c", "d", 1), item("e", "f", 2)],
+          },
+          { layer: "x", channel: "y", items: [item("c", "d", 3)] },
+        ],
+      },
+    };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "groups.[layer=a,channel=b].items.[layer=c,channel=d].radius",
+          op: "multiply",
+          value: 10,
+        },
+      ],
+      ""
+    );
+    assert.deepEqual(
+      data["unit.json"].groups.map((group) =>
+        group.items.map((entry) => entry.radius)
+      ),
+      [[10, 2], [3]]
+    );
+  });
+});

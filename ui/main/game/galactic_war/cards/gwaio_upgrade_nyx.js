@@ -11,14 +11,15 @@ define([
     requires: gwoUnit.nyx,
     buff: function (inventory) {
       inventory.addMods(
-        _.map([1, 2], function (i) {
-          return {
-            file: gwoUnit.nyx,
-            path: "recon.observer.items." + i + ".radius",
-            op: "multiply",
-            value: 2,
-          };
-        })
+        gwoCard.mods(
+          gwoUnit.nyx,
+          "multiply",
+          [
+            gwoCard.observerPath("surface_and_air", "radar", "radius"),
+            gwoCard.observerPath("surface_and_air", "radar_jammer", "radius"),
+          ],
+          2
+        )
       );
     },
   });

@@ -261,6 +261,7 @@ const CARD_HELPERS = [
   "mods",
   "navalWeight",
   "eachPath",
+  "observerPath",
   "observerPaths",
   "playerIsCluster",
   "startCard",

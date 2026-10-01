@@ -18,6 +18,7 @@
 - Card mods can no longer call `gwoCard.isEnglish`
 - Fixed: a card mod `multiply` or `tag` of a value a unit lacks no longer adds empty entries
 - Fixed: a card mod `clone` of a path a unit lacks warns and copies nothing, no longer adding empty entries
+- Card mods can name a unit's vision, radar, or jammer item by its layer and channel (`[layer=…,channel=…]` in a path), so race and add-on units, which order these items differently, get the same change; `gwoCard.observerPath(layer, channel, field)` builds that path - see the `New-GW-Cards` template
 
 ### Changed
 
@@ -58,6 +59,7 @@
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
 - Protocol: Blindness, Precision, Wrath, and other tech that changes a value some units lack no longer add empty entries to those units
 - Another mod's tech card missing its AI build file no longer stops every battle while you hold it
+- The Radar Jamming Station and Nyx upgrades now double the jamming and radar radius of add-on and race units, not their vision, and Protocol: Blindness now removes the vision of race and add-on radars and leaves their radar
 - A malformed unit file from another mod no longer leaves Fight stuck
 - An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
 - An error dealing AI stars' tech cards after a battle win no longer stops the war saving or ending

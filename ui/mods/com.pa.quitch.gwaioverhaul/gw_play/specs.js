@@ -110,6 +110,30 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     );
   }
 
+  function isSelector(segment) {
+    return _.startsWith(segment, "[");
+  }
+
+  // "[layer=<layer>,channel=<channel>]", or undefined for any other form.
+  function parseSelector(segment) {
+    if (!_.endsWith(segment, "]")) {
+      return undefined;
+    }
+    var pairs = _.map(segment.slice(1, -1).split(","), function (pair) {
+      return pair.split("=");
+    });
+    var isValid =
+      pairs.length === 2 &&
+      _.every(pairs, function (pair, index) {
+        return (
+          pair.length === 2 &&
+          pair[0] === ["layer", "channel"][index] &&
+          pair[1] !== ""
+        );
+      });
+    return isValid ? { layer: pairs[0][1], channel: pairs[1][1] } : undefined;
+  }
+
   // A mod that writes into navigation and a later one that removes the value
   // leave it empty, which marks a structure as mobile. See specs.md.
   function pruneEmptyNavigation(spec) {
@@ -304,6 +328,53 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         clone: true,
       };
 
+      // The mods a path's first selector stands for: one per matching item,
+      // its index in place of the selector. Only reads, so no match writes
+      // nothing. Undefined when the path has no selector. See specs.md.
+      var resolveSelector = function (mod, spec) {
+        var segments = (mod.path || "").split(".");
+        var at = _.findIndex(segments, isSelector);
+        if (at === -1) {
+          return undefined;
+        }
+        var selector = parseSelector(segments[at]);
+        if (!selector) {
+          console.error("Invalid selector in mod " + JSON.stringify(mod));
+          return [];
+        }
+        var items = spec;
+        _.forEach(segments.slice(0, at), function (segment) {
+          items =
+            _.isObject(items) &&
+            Object.prototype.hasOwnProperty.call(items, segment)
+              ? items[segment]
+              : undefined;
+          if (_.isString(items)) {
+            items = load(items);
+          }
+          return items !== undefined;
+        });
+        if (!_.isArray(items)) {
+          return [];
+        }
+        return _.reduce(
+          items,
+          function (resolved, item, index) {
+            if (
+              _.isObject(item) &&
+              item.layer === selector.layer &&
+              item.channel === selector.channel
+            ) {
+              var path = segments.slice();
+              path[at] = String(index);
+              resolved.push(_.assign({}, mod, { path: path.join(".") }));
+            }
+            return resolved;
+          },
+          []
+        );
+      };
+
       var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
@@ -315,6 +386,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.error(
             "Invalid operation in mod " + JSON.stringify(mod)
           );
+        }
+
+        var resolved = resolveSelector(mod, spec);
+        if (resolved) {
+          _.forEach(resolved, applyMod);
+          return;
         }
 
         // Captured before the path walk reassigns `spec` to a nested container.
