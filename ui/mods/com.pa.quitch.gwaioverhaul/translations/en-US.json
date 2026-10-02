@@ -1349,7 +1349,7 @@
   },
   "Easy Systems": {
     "message": "Easy Systems",
-    "description": "Name of a game option: the label of the \"Easy Systems\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"Use smaller, mostly single planet systems.\") and, when it is on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, plural, title case, no punctuation; translate both sites identically. (gwo_panel.js, difficulty_options.html)"
+    "description": "Name of a game option: the label of the \"Easy Systems\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"Use smaller, mostly single planet systems.\") and, when it is on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, plural, title case, no punctuation; translate both sites identically. (bug_report.js, difficulty_options.html)"
   },
   "Eco bonus per army kill.": {
     "message": "Eco bonus per army kill.",
@@ -1429,7 +1429,7 @@
   },
   "Epic": {
     "message": "Epic",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (galaxy_sizes.js)"
   },
   "Eradicate": {
     "message": "Eradicate",
@@ -1525,7 +1525,7 @@
   },
   "Faction Scaling": {
     "message": "Faction Scaling",
-    "description": "Name of a game option: the label of the \"Faction Scaling\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"The number of enemy factions is adjusted for the galaxy's size.\") and, when on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, title case, no punctuation; translate both sites identically. (gwo_panel.js, difficulty_options.html)"
+    "description": "Name of a game option: the label of the \"Faction Scaling\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"The number of enemy factions is adjusted for the galaxy's size.\") and, when on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, title case, no punctuation; translate both sites identically. (bug_report.js, difficulty_options.html)"
   },
   "Factories build fabricators and fabricators build units.": {
     "message": "Factories build fabricators and fabricators build units.",
@@ -1673,7 +1673,7 @@
   },
   "Gigantic": {
     "message": "Gigantic",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (galaxy_sizes.js)"
   },
   "Gil-E Upgrade Tech": {
     "message": "Gil-E Upgrade Tech",
@@ -1725,7 +1725,7 @@
   },
   "Hardcore mode": {
     "message": "Hardcore mode",
-    "description": "Entry in the \"Options:\" list of the war-info panel on the galaxy map (gw_play), shown when the war was started with the Hardcore switch on. Noun phrase, singular, no punctuation; must use the same word as the \"Hardcore\" switch label. (gwo_panel.js)"
+    "description": "Entry in the \"Options:\" list of the war-info panel on the galaxy map (gw_play), shown when the war was started with the Hardcore switch on. Noun phrase, singular, no punctuation; must use the same word as the \"Hardcore\" switch label. (bug_report.js)"
   },
   "Hatuamoto was occupied by the Machine Liberation Army (MLA) early in the Pro-Com War. In an attempt to halt their advance, Progenitor High Command developed Operation Hurricane. Using a fleet of some seventy Humpback merchant vessels refitted for combat operations, over one million Marines, and seventy-five Loyalist Commanders, the flotilla would churn through the Hatuamoto system like a hurricane, striking each occupied area quickly, and then moving on to the next. The strategy was such a success.": {
     "message": "Hatuamoto was occupied by the Machine Liberation Army (MLA) early in the Pro-Com War. In an attempt to halt their advance, Progenitor High Command developed Operation Hurricane. Using a fleet of some seventy Humpback merchant vessels refitted for combat operations, over one million Marines, and seventy-five Loyalist Commanders, the flotilla would churn through the Hatuamoto system like a hurricane, striking each occupied area quickly, and then moving on to the next. The strategy was such a success.",
@@ -2105,11 +2105,11 @@
   },
   "Large": {
     "message": "Large",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (galaxy_sizes.js)"
   },
   "Large Planets": {
     "message": "Large Planets",
-    "description": "Name of a game option: the label of the \"Large Planets\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"Encounter large planets and systems much sooner.\") and, when on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, plural, title case, no punctuation; translate both sites identically. (gwo_panel.js, difficulty_options.html)"
+    "description": "Name of a game option: the label of the \"Large Planets\" switch in the Game Options modal on the war setup screen (gw_start; tooltip \"Encounter large planets and systems much sooner.\") and, when on, an entry in the \"Options:\" list of the war-info panel on the galaxy map. Noun phrase, plural, title case, no punctuation; translate both sites identically. (bug_report.js, difficulty_options.html)"
   },
   "Laser Defense Tower": {
     "message": "Laser Defense Tower",
@@ -2209,7 +2209,7 @@
   },
   "Marathon": {
     "message": "Marathon",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. \"Marathon\" is the largest size; noun used as a label. (war_generation.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. \"Marathon\" is the largest size; noun used as a label. (galaxy_sizes.js)"
   },
   "Maximum delay between units produced from a factory.": {
     "message": "Maximum delay between units produced from a factory.",
@@ -2225,7 +2225,7 @@
   },
   "Medium": {
     "message": "Medium",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (galaxy_sizes.js)"
   },
   "Mend Upgrade Tech": {
     "message": "Mend Upgrade Tech",
@@ -3057,7 +3057,7 @@
   },
   "Ridiculous": {
     "message": "Ridiculous",
-    "description": "Name of a galaxy size, one of Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon (the last four come from the Bigger Galactic War mod). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; keep the ordering sense (bigger than Gigantic). (war_generation.js)"
+    "description": "Name of a galaxy size, one of Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon (the last four come from the Bigger Galactic War mod). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; keep the ordering sense (bigger than Gigantic). (galaxy_sizes.js)"
   },
   "Roboticist": {
     "message": "Roboticist",
@@ -3221,7 +3221,7 @@
   },
   "Small": {
     "message": "Small",
-    "description": "Name of the smallest galaxy size (Small, Medium, Large, Epic, Uber, then the Bigger Galactic War sizes). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word. (war_generation.js)"
+    "description": "Name of the smallest galaxy size (Small, Medium, Large, Epic, Uber, then the Bigger Galactic War sizes). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word. (galaxy_sizes.js)"
   },
   "Sniper": {
     "message": "Sniper",
@@ -3297,7 +3297,7 @@
   },
   "Static tech": {
     "message": "Static tech",
-    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the Static Tech game option is on. Sentence-case twin of \"Static Tech\"; translate identically apart from casing. (gwo_panel.js)"
+    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the Static Tech game option is on. Sentence-case twin of \"Static Tech\"; translate identically apart from casing. (bug_report.js)"
   },
   "Stinger Upgrade Tech": {
     "message": "Stinger Upgrade Tech",
@@ -3441,7 +3441,7 @@
   },
   "System scaling": {
     "message": "System scaling",
-    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the System Scaling game option is on. Sentence-case twin of \"System Scaling\"; translate identically apart from casing. (gwo_panel.js)"
+    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the System Scaling game option is on. Sentence-case twin of \"System Scaling\"; translate identically apart from casing. (bug_report.js)"
   },
   "System size determined by distance into the galaxy.": {
     "message": "System size determined by distance into the galaxy.",
@@ -3853,7 +3853,7 @@
   },
   "Tougher commanders": {
     "message": "Tougher commanders",
-    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map for wars created with the old Tougher Commanders option (only appears for wars saved before v5.27.0). Sentence-case noun phrase, plural. (gwo_panel.js)"
+    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map for wars created with the old Tougher Commanders option (only appears for wars saved before v5.27.0). Sentence-case noun phrase, plural. (bug_report.js)"
   },
   "Tourist Commander": {
     "message": "Tourist Commander",
@@ -3929,7 +3929,7 @@
   },
   "Unique races": {
     "message": "Unique races",
-    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the Unique Races game option is on. Sentence-case twin of \"Unique Races\"; translate identically apart from casing. (gwo_panel.js)"
+    "description": "Entry in the \"Options:\" list on the GWO panel on the galaxy map when the Unique Races game option is on. Sentence-case twin of \"Unique Races\"; translate identically apart from casing. (bug_report.js)"
   },
   "Unit Cannon Upgrade Tech": {
     "message": "Unit Cannon Upgrade Tech",
@@ -3977,7 +3977,7 @@
   },
   "Vast": {
     "message": "Vast",
-    "description": "Name of a galaxy size added by the Bigger Galactic War mod (order: Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; match the Bigger Galactic War mod's translation if one exists. (war_generation.js)"
+    "description": "Name of a galaxy size added by the Bigger Galactic War mod (order: Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; match the Bigger Galactic War mod's translation if one exists. (galaxy_sizes.js)"
   },
   "Vehicle Ammunition Tech": {
     "message": "Vehicle Ammunition Tech",

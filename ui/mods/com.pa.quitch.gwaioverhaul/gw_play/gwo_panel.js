@@ -123,24 +123,20 @@
       cheatsDetected();
       model.devMode.subscribe(cheatsDetected);
 
-      // Unwrapped, not subscribed: each is fixed for the lifetime of a war.
-      var optionDefs = [
-        [model.gwoSettings.factionScaling, "!LOC:Faction Scaling"],
-        [model.gwoSettings.systemScaling, "!LOC:System scaling"],
-        [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
-        [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
-        [model.gwoSettings.staticTech, "!LOC:Static tech"],
-        [
-          model.gwoSettings.races && model.gwoSettings.races.unique,
-          "!LOC:Unique races",
-        ],
-        [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
-        [game.hardcore(), "!LOC:Hardcore mode"],
-        [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
-      ];
-      for (var element of optionDefs) {
-        options(model.gwoOptions, element[0], element[1]);
-      }
+      // The co-op settings a battle's bug report cannot read from the save.
+      var bugReportWar = ko
+        .observable()
+        .extend({ session: "gwo_bug_report_war" });
+      ko.computed(function () {
+        bugReportWar({
+          gameId: String(game.id),
+          playersNow:
+            model.gwCampaignConnectedClients().length + model.gwoCoopAi.count(),
+          coopAiCount: model.gwoCoopAi.count(),
+          maxClients: model.gwCampaignMaxClients(),
+          slotsLocked: model.gwCampaignMaxClientsLocked(),
+        });
+      });
 
       requireGW(
         [
@@ -149,6 +145,7 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report.js",
           "shared/gw_factions",
         ],
         function (
@@ -157,9 +154,21 @@
           gwoVersion,
           gwoDecks,
           gwoDeckMods,
+          gwoBugReport,
           GWFactions
         ) {
           model.gwoVersion = ko.observable(gwoVersion);
+
+          // Replaced, not pushed: cheatsDetected may already have added dev
+          // mode, and the table then holds it too.
+          model.gwoOptions(
+            _.map(
+              gwoBugReport.optionKeys(model.gwoSettings, game.hardcore()),
+              function (key) {
+                return loc(key);
+              }
+            )
+          );
 
           // A third-party deck's display name; the provisional deckName()
           // assignment above already covers the built-ins. Bindings only
@@ -231,6 +240,51 @@
           model.gwoPlayer = ko.computed(function () {
             return commanderList(loc("!LOC:Human"));
           });
+
+          var bugReportInput = function (gwoBugReportInput) {
+            var warDeck = gwoDecks.byId(warDeckId);
+            var playerRaceDescriptor = gwoRaces.byId(playerRace);
+            return gwoBugReportInput.gather(
+              {
+                settings: model.gwoSettings,
+                hardcore: game.hardcore(),
+                warName: game.name(),
+                deckName: warDeck && warDeck.name,
+                factionName: _.pluck(GWFactions, "name")[factionIndex],
+                raceName: playerRaceDescriptor
+                  ? playerRaceDescriptor.name
+                  : playerRace,
+                commander: inventory.getTag("global", "commander"),
+                loadout: loadoutId,
+                coop: {
+                  role: model.gwCampaignRole(),
+                  playersNow:
+                    model.gwCampaignConnectedClients().length +
+                    model.gwoCoopAi.count(),
+                  coopAiCount: model.gwoCoopAi.count(),
+                  createdFor: model.gwoSettings.coopPlayerScalingCount,
+                  sharedArmies: model.gwCampaignSharedControl(),
+                  perPlayerTech: model.gwCampaignPerPlayerTechCards(),
+                  maxClients: model.gwCampaignMaxClients(),
+                  slotsLocked: model.gwCampaignMaxClientsLocked(),
+                },
+              },
+              model.isCampaignViewer()
+            );
+          };
+
+          model.gwoBugReportInput = function () {
+            var done = $.Deferred();
+            requireGW(
+              [
+                "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report_input.js",
+              ],
+              function (gwoBugReportInput) {
+                bugReportInput(gwoBugReportInput).then(done.resolve);
+              }
+            );
+            return done.promise();
+          };
 
           var url =
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
