@@ -342,6 +342,7 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
           "shared/gw_factions",
         ],
         function (
@@ -350,6 +351,7 @@
           galaxySizeNames,
           gwoDecks,
           gwoRaces,
+          gwoBrainTable,
           GWFactions
         ) {
           var settings = difficultySettings;
@@ -367,7 +369,15 @@
                 ai: settings.ai(),
                 aiAlly: settings.aiAlly(),
                 aiCoop: settings.aiCoop(),
-                aiByRace: settings.aiByRace(),
+                // As war_record.js will record it: one checked row per
+                // installed race, not the stored table.
+                aiByRace: gwoBrainTable.recordFor(
+                  settings.aiByRace(),
+                  _.pluck(model.gwoRaceInfo().races, "id"),
+                  settings.ai(),
+                  settings.aiAlly(),
+                  settings.aiCoop() || settings.ai()
+                ),
                 techCardDeck: settings.techCardDeck(),
                 factionScaling: settings.factionScaling(),
                 systemScaling: settings.systemScaling(),

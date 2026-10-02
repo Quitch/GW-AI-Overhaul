@@ -1,8 +1,37 @@
 // Engine glue for shared/bug_report.js: what every scene's bug report shares.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwsm.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
-], function (gwoBiomeMods, gwoVersion) {
+], function (gwsm, gwoVersion) {
+  // Every server mod GW Server Mods has active, folders included: the war's
+  // race and add-on mods were recorded from the same list.
+  var serverMods = function () {
+    var done = $.Deferred();
+    var manifest = gwsm.manifest();
+
+    if (!manifest) {
+      return done.resolve({ mods: [], known: true, gwsm: false }).promise();
+    }
+    $.when(manifest.load()).always(function () {
+      try {
+        done.resolve({
+          mods: _.map(manifest.activeServerMods(), function (mod) {
+            return {
+              identifier: mod.identifier,
+              displayName: mod.displayName || mod.identifier,
+              version: mod.version,
+            };
+          }),
+          known: !_.isFunction(manifest.listed) || !!manifest.listed(),
+          gwsm: true,
+        });
+      } catch (e) {
+        done.resolve({ mods: [], known: false, gwsm: true });
+      }
+    });
+    return done.promise();
+  };
+
   // An empty list means GW Server Mods cannot tell.
   var hostServerMods = function () {
     var gwsm = window.GwServerMods;
@@ -29,7 +58,7 @@ define([
       sceneInput
     );
     var withServerMods = function () {
-      gwoBiomeMods.installedBiomeMods().always(function (server) {
+      serverMods().always(function (server) {
         input.server = server;
         done.resolve(input);
       });
