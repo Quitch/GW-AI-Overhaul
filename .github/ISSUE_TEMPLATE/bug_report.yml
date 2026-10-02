@@ -1,0 +1,79 @@
+name: Bug report
+description: Report unexpected behaviours
+title: "[BUG] "
+labels: ["bug"]
+assignees: ["Quitch"]
+body:
+  - type: checkboxes
+    id: attestation
+    attributes:
+      label: Attestation
+      options:
+        - label: I searched [existing issues](https://github.com/Quitch/GW-AI-Overhaul/issues?q=is%3Aissue) and this bug is not already reported
+        - label: I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
+        - label: I tried it with only GWO, its dependencies, and client and server mods (races, maps, etc.) required by this war. All other mods were disabled.
+        - label: I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
+        - label: I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
+        - label: I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    id: scene
+    attributes:
+      label: Where it happened
+      description: "Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle, or say where."
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behaviour.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: A clear and concise description of what you expected to happen.
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, drop screenshots or a video here to help explain your problem. A screenshot of the top-right GWO panel helps too.
+  - type: textarea
+    id: war
+    attributes:
+      label: GWO info
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub, from the top-right GWO panel.
+  - type: textarea
+    id: coop
+    attributes:
+      label: Co-op
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. Leave it blank for a solo war.
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. List every enabled client mod and every server mod, including those run through Galactic War Server Mods, and mark the race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
+  - type: input
+    id: language
+    attributes:
+      label: Game language
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Drop the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from immediately after the bug here, and a zipped copy of your `localstore` folder, found within the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).
