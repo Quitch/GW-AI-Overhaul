@@ -176,7 +176,6 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ### Known issues
 
-- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug.
 - The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
 - Some loadouts are disabled for races other than MLA due to unit dependencies
 - Bugs and Exiles are not dealt the upgrade tech cards for the MLA units they field
