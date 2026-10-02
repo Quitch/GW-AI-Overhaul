@@ -218,8 +218,8 @@ define([
 
     _.forEach(allies, function (liveAlly, index) {
       var ally = _.cloneDeep(liveAlly);
-      // An ally fights as the player's race unless the war gave it one.
-      ally.race = _.isUndefined(ally.race) ? playerRace : gwoRaces.raceOf(ally);
+      // An ally always fights as the player's race.
+      ally.race = playerRace;
       // A Sub Commander comes from the player's faction; the record carries
       // none, so its personality resolves against that.
       ally.faction = playerFaction;
