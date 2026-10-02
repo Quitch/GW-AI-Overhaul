@@ -793,16 +793,8 @@ define([
     _.forEach(ai.foes, function (foe) {
       add("enemy", gwoRaces.raceOf(foe), undefined, undefined, enemyMods);
     });
+    // The star's ally reads this tree too: it is always the player's race.
     add("subcommander", playerRace, undefined, undefined, hostSubCommanderMods);
-    if (!_.isUndefined(ai.ally)) {
-      add(
-        "subcommander",
-        _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally),
-        undefined,
-        undefined,
-        hostSubCommanderMods
-      );
-    }
     // Each viewer's own race: the host's under Separate races off, and whatever
     // they picked under it on. A viewer's destination is its own either way -
     // the race decides which brain's tree is filtered into it. See coop.md.
