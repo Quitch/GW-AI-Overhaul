@@ -34,6 +34,8 @@ function installScene() {
     game: () => game,
     setDefaultGwCoopLobbyTitle: () => {},
     gwCampaignConnectedClients: () => [],
+    gwCampaignMaxClients: () => 1,
+    gwCampaignMaxClientsLocked: () => false,
     gwoCoopAi: { count: () => 0 },
     isCampaignViewer: () => false,
     gwCampaignConnected: makeObservable(false),

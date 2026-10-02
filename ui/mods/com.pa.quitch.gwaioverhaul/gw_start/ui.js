@@ -332,6 +332,69 @@
       }
     );
 
+    // No war exists yet, so the report gives the chosen settings.
+    model.gwoBugReportInput = function () {
+      var done = $.Deferred();
+      requireGW(
+        [
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report_input.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+          "shared/gw_factions",
+        ],
+        function (
+          gwoBugReportInput,
+          gwoDifficulty,
+          galaxySizeNames,
+          gwoDecks,
+          gwoRaces,
+          GWFactions
+        ) {
+          var settings = difficultySettings;
+          var tier = gwoDifficulty.difficulties[settings.difficultyLevel()];
+          var deck = gwoDecks.byId(settings.techCardDeck());
+          var race = gwoRaces.byId(settings.playerRace());
+          var faction = GWFactions[model.playerFactionIndex()];
+          var startCard = model.activeStartCard();
+          gwoBugReportInput
+            .gather({
+              settings: {
+                seed: model.newGameSeed(),
+                difficulty: tier && tier.difficultyName,
+                galaxySize: galaxySizeNames[settings.galaxySize()],
+                ai: settings.ai(),
+                aiAlly: settings.aiAlly(),
+                aiCoop: settings.aiCoop(),
+                aiByRace: settings.aiByRace(),
+                techCardDeck: settings.techCardDeck(),
+                factionScaling: settings.factionScaling(),
+                systemScaling: settings.systemScaling(),
+                simpleSystems: settings.simpleSystems(),
+                largePlanets: settings.largePlanets(),
+                staticTech: settings.staticTech(),
+                races: { unique: settings.uniqueRaces() },
+              },
+              hardcore: settings.hardcore(),
+              deckName: deck && deck.name,
+              factionName: faction && faction.name,
+              raceName: race ? race.name : settings.playerRace(),
+              commander: model.selectedCommander(),
+              loadout:
+                startCard && _.isFunction(startCard.id)
+                  ? startCard.id()
+                  : undefined,
+              coop: {
+                createdFor: parseInt(model.newGameCoopPlayers(), 10) || 1,
+              },
+            })
+            .then(done.resolve);
+        }
+      );
+      return done.promise();
+    };
+
     model.title = ko.computed(function () {
       return model.mode() || loc("!LOC:Galactic War Overhaul");
     });
