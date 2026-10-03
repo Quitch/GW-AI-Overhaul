@@ -445,8 +445,10 @@ describe("heldCards and inventoryInput", () => {
   const ids = ["gwc_start_air", "gwc_enable_bots", "gwc_enable_bots"];
   const live = {
     cards: () => ids.map((id) => ({ id })),
-    getTag: (context, name) =>
-      context === "global" && name === "commander" ? "live_cmdr" : undefined,
+    tags: () => ({ global: { commander: "live_cmdr" } }),
+    getTag(context, name) {
+      return this.tags()[context][name];
+    },
   };
   const record = {
     cards: ids.map((id) => ({ id })),
@@ -471,6 +473,11 @@ describe("heldCards and inventoryInput", () => {
       loadout: "gwc_start_air",
       commander: "record_cmdr",
     });
+  });
+
+  it("reads a saved record's tags even though ko.toJS kept its getTag", () => {
+    const saved = Object.assign({}, record, { getTag: live.getTag });
+    assert.equal(bugReport.inventoryInput(saved).commander, "record_cmdr");
   });
 
   it("gives nothing when there is no inventory", () => {

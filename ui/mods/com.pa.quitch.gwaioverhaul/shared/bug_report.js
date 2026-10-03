@@ -177,14 +177,15 @@ define(function () {
     return {
       cards: cards,
       loadout: cards[0],
-      commander: _.isFunction(inventory.getTag)
+      // A saved record keeps getTag from ko.toJS, but its tags are plain.
+      commander: _.isFunction(inventory.tags)
         ? inventory.getTag("global", "commander")
         : _.get(inventory, "tags.global.commander"),
     };
   };
 
   var cardLines = function (input) {
-    return _.map((input && input.cards) || [], function (id) {
+    return _.map(_.get(input, "cards") || [], function (id) {
       return "- " + id;
     });
   };
