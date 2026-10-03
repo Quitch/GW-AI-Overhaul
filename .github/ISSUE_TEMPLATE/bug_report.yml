@@ -1,5 +1,5 @@
-name: Bug report from the game
-description: Opened by the in-game Report a Galactic War Bug button with your war's details filled in. Reporting from GitHub? Use Bug report.
+name: Bug report
+description: Report unexpected behaviours
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]
@@ -10,17 +10,11 @@ body:
       label: Attestation
       options:
         - label: I searched [existing issues](https://github.com/Quitch/GW-AI-Overhaul/issues?q=is%3Aissue) and this bug is not already reported
-          required: true
         - label: I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
-          required: true
         - label: I tried it with only GWO, its dependencies, and client and server mods (races, maps, etc.) required by this war. All other mods were disabled.
-          required: true
         - label: I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
-          required: true
         - label: I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
-          required: true
         - label: I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
-          required: true
   - type: textarea
     id: description
     attributes:
@@ -32,9 +26,7 @@ body:
     id: scene
     attributes:
       label: Where it happened
-      description: "One of: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle. If none fits, say where."
-    validations:
-      required: true
+      description: "Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle, or say where."
   - type: textarea
     id: reproduce
     attributes:
@@ -45,68 +37,36 @@ body:
         2. Click on '....'
         3. Scroll down to '....'
         4. See error
-    validations:
-      required: true
   - type: textarea
     id: expected
     attributes:
       label: Expected behaviour
       description: A clear and concise description of what you expected to happen.
-    validations:
-      required: true
   - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
-      description: If applicable, drop screenshots or a video here to help explain your problem.
+      description: If applicable, drop screenshots or a video here to help explain your problem. A screenshot of the top-right GWO panel helps too.
   - type: textarea
     id: war
     attributes:
       label: GWO info
-      description: |
-        Please attach a screenshot of the top-right GWO panel, including any Co-Op Settings, Incompatible Mods, Missing Races, or Missing Map Packs sections. Then copy the values below from it:
-
-        - Mod:
-        - War:
-        - Seed:
-        - Difficulty:
-        - Size:
-        - Opponent AI:
-        - Ally AI:
-        - Co-op AI:
-        - Deck:
-        - Options:
-        - Faction:
-        - Personality:
-    validations:
-      required: true
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub, from the top-right GWO panel.
   - type: textarea
     id: coop
     attributes:
       label: Co-op
-      description: |
-        Leave blank if this was a solo war.
-
-        - Were you the host or a viewer?
-        - Number of players in the war:
-        - Number of players the war was created for:
-        - Shared Armies?
-        - Per-Player Tech?
-        - Player Slots:
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. Leave it blank for a solo war.
   - type: textarea
     id: mods
     attributes:
       label: Mods
-      description: List every enabled client mod and every server mod, including those run through Galactic War Server Mods. Mark which ones are race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
-    validations:
-      required: true
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. List every enabled client mod and every server mod, including those run through Galactic War Server Mods, and mark the race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
   - type: input
     id: language
     attributes:
       label: Game language
-      description: The language the game is set to.
-    validations:
-      required: true
+      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub.
   - type: textarea
     id: context
     attributes:
@@ -116,6 +76,4 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Drop the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened here. Find them inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176). The logs record your war's settings, co-op settings, mods, and language, so you do not need to type them.
-    validations:
-      required: true
+      description: Drop the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from immediately after the bug here, and a zipped copy of your `localstore` folder, found within the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).
