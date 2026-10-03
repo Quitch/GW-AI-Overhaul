@@ -290,17 +290,26 @@
               model.gwoLogBugReport("galaxy map loaded");
             }
           };
+          // Players, slots and co-op settings arrive with the first server
+          // state, which stock applies in the same call that connects. A
+          // connection that never comes still gets its entry.
           var role = model.gwCampaignRole();
           if (
             (role === "host" || role === "viewer") &&
             !model.gwCampaignConnected()
           ) {
-            // Players, slots and co-op settings arrive with the first server
-            // state, which stock applies in the same call that connects.
-            var connected = model.gwCampaignConnected.subscribe(function () {
+            var logged = false;
+            var connected;
+            var logOnce = function () {
+              if (logged) {
+                return;
+              }
+              logged = true;
               connected.dispose();
               _.defer(logLoaded);
-            });
+            };
+            connected = model.gwCampaignConnected.subscribe(logOnce);
+            _.delay(logOnce, 10000);
           } else {
             logLoaded();
           }
