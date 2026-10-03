@@ -6,6 +6,7 @@
 
 - Co-op AI players no longer ping an enemy star when an unexplored neutral star nearby is the better choice
 - The Report a Galactic War Bug button fills in the bug report with your war's details, co-op settings, mods, and game language
+- The game writes your war's details, co-op settings, mods, and game language to its logs, so the bug report form on GitHub no longer asks for them
 
 ## v7.5.0 - 2026-10-01
 

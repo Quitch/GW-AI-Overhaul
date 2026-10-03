@@ -1,14 +1,22 @@
 // The Report a Galactic War Bug form's prefill: field values for
-// .github/ISSUE_TEMPLATE/bug_report.yml, in English, from what a scene
-// gathered. shared/report_bug.js is the scene glue.
+// .github/ISSUE_TEMPLATE/bug_report_game.yml, in English, from what a scene
+// gathered, and the same values as one log entry. shared/report_bug.js is the
+// scene glue.
 define(function () {
   var FORM_URL =
-    "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report.yml";
+    "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report_game.yml";
   // GitHub prefilled a 7,478-character URL in full.
   var URL_BUDGET = 7500;
   var TRUNCATED = "(list truncated)";
   var FIELDS = ["scene", "war", "coop", "mods", "language"];
   var CUT_ORDER = ["mods", "coop", "war"];
+  var LOG_HEADINGS = {
+    scene: "Where it happened",
+    war: "GWO info",
+    coop: "Co-op",
+    mods: "Mods",
+    language: "Game language",
+  };
   var SCENES = {
     gw_start: "War setup",
     gw_play: "Galaxy map",
@@ -284,6 +292,23 @@ define(function () {
     return url;
   };
 
+  // One string: PA's log keeps only the first console argument.
+  var logText = function (values, reason) {
+    var data = values || {};
+    var filled = _.filter(FIELDS, function (field) {
+      return !!data[field];
+    });
+
+    return ["[GWO] bug report context" + (reason ? ": " + reason : "")]
+      .concat(
+        _.map(filled, function (field) {
+          var separator = _.includes(data[field], "\n") ? ":\n" : ": ";
+          return LOG_HEADINGS[field] + separator + data[field];
+        })
+      )
+      .join("\n");
+  };
+
   return {
     URL_BUDGET: URL_BUDGET,
     english: english,
@@ -296,5 +321,6 @@ define(function () {
     modLines: modLines,
     fields: fields,
     buildUrl: buildUrl,
+    logText: logText,
   };
 });

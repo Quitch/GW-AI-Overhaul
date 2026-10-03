@@ -9,7 +9,7 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const bugReport = loadCouiModule(MOD_ROOT + "/shared/bug_report.js");
 
 const FORM =
-  "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report.yml";
+  "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report_game.yml";
 
 const SETTINGS = {
   version: "7.4.0",
@@ -334,7 +334,7 @@ describe("fields and buildUrl", () => {
     );
     assert.ok(url.startsWith(FORM + "&"));
     assert.deepEqual(decode(url), {
-      template: "bug_report.yml",
+      template: "bug_report_game.yml",
       scene: "Galaxy map",
       war: "- GWO running: 7.5.0",
       language: "de-DE",
@@ -392,5 +392,51 @@ describe("fields and buildUrl", () => {
       bugReport.buildUrl(values),
       FORM + "&scene=Galaxy%20map&mods=Client%20mods%3A"
     );
+  });
+});
+
+describe("logText", () => {
+  it("heads the entry and gives each filled field in form order", () => {
+    const text = bugReport.logText(
+      {
+        language: "de-DE",
+        mods: "Client mods:\n  - GWO 7.5.0 (com.pa.quitch.gwaioverhaul)",
+        war: "- GWO running: 7.5.0\n- Seed: 123456",
+        scene: "Galaxy map",
+      },
+      "galaxy map loaded"
+    );
+    assert.equal(
+      text,
+      [
+        "[GWO] bug report context: galaxy map loaded",
+        "Where it happened: Galaxy map",
+        "GWO info:",
+        "- GWO running: 7.5.0",
+        "- Seed: 123456",
+        "Mods:",
+        "Client mods:",
+        "  - GWO 7.5.0 (com.pa.quitch.gwaioverhaul)",
+        "Game language: de-DE",
+      ].join("\n")
+    );
+  });
+
+  it("leaves out empty fields and never prints undefined", () => {
+    const text = bugReport.logText(bugReport.fields(undefined, {}));
+    assert.equal(text, "[GWO] bug report context");
+    assert.equal(bugReport.logText(undefined), "[GWO] bug report context");
+  });
+
+  it("logs the same values the form is filled with", () => {
+    const values = bugReport.fields("During a battle", {
+      running: "7.5.0",
+      settings: SETTINGS,
+      coop: { role: "host", playersNow: 2 },
+    });
+    const text = bugReport.logText(values, "battle loaded");
+    assert.ok(text.includes("GWO info:\n" + values.war + "\n"));
+    assert.ok(text.endsWith("Co-op:\n" + values.coop));
+    assert.equal(text.includes("undefined"), false);
   });
 });

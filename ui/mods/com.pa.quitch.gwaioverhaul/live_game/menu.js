@@ -92,6 +92,9 @@
           );
           return done.promise();
         };
+        if (_.isFunction(model.gwoLogBugReport)) {
+          model.gwoLogBugReport("battle loaded");
+        }
       });
 
       // Write into the existing observable, never replace it: live_game.js's

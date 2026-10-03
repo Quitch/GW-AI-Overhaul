@@ -285,6 +285,9 @@
             );
             return done.promise();
           };
+          if (_.isFunction(model.gwoLogBugReport)) {
+            model.gwoLogBugReport("galaxy map loaded");
+          }
 
           var url =
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";

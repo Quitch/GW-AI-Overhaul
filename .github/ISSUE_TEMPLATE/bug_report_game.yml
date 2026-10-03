@@ -1,5 +1,5 @@
-name: Bug report
-description: Report unexpected behaviours
+name: Bug report from the game
+description: Opened by the in-game Report a Galactic War Bug button with your war's details filled in. Reporting from GitHub? Use Bug report.
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]
@@ -59,6 +59,54 @@ body:
     attributes:
       label: Screenshots
       description: If applicable, drop screenshots or a video here to help explain your problem.
+  - type: textarea
+    id: war
+    attributes:
+      label: GWO info
+      description: |
+        Please attach a screenshot of the top-right GWO panel, including any Co-Op Settings, Incompatible Mods, Missing Races, or Missing Map Packs sections. Then copy the values below from it:
+
+        - Mod:
+        - War:
+        - Seed:
+        - Difficulty:
+        - Size:
+        - Opponent AI:
+        - Ally AI:
+        - Co-op AI:
+        - Deck:
+        - Options:
+        - Faction:
+        - Personality:
+    validations:
+      required: true
+  - type: textarea
+    id: coop
+    attributes:
+      label: Co-op
+      description: |
+        Leave blank if this was a solo war.
+
+        - Were you the host or a viewer?
+        - Number of players in the war:
+        - Number of players the war was created for:
+        - Shared Armies?
+        - Per-Player Tech?
+        - Player Slots:
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods
+      description: List every enabled client mod and every server mod, including those run through Galactic War Server Mods. Mark which ones are race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Game language
+      description: The language the game is set to.
+    validations:
+      required: true
   - type: textarea
     id: context
     attributes:
