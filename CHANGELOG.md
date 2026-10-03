@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
+
 ### Bugfix
 
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
