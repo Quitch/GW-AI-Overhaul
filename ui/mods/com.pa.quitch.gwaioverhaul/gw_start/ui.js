@@ -408,6 +408,33 @@
       return done.promise();
     };
 
+    // A setup screen that never becomes ready, such as one whose races
+    // fail to load, still gets its entry.
+    var logged = false;
+    var becameReady;
+    var logLoaded = function () {
+      if (logged) {
+        return;
+      }
+      logged = true;
+      if (becameReady) {
+        becameReady.dispose();
+      }
+      if (_.isFunction(model.gwoLogBugReport)) {
+        model.gwoLogBugReport("war setup loaded");
+      }
+    };
+    if (model.ready()) {
+      _.defer(logLoaded);
+    } else {
+      becameReady = model.ready.subscribe(function (ready) {
+        if (ready) {
+          logLoaded();
+        }
+      });
+    }
+    _.delay(logLoaded, 10000);
+
     model.title = ko.computed(function () {
       return model.mode() || loc("!LOC:Galactic War Overhaul");
     });
