@@ -8,11 +8,12 @@ define(function () {
   // GitHub prefilled a 7,478-character URL in full.
   var URL_BUDGET = 7500;
   var TRUNCATED = "(list truncated)";
-  var FIELDS = ["scene", "war", "coop", "mods", "language"];
-  var CUT_ORDER = ["mods", "coop", "war"];
+  var FIELDS = ["scene", "war", "cards", "coop", "mods", "language"];
+  var CUT_ORDER = ["cards", "mods", "coop", "war"];
   var LOG_HEADINGS = {
     scene: "Where it happened",
     war: "GWO info",
+    cards: "Tech cards",
     coop: "Co-op",
     mods: "Mods",
     language: "Game language",
@@ -156,6 +157,39 @@ define(function () {
     ]);
   };
 
+  // A live GWInventory keeps cards in an observable; a co-op record holds the
+  // serialised array.
+  var heldCards = function (inventory) {
+    if (!inventory) {
+      return undefined;
+    }
+    var cards = _.isFunction(inventory.cards)
+      ? inventory.cards()
+      : inventory.cards || [];
+    return _.map(cards, "id");
+  };
+
+  var inventoryInput = function (inventory) {
+    var cards = heldCards(inventory);
+    if (!cards) {
+      return {};
+    }
+    return {
+      cards: cards,
+      loadout: cards[0],
+      // A saved record keeps getTag from ko.toJS, but its tags are plain.
+      commander: _.isFunction(inventory.tags)
+        ? inventory.getTag("global", "commander")
+        : _.get(inventory, "tags.global.commander"),
+    };
+  };
+
+  var cardLines = function (input) {
+    return _.map(_.get(input, "cards") || [], function (id) {
+      return "- " + id;
+    });
+  };
+
   var coopLines = function (coop) {
     if (!coop) {
       return [];
@@ -255,6 +289,7 @@ define(function () {
     return {
       scene: scene,
       war: warLines(data).join("\n"),
+      cards: cardLines(data).join("\n"),
       coop: coopLines(data.coop).join("\n"),
       mods: modLines(data).join("\n"),
       language: data.language,
@@ -275,8 +310,8 @@ define(function () {
     );
   };
 
-  // Over budget, the mod list loses its last lines first, then co-op, then
-  // the war, and a cut field ends with TRUNCATED.
+  // Over budget, the card list loses its last lines first, then the mod list,
+  // co-op and the war, and a cut field ends with TRUNCATED.
   var buildUrl = function (values) {
     var cut = _.clone(values);
     var url = urlOf(cut);
@@ -317,6 +352,9 @@ define(function () {
     deckName: deckName,
     winConditions: winConditions,
     warLines: warLines,
+    heldCards: heldCards,
+    inventoryInput: inventoryInput,
+    cardLines: cardLines,
     coopLines: coopLines,
     modLines: modLines,
     fields: fields,
