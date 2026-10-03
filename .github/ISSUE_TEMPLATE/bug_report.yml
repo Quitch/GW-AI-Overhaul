@@ -121,6 +121,6 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Drop the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened here. Find them inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176). The logs record your war's settings, co-op settings, mods, and language, so you do not need to type them.
+      description: Drop the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened here. Find them inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176). The logs record your war's settings, tech cards, co-op settings, mods, and language, so you do not need to type them.
     validations:
       required: true
