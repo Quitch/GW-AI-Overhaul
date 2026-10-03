@@ -285,6 +285,34 @@
             );
             return done.promise();
           };
+          var logLoaded = function () {
+            if (_.isFunction(model.gwoLogBugReport)) {
+              model.gwoLogBugReport("galaxy map loaded");
+            }
+          };
+          // Players, slots and co-op settings arrive with the first server
+          // state, which stock applies in the same call that connects. A
+          // connection that never comes still gets its entry.
+          var role = model.gwCampaignRole();
+          if (
+            (role === "host" || role === "viewer") &&
+            !model.gwCampaignConnected()
+          ) {
+            var logged = false;
+            var connected;
+            var logOnce = function () {
+              if (logged) {
+                return;
+              }
+              logged = true;
+              connected.dispose();
+              _.defer(logLoaded);
+            };
+            connected = model.gwCampaignConnected.subscribe(logOnce);
+            _.delay(logOnce, 10000);
+          } else {
+            logLoaded();
+          }
 
           var url =
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
