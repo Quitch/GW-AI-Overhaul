@@ -9,7 +9,7 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const bugReport = loadCouiModule(MOD_ROOT + "/shared/bug_report.js");
 
 const FORM =
-  "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report_game.yml";
+  "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report.yml";
 
 const SETTINGS = {
   version: "7.4.0",
@@ -334,7 +334,7 @@ describe("fields and buildUrl", () => {
     );
     assert.ok(url.startsWith(FORM + "&"));
     assert.deepEqual(decode(url), {
-      template: "bug_report_game.yml",
+      template: "bug_report.yml",
       scene: "Galaxy map",
       war: "- GWO running: 7.5.0",
       language: "de-DE",

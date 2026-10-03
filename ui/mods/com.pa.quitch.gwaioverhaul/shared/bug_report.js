@@ -1,10 +1,10 @@
 // The Report a Galactic War Bug form's prefill: field values for
-// .github/ISSUE_TEMPLATE/bug_report_game.yml, in English, from what a scene
+// .github/ISSUE_TEMPLATE/bug_report.yml, in English, from what a scene
 // gathered, and the same values as one log entry. shared/report_bug.js is the
 // scene glue.
 define(function () {
   var FORM_URL =
-    "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report_game.yml";
+    "https://github.com/Quitch/GW-AI-Overhaul/issues/new?template=bug_report.yml";
   // GitHub prefilled a 7,478-character URL in full.
   var URL_BUDGET = 7500;
   var TRUNCATED = "(list truncated)";
