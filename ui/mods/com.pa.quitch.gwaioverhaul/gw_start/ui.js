@@ -335,6 +335,9 @@
     // No war exists yet, so the report gives the chosen settings.
     model.gwoBugReportInput = function () {
       var done = $.Deferred();
+      // Read now: Shared Systems for Galactic War rerolls the seed when a
+      // source is toggled, which the player can do while a war generates.
+      var seed = model.newGameSeed();
       requireGW(
         [
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report_input.js",
@@ -363,7 +366,7 @@
           gwoBugReportInput
             .gather({
               settings: {
-                seed: model.newGameSeed(),
+                seed: seed,
                 difficulty: tier && tier.difficultyName,
                 galaxySize: galaxySizeNames[settings.galaxySize()],
                 ai: settings.ai(),

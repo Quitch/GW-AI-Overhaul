@@ -18,26 +18,27 @@
     };
 
     // Writes the form's values to the log, so a report from GitHub has them
-    // too. Waits on the scene's input with no time limit.
+    // too. The scene's input is asked for at once, so it holds the values at
+    // the call; it is then waited on with no time limit.
     model.gwoLogBugReport = function (reason) {
       if (!_.isFunction(model.gwoBugReportInput)) {
         return;
       }
-      requireGW(
-        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report.js"],
-        function (gwoBugReport) {
-          var scene = gwoBugReport.sceneOf(window.location.pathname);
-          try {
-            model.gwoBugReportInput().then(function (input) {
+      try {
+        model.gwoBugReportInput().then(function (input) {
+          requireGW(
+            ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report.js"],
+            function (gwoBugReport) {
+              var scene = gwoBugReport.sceneOf(window.location.pathname);
               log(gwoBugReport, scene, input, reason);
-            });
-          } catch (e) {
-            console.error(
-              "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-            );
-          }
-        }
-      );
+            }
+          );
+        });
+      } catch (e) {
+        console.error(
+          "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+        );
+      }
     };
 
     model.gwoReportBug = function () {
