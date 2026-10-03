@@ -81,6 +81,11 @@ body:
     validations:
       required: true
   - type: textarea
+    id: cards
+    attributes:
+      label: Tech cards
+      description: The Report a Galactic War Bug button fills this in.
+  - type: textarea
     id: coop
     attributes:
       label: Co-op

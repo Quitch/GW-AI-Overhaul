@@ -172,7 +172,7 @@ GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean
 
 ## Report a Bug
 
-Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository. In the game, the Report a Galactic War Bug button on the war setup screen, in the galaxy map's menu, and in the battle menu opens a new bug report there, with your war's details, co-op settings, mods, and game language already filled in.
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository. In the game, the Report a Galactic War Bug button on the war setup screen, in the galaxy map's menu, and in the battle menu opens a new bug report there, with your war's details, tech cards, co-op settings, mods, and game language already filled in.
 
 The game also writes these details to its logs, which every bug report attaches. If you report from GitHub, you need not type them in.
 
