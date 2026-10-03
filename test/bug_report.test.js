@@ -134,7 +134,7 @@ describe("warLines", () => {
         commander: "/pa/units/commanders/a/a.json",
         loadout: "gwc_start_vehicle",
         battle: {
-          system: "Alpha",
+          system: "!LOC:Alpha",
           enemy: "Enemy One",
           gameOptions: { bounty_mode: true, bounty_value: 2 },
         },

@@ -242,7 +242,7 @@
           });
 
           // A per-player viewer's own record syncs late; until it does, the
-          // report leaves the cards out rather than give the host's.
+          // report leaves the cards and race out rather than give the host's.
           var ownInventory = function () {
             if (
               model.isCampaignViewer() &&
@@ -255,8 +255,10 @@
 
           var bugReportInput = function (gwoBugReportInput) {
             var warDeck = gwoDecks.byId(warDeckId);
-            var playerRaceDescriptor = gwoRaces.byId(playerRace);
-            var own = gwoBugReport.inventoryInput(ownInventory());
+            var ownInv = ownInventory();
+            var ownRace = ownInv && gwoRaces.raceOf(ownInv);
+            var ownRaceDescriptor = ownRace && gwoRaces.byId(ownRace);
+            var own = gwoBugReport.inventoryInput(ownInv);
             return gwoBugReportInput.gather(
               {
                 settings: model.gwoSettings,
@@ -264,9 +266,7 @@
                 warName: game.name(),
                 deckName: warDeck && warDeck.name,
                 factionName: _.pluck(GWFactions, "name")[factionIndex],
-                raceName: playerRaceDescriptor
-                  ? playerRaceDescriptor.name
-                  : playerRace,
+                raceName: ownRaceDescriptor ? ownRaceDescriptor.name : ownRace,
                 cards: own.cards,
                 commander: own.commander,
                 loadout: own.loadout,

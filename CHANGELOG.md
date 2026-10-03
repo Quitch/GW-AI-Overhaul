@@ -4,6 +4,16 @@
 
 ### Changed
 
+- The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
+
+### Bugfix
+
+- Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+
+## v7.6.0 - 2026-10-03
+
+### Changed
+
 - Co-op AI players no longer ping an enemy star when an unexplored neutral star nearby is the better choice
 - The Report a Galactic War Bug button fills in the bug report with your war's details, tech cards, co-op settings, mods, and game language
 - The game writes your war's details, tech cards, co-op settings, mods, and game language to its logs
