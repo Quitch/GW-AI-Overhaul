@@ -285,8 +285,24 @@
             );
             return done.promise();
           };
-          if (_.isFunction(model.gwoLogBugReport)) {
-            model.gwoLogBugReport("galaxy map loaded");
+          var logLoaded = function () {
+            if (_.isFunction(model.gwoLogBugReport)) {
+              model.gwoLogBugReport("galaxy map loaded");
+            }
+          };
+          var role = model.gwCampaignRole();
+          if (
+            (role === "host" || role === "viewer") &&
+            !model.gwCampaignConnected()
+          ) {
+            // Players, slots and co-op settings arrive with the first server
+            // state, which stock applies in the same call that connects.
+            var connected = model.gwCampaignConnected.subscribe(function () {
+              connected.dispose();
+              _.defer(logLoaded);
+            });
+          } else {
+            logLoaded();
           }
 
           var url =
