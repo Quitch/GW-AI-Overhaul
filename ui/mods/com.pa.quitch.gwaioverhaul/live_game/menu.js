@@ -92,8 +92,21 @@
           );
           return done.promise();
         };
-        if (_.isFunction(model.gwoLogBugReport)) {
-          model.gwoLogBugReport("battle loaded");
+        var logLoaded = function () {
+          if (_.isFunction(model.gwoLogBugReport)) {
+            model.gwoLogBugReport("battle loaded");
+          }
+        };
+        // The win conditions and co-op settings come with the server state.
+        if (model.gwoGameOptions()) {
+          logLoaded();
+        } else {
+          var arrived = model.gwoGameOptions.subscribe(function (options) {
+            if (options) {
+              arrived.dispose();
+              logLoaded();
+            }
+          });
         }
       });
 
