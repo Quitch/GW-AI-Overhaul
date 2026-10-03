@@ -20,8 +20,8 @@
 
     // game.inventory() is the host's. A per-player viewer's own record is
     // found the way gw_war_over/stats.js finds it; without one, the report
-    // leaves the cards out. Before the game options arrive, the save says
-    // whether tech is per player.
+    // leaves the cards and race out. Before the game options arrive, the save
+    // says whether tech is per player.
     var ownInventory = function (game, campaignSettings) {
       var perPlayerTech = _.has(campaignSettings, "per_player_tech_cards")
         ? campaignSettings.per_player_tech_cards
@@ -59,11 +59,10 @@
       var inventory = game.inventory();
       var star = game.galaxy().stars()[game.currentStar()];
       var enemy = star.ai();
-      var playerRace = gwoRaces.raceOf(inventory);
-      var race = gwoRaces.byId(playerRace);
-      var own = gwoBugReport.inventoryInput(
-        ownInventory(game, campaignSettings)
-      );
+      var ownInv = ownInventory(game, campaignSettings);
+      var ownRace = ownInv && gwoRaces.raceOf(ownInv);
+      var race = ownRace && gwoRaces.byId(ownRace);
+      var own = gwoBugReport.inventoryInput(ownInv);
 
       return {
         stale: role === "viewer" && String(game.id) !== authoritativeGameId,
@@ -73,7 +72,7 @@
         factionName: _.pluck(GWFactions, "name")[
           inventory.getTag("global", "playerFaction")
         ],
-        raceName: race ? race.name : playerRace,
+        raceName: race ? race.name : ownRace,
         cards: own.cards,
         commander: own.commander,
         loadout: own.loadout,
