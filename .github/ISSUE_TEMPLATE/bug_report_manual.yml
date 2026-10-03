@@ -1,5 +1,5 @@
-name: Bug report from the game
-description: Opened by the in-game Report a Galactic War Bug button with your war's details filled in. Reporting from GitHub? Use Bug report.
+name: Bug report
+description: Report unexpected behaviours
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]
@@ -32,7 +32,7 @@ body:
     id: scene
     attributes:
       label: Where it happened
-      description: "Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle, or say where."
+      description: "One of: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle. If none fits, say where."
     validations:
       required: true
   - type: textarea
@@ -58,38 +58,7 @@ body:
     id: screenshots
     attributes:
       label: Screenshots
-      description: If applicable, drop screenshots or a video here to help explain your problem. A screenshot of the top-right GWO panel helps too.
-  - type: textarea
-    id: war
-    attributes:
-      label: GWO info
-      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub, from the top-right GWO panel.
-    validations:
-      required: true
-  - type: textarea
-    id: cards
-    attributes:
-      label: Tech cards
-      description: The Report a Galactic War Bug button fills this in.
-  - type: textarea
-    id: coop
-    attributes:
-      label: Co-op
-      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. Leave it blank for a solo war.
-  - type: textarea
-    id: mods
-    attributes:
-      label: Mods
-      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. List every enabled client mod and every server mod, including those run through Galactic War Server Mods, and mark the race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
-    validations:
-      required: true
-  - type: input
-    id: language
-    attributes:
-      label: Game language
-      description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub.
-    validations:
-      required: true
+      description: If applicable, drop screenshots or a video here to help explain your problem.
   - type: textarea
     id: context
     attributes:
@@ -99,6 +68,6 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Drop the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened here. Find them inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176). The logs record your war's settings, tech cards, co-op settings, mods, and language.
+      description: Drop the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened here. Find them inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176). The logs record your war's settings, tech cards, co-op settings, mods, and language, so you do not need to type them.
     validations:
       required: true
