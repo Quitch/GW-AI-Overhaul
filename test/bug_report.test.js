@@ -440,3 +440,106 @@ describe("logText", () => {
     assert.equal(text.includes("undefined"), false);
   });
 });
+
+describe("heldCards and inventoryInput", () => {
+  const ids = ["gwc_start_air", "gwc_enable_bots", "gwc_enable_bots"];
+  const live = {
+    cards: () => ids.map((id) => ({ id })),
+    getTag: (context, name) =>
+      context === "global" && name === "commander" ? "live_cmdr" : undefined,
+  };
+  const record = {
+    cards: ids.map((id) => ({ id })),
+    tags: { global: { commander: "record_cmdr" } },
+  };
+
+  it("reads card IDs in order, duplicates kept, from either shape", () => {
+    assert.deepEqual(bugReport.heldCards(live), ids);
+    assert.deepEqual(bugReport.heldCards(record), ids);
+    assert.deepEqual(bugReport.heldCards({}), []);
+    assert.equal(bugReport.heldCards(undefined), undefined);
+  });
+
+  it("takes the loadout and commander from the same inventory", () => {
+    assert.deepEqual(bugReport.inventoryInput(live), {
+      cards: ids,
+      loadout: "gwc_start_air",
+      commander: "live_cmdr",
+    });
+    assert.deepEqual(bugReport.inventoryInput(record), {
+      cards: ids,
+      loadout: "gwc_start_air",
+      commander: "record_cmdr",
+    });
+  });
+
+  it("gives nothing when there is no inventory", () => {
+    assert.deepEqual(bugReport.inventoryInput(undefined), {});
+  });
+});
+
+describe("cardLines", () => {
+  it("lists each card ID in order, duplicates kept", () => {
+    assert.deepEqual(bugReport.cardLines({ cards: ["a", "b", "a"] }), [
+      "- a",
+      "- b",
+      "- a",
+    ]);
+  });
+
+  it("is empty without cards", () => {
+    assert.deepEqual(bugReport.cardLines({ cards: [] }), []);
+    assert.deepEqual(bugReport.cardLines({}), []);
+    assert.deepEqual(bugReport.cardLines(undefined), []);
+  });
+});
+
+describe("tech cards in the report", () => {
+  it("fills the cards field only when cards are present", () => {
+    assert.equal(
+      bugReport.fields("Galaxy map", { cards: ["a", "b"] }).cards,
+      "- a\n- b"
+    );
+    const values = bugReport.fields("Galaxy map", { running: "7.5.0" });
+    assert.equal(values.cards, "");
+    assert.equal("cards" in decode(bugReport.buildUrl(values)), false);
+  });
+
+  it("logs the cards under Tech cards, after the war", () => {
+    const text = bugReport.logText(
+      bugReport.fields("Galaxy map", {
+        running: "7.5.0",
+        cards: ["a", "b"],
+        coop: { role: "host" },
+      })
+    );
+    assert.ok(
+      text.includes(
+        "GWO info: - GWO running: 7.5.0\nTech cards:\n- a\n- b\nCo-op: "
+      )
+    );
+  });
+
+  it("cuts the cards first and keeps the mod list whole", () => {
+    const cards = Array.from({ length: 1000 }, (_, i) => "- card_" + i).join(
+      "\n"
+    );
+    const mods = Array.from({ length: 25 }, (_, i) => "  - mod " + i).join(
+      "\n"
+    );
+    const url = bugReport.buildUrl({
+      war: "- War: x",
+      cards,
+      coop: "- Role: host",
+      mods,
+    });
+    const values = decode(url);
+
+    assert.ok(url.length <= bugReport.URL_BUDGET);
+    assert.ok(values.cards.startsWith("- card_0\n"));
+    assert.ok(values.cards.endsWith("\n(list truncated)"));
+    assert.equal(values.mods, mods);
+    assert.equal(values.coop, "- Role: host");
+    assert.equal(values.war, "- War: x");
+  });
+});

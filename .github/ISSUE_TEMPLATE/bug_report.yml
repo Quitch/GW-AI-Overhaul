@@ -53,6 +53,11 @@ body:
       label: GWO info
       description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub, from the top-right GWO panel.
   - type: textarea
+    id: cards
+    attributes:
+      label: Tech cards
+      description: The Report a Galactic War Bug button fills this in.
+  - type: textarea
     id: coop
     attributes:
       label: Co-op

@@ -241,9 +241,22 @@
             return commanderList(loc("!LOC:Human"));
           });
 
+          // A per-player viewer's own record syncs late; until it does, the
+          // report leaves the cards out rather than give the host's.
+          var ownInventory = function () {
+            if (
+              model.isCampaignViewer() &&
+              model.gwCampaignPerPlayerTechCards()
+            ) {
+              return _.get(model.currentCoopPlayerInventoryData(), "inventory");
+            }
+            return game.inventory();
+          };
+
           var bugReportInput = function (gwoBugReportInput) {
             var warDeck = gwoDecks.byId(warDeckId);
             var playerRaceDescriptor = gwoRaces.byId(playerRace);
+            var own = gwoBugReport.inventoryInput(ownInventory());
             return gwoBugReportInput.gather(
               {
                 settings: model.gwoSettings,
@@ -254,8 +267,9 @@
                 raceName: playerRaceDescriptor
                   ? playerRaceDescriptor.name
                   : playerRace,
-                commander: inventory.getTag("global", "commander"),
-                loadout: loadoutId,
+                cards: own.cards,
+                commander: own.commander,
+                loadout: own.loadout,
                 coop: {
                   role: model.gwCampaignRole(),
                   playersNow:

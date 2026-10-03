@@ -14,7 +14,33 @@
     };
     $(".div_game_menu").addClass("gwo-game-menu");
 
-    var bugReportInput = function (game, gwoAI, gwoRaces, GWFactions) {
+    var session = function (name) {
+      return ko.observable().extend({ session: name })();
+    };
+
+    // game.inventory() is the host's. A per-player viewer's own record is
+    // found the way gw_war_over/stats.js finds it; without one, the report
+    // leaves the cards out.
+    var ownInventory = function (game, perPlayerTech) {
+      if (model.gwCampaignRole() !== "viewer" || !perPlayerTech) {
+        return game.inventory();
+      }
+      return _.get(
+        game.findCoopPlayerInventoryData({
+          id: session("uberId"),
+          name: session("displayName"),
+        }),
+        "inventory"
+      );
+    };
+
+    var bugReportInput = function (
+      game,
+      gwoAI,
+      gwoRaces,
+      GWFactions,
+      gwoBugReport
+    ) {
       var gwoSettings = gwoAI.originSettings(game);
       var authoritativeGameId = window.sessionStorage.getItem(
         "gw_campaign_authoritative_game_id"
@@ -24,14 +50,16 @@
       // From the battle's game options, which also arrive after a reconnect,
       // when the co-op session state from gw_play is gone.
       var campaignSettings = _.get(gameOptions, "gw_campaign_settings", {});
-      var war = ko.observable().extend({ session: "gwo_bug_report_war" })();
+      var war = session("gwo_bug_report_war");
       var handoff = war && war.gameId === String(game.id) ? war : {};
       var inventory = game.inventory();
       var star = game.galaxy().stars()[game.currentStar()];
       var enemy = star.ai();
       var playerRace = gwoRaces.raceOf(inventory);
       var race = gwoRaces.byId(playerRace);
-      var cards = inventory.cards();
+      var own = gwoBugReport.inventoryInput(
+        ownInventory(game, campaignSettings.per_player_tech_cards)
+      );
 
       return {
         stale: role === "viewer" && String(game.id) !== authoritativeGameId,
@@ -42,8 +70,9 @@
           inventory.getTag("global", "playerFaction")
         ],
         raceName: race ? race.name : playerRace,
-        commander: inventory.getTag("global", "commander"),
-        loadout: cards.length ? cards[0].id : undefined,
+        cards: own.cards,
+        commander: own.commander,
+        loadout: own.loadout,
         battle: {
           system: star.system().name,
           enemy: enemy && enemy.name,
@@ -80,11 +109,24 @@
               "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
               "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
               "shared/gw_factions",
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report.js",
             ],
-            function (gwoBugReportInput, gwoAI, gwoRaces, GWFactions) {
+            function (
+              gwoBugReportInput,
+              gwoAI,
+              gwoRaces,
+              GWFactions,
+              gwoBugReport
+            ) {
               gwoBugReportInput
                 .gather(
-                  bugReportInput(game, gwoAI, gwoRaces, GWFactions),
+                  bugReportInput(
+                    game,
+                    gwoAI,
+                    gwoRaces,
+                    GWFactions,
+                    gwoBugReport
+                  ),
                   model.gwCampaignRole() === "viewer"
                 )
                 .then(done.resolve);
