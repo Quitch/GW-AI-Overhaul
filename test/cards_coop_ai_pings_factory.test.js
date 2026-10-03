@@ -60,7 +60,7 @@ function star(index, ai, explored, cards) {
 }
 
 // Stars 0 (the player's, explored), 1-3 AI stars, 4 explored AI star, 5 the
-// treasure planet.
+// treasure planet, 6-8 unexplored neutral stars, 9 an explored neutral star.
 function makeStars() {
   return [
     star(0, undefined, true, []),
@@ -69,6 +69,10 @@ function makeStars() {
     star(3, { threat: 1 }, false, []),
     star(4, { threat: 9 }, true, [{ id: "card_4" }]),
     star(5, { threat: 3, treasurePlanet: true }, false, [{ id: "loadout" }]),
+    star(6, undefined, false, []),
+    star(7, undefined, false, []),
+    star(8, undefined, false, []),
+    star(9, undefined, true, []),
   ];
 }
 
@@ -84,7 +88,15 @@ function setup(overrides = {}) {
   const options = Object.assign(
     {
       perPlayer: false,
-      paths: { 1: [0, 1], 2: [0, 3, 2], 3: [0, 1, 2, 3], 5: [0, 5] },
+      paths: {
+        1: [0, 1],
+        2: [0, 3, 2],
+        3: [0, 1, 2, 3],
+        5: [0, 5],
+        6: [0, 1, 6],
+        7: [0, 7],
+        9: [0, 9],
+      },
       records: [AI_RECORD],
       pingAs: true,
     },
@@ -298,6 +310,24 @@ describe("what the co-op AI pings judge", () => {
     run.state.currentStar = 1;
 
     assert.deepEqual(run.params.candidates(), []);
+  });
+
+  it("finds the nearest reachable unexplored neutral star", () => {
+    const run = build();
+    assert.deepEqual(run.params.neutral(), { star: 7, hops: 1 });
+
+    release();
+    const tie = build({ paths: { 6: [0, 6], 7: [0, 7] } });
+    assert.deepEqual(tie.params.neutral(), { star: 6, hops: 1 });
+
+    release();
+    const current = build({ paths: { 6: [7, 1, 6], 7: [7] } });
+    current.state.currentStar = 7;
+    assert.deepEqual(current.params.neutral(), { star: 6, hops: 2 });
+
+    release();
+    const none = build({ paths: { 1: [0, 1], 8: [], 9: [0, 9] } });
+    assert.equal(none.params.neutral(), undefined);
   });
 
   it("measures the threat of every unexplored AI star", () => {

@@ -94,6 +94,24 @@ define([
         });
         return coopAiPings.pickCandidates(candidates);
       },
+      neutral: function () {
+        var current = game.currentStar();
+        var nearest;
+        _.forEach(galaxy.stars(), function (star, index) {
+          if (index === current || star.ai() || star.explored()) {
+            return;
+          }
+          var path = model.canSelect(index);
+          if (
+            path &&
+            path.length &&
+            (!nearest || path.length - 1 < nearest.hops)
+          ) {
+            nearest = { star: index, hops: path.length - 1 };
+          }
+        });
+        return nearest;
+      },
       allThreats: function () {
         var threats = [];
         _.forEach(galaxy.stars(), function (star) {

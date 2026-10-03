@@ -14,6 +14,10 @@ define([
   var PING_WANT = coopAiCards.WEIGHTS.classes.Factory;
   // A lead this large over the runner-up makes a clear favourite.
   var PING_LEAD = 0.25;
+  // What a free hand at the nearest unexplored neutral star is worth to an AI,
+  // against its card at an AI star. An AI star must outrank it, so while one
+  // is reachable an AI pings only a card it wants.
+  var NEUTRAL_VALUE = PING_WANT;
   // The first AI settles this long after a window opens, and each after it
   // this much later, so the pings do not land together.
   var FIRST_DELAY_MS = 1500;
@@ -118,7 +122,7 @@ define([
               "=" +
               candidate.score +
               " (" +
-              (candidate.card || "no card") +
+              (candidate.neutral ? "neutral" : candidate.card || "no card") +
               " " +
               round(candidate.value) +
               ", threat " +
@@ -195,7 +199,19 @@ define([
               return scored(0);
             });
         })
-      ).then(rank);
+      ).then(function (valued) {
+        var neutral = valued.length && params.neutral();
+        if (neutral) {
+          valued.push({
+            star: neutral.star,
+            hops: neutral.hops,
+            threat: 0,
+            value: NEUTRAL_VALUE,
+            neutral: true,
+          });
+        }
+        return rank(valued);
+      });
     };
 
     var decide = function (ai, ranked, key) {
@@ -205,6 +221,9 @@ define([
 
       if (!best) {
         return { text: "no ping (no star)" };
+      }
+      if (best.neutral) {
+        return { text: "no ping (neutral " + best.star + " first)" };
       }
       if (!reason) {
         return { text: "no ping (indifferent)" };
@@ -315,6 +334,7 @@ define([
   factory.THREAT_WEIGHT = THREAT_WEIGHT;
   factory.PING_WANT = PING_WANT;
   factory.PING_LEAD = PING_LEAD;
+  factory.NEUTRAL_VALUE = NEUTRAL_VALUE;
   factory.FIRST_DELAY_MS = FIRST_DELAY_MS;
   factory.STAGGER_MS = STAGGER_MS;
   factory.REPING_MS = REPING_MS;

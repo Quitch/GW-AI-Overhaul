@@ -875,7 +875,7 @@ describe("race trees", () => {
         jobs.map((job) => [job.destination, job.aiMods.map((mod) => mod.value)])
       );
 
-    it("gives the host's Sub Commanders and its ally the host's, with the units its cards remake, and the enemy and its foes none", () => {
+    it("gives the host's Sub Commanders the host's, with the units its cards remake, the enemy and its foes none, and the star's ally no tree of its own whatever race its record holds", () => {
       const fixture = buildGame({
         aiInUse: "Titans",
         playerRace: "fixture",
@@ -893,7 +893,6 @@ describe("race trees", () => {
         "/pa/ai_race_fixture/": [],
         "/pa/ai_race_rival/": [],
         "/pa/ai_subcommander_race_fixture/": ["host.json"],
-        "/pa/ai_subcommander_race_rival/": ["host.json"],
       });
       assert.deepEqual(jobs[2].remade, { [REMAKE.file]: true });
       assert.deepEqual(jobs[0].remade, {});

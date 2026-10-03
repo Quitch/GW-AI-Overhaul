@@ -1,20 +1,9 @@
 // War generation, from Go To War to the gw_play scene, as steps over one
 // object per run. gw_start/setup.js hands it the scene's modules and state.
 // See galaxy.md, "Generation order".
-define(function () {
-  var galaxySizeNames = [
-    "!LOC:Small",
-    "!LOC:Medium",
-    "!LOC:Large",
-    "!LOC:Epic",
-    "!LOC:Uber",
-    // Support Bigger Galactic War mod
-    "!LOC:Vast",
-    "!LOC:Gigantic",
-    "!LOC:Ridiculous",
-    "!LOC:Marathon",
-  ];
-
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
+], function (galaxySizeNames) {
   var generatedWarName = function (
     selectedDifficulty,
     playerCount,

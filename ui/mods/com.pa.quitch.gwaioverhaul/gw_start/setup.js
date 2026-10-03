@@ -313,6 +313,10 @@
           if (!model.ready()) {
             return;
           }
+          // Before generation, so a war that fails to generate still logs it.
+          if (_.isFunction(model.gwoLogBugReport)) {
+            model.gwoLogBugReport("Go To War clicked");
+          }
           warGeneration.start();
         };
         gwoReady(true);

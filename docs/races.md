@@ -655,8 +655,8 @@ a race gets the same treatment. Commander cells receive mods like any other, so
 a card on the commander's weapon reaches the race's.
 
 Sub Commanders follow the player's race. `gwc_minion` and the General
-Commander's two draw a race commander. `referee_config_setup.js` gives an ally
-the player's race unless the war gave it one of its own.
+Commander's two draw a race commander. `referee_config_setup.js` gives every
+ally, the star's included, the player's race, whatever its record holds.
 
 ## Cluster
 

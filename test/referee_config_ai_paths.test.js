@@ -505,7 +505,7 @@ describe("races", () => {
     assert.equal(armies[2].personality.adv_eco_mod, 2);
   });
 
-  it("allies fight as the player's race unless the war gave them one", () => {
+  it("allies fight as the player's race, whatever their record holds", () => {
     const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
     installModel(fixture.game);
     const allies = [
@@ -524,7 +524,7 @@ describe("races", () => {
 
     assert.deepEqual(
       armies.map((army) => army.personality.ai_path),
-      ["/pa/ai_race_fixture/", "/pa/ai/"]
+      ["/pa/ai_race_fixture/", "/pa/ai_race_fixture/"]
     );
     assert.equal(allies[0].race, undefined);
   });

@@ -926,15 +926,23 @@ card's value as a share of the best card's, less 0.6 of its threat as a share
 of the worst threat's. The best score wins, then the nearer star, then the
 lower index.
 
+Exploring a neutral star deals a full hand with no battle, so the nearest
+unexplored neutral star the host can move to competes with the AI stars. It
+joins them as a candidate with a card worth 10 and no threat, but only when
+there is at least one AI star to weigh it against. The neutral star is never
+pinged.
+
 **Only when it cares.** An AI pings when it **wants** its best star's card,
 which is worth 10 or more, about a factory's unlock. It also pings when its
 best star leads the runner-up by 0.25 or more, a clear **lead**. A lone
 candidate counts as a lead only when its threat is below the median of every
-AI star's. Otherwise it stays silent. It stays silent too for a star another
-AI pinged in the same window, and for the star it pinged last. A new star
-within 20 seconds of its last ping waits: the AI tries again once the 20
-seconds are up, in the same window. A ping the host refuses is logged and not
-tried again in that window.
+AI star's. Otherwise it stays silent. It is also silent when the neutral star
+ranks first. An AI star outranks it only with a card worth 10 or more, so while
+a neutral star is in reach an AI pings only a card it wants. It stays silent
+too for a star another AI pinged in the same window, and for the star it
+pinged last. A new star within 20 seconds of its last ping waits: the AI
+tries again once the 20 seconds are up, in the same window. A ping the host
+refuses is logged and not tried again in that window.
 
 **Sending.** `pingStarAs(star, sender)` in `coop_ping_operators.js` is the
 host's send on another's behalf. `canPingAs` makes the viewer's checks of the
@@ -955,6 +963,8 @@ players").
 - `windowKey()` and `windowOpen()`, the current window and whether it is open.
 - `candidates()`, the stars an AI may ping, as `{ star, hops, threat }`, and
   `allThreats()`, every AI star's threat.
+- `neutral()`, the nearest unexplored neutral star the host can move to, as
+  `{ star, hops }`, or undefined. A tie goes to the lower index.
 - `cardFor(ai, star)`, the card the AI would find there, if any, and
   `valueOf(ai, card, star, memo)`, its worth to the AI or a promise of it.
 - `ping(star, sender)`, true when the ping went out.

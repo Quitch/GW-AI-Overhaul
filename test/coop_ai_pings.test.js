@@ -140,6 +140,16 @@ describe("windowKey and describe", () => {
         "7=-0.6 (no card 0, threat 6, hops 2) -> ping 2 (wants)"
     );
     assert.equal(
+      coopAiPings.describe(
+        "Sorian",
+        "5:1:3",
+        [{ star: 5, score: 1, value: 10, threat: 0, hops: 3, neutral: true }],
+        "no ping (neutral 5 first)"
+      ),
+      "[GW COOP AI] Sorian ping window 5:1:3 candidates: " +
+        "5=1 (neutral 10, threat 0, hops 3) -> no ping (neutral 5 first)"
+    );
+    assert.equal(
       coopAiPings.describe("Sorian", "5:1:3", [], "no ping (indifferent)"),
       "[GW COOP AI] Sorian ping window 5:1:3 candidates: none -> no ping (indifferent)"
     );
@@ -292,6 +302,7 @@ describe("the ping window", () => {
           { star: 3, hops: 1, threat: 1 },
         ],
         allThreats: [1, 1],
+        neutral: undefined,
         values: { 2: 20, 3: 1 },
         pingResult: true,
         now: 100000,
@@ -313,6 +324,7 @@ describe("the ping window", () => {
         return state.candidates;
       },
       allThreats: () => state.allThreats,
+      neutral: () => state.neutral,
       cardFor: (ai, star) =>
         state.noCard ? undefined : { id: (ai.card || "card") + "_" + star },
       valueOf: (ai, card, star, memo) => {
@@ -404,6 +416,74 @@ describe("the ping window", () => {
 
     assert.deepEqual(calls.pings, []);
     assert.match(calls.log[0], / -> no ping \(indifferent\)$/);
+  });
+
+  it("stays silent, and says so, when a neutral star ranks first", async () => {
+    const { pings, calls, flush } = setup({
+      values: { 2: 4, 3: 3 },
+      neutral: { star: 5, hops: 1 },
+    });
+    pings.update();
+    await flush();
+
+    assert.deepEqual(calls.pings, []);
+    assert.ok(
+      calls.log[0].includes(
+        "candidates: 5=1 (neutral " +
+          coopAiPings.NEUTRAL_VALUE +
+          ", threat 0, hops 1), "
+      )
+    );
+    assert.match(calls.log[0], / -> no ping \(neutral 5 first\)$/);
+  });
+
+  it("pings a star that outranks the neutral star", async () => {
+    const { pings, calls, flush } = setup({
+      candidates: [
+        { star: 2, hops: 1, threat: 1 },
+        { star: 3, hops: 1, threat: 4 },
+      ],
+      values: { 2: 30, 3: 1 },
+      neutral: { star: 5, hops: 1 },
+    });
+    pings.update();
+    await flush();
+
+    assert.deepEqual(calls.pings, [[2, "Tank"]]);
+    assert.match(calls.log[0], / -> ping 2 \(wants\)$/);
+  });
+
+  // Alone, its low threat would make it a clear favourite.
+  it("does not take a lone star as a favourite beside a neutral star", async () => {
+    const lone = {
+      candidates: [{ star: 2, hops: 1, threat: 1 }],
+      allThreats: [1, 5, 8],
+      values: { 2: 5 },
+    };
+    const alone = setup(lone);
+    alone.pings.update();
+    await alone.flush();
+    assert.deepEqual(alone.calls.pings, [[2, "Tank"]]);
+    mock.restoreAll();
+
+    const beside = setup(
+      Object.assign({ neutral: { star: 5, hops: 2 } }, lone)
+    );
+    beside.pings.update();
+    await beside.flush();
+    assert.deepEqual(beside.calls.pings, []);
+    assert.match(beside.calls.log[0], / -> no ping \(neutral 5 first\)$/);
+  });
+
+  it("weighs no neutral star when there is no AI star", async () => {
+    const { pings, calls, flush } = setup({
+      candidates: [],
+      neutral: { star: 5, hops: 1 },
+    });
+    pings.update();
+    await flush();
+
+    assert.match(calls.log[0], /candidates: none -> no ping \(no star\)$/);
   });
 
   it("runs each AI once a window", async () => {

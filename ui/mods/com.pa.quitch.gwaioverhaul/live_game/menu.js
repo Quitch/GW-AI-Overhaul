@@ -14,6 +14,86 @@
     };
     $(".div_game_menu").addClass("gwo-game-menu");
 
+    var session = function (name) {
+      return ko.observable().extend({ session: name })();
+    };
+
+    // game.inventory() is the host's. A per-player viewer's own record is
+    // found the way gw_war_over/stats.js finds it; without one, the report
+    // leaves the cards and race out. Before the game options arrive, the save
+    // says whether tech is per player.
+    var ownInventory = function (game, campaignSettings) {
+      var perPlayerTech = _.has(campaignSettings, "per_player_tech_cards")
+        ? campaignSettings.per_player_tech_cards
+        : game.perPlayerTechCards();
+      if (model.gwCampaignRole() !== "viewer" || !perPlayerTech) {
+        return game.inventory();
+      }
+      return _.get(
+        game.findCoopPlayerInventoryData({
+          id: session("uberId"),
+          name: session("displayName"),
+        }),
+        "inventory"
+      );
+    };
+
+    var bugReportInput = function (
+      game,
+      gwoAI,
+      gwoRaces,
+      GWFactions,
+      gwoBugReport
+    ) {
+      var gwoSettings = gwoAI.originSettings(game);
+      var authoritativeGameId = window.sessionStorage.getItem(
+        "gw_campaign_authoritative_game_id"
+      );
+      var role = model.gwCampaignRole();
+      var gameOptions = model.gwoGameOptions();
+      // From the battle's game options, which also arrive after a reconnect,
+      // when the co-op session state from gw_play is gone.
+      var campaignSettings = _.get(gameOptions, "gw_campaign_settings", {});
+      var war = session("gwo_bug_report_war");
+      var handoff = war && war.gameId === String(game.id) ? war : {};
+      var inventory = game.inventory();
+      var star = game.galaxy().stars()[game.currentStar()];
+      var enemy = star.ai();
+      var ownInv = ownInventory(game, campaignSettings);
+      var ownRace = ownInv && gwoRaces.raceOf(ownInv);
+      var race = ownRace && gwoRaces.byId(ownRace);
+      var own = gwoBugReport.inventoryInput(ownInv);
+
+      return {
+        stale: role === "viewer" && String(game.id) !== authoritativeGameId,
+        settings: gwoSettings,
+        hardcore: game.hardcore(),
+        warName: game.name(),
+        factionName: _.pluck(GWFactions, "name")[
+          inventory.getTag("global", "playerFaction")
+        ],
+        raceName: race ? race.name : ownRace,
+        cards: own.cards,
+        commander: own.commander,
+        loadout: own.loadout,
+        battle: {
+          system: star.system().name,
+          enemy: enemy && enemy.name,
+          gameOptions: gameOptions,
+        },
+        coop: {
+          role: role,
+          playersNow: handoff.playersNow,
+          coopAiCount: handoff.coopAiCount,
+          createdFor: gwoSettings && gwoSettings.coopPlayerScalingCount,
+          sharedArmies: campaignSettings.shared_control,
+          perPlayerTech: campaignSettings.per_player_tech_cards,
+          maxClients: handoff.maxClients,
+          slotsLocked: handoff.slotsLocked,
+        },
+      };
+    };
+
     requireGW(["shared/gw_common"], function (GW) {
       var activeGameId = ko.observable().extend({ local: "gw_active_game" });
       var hardcore = ko.observable();
@@ -23,6 +103,56 @@
       gameLoader.then(function (game) {
         hardcore(game.hardcore());
         tutorial(game.isTutorial());
+
+        model.gwoBugReportInput = function () {
+          var done = $.Deferred();
+          requireGW(
+            [
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report_input.js",
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+              "shared/gw_factions",
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bug_report.js",
+            ],
+            function (
+              gwoBugReportInput,
+              gwoAI,
+              gwoRaces,
+              GWFactions,
+              gwoBugReport
+            ) {
+              gwoBugReportInput
+                .gather(
+                  bugReportInput(
+                    game,
+                    gwoAI,
+                    gwoRaces,
+                    GWFactions,
+                    gwoBugReport
+                  ),
+                  model.gwCampaignRole() === "viewer"
+                )
+                .then(done.resolve);
+            }
+          );
+          return done.promise();
+        };
+        var logLoaded = function () {
+          if (_.isFunction(model.gwoLogBugReport)) {
+            model.gwoLogBugReport("battle loaded");
+          }
+        };
+        // The win conditions and co-op settings come with the server state.
+        if (model.gwoGameOptions()) {
+          logLoaded();
+        } else {
+          var arrived = model.gwoGameOptions.subscribe(function (options) {
+            if (options) {
+              arrived.dispose();
+              logLoaded();
+            }
+          });
+        }
       });
 
       // Write into the existing observable, never replace it: live_game.js's

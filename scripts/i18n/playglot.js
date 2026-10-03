@@ -4,8 +4,8 @@
 // catalog's description as Context, then one column per shipped
 // locale. A locale's cell is GWO's own entry, else the game's text for the
 // key, else empty. Local-only: reads the PA install (--pa, else PA_MEDIA,
-// else the default). Writes to PA's user data folder unless --out names a
-// file. See docs/translations.md.
+// else the default). Writes scripts/i18n/out/gwo-strings.csv unless --out
+// names a file. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -15,10 +15,10 @@ const {
   SHIPPED_LOCALES,
   TRANSLATIONS_DIR,
 } = require("../lib/loc-keys.js");
-const { userDataDir } = require("../lib/pa-install.js");
 const { paMedia, readLocale } = require("../lib/pa-locales.js");
 
-const FILE_NAME = "gw-ai-overhaul-playglot.csv";
+const OUT_DIR = path.join(__dirname, "out");
+const FILE_NAME = "gwo-strings.csv";
 
 // Playglot's "Language(code)" headers; it creates each language on import.
 // Playglot names Spanish and Polish without the region the game's locale has.
@@ -85,7 +85,7 @@ function buildRows(catalog, locales, byLocale) {
 function outFile(argv) {
   const at = argv.indexOf("--out");
   if (at < 0) {
-    return path.join(userDataDir(), FILE_NAME);
+    return path.join(OUT_DIR, FILE_NAME);
   }
   if (!argv[at + 1] || argv[at + 1].startsWith("--")) {
     throw new Error("--out takes a file path");
