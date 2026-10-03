@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+
 ## v7.6.0 - 2026-10-03
 
 ### Changed
