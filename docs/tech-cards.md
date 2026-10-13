@@ -877,10 +877,13 @@ not the host's. So a card must:
 - **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
   and finishes the apply. A card that throws before it changes anything shows
   no effect, and so earns at most its floor.
-- **Forbid units in `dull()`.** The units a card's `removeUnits` takes away,
-  and that nothing grants back, are the ones an AI treats as forbidden: it
-  never counts a stat mod on them as worth something later. All `buff()`s run
-  before any `dull()`, so a `dull()` that removes units forbids them for good.
+- **Forbid units in `dull()`.** The units a card's `removeUnits` takes away, and
+  that nothing grants back, are the ones an AI treats as forbidden: it never
+  counts a stat mod on them as worth something later. All `buff()`s run before
+  any `dull()`, so a `dull()` that removes units forbids them for good. A
+  removed race or add-on path is the exception where a held stock unit still
+  stands for it, or something granted can still build it: the army keeps
+  fielding it ([`races.md`](races.md), "Capability cells", "Removing units").
 
 Register a card in `model.gwoCardsToUnits` only for the units it affects. A
 card that names units there, yet changes nothing the AI can see, is taken to

@@ -316,8 +316,8 @@ player keeps both. A race unit a card granted by name survives, because
 part. Removing a race path removes only such a grant: while the Ant is held, a
 Legion player still fields the Shank as its stand-in, so a card cannot forbid
 one race's version of a stock unit. A race unit that arrives through the build
-rule (one in a cell no vanilla unit fills, or an exclusive unit) stays while
-something granted can build it, even when its own path is removed. An MLA
+rule (one in a cell no vanilla unit fills, or an exclusive unit) stays while a
+granted race unit can build it, even when its own path is removed. An MLA
 player's add-on units follow the same rules through `addonUnitsFor`, except that
 a held vanilla builder also counts for the build rule. What the co-op AI records
 of a removal is in [`tech-cards.md`](tech-cards.md), "Applying the card" and "A
