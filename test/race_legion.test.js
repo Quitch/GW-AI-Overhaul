@@ -11,6 +11,7 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
   withheldCards,
   expectedWithheld,
@@ -139,6 +140,31 @@ describe("Legion under capability cells", () => {
     assert.equal(index.race.cellOf[legion.units.shank], "Vehicle/Basic/Combat");
     assert.equal(index.race.unitsByCell["Land/Basic/Storage"], undefined);
     assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 7);
+  });
+
+  // races.md, "Removing units": removeUnits takes exact paths, so these are
+  // the held lists it leaves.
+  it("fields a Shank granted by name without the Ant, and the Ant's Shank after the Shank path is removed (skipped without Legion in the fixture)", (t) => {
+    if (!legionUnits.length) {
+      t.skip("fixture harvested without Legion");
+      return;
+    }
+    const cells = races.cellsOf("legion");
+    const fielded = (held) =>
+      races.fieldedFor(
+        "legion",
+        races.ownedPaths("legion", held, cells),
+        cells
+      );
+    const { shank, stoke } = legion.units;
+
+    const shankWithoutAnt = fielded([shank]);
+    assert.ok(shankWithoutAnt.includes(shank));
+    assert.ok(!shankWithoutAnt.includes(stoke));
+
+    const antAlone = fielded([gwoUnit.ant]);
+    assert.ok(antAlone.includes(shank));
+    assert.ok(antAlone.includes(stoke));
   });
 
   it("withholds only the MLA-only cards and those naming cells Legion lacks", (t) => {
