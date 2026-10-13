@@ -142,9 +142,8 @@ describe("Legion under capability cells", () => {
     assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 7);
   });
 
-  // races.md, "Removing units": removeUnits takes exact paths, so these are
-  // the held lists it leaves.
-  it("fields a Shank granted by name without the Ant, and the Ant's Shank after the Shank path is removed (skipped without Legion in the fixture)", (t) => {
+  // See races.md, "Capability cells", "Removing units".
+  it("fields a Shank held by name without the Stoke, the Shank and Stoke for the Ant or the Stryker, and neither for a factory (skipped without Legion in the fixture)", (t) => {
     if (!legionUnits.length) {
       t.skip("fixture harvested without Legion");
       return;
@@ -162,9 +161,15 @@ describe("Legion under capability cells", () => {
     assert.ok(shankWithoutAnt.includes(shank));
     assert.ok(!shankWithoutAnt.includes(stoke));
 
-    const antAlone = fielded([gwoUnit.ant]);
-    assert.ok(antAlone.includes(shank));
-    assert.ok(antAlone.includes(stoke));
+    for (const unit of [gwoUnit.ant, gwoUnit.stryker]) {
+      const standIns = fielded([unit]);
+      assert.ok(standIns.includes(shank), unit);
+      assert.ok(standIns.includes(stoke), unit);
+    }
+
+    const factoryOnly = fielded([gwoUnit.vehicleFactory]);
+    assert.ok(!factoryOnly.includes(shank));
+    assert.ok(!factoryOnly.includes(stoke));
   });
 
   it("withholds only the MLA-only cards and those naming cells Legion lacks", (t) => {
