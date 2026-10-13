@@ -287,23 +287,6 @@ published one when the caller holds none.
 held that the race owns, plus what `raceUnitsFor`, or `addonUnitsFor` for MLA,
 brings for them. `upgradeCard` reads it, so `requires` may name a race unit.
 
-**Removing units.** `inventory.removeUnits` drops every copy of each exact path
-from `inventory.units()`. It maps nothing by cell, so what a race player loses
-follows from the rules above. Removing a stock path removes the race units it
-stands for, unless another held stock unit stands for them too: the Ant and the
-Stryker both stand for Legion's Shank and Stoke, so without the Ant but with the
-Stryker a Legion player keeps both. A race unit a card granted by name survives,
-because `raceUnitsFor` keeps a held path with no vanilla cell. Removing a race
-path removes only such a grant: while the Ant is held, a Legion player still
-fields the Shank as its stand-in, so a card cannot forbid one race's version of
-a stock unit. A race unit that arrives through the build rule (one in a cell no
-vanilla unit fills, or an exclusive unit) stays while something granted can
-build it, whatever paths are removed. An MLA player's add-on units follow the
-same rules through `addonUnitsFor`. The co-op AI's `strippedUnits`
-(`gw_play/coop_ai_effects.js`) records the strings of an array passed to
-`removeUnits` that the inventory no longer holds; `shared/coop_ai_fielded.js`
-turns them into the race units they stand for, less those the army still fields.
-
 The two card tooltips (the hand hover and a star's "Which Units?") follow the
 same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race
@@ -321,6 +304,22 @@ The inventory is the client's own: a viewer's record under per-player tech.
 Until the cells land, the tooltip shows the MLA list. `gw_play/races.js` sets
 `model.gwoRaceCellsPrimed` once priming completes, and the open star's and the
 hovered card's tooltips are rebuilt.
+
+**Removing units.** `inventory.removeUnits` drops every copy of each exact path
+from `inventory.units()`. It maps nothing by cell, so what a race player loses
+follows from the cell rules above. Removing a stock path removes the race units
+it stands for, unless another held stock unit stands for them too: the Ant and
+the Stryker both stand for Legion's Shank and Stoke, so without the Ant but with
+the Stryker a Legion player keeps both. A race unit a card granted by name
+survives, because `raceUnitsFor` keeps a held path with no vanilla cell.
+Removing a race path removes only such a grant: while the Ant is held, a Legion
+player still fields the Shank as its stand-in, so a card cannot forbid one
+race's version of a stock unit. A race unit that arrives through the build rule
+(one in a cell no vanilla unit fills, or an exclusive unit) stays while
+something granted can build it, even when its own path is removed. An MLA
+player's add-on units follow the same rules through `addonUnitsFor`. What the
+co-op AI records of a removal is in [`tech-cards.md`](tech-cards.md), "Applying
+the card" and "A race's units".
 
 ### Jobs
 
