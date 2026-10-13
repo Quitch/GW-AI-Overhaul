@@ -307,19 +307,21 @@ hovered card's tooltips are rebuilt.
 
 **Removing units.** `inventory.removeUnits` drops every copy of each exact path
 from `inventory.units()`. It maps nothing by cell, so what a race player loses
-follows from the cell rules above. Removing a stock path removes the race units
-it stands for, unless another held stock unit stands for them too: the Ant and
-the Stryker both stand for Legion's Shank and Stoke, so without the Ant but with
-the Stryker a Legion player keeps both. A race unit a card granted by name
-survives, because `raceUnitsFor` keeps a held path with no vanilla cell.
-Removing a race path removes only such a grant: while the Ant is held, a Legion
-player still fields the Shank as its stand-in, so a card cannot forbid one
-race's version of a stock unit. A race unit that arrives through the build rule
-(one in a cell no vanilla unit fills, or an exclusive unit) stays while
+follows from the cell rules above. Removing a stock path removes that unit,
+where the race fields it itself, and the race units it stands for, unless
+another held stock unit stands for them too: the Ant and the Stryker both stand
+for Legion's Shank and Stoke, so without the Ant but with the Stryker a Legion
+player keeps both. A race unit a card granted by name survives, because
+`raceUnitsFor` keeps a held path that is neither a vanilla unit nor a vanilla
+part. Removing a race path removes only such a grant: while the Ant is held, a
+Legion player still fields the Shank as its stand-in, so a card cannot forbid
+one race's version of a stock unit. A race unit that arrives through the build
+rule (one in a cell no vanilla unit fills, or an exclusive unit) stays while
 something granted can build it, even when its own path is removed. An MLA
-player's add-on units follow the same rules through `addonUnitsFor`. What the
-co-op AI records of a removal is in [`tech-cards.md`](tech-cards.md), "Applying
-the card" and "A race's units".
+player's add-on units follow the same rules through `addonUnitsFor`, except that
+a held vanilla builder also counts for the build rule. What the co-op AI records
+of a removal is in [`tech-cards.md`](tech-cards.md), "Applying the card" and "A
+race's units".
 
 ### Jobs
 

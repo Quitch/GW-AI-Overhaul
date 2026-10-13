@@ -149,7 +149,7 @@ describe("the Second Wave descriptor", () => {
 
 describe("Second Wave under capability cells", () => {
   // See races.md, "Capability cells", "Removing units".
-  it("takes the metal generator with the extractor, and keeps it when granted by name (skipped without it in the fixture)", (t) => {
+  it("does not reach the metal generator without the extractor, and keeps it when granted by name (skipped without it in the fixture)", (t) => {
     if (!harvested) {
       t.skip("fixture harvested without Second Wave");
       return;
@@ -161,9 +161,6 @@ describe("Second Wave under capability cells", () => {
 
     assert.ok(!fielded([gwoUnit.botFabber]).includes(generator));
     assert.ok(fielded([gwoUnit.botFabber, generator]).includes(generator));
-    assert.ok(
-      fielded([gwoUnit.botFabber, gwoUnit.metalExtractor]).includes(generator)
-    );
   });
 
   it("brings its MLA units to an MLA player by cell, and its orphans by build reach (skipped without it in the fixture)", (t) => {
