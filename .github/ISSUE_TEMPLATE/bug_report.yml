@@ -1,5 +1,5 @@
-name: Bug report from the game
-description: DO NOT PICK THIS. Used by the in-game Report a Galactic War Bug button..
+name: Bug report (In-Game Button Usage Only)
+description: Used by the in-game Report a Galactic War Bug button..
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]

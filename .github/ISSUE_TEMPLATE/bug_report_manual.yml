@@ -1,5 +1,5 @@
-name: Bug report
-description: PICK THIS. Report unexpected behaviours manually via GitHub.
+name: Bug report (Pick this for manual reporting via GitHub)
+description: Report unexpected behaviours manually via GitHub.
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]
