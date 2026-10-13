@@ -287,6 +287,19 @@ published one when the caller holds none.
 held that the race owns, plus what `raceUnitsFor`, or `addonUnitsFor` for MLA,
 brings for them. `upgradeCard` reads it, so `requires` may name a race unit.
 
+**Removing units.** `inventory.removeUnits` drops every copy of each exact path
+from `inventory.units()`. It maps nothing by cell, so what a race player loses
+follows from the rule above. Removing a stock path removes the race units it
+stands for: without the Ant, a Legion player fields neither the Shank nor the
+Stoke. A race unit a card granted by name survives that, because `raceUnitsFor`
+keeps a held path with no vanilla cell. Removing a race path removes only such
+a grant: while the Ant is held, a Legion player still fields the Shank as the
+Ant's stand-in. So a card cannot forbid one race's version of a stock unit
+([#492](https://github.com/Quitch/GW-AI-Overhaul/issues/492)). The co-op AI's
+`strippedUnits` (`gw_play/coop_ai_effects.js`) lists only the paths a card
+passed to `removeUnits` that the inventory no longer holds, never the stand-ins
+that went with them.
+
 The two card tooltips (the hand hover and a star's "Which Units?") follow the
 same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race

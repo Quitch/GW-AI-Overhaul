@@ -119,7 +119,8 @@ Ordering matters and is not obvious:
   not `hasUnit`.
 - `removeUnits` strips _every_ copy of a unit. This is a GWO change to base
   behaviour. A `dull()` that removes a whole group can therefore wipe units that
-  other cards granted.
+  other cards granted. What it takes from a race player's army is in
+  [`races.md`](races.md), "Capability cells", under "Removing units".
 - `applyCards` is asynchronous, and calls its `done` argument when the pass has
   finished. Save the war, or send it to co-op players, only from `done`. Until
   the `dull()`s have run, the loadout's `buffCount` tag is set, and a war saved
