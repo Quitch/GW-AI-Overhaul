@@ -296,12 +296,13 @@ Stryker a Legion player keeps both. A race unit a card granted by name survives,
 because `raceUnitsFor` keeps a held path with no vanilla cell. Removing a race
 path removes only such a grant: while the Ant is held, a Legion player still
 fields the Shank as its stand-in, so a card cannot forbid one race's version of
-a stock unit ([#492](https://github.com/Quitch/GW-AI-Overhaul/issues/492)). A
-race unit in a cell no vanilla unit fills comes from build reach, so removing
-its path changes nothing while something fielded can build it. The co-op AI's
-`strippedUnits` (`gw_play/coop_ai_effects.js`) records the strings of an array
-passed to `removeUnits` that the inventory no longer holds, and never the race
-units that went with them.
+a stock unit. A race unit that arrives through the build rule (one in a cell no
+vanilla unit fills, or an exclusive unit) stays while something granted can
+build it, whatever paths are removed. An MLA player's add-on units follow the
+same rules through `addonUnitsFor`. The co-op AI's `strippedUnits`
+(`gw_play/coop_ai_effects.js`) records the strings of an array passed to
+`removeUnits` that the inventory no longer holds; `shared/coop_ai_fielded.js`
+turns them into the race units they stand for, less those the army still fields.
 
 The two card tooltips (the hand hover and a star's "Which Units?") follow the
 same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
