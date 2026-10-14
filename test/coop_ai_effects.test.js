@@ -108,10 +108,12 @@ const unitCells = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js"
 );
 
-// Third-party tech cards as the New-GW-Cards template writes them: one unlocks
-// the Slammer and names it nowhere else, so a co-op AI player can only judge it
-// by what applying it does; the other throws, as a broken card mod's might.
-const fixtureCard = (name, chance, buff) => ({
+// Third-party tech cards in the New-GW-Cards template's shape. One unlocks the
+// Slammer and names it nowhere else, so a co-op AI player can only judge it by
+// what applying it does; one throws, as a broken card mod's might; one writes
+// its own tag and params; one forbids units in dull() by a lone path and a
+// nested group.
+const fixtureCard = (name, chance, buff, dull = () => {}) => ({
   visible: () => true,
   summarize: () => "!LOC:" + name,
   describe: () => "!LOC:Fixture.",
@@ -120,7 +122,7 @@ const fixtureCard = (name, chance, buff) => ({
   getContext: gwoCard.getContext,
   deal: () => ({ chance }),
   buff,
-  dull: () => {},
+  dull,
 });
 const FIXTURE_CARDS = {
   fixture_coopai_effect: fixtureCard("Fixture Slammer Tech", 60, (inventory) =>
@@ -138,12 +140,11 @@ const FIXTURE_CARDS = {
       params.buffs = (params.buffs || 0) + 1;
     }
   ),
-  // Removes by a lone path and by a nested group, as removeUnits allows.
   fixture_coopai_strips: fixtureCard(
     "Fixture Stripping Tech",
     30,
+    (inventory) => inventory.addUnits([gwoUnit.dox, gwoUnit.jig]),
     (inventory) => {
-      inventory.addUnits([gwoUnit.dox, gwoUnit.jig]);
       inventory.removeUnits(gwoUnit.dox);
       inventory.removeUnits([gwoUnit.jig, [gwoUnit.metalExtractor]]);
     }
