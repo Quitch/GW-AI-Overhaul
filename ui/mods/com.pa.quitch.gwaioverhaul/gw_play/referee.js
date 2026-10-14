@@ -122,13 +122,22 @@
             deferred.resolve();
           };
 
-          // community mods will hook unmountAllMemoryFiles to remount client mods
-          api.file.unmountAllMemoryFiles().always(function () {
+          var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
               gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
             });
-          });
+          };
+
+          // A launch with one hire tore down at its start, and what has been
+          // mounted since belongs in the battle; a second teardown costs a
+          // client mod remount and a content rebuild. See architecture.md.
+          if (hiresThisLaunch === 1 && self.hireTornDown) {
+            mountCooked();
+          } else {
+            // community mods will hook unmountAllMemoryFiles to remount client mods
+            api.file.unmountAllMemoryFiles().always(mountCooked);
+          }
 
           return deferred.promise();
         };

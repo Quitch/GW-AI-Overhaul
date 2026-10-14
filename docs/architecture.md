@@ -127,6 +127,17 @@ steps in order:
    overlay would replace the referee's. `gw_lobby/specs.js` keeps the referee's
    copies. See [`specs.md`](specs.md), "The lobby overlay".
 
+Memory files outlive the battle that mounted them, so step 1 starts with
+`unmountAllMemoryFiles`: read as the base, the last battle's cooked specs would
+be modded a second time. The referee's `mountFiles` then mounts this battle's
+files. Each teardown costs seconds, because Community Mods remounts its client
+mods and rebuilds the content catalogue inside it (about 10 s per teardown,
+measured with ten server mods active). A launch that hired once therefore skips
+the teardown in `mountFiles`: everything mounted since the hire's own teardown -
+GW Server Mods' mounts, a stamped biome mod read for cooking - is wanted in the
+battle. A co-op host hires twice, with Community Mods' restrict and restore pass
+between the two, so its `mountFiles` keeps the teardown.
+
 Everything from the click to the hand-off to `connect_to_game` sits behind
 `gw_play/launch_progress.js`. That file wraps `model.fight` and shows a loading
 panel that `model.gwoLaunchProgress` drives. That object is a public surface:

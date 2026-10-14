@@ -479,7 +479,7 @@ alone would therefore arrive too late. A skirmish instead calls `api.file.zip.mo
 on each server mod at `/server_mods/<id>/` before `localserver.startGame`. Per
 `api/file.js`, zip mounts are memory files, and the local server it spawns inherits
 them. `referee.js`'s `mountFiles` does the same for the stamped mods. It runs after
-the `unmountAllMemoryFiles` there (which Community Mods turns into a client-mod
+the launch's last `unmountAllMemoryFiles` (which Community Mods turns into a client-mod
 remount) and before `gw_play` navigates to `connect_to_game`.
 
 Clients get the same files through `config.files`. `gw_play/referee_biomes.js` mounts the

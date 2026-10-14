@@ -341,6 +341,7 @@ define([
 
     // community mods will hook unmountAllMemoryFiles to remount client mods
     api.file.unmountAllMemoryFiles().always(function () {
+      self.hireTornDown = true;
       try {
         self.stage("!LOC:Processing tech cards");
         var game = self.game();
