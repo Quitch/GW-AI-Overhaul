@@ -116,8 +116,8 @@ define([
   var NONE_REMOVED = [];
 
   // See races.md, "Capability cells".
-  // A new list each call; the memo notices a new held or removed list, or a
-  // new length of either.
+  // A new list each call; the memo notices a new held list or a new length,
+  // or a new removed list (GWInventory replaces it, never changes it).
   var fieldedUnits = function (inventory) {
     var held = inventory.units();
     var removed = _.isFunction(inventory.removedUnits)
@@ -134,8 +134,7 @@ define([
       !same ||
       memo.held !== held ||
       memo.length !== held.length ||
-      memo.removed !== removed ||
-      memo.removedLength !== removed.length
+      memo.removed !== removed
     ) {
       var key = held.join("|") + "||" + removed.join("|");
       if (!same || memo.key !== key) {
@@ -156,7 +155,6 @@ define([
       memo.held = held;
       memo.length = held.length;
       memo.removed = removed;
-      memo.removedLength = removed.length;
       fieldedMemo = memo;
     }
 

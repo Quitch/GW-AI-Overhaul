@@ -441,8 +441,8 @@ define([
     granted,
     vanilla,
     race,
-    buildableOf,
-    removed
+    removed,
+    buildableOf
   ) {
     var buildable = _.isFunction(buildableOf)
       ? buildableOf
@@ -670,7 +670,7 @@ define([
       removed
     );
 
-    return buildableOrphans(granted, vanilla, race, undefined, removed);
+    return buildableOrphans(granted, vanilla, race, removed);
   };
 
   // What an MLA player fields with add-ons active: everything held, plus the
@@ -684,15 +684,9 @@ define([
       removed
     );
 
-    return buildableOrphans(
-      granted,
-      vanilla,
-      addon,
-      function (unit) {
-        return addon.buildableOf[unit] || vanilla.buildableOf[unit];
-      },
-      removed
-    );
+    return buildableOrphans(granted, vanilla, addon, removed, function (unit) {
+      return addon.buildableOf[unit] || vanilla.buildableOf[unit];
+    });
   };
 
   // The vanilla commander-class units among those held.

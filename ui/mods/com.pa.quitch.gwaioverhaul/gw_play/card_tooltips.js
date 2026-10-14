@@ -209,11 +209,17 @@
           var inventory = ownInventory();
           var race = gwoRaces.raceOf(inventory);
           var cells = gwoRaces.cellsOf(race);
-          // A dull()'s removal outlasts any card's buff() grant.
+          // Cards remove units in dull(), which outlasts any card's buff()
+          // grant, so a removed unit and its stand-ins never arrive.
+          var removed = removedUnits(inventory);
           var affectedUnits = sortUnitNames(
             _.difference(
-              gwoRaces.cardUnitsFor(race, units, cells),
-              removedUnits(inventory)
+              gwoRaces.cardUnitsFor(
+                race,
+                _.difference(_.flattenDeep([units]), removed),
+                cells
+              ),
+              removed
             ),
             race,
             playerUnitLookup(inventory, race, cells)

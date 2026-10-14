@@ -307,9 +307,9 @@ same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race
 units each stock unit in it stands for (`unit_cells.cardUnitsFor`).
 That lookup has no build reach, so a factory card lists Bugs' research factories but not their
-unlock tokens. A Commander-cell path is kept. A removed unit is left out: a
-`dull()`'s removal outlasts any card's `buff()` grant, so taking the card would
-not bring it back.
+unlock tokens. A Commander-cell path is kept. A removed unit, and the stand-ins
+of a removed stock unit, are left out: a `dull()`'s removal outlasts any card's
+`buff()` grant, so taking the card would not bring them.
 
 The tooltip names the units from the descriptor's `unitNames`, and otherwise
 from `gw_play/unit_names.js`. It highlights whatever `races.fieldedFor` would
