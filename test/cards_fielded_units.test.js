@@ -25,8 +25,9 @@ const oTank = "/pa/units/land/o_tank/o_tank.json";
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 
-const inventoryOf = (race, units) => ({
+const inventoryOf = (race, units, removed) => ({
   units: () => units,
+  removedUnits: () => removed || [],
   hasCard: () => false,
   maxCards: () => 4,
   getTag: (ns, key) =>
@@ -84,6 +85,39 @@ describe("fieldedUnits", () => {
       ),
       false
     );
+  });
+
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("leaves out a removed race unit the held paths would bring", () => {
+    races.setCells("fixture", fixtureIndex());
+    const fielded = cards.fieldedUnits(
+      inventoryOf("fixture", [gwoUnit.ant], [FX_TANK])
+    );
+
+    assert.ok(fielded.includes(gwoUnit.ant));
+    assert.equal(fielded.includes(FX_TANK), false);
+  });
+
+  it("reads no removals from an inventory without the list", () => {
+    races.setCells("fixture", fixtureIndex());
+    const inventory = inventoryOf("fixture", [gwoUnit.ant]);
+    delete inventory.removedUnits;
+
+    assert.ok(cards.fieldedUnits(inventory).includes(FX_TANK));
+  });
+
+  it("follows a removal that leaves the held list alone", () => {
+    races.setCells("fixture", fixtureIndex());
+    const held = [gwoUnit.ant];
+    let removed = [];
+    const inventory = inventoryOf("fixture", held);
+    inventory.removedUnits = () => removed;
+
+    assert.ok(cards.fieldedUnits(inventory).includes(FX_TANK));
+    removed = [FX_TANK];
+    assert.equal(cards.fieldedUnits(inventory).includes(FX_TANK), false);
+    removed = [];
+    assert.ok(cards.fieldedUnits(inventory).includes(FX_TANK));
   });
 
   it("adds an MLA player's add-on units once the add-on index is built", () => {

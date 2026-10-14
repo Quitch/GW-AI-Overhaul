@@ -271,23 +271,33 @@ define([
     return !isMla(raceId) && hasOwn(byId(raceId).unitPaths, path);
   };
 
-  // What a player of this race fields for the paths held, through its cells.
-  // See races.md, "Capability cells".
-  var fieldedFor = function (raceId, held, cells) {
+  // What a player of this race fields for the paths held, through its cells,
+  // less the paths `removed`. See races.md, "Capability cells".
+  var fieldedFor = function (raceId, held, cells, removed) {
+    var forbidden = _.isEmpty(removed)
+      ? undefined
+      : _.zipObject(removed, _.map(removed, _.constant(true)));
+
     if (!cells) {
-      return held || [];
+      return unitCells.allowed(held || [], forbidden);
     }
 
     if (isMla(raceId)) {
-      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race);
+      return unitCells.addonUnitsFor(
+        held,
+        cells.vanilla,
+        cells.race,
+        forbidden
+      );
     }
 
     return unitCells.buildableStockUnits(
-      unitCells.raceUnitsFor(held, cells.vanilla, cells.race),
+      unitCells.raceUnitsFor(held, cells.vanilla, cells.race, forbidden),
       held,
       stockUnitsFor(raceId),
       cells.vanilla,
-      cells.race
+      cells.race,
+      forbidden
     );
   };
 

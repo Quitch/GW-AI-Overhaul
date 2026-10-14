@@ -32,6 +32,7 @@ define([
   var GWInventory = function () {
     var self = this;
     self.units = ko.observableArray();
+    self.removedUnits = ko.observableArray(); // GWO - see races.md, "Capability cells"
     self.aiMods = ko.observableArray(); // GWO - add location to store changes to AI based on cards held
     self.mods = ko.observableArray();
     self.maxCards = ko.observable(0);
@@ -45,6 +46,7 @@ define([
       var self = this;
       config = config || {};
       self.units(config.units || []);
+      self.removedUnits(config.removedUnits || []);
       self.mods(config.mods || []);
       self.aiMods(config.aiMods || []);
       self.maxCards(_.isUndefined(config.maxCards) ? 0 : config.maxCards);
@@ -65,15 +67,22 @@ define([
     // table is not a list and names nothing
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(unitCells.unitPaths(add)));
+      var paths = unitCells.unitPaths(add);
+      self.units(self.units().concat(paths));
+      // GWO - an explicit grant lifts an earlier removal
+      self.removedUnits(_.difference(self.removedUnits(), paths));
     },
     // GWO - updated to remove multiple copies of a unit, from a list that may
-    // hold groups
+    // hold groups, and to record the removal so race translation honours it
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(unitCells.unitPaths(remove), function (unit) {
+      var paths = unitCells.unitPaths(remove);
+      _.forEach(paths, function (unit) {
         self.units.remove(unit);
       });
+      self.removedUnits(
+        _.union(self.removedUnits(), _.filter(paths, _.isString))
+      );
     },
     // GWO
     addAIMods: function (aiMods) {
@@ -195,6 +204,7 @@ define([
       };
 
       self.units([]);
+      self.removedUnits([]);
       self.mods([]);
       self.aiMods([]);
       self.maxCards(0);

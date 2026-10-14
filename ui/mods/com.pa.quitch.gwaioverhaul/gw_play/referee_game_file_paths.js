@@ -286,7 +286,8 @@ define([
 
   // The units a player's specs are built for, `extra` kept whole, and the
   // retag mods its commanders need. See races.md, "Capability cells".
-  // params: units, extra, cells, race, isMla, commanders, unitCells, gwoRaces.
+  // params: units, removed, extra, cells, race, isMla, commanders, unitCells,
+  // gwoRaces.
   var specPlan = function (params) {
     var cells = params.cells;
     var gwoRaces = params.gwoRaces;
@@ -294,7 +295,8 @@ define([
     var specs = gwoRaces.fieldedFor(
       params.race,
       gwoRaces.ownedPaths(params.race, params.units, cells).concat(extra),
-      cells
+      cells,
+      _.difference(params.removed || [], extra)
     );
     var keptVanilla =
       cells && !params.isMla

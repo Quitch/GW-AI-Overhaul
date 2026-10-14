@@ -88,6 +88,7 @@ define([
       var playerX1AIUnitMap = GW.specs.genAIUnitMap(maps.x1, playerTag);
       var plan = gameFilePaths.specPlan({
         units: inventory.units(),
+        removed: inventory.removedUnits(),
         extra: model.gwoSpecs,
         cells: cells,
         race: race,

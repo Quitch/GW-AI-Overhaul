@@ -83,6 +83,18 @@ describe("coop_ai_fielded inventory", () => {
     assert.equal(saved.units.length, 3, "the saved inventory is left as is");
   });
 
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("leaves out a removed race unit the vanilla ones held stand for", () => {
+    const fielded = viewOf("legion", LEGION).inventory({
+      units: [LEGION_COMMANDER, gwoUnit.vehicleFactory, gwoUnit.ant],
+      removedUnits: [gwoUnit.legion.shank],
+      mods: [],
+    });
+
+    assert.ok(!fielded.units.includes(gwoUnit.legion.shank));
+    assert.ok(fielded.units.includes(gwoUnit.legion.stoke));
+  });
+
   it("lands a vanilla unit's mod on each race unit it stands for", () => {
     const fielded = viewOf("legion", LEGION).inventory({
       units: [LEGION_COMMANDER, gwoUnit.vehicleFactory, gwoUnit.ant],

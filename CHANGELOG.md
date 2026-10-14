@@ -8,6 +8,7 @@
 
 ### Bugfix
 
+- A card that removes a unit now also removes it for Legion, Bugs, Exiles, and add-on players when another unit they hold would have brought it in
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 
 ## v7.6.0 - 2026-10-03

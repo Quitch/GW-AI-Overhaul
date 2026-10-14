@@ -395,6 +395,7 @@ describe("gw_inventory - the inventory itself", () => {
   it("saves what it loaded, and the prototype's methods with it", () => {
     const config = {
       units: ["u"],
+      removedUnits: ["r"],
       aiMods: [{ id: "m" }],
       mods: ["mod"],
       maxCards: 3,
@@ -450,6 +451,43 @@ describe("gw_inventory - the inventory itself", () => {
     inventory.addUnits([{ table: "f" }, "g"]);
     inventory.removeUnits({ table: "a" });
     assert.deepEqual(inventory.units(), ["a", "c", "g"]);
+  });
+
+  // See races.md, "Capability cells": race translation reads the removals.
+  it("records each removed path once, groups flattened", () => {
+    const inventory = new GWInventory();
+    inventory.load({ units: ["a", "b"] });
+
+    inventory.removeUnits([["a", ["x"]], "a"]);
+    inventory.removeUnits({ table: "b" });
+
+    assert.deepEqual(inventory.removedUnits(), ["a", "x"]);
+    assert.deepEqual(inventory.units(), ["b"]);
+  });
+
+  it("lifts a removal when the path is added again", () => {
+    const inventory = new GWInventory();
+    inventory.load({});
+
+    inventory.removeUnits(["a", "b"]);
+    inventory.addUnits([["a"]]);
+
+    assert.deepEqual(inventory.removedUnits(), ["b"]);
+    assert.deepEqual(inventory.units(), ["a"]);
+  });
+
+  it("starts each apply with no removals, and a dull's removal outlasts a buff's grant", () => {
+    cardModules.gwc_forbid = {
+      buff: (inventory) => inventory.addUnits(["a"]),
+      dull: (inventory) => inventory.removeUnits(["a"]),
+    };
+    const inventory = inventoryHolding([{ id: "gwc_forbid" }]);
+    inventory.removedUnits(["stale"]);
+
+    inventory.applyCards();
+
+    assert.deepEqual(inventory.removedUnits(), ["a"]);
+    assert.deepEqual(inventory.units(), []);
   });
 
   it("finds a held card, but not a unique one", () => {

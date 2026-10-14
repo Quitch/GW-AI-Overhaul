@@ -349,13 +349,14 @@ describe("specPlan", () => {
   const gwoRaces = {
     ownedPaths: (race, paths) =>
       paths.filter((unit) => !unit.startsWith("foreign")),
-    fieldedFor: (race, held, cells) => {
+    fieldedFor: (race, held, cells, removed) => {
+      const kept = held.filter((unit) => !removed.includes(unit));
       if (!cells) {
-        return held;
+        return kept;
       }
       return race === "mla"
-        ? held.concat("addon")
-        : held.map((unit) => "race:" + unit);
+        ? kept.concat("addon")
+        : kept.map((unit) => "race:" + unit);
     },
     commanderModsFor: (race, commander) => [race + " retags " + commander],
     unitRetagMods: (race, unit) => [race + " keeps " + unit],
@@ -399,6 +400,19 @@ describe("specPlan", () => {
       "legion retags ai_cdr.json",
       "legion keeps colonel_cdr.json",
     ]);
+  });
+
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("passes the removed units on, less any extra spec", () => {
+    const result = plan({
+      units: ["bot.json", "tank.json"],
+      removed: ["tank.json", "colonel_cdr.json"],
+      extra: ["colonel_cdr.json"],
+      cells: {},
+      race: "legion",
+      isMla: false,
+    });
+    assert.deepEqual(result.specs, ["race:bot.json", "race:colonel_cdr.json"]);
   });
 
   it("drops another race's units from the inventory but keeps every extra spec", () => {

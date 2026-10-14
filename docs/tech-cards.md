@@ -119,7 +119,10 @@ Ordering matters and is not obvious:
   not `hasUnit`.
 - `removeUnits` strips _every_ copy of a unit. This is a GWO change to base
   behaviour. A `dull()` that removes a whole group can therefore wipe units that
-  other cards granted.
+  other cards granted. The removal also holds for a race player: a removed race
+  unit is not fielded as the stand-in of a stock unit still held. A later
+  `addUnits` of the same path lifts it ([`races.md`](races.md), "Capability
+  cells", "Removed units").
 - `applyCards` is asynchronous, and calls its `done` argument when the pass has
   finished. Save the war, or send it to co-op players, only from `done`. Until
   the `dull()`s have run, the loadout's `buffCount` tag is set, and a war saved
@@ -880,6 +883,7 @@ not the host's. So a card must:
   and that nothing grants back, are the ones an AI treats as forbidden: it
   never counts a stat mod on them as worth something later. All `buff()`s run
   before any `dull()`, so a `dull()` that removes units forbids them for good.
+  That covers a race unit a held stock unit would otherwise stand for.
 
 Register a card in `model.gwoCardsToUnits` only for the units it affects. A
 card that names units there, yet changes nothing the AI can see, is taken to
