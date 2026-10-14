@@ -129,10 +129,8 @@
             });
           };
 
-          // A launch with one hire tore down at its start, and what has been
-          // mounted since belongs in the battle; a second teardown costs a
-          // client mod remount and a content rebuild. See architecture.md.
-          if (hiresThisLaunch === 1 && self.hireTornDown) {
+          // See architecture.md, "Battle launch, end to end".
+          if (hiresThisLaunch === 1 && !self.cookedStampsMounted) {
             mountCooked();
           } else {
             // community mods will hook unmountAllMemoryFiles to remount client mods
