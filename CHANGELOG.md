@@ -8,8 +8,11 @@
 
 ### Bugfix
 
-- A card that removes a unit now also removes it for Legion, Bugs, Exiles, and add-on players when another unit they hold would have brought it in
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+
+### API
+
+- A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it, until a card adds that unit back
 
 ## v7.6.0 - 2026-10-03
 

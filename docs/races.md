@@ -297,8 +297,7 @@ only it builds. So a `dull()` that removes
 and without the Shank. An `addUnits` of the same path later in the pass lifts
 the removal. Every `buff()` runs before any `dull()`, so a `dull()`'s removal
 still outlasts a `buff()`'s grant. `applyCards` clears the list with
-`units()`. The referees' `specPlan` never subtracts an extra spec (the war's
-`model.gwoSpecs` and the commanders). Every caller of `fieldedFor` that reads an
+`units()`. The referees' `specPlan` never subtracts an extra spec: the war's `model.gwoSpecs` and, on the host, the ally's and the co-op AIs' commanders. Every caller of `fieldedFor` that reads an
 inventory passes the list: `gwoCard.fieldedUnits`, `specPlan`, the tooltips, and
 the co-op AI's view of a saved inventory. `races.reachableUnits` does not: it is
 what the race can ever field.
@@ -308,7 +307,8 @@ same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race
 units each stock unit in it stands for (`unit_cells.cardUnitsFor`).
 That lookup has no build reach, so a factory card lists Bugs' research factories but not their
-unlock tokens. A Commander-cell path is kept.
+unlock tokens. A Commander-cell path is kept. A removed unit the entry does not
+name itself is left out, since taking the card would not bring it back.
 
 The tooltip names the units from the descriptor's `unitNames`, and otherwise
 from `gw_play/unit_names.js`. It highlights whatever `races.fieldedFor` would

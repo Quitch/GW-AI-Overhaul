@@ -422,12 +422,12 @@ describe("raceUnitsFor", () => {
         [ANT, FACTORY, "/pa/units/mod/x.json"],
         vanilla,
         race,
-        { [FX_TANK]: true, "/pa/units/mod/x.json": true }
+        [FX_TANK, "/pa/units/mod/x.json"]
       ),
       [FX_FACTORY]
     );
     assert.deepEqual(
-      cells.raceUnitsFor([ANT, FACTORY], vanilla, race, {}),
+      cells.raceUnitsFor([ANT, FACTORY], vanilla, race, []),
       cells.raceUnitsFor([ANT, FACTORY], vanilla, race)
     );
   });
@@ -1024,17 +1024,18 @@ describe("exclusive units and add-ons", () => {
 
   it("stops a forbidden race builder granting what only it builds", () => {
     assert.deepEqual(
-      cells.raceUnitsFor([FABBER_ADV], v, r, { [FX_FABBER_ADV]: true }),
+      cells.raceUnitsFor([FABBER_ADV], v, r, [FX_FABBER_ADV]),
       []
     );
-    assert.deepEqual(
-      cells.raceUnitsFor([FABBER_ADV], v, r, { [GANTRY_FX]: true }),
-      [FX_FABBER_ADV, FX_TOWER]
-    );
-    assert.deepEqual(
-      cells.raceUnitsFor([FABBER_ADV], v, r, { [EXCLUSIVE]: true }),
-      [FX_FABBER_ADV, GANTRY_FX, FX_TOWER]
-    );
+    assert.deepEqual(cells.raceUnitsFor([FABBER_ADV], v, r, [GANTRY_FX]), [
+      FX_FABBER_ADV,
+      FX_TOWER,
+    ]);
+    assert.deepEqual(cells.raceUnitsFor([FABBER_ADV], v, r, [EXCLUSIVE]), [
+      FX_FABBER_ADV,
+      GANTRY_FX,
+      FX_TOWER,
+    ]);
   });
 
   it("treats a cell held only by NoBuild vanilla specs as unfilled", () => {
@@ -1158,15 +1159,14 @@ describe("exclusive units and add-ons", () => {
     });
 
     it("drops a forbidden add-on stand-in, and what only a forbidden builder reaches", () => {
-      assert.deepEqual(
-        cells.addonUnitsFor([ANT, DOX], v, a, { [ADDON_TANK]: true }),
-        [ANT, DOX]
-      );
-      assert.deepEqual(
-        cells.addonUnitsFor([FABBER_ADV], v, a, { [GANTRY]: true }),
-        [FABBER_ADV]
-      );
-      assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, { [DOX]: true }), [
+      assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, [ADDON_TANK]), [
+        ANT,
+        DOX,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([FABBER_ADV], v, a, [GANTRY]), [
+        FABBER_ADV,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, [DOX]), [
         ANT,
         ADDON_TANK,
       ]);

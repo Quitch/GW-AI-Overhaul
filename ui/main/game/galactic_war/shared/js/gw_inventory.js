@@ -82,9 +82,14 @@ define([
       _.forEach(paths, function (unit) {
         self.units.remove(unit);
       });
-      self.removedUnits(
-        _.union(self.removedUnits(), _.filter(paths, _.isString))
-      );
+      var added = _(paths)
+        .filter(_.isString)
+        .uniq()
+        .difference(self.removedUnits())
+        .value();
+      if (added.length) {
+        self.removedUnits(self.removedUnits().concat(added));
+      }
     },
     // GWO
     addAIMods: function (aiMods) {

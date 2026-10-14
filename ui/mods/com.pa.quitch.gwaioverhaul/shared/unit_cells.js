@@ -287,14 +287,8 @@ define([
     return _.endsWith(cell || "", "/" + COMMANDER);
   };
 
-  // `forbidden` is a `{path: true}` set of removed units, or undefined.
-  var allowed = function (paths, forbidden) {
-    if (!forbidden) {
-      return paths;
-    }
-    return _.reject(paths, function (path) {
-      return forbidden[path] === true;
-    });
+  var allowed = function (paths, removed) {
+    return _.isEmpty(removed) ? paths : _.difference(paths, removed);
   };
 
   var commandersOf = function (index) {
@@ -448,7 +442,7 @@ define([
     vanilla,
     race,
     buildableOf,
-    forbidden
+    removed
   ) {
     var buildable = _.isFunction(buildableOf)
       ? buildableOf
@@ -457,7 +451,7 @@ define([
         };
     var exclusive = race.exclusive;
     var orphans = _.filter(
-      allowed(race.units.concat(_.keys(exclusive)), forbidden),
+      allowed(race.units.concat(_.keys(exclusive)), removed),
       function (unit) {
         var cell = race.cellOf[unit];
         return (
@@ -662,9 +656,9 @@ define([
       .value();
   };
 
-  // What a race player fields for the vanilla units held, less `forbidden`,
+  // What a race player fields for the vanilla units held, less `removed`,
   // which goes before build reach. See races.md, "Capability cells".
-  var raceUnitsFor = function (heldPaths, vanilla, race, forbidden) {
+  var raceUnitsFor = function (heldPaths, vanilla, race, removed) {
     var kept = _.filter(heldPaths || [], function (path) {
       var cell = vanilla.cellOf[path];
       return _.isUndefined(cell)
@@ -673,21 +667,21 @@ define([
     });
     var granted = allowed(
       _.uniq(kept.concat(heldStandIns(heldPaths, vanilla, race))),
-      forbidden
+      removed
     );
 
-    return buildableOrphans(granted, vanilla, race, undefined, forbidden);
+    return buildableOrphans(granted, vanilla, race, undefined, removed);
   };
 
   // What an MLA player fields with add-ons active: everything held, plus the
   // add-on units each held vanilla unit stands for, plus what those and the
-  // held vanilla builders can build, less `forbidden`. See races.md,
+  // held vanilla builders can build, less `removed`. See races.md,
   // "Add-ons".
-  var addonUnitsFor = function (heldPaths, vanilla, addon, forbidden) {
+  var addonUnitsFor = function (heldPaths, vanilla, addon, removed) {
     var held = _.uniq(heldPaths || []);
     var granted = allowed(
       _.uniq(held.concat(heldStandIns(held, vanilla, addon))),
-      forbidden
+      removed
     );
 
     return buildableOrphans(
@@ -697,7 +691,7 @@ define([
       function (unit) {
         return addon.buildableOf[unit] || vanilla.buildableOf[unit];
       },
-      forbidden
+      removed
     );
   };
 

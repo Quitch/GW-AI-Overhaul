@@ -274,25 +274,16 @@ define([
   // What a player of this race fields for the paths held, through its cells,
   // less the paths `removed`. See races.md, "Capability cells".
   var fieldedFor = function (raceId, held, cells, removed) {
-    var forbidden = _.isEmpty(removed)
-      ? undefined
-      : _.zipObject(removed, _.map(removed, _.constant(true)));
-
     if (!cells) {
-      return unitCells.allowed(held || [], forbidden);
+      return unitCells.allowed(held || [], removed);
     }
 
     if (isMla(raceId)) {
-      return unitCells.addonUnitsFor(
-        held,
-        cells.vanilla,
-        cells.race,
-        forbidden
-      );
+      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race, removed);
     }
 
     return unitCells.buildableStockUnits(
-      unitCells.raceUnitsFor(held, cells.vanilla, cells.race, forbidden),
+      unitCells.raceUnitsFor(held, cells.vanilla, cells.race, removed),
       held,
       stockUnitsFor(raceId),
       cells.vanilla,
