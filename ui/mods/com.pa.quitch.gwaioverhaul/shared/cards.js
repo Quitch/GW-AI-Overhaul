@@ -145,9 +145,12 @@ define([
           cells: cells,
           foreign: foreign,
           key: key,
-          units: cells
-            ? _.union(owned, races.fieldedFor(race, owned, cells, removed))
-            : owned,
+          units: _.difference(
+            cells
+              ? _.union(owned, races.fieldedFor(race, owned, cells, removed))
+              : owned,
+            removed
+          ),
         };
       }
       memo.held = held;

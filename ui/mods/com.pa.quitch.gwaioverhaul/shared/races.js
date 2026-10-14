@@ -273,9 +273,11 @@ define([
 
   // What a player of this race fields for the paths held, through its cells,
   // less the paths `removed`. See races.md, "Capability cells".
-  var fieldedFor = function (raceId, held, cells, removed) {
+  var fieldedFor = function (raceId, heldPaths, cells, removed) {
+    var held = unitCells.allowed(heldPaths || [], removed);
+
     if (!cells) {
-      return unitCells.allowed(held || [], removed);
+      return held;
     }
 
     if (isMla(raceId)) {

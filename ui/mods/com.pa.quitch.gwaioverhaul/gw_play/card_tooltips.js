@@ -209,13 +209,12 @@
           var inventory = ownInventory();
           var race = gwoRaces.raceOf(inventory);
           var cells = gwoRaces.cellsOf(race);
-          // A removed unit the card does not name itself never arrives.
-          var removed = _.difference(
-            removedUnits(inventory),
-            _.flattenDeep([units])
-          );
+          // A dull()'s removal outlasts any card's buff() grant.
           var affectedUnits = sortUnitNames(
-            _.difference(gwoRaces.cardUnitsFor(race, units, cells), removed),
+            _.difference(
+              gwoRaces.cardUnitsFor(race, units, cells),
+              removedUnits(inventory)
+            ),
             race,
             playerUnitLookup(inventory, race, cells)
           );

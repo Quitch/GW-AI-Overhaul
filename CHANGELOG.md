@@ -12,7 +12,7 @@
 
 ### API
 
-- A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it, until a card adds that unit back
+- A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
 
 ## v7.6.0 - 2026-10-03
 
