@@ -4,10 +4,9 @@
 // every host apply of a co-op record is. Applies run one at a time, each
 // against a timeout, and are cached by what they apply. See tech-cards.md,
 // "How AI players judge a card".
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
-], function (gwoBank, unitCells) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
+  gwoBank
+) {
   // An apply depends on the cards and their tags alone: applyCards rebuilds
   // everything else from them.
   var digestOf = function (saved) {
@@ -55,26 +54,10 @@ define([
     });
   };
 
-  // A GWInventory that notes every unit its cards remove.
-  var recording = function (GWInventory, removed) {
-    return function () {
-      var inventory = new GWInventory();
-      var removeUnits = inventory.removeUnits;
-      inventory.removeUnits = function (units) {
-        removed.push.apply(
-          removed,
-          _.filter(unitCells.unitPaths(units), _.isString)
-        );
-        return removeUnits.apply(inventory, arguments);
-      };
-      return inventory;
-    };
-  };
-
   // Non-enumerable, so no copy or save of the result carries it.
-  var withStripped = function (applied, removed) {
+  var withStripped = function (applied) {
     Object.defineProperty(applied, "strippedUnits", {
-      value: _.difference(_.uniq(removed), applied.units || []),
+      value: _.difference(applied.removedUnits || [], applied.units || []),
     });
     return applied;
   };
@@ -93,7 +76,6 @@ define([
     var applyOnce = function (saved) {
       return new Promise(function (resolve, reject) {
         var held;
-        var removed = [];
         var timer = setTimeout(function () {
           if (held) {
             held.abandon();
@@ -103,12 +85,12 @@ define([
 
         try {
           held = gwoBank.applyInventoryHeld(
-            recording(params.GWInventory, removed),
+            params.GWInventory,
             saved,
             params.stockBank,
             function (inventory) {
               clearTimeout(timer);
-              resolve(withStripped(plainSave(inventory), removed));
+              resolve(withStripped(plainSave(inventory)));
             }
           );
         } catch (error) {

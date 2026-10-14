@@ -599,11 +599,12 @@ Four rules keep this affordable and safe:
   way; the team factor reads its units, mods and commander straight off the
   observables, with no copy.
 
-The apply also notes every unit that a card's `removeUnits` takes away. Those
-that no card grants back are the inventory's **stripped** units: the units a
-loadout's `dull()` forbids, such as Tourist Commander's extractors and Jig. They
-ride on the applied inventory as `strippedUnits`, which is not enumerable, so no
-copy, save, or stored record carries them.
+The applied inventory's `removedUnits` lists every unit that a card's
+`removeUnits` took away. Those that no card grants back are the inventory's
+**stripped** units: the units a loadout's `dull()` forbids, such as Tourist
+Commander's extractors and Jig. They ride on the applied inventory as
+`strippedUnits`, which is not enumerable, so no copy, save, or stored record
+carries them.
 
 ### Scoring
 
