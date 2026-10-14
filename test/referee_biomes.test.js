@@ -92,6 +92,7 @@ describe("referee biome step", () => {
     assert.equal(outcome.state, "resolved");
     assert.deepEqual(ref.biomeMods, []);
     assert.deepEqual(ref.biomeServed, {});
+    assert.equal(ref.cookedStampsMounted, false);
     assert.deepEqual(ref.stages, []);
   });
 
@@ -137,6 +138,21 @@ describe("referee biome step", () => {
       served_biome: SERVED,
     });
     assert.deepEqual(ref.stages, ["!LOC:Processing biome mods"]);
+    assert.equal(ref.cookedStampsMounted, true);
+  });
+
+  it("mounts nothing to cook when GW Server Mods serves every stamp", () => {
+    const ref = refereeFor({
+      planets: [planet("served_biome")],
+      gwoBiomeMods: [SERVED],
+    });
+    biomeMods.serve = () =>
+      resolved({ served: { served_biome: SERVED }, missing: [] });
+
+    const outcome = outcomeOf(generateBiomes.call(ref));
+
+    assert.equal(outcome.state, "resolved");
+    assert.equal(ref.cookedStampsMounted, false);
   });
 
   it("stamps an unstamped system with the providers of its modded biomes", () => {

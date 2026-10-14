@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Solo Galactic War battles launch sooner, by about 10 seconds with faction mods active: your mods are reloaded once while the battle is prepared instead of twice
 - The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
 
 ### Bugfix

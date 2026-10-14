@@ -122,13 +122,20 @@
             deferred.resolve();
           };
 
-          // community mods will hook unmountAllMemoryFiles to remount client mods
-          api.file.unmountAllMemoryFiles().always(function () {
+          var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
               gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
             });
-          });
+          };
+
+          // See architecture.md, "Battle launch, end to end".
+          if (hiresThisLaunch === 1 && !self.cookedStampsMounted) {
+            mountCooked();
+          } else {
+            // community mods will hook unmountAllMemoryFiles to remount client mods
+            api.file.unmountAllMemoryFiles().always(mountCooked);
+          }
 
           return deferred.promise();
         };
