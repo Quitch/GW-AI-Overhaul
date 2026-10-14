@@ -296,8 +296,7 @@ define([
       held,
       stockUnitsFor(raceId),
       cells.vanilla,
-      cells.race,
-      forbidden
+      cells.race
     );
   };
 

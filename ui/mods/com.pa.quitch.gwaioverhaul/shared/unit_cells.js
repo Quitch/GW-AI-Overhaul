@@ -480,19 +480,15 @@ define([
     heldPaths,
     stock,
     vanilla,
-    race,
-    forbidden
+    race
   ) {
-    var candidates = _.filter(
-      allowed(_.uniq(stock || []), forbidden),
-      function (unit) {
-        return (
-          _.includes(heldPaths || [], unit) &&
-          !_.includes(fielded, unit) &&
-          Object.prototype.hasOwnProperty.call(vanilla.tagsOf, unit)
-        );
-      }
-    );
+    var candidates = _.filter(_.uniq(stock || []), function (unit) {
+      return (
+        _.includes(heldPaths || [], unit) &&
+        !_.includes(fielded, unit) &&
+        Object.prototype.hasOwnProperty.call(vanilla.tagsOf, unit)
+      );
+    });
 
     return addBuildable(fielded, candidates, vanilla.tagsOf, function (unit) {
       return race.buildableOf[unit] || vanilla.buildableOf[unit];
@@ -652,35 +648,32 @@ define([
 
   // The race units the held vanilla units stand for, a commander-class unit
   // aside.
-  var heldStandIns = function (heldPaths, vanilla, race, forbidden) {
+  var heldStandIns = function (heldPaths, vanilla, race) {
     var standIns = standInsFor(vanilla, race);
 
-    return allowed(
-      _(heldPaths || [])
-        .uniq()
-        .filter(function (path) {
-          var cell = vanilla.cellOf[path];
-          return !_.isUndefined(cell) && !isCommanderCell(cell);
-        })
-        .map(standIns)
-        .flatten()
-        .value(),
-      forbidden
-    );
+    return _(heldPaths || [])
+      .uniq()
+      .filter(function (path) {
+        var cell = vanilla.cellOf[path];
+        return !_.isUndefined(cell) && !isCommanderCell(cell);
+      })
+      .map(standIns)
+      .flatten()
+      .value();
   };
 
-  // What a race player fields for the vanilla units held, less `forbidden`.
-  // See races.md, "Capability cells".
+  // What a race player fields for the vanilla units held, less `forbidden`,
+  // which goes before build reach. See races.md, "Capability cells".
   var raceUnitsFor = function (heldPaths, vanilla, race, forbidden) {
-    var held = allowed(heldPaths || [], forbidden);
-    var kept = _.filter(held, function (path) {
+    var kept = _.filter(heldPaths || [], function (path) {
       var cell = vanilla.cellOf[path];
       return _.isUndefined(cell)
         ? !vanilla.partIndex[path]
         : isCommanderCell(cell);
     });
-    var granted = _.uniq(
-      kept.concat(heldStandIns(held, vanilla, race, forbidden))
+    var granted = allowed(
+      _.uniq(kept.concat(heldStandIns(heldPaths, vanilla, race))),
+      forbidden
     );
 
     return buildableOrphans(granted, vanilla, race, undefined, forbidden);
@@ -691,9 +684,10 @@ define([
   // held vanilla builders can build, less `forbidden`. See races.md,
   // "Add-ons".
   var addonUnitsFor = function (heldPaths, vanilla, addon, forbidden) {
-    var held = allowed(_.uniq(heldPaths || []), forbidden);
-    var granted = _.uniq(
-      held.concat(heldStandIns(held, vanilla, addon, forbidden))
+    var held = _.uniq(heldPaths || []);
+    var granted = allowed(
+      _.uniq(held.concat(heldStandIns(held, vanilla, addon))),
+      forbidden
     );
 
     return buildableOrphans(

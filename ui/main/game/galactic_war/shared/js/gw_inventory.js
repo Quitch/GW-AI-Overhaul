@@ -70,7 +70,9 @@ define([
       var paths = unitCells.unitPaths(add);
       self.units(self.units().concat(paths));
       // GWO - an explicit grant lifts an earlier removal
-      self.removedUnits(_.difference(self.removedUnits(), paths));
+      if (self.removedUnits().length) {
+        self.removedUnits(_.difference(self.removedUnits(), paths));
+      }
     },
     // GWO - updated to remove multiple copies of a unit, from a list that may
     // hold groups, and to record the removal so race translation honours it

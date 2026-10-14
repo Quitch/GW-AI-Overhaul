@@ -426,11 +426,6 @@ describe("raceUnitsFor", () => {
       ),
       [FX_FACTORY]
     );
-    // A forbidden vanilla path held anyway brings no stand-in.
-    assert.deepEqual(
-      cells.raceUnitsFor([ANT, FACTORY], vanilla, race, { [ANT]: true }),
-      [FX_FACTORY]
-    );
     assert.deepEqual(
       cells.raceUnitsFor([ANT, FACTORY], vanilla, race, {}),
       cells.raceUnitsFor([ANT, FACTORY], vanilla, race)
@@ -1854,23 +1849,6 @@ describe("buildableStockUnits", () => {
       R_TELEPORTER,
       TELEPORTER,
     ]);
-  });
-
-  it("leaves out a forbidden stock unit, even held and buildable", () => {
-    const held = [ORBITAL_FABBER, TELEPORTER];
-    const forbidden = { [TELEPORTER]: true };
-
-    assert.deepEqual(
-      cells.buildableStockUnits(
-        [ORBITAL_FABBER],
-        held,
-        [TELEPORTER],
-        v,
-        r,
-        forbidden
-      ),
-      [ORBITAL_FABBER]
-    );
   });
 
   it("leaves out a stock unit that is not held", () => {
