@@ -104,6 +104,9 @@ const coopAiDriver = loadCouiModule(
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
+const unitCells = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js"
+);
 
 // Third-party tech cards as the New-GW-Cards template writes them: one unlocks
 // the Slammer and names it nowhere else, so a co-op AI player can only judge it
@@ -133,6 +136,16 @@ const FIXTURE_CARDS = {
     (inventory, params) => {
       inventory.setTag("", "buffs", inventory.getTag("", "buffs", 0) + 1);
       params.buffs = (params.buffs || 0) + 1;
+    }
+  ),
+  // Removes by a lone path and by a nested group, as removeUnits allows.
+  fixture_coopai_strips: fixtureCard(
+    "Fixture Stripping Tech",
+    30,
+    (inventory) => {
+      inventory.addUnits([gwoUnit.dox, gwoUnit.jig]);
+      inventory.removeUnits(gwoUnit.dox);
+      inventory.removeUnits([gwoUnit.jig, [gwoUnit.metalExtractor]]);
     }
   ),
 };
@@ -309,6 +322,18 @@ describe("coop_ai_effects", () => {
     );
   });
 
+  it("lists units removed by a lone path or a nested group", async () => {
+    const applied = await effects().apply({
+      cards: BOT_AI.cards.concat([{ id: "fixture_coopai_strips" }]),
+      tags: BOT_AI.tags,
+    });
+
+    assert.deepEqual(
+      applied.strippedUnits.slice().sort(),
+      [gwoUnit.dox, gwoUnit.jig, gwoUnit.metalExtractor].sort()
+    );
+  });
+
   it("values an upgrade for a unit the AI's loadout forbids at nothing later", async () => {
     const run = effects();
     const tourist = {
@@ -414,9 +439,9 @@ const applyWholeCopy = (saved) =>
     const inventory = new GWInventory();
     const removeUnits = inventory.removeUnits;
     inventory.removeUnits = function (units) {
-      if (Array.isArray(units)) {
-        removed.push(...units.filter((unit) => typeof unit === "string"));
-      }
+      removed.push(
+        ...unitCells.unitPaths(units).filter((unit) => typeof unit === "string")
+      );
       return removeUnits.apply(inventory, arguments);
     };
     inventory.load(_.cloneDeep(saved));
