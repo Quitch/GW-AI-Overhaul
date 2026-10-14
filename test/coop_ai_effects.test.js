@@ -480,7 +480,8 @@ const minion = (name) => ({
   personality: { micro_type: 2, personality_tags: ["Default"] },
 });
 // A late war's hand: a loadout, tech whose mods run to some 2000 descriptors,
-// two Sub Commanders, and a card that writes to its tag and its params.
+// two Sub Commanders, a card that writes to its tag and its params, and one
+// that forbids units by a lone path and a nested group.
 const LATE_WAR = {
   cards: [
     { id: "gwaio_start_terminal" },
@@ -491,6 +492,7 @@ const LATE_WAR = {
     { id: "gwc_minion", minion: minion("Alpha"), unique: 1.25 },
     { id: "gwc_minion", minion: minion("Beta"), unique: 1.5 },
     { id: "fixture_coopai_writes" },
+    { id: "fixture_coopai_strips" },
   ],
   tags: BOT_AI.tags,
 };
