@@ -296,7 +296,7 @@ define([
       params.race,
       gwoRaces.ownedPaths(params.race, params.units, cells).concat(extra),
       cells,
-      _.difference(params.removed || [], extra)
+      params.removed || []
     );
     var keptVanilla =
       cells && !params.isMla

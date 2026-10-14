@@ -656,8 +656,9 @@ define([
       .value();
   };
 
-  // What a race player fields for the vanilla units held, less `removed`,
-  // which goes before build reach. See races.md, "Capability cells".
+  // What a race player fields for the vanilla units held. A `removed` path is
+  // neither a stand-in nor reached by build, but a held one is kept. See
+  // races.md, "Capability cells".
   var raceUnitsFor = function (heldPaths, vanilla, race, removed) {
     var kept = _.filter(heldPaths || [], function (path) {
       var cell = vanilla.cellOf[path];
@@ -665,9 +666,8 @@ define([
         ? !vanilla.partIndex[path]
         : isCommanderCell(cell);
     });
-    var granted = allowed(
-      _.uniq(kept.concat(heldStandIns(heldPaths, vanilla, race))),
-      removed
+    var granted = _.uniq(
+      kept.concat(allowed(heldStandIns(heldPaths, vanilla, race), removed))
     );
 
     return buildableOrphans(granted, vanilla, race, removed);
@@ -675,13 +675,12 @@ define([
 
   // What an MLA player fields with add-ons active: everything held, plus the
   // add-on units each held vanilla unit stands for, plus what those and the
-  // held vanilla builders can build, less `removed`. See races.md,
-  // "Add-ons".
+  // held vanilla builders can build. A `removed` path is neither a stand-in
+  // nor reached by build, but a held one is kept. See races.md, "Add-ons".
   var addonUnitsFor = function (heldPaths, vanilla, addon, removed) {
     var held = _.uniq(heldPaths || []);
-    var granted = allowed(
-      _.uniq(held.concat(heldStandIns(held, vanilla, addon))),
-      removed
+    var granted = _.uniq(
+      held.concat(allowed(heldStandIns(held, vanilla, addon), removed))
     );
 
     return buildableOrphans(granted, vanilla, addon, removed, function (unit) {
@@ -924,7 +923,6 @@ define([
     buildIndex: buildIndex,
     isCommanderCell: isCommanderCell,
     standInsFor: standInsFor,
-    allowed: allowed,
     raceUnitsFor: raceUnitsFor,
     buildableStockUnits: buildableStockUnits,
     addonUnitsFor: addonUnitsFor,

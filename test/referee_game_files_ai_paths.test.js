@@ -343,6 +343,7 @@ describe("coopAiMapFiles", () => {
 });
 
 describe("specPlan", () => {
+  const fieldedRemoved = [];
   const unitCells = {
     heldCommanderUnits: (held) => held.filter((unit) => unit.includes("cdr")),
   };
@@ -350,13 +351,13 @@ describe("specPlan", () => {
     ownedPaths: (race, paths) =>
       paths.filter((unit) => !unit.startsWith("foreign")),
     fieldedFor: (race, held, cells, removed) => {
-      const kept = held.filter((unit) => !removed.includes(unit));
+      fieldedRemoved.push(removed);
       if (!cells) {
-        return kept;
+        return held;
       }
       return race === "mla"
-        ? kept.concat("addon")
-        : kept.map((unit) => "race:" + unit);
+        ? held.concat("addon")
+        : held.map((unit) => "race:" + unit);
     },
     commanderModsFor: (race, commander) => [race + " retags " + commander],
     unitRetagMods: (race, unit) => [race + " keeps " + unit],
@@ -403,16 +404,11 @@ describe("specPlan", () => {
   });
 
   // See races.md, "Capability cells": a removal holds through translation.
-  it("passes the removed units on, less any extra spec", () => {
-    const result = plan({
-      units: ["bot.json", "tank.json"],
-      removed: ["tank.json", "colonel_cdr.json"],
-      extra: ["colonel_cdr.json"],
-      cells: {},
-      race: "legion",
-      isMla: false,
-    });
-    assert.deepEqual(result.specs, ["race:bot.json", "race:colonel_cdr.json"]);
+  it("passes the removed units on, and none when it is given none", () => {
+    fieldedRemoved.length = 0;
+    plan({ removed: ["tank.json"], cells: {} });
+    plan({ cells: {} });
+    assert.deepEqual(fieldedRemoved, [["tank.json"], []]);
   });
 
   it("drops another race's units from the inventory but keeps every extra spec", () => {

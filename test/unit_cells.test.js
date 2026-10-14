@@ -416,7 +416,7 @@ describe("raceUnitsFor", () => {
   });
 
   // See races.md, "Capability cells": a removal holds through translation.
-  it("drops a forbidden stand-in and a forbidden held path, and nothing else", () => {
+  it("drops a removed stand-in, but keeps a removed path that is held", () => {
     assert.deepEqual(
       cells.raceUnitsFor(
         [ANT, FACTORY, "/pa/units/mod/x.json"],
@@ -424,7 +424,7 @@ describe("raceUnitsFor", () => {
         race,
         [FX_TANK, "/pa/units/mod/x.json"]
       ),
-      [FX_FACTORY]
+      ["/pa/units/mod/x.json", FX_FACTORY]
     );
     assert.deepEqual(
       cells.raceUnitsFor([ANT, FACTORY], vanilla, race, []),
@@ -1168,6 +1168,7 @@ describe("exclusive units and add-ons", () => {
       ]);
       assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, [DOX]), [
         ANT,
+        DOX,
         ADDON_TANK,
       ]);
     });

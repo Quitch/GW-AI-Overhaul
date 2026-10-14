@@ -318,12 +318,13 @@ describe("what a race player fields, and the mods that reach it", () => {
   });
 
   // See races.md, "Capability cells": a removal holds through translation.
-  it("leaves out the removed paths, with or without cells", () => {
+  it("brings no removed path in, but keeps a held one", () => {
     const held = [gwoUnit.ant, FX_TANK];
 
-    assert.deepEqual(races.fieldedFor("fixture", held, undefined, [FX_TANK]), [
-      gwoUnit.ant,
-    ]);
+    assert.deepEqual(
+      races.fieldedFor("fixture", held, undefined, [FX_TANK]),
+      held
+    );
 
     const index = fixtureIndex();
     const owned = races.ownedPaths("fixture", [gwoUnit.ant], index);

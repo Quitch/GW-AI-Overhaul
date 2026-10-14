@@ -98,15 +98,23 @@ describe("fieldedUnits", () => {
     assert.equal(fielded.includes(FX_TANK), false);
   });
 
-  it("leaves out a removed path still held, and the race units it stands for", () => {
+  it("fields a removed path that is held again, and the race units it stands for", () => {
     races.setCells("fixture", fixtureIndex());
     const fielded = cards.fieldedUnits(
-      inventoryOf("fixture", [gwoUnit.ant, gwoUnit.dox], [gwoUnit.ant])
+      inventoryOf("fixture", [gwoUnit.ant], [gwoUnit.ant])
     );
 
-    assert.ok(fielded.includes(gwoUnit.dox));
-    assert.equal(fielded.includes(gwoUnit.ant), false);
-    assert.equal(fielded.includes(FX_TANK), false);
+    assert.ok(fielded.includes(gwoUnit.ant));
+    assert.ok(fielded.includes(FX_TANK));
+  });
+
+  it("fields a removed race unit that is held again by name", () => {
+    races.setCells("fixture", fixtureIndex());
+    const fielded = cards.fieldedUnits(
+      inventoryOf("fixture", [gwoUnit.ant, FX_TANK], [FX_TANK])
+    );
+
+    assert.ok(fielded.includes(FX_TANK));
   });
 
   it("reads no removals from an inventory without the list", () => {

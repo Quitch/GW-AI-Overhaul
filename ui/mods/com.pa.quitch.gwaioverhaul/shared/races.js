@@ -271,13 +271,12 @@ define([
     return !isMla(raceId) && hasOwn(byId(raceId).unitPaths, path);
   };
 
-  // What a player of this race fields for the paths held, through its cells,
-  // less the paths `removed`. See races.md, "Capability cells".
-  var fieldedFor = function (raceId, heldPaths, cells, removed) {
-    var held = unitCells.allowed(heldPaths || [], removed);
-
+  // What a player of this race fields for the paths held, through its cells.
+  // A path in `removed` is never brought in by translation. See races.md,
+  // "Capability cells".
+  var fieldedFor = function (raceId, held, cells, removed) {
     if (!cells) {
-      return held;
+      return held || [];
     }
 
     if (isMla(raceId)) {

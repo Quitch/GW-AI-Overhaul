@@ -465,14 +465,15 @@ describe("gw_inventory - the inventory itself", () => {
     assert.deepEqual(inventory.units(), ["b"]);
   });
 
-  it("lifts a removal when the path is added again", () => {
+  // A held path wins over the record, so adding it back needs no write.
+  it("keeps the record when a removed path is added again", () => {
     const inventory = new GWInventory();
     inventory.load({});
 
     inventory.removeUnits(["a", "b"]);
     inventory.addUnits([["a"]]);
 
-    assert.deepEqual(inventory.removedUnits(), ["b"]);
+    assert.deepEqual(inventory.removedUnits(), ["a", "b"]);
     assert.deepEqual(inventory.units(), ["a"]);
   });
 
