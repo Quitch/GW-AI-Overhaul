@@ -43,6 +43,7 @@
         coopAiRoster
       ) {
         var hiresThisLaunch = 0;
+        var latestHire = null;
         // The AI tree cache lives one launch: a co-op host's two hires share
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
@@ -50,6 +51,7 @@
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
+            latestHire = null;
             treeCache = null;
           }
         });
@@ -130,7 +132,7 @@
           };
 
           // See architecture.md, "Battle launch, end to end".
-          if (hiresThisLaunch === 1 && !self.cookedStampsMounted) {
+          if (latestHire && !latestHire.cookedStampsMounted) {
             mountCooked();
           } else {
             // community mods will hook unmountAllMemoryFiles to remount client mods
@@ -148,6 +150,7 @@
           var ref = new gwoReferee(game);
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
+          latestHire = ref;
           treeCache = treeCache || gwoGenerateAI.createTreeCache();
           ref.treeCache = treeCache;
           // installedRaces activates the add-ons whose mods are enabled, so a
