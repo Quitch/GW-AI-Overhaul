@@ -113,11 +113,16 @@ define([
   };
 
   var fieldedMemo = {};
+  var NONE_REMOVED = [];
 
   // See races.md, "Capability cells".
-  // A new list each call; the memo notices a new held list or a new length.
+  // A new list each call; the memo notices a new held or removed list, or a
+  // new length of either.
   var fieldedUnits = function (inventory) {
     var held = inventory.units();
+    var removed = _.isFunction(inventory.removedUnits)
+      ? inventory.removedUnits()
+      : NONE_REMOVED;
     var race = races.raceOf(inventory);
     var cells = races.cellsOf(race);
     var foreign = races.foreignUnitPaths();
@@ -125,8 +130,14 @@ define([
     var same =
       memo.race === race && memo.cells === cells && memo.foreign === foreign;
 
-    if (!same || memo.held !== held || memo.length !== held.length) {
-      var key = held.join("|");
+    if (
+      !same ||
+      memo.held !== held ||
+      memo.length !== held.length ||
+      memo.removed !== removed ||
+      memo.removedLength !== removed.length
+    ) {
+      var key = held.join("|") + "||" + removed.join("|");
       if (!same || memo.key !== key) {
         var owned = races.ownedPaths(race, held, cells);
         memo = {
@@ -135,12 +146,14 @@ define([
           foreign: foreign,
           key: key,
           units: cells
-            ? _.union(owned, races.fieldedFor(race, owned, cells))
+            ? _.union(owned, races.fieldedFor(race, owned, cells, removed))
             : owned,
         };
       }
       memo.held = held;
       memo.length = held.length;
+      memo.removed = removed;
+      memo.removedLength = removed.length;
       fieldedMemo = memo;
     }
 

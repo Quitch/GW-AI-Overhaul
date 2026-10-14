@@ -45,6 +45,7 @@ define([
   var plainSave = function (inventory) {
     return plain({
       units: inventory.units(),
+      removedUnits: inventory.removedUnits(),
       aiMods: inventory.aiMods(),
       mods: inventory.mods(),
       maxCards: inventory.maxCards(),

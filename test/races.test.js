@@ -317,6 +317,25 @@ describe("what a race player fields, and the mods that reach it", () => {
     assert.equal(fielded.includes(OTHER_TANK), false);
   });
 
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("brings no removed path in, but keeps a held one", () => {
+    const held = [gwoUnit.ant, FX_TANK];
+
+    assert.deepEqual(
+      races.fieldedFor("fixture", held, undefined, [FX_TANK]),
+      held
+    );
+
+    const index = fixtureIndex();
+    const owned = races.ownedPaths("fixture", [gwoUnit.ant], index);
+    assert.ok(races.fieldedFor("fixture", owned, index).includes(FX_TANK));
+    assert.ok(races.fieldedFor("fixture", owned, index, []).includes(FX_TANK));
+    assert.equal(
+      races.fieldedFor("fixture", owned, index, [FX_TANK]).includes(FX_TANK),
+      false
+    );
+  });
+
   it("reads the index it is handed, not only the published one", () => {
     const {
       FIXTURE_ADDON,

@@ -415,6 +415,23 @@ describe("raceUnitsFor", () => {
     assert.deepEqual(cells.raceUnitsFor([ANT], v, r), [FX_TANK]);
   });
 
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("drops a removed stand-in, but keeps a removed path that is held", () => {
+    assert.deepEqual(
+      cells.raceUnitsFor(
+        [ANT, FACTORY, "/pa/units/mod/x.json"],
+        vanilla,
+        race,
+        [FX_TANK, "/pa/units/mod/x.json"]
+      ),
+      ["/pa/units/mod/x.json", FX_FACTORY]
+    );
+    assert.deepEqual(
+      cells.raceUnitsFor([ANT, FACTORY], vanilla, race, []),
+      cells.raceUnitsFor([ANT, FACTORY], vanilla, race)
+    );
+  });
+
   it("never grants a commander cell, keeping a held vanilla commander-class unit instead", () => {
     assert.deepEqual(cells.raceUnitsFor([COMMANDER, COLONEL], vanilla, race), [
       COMMANDER,
@@ -1005,6 +1022,22 @@ describe("exclusive units and add-ons", () => {
     ]);
   });
 
+  it("stops a forbidden race builder granting what only it builds", () => {
+    assert.deepEqual(
+      cells.raceUnitsFor([FABBER_ADV], v, r, [FX_FABBER_ADV]),
+      []
+    );
+    assert.deepEqual(cells.raceUnitsFor([FABBER_ADV], v, r, [GANTRY_FX]), [
+      FX_FABBER_ADV,
+      FX_TOWER,
+    ]);
+    assert.deepEqual(cells.raceUnitsFor([FABBER_ADV], v, r, [EXCLUSIVE]), [
+      FX_FABBER_ADV,
+      GANTRY_FX,
+      FX_TOWER,
+    ]);
+  });
+
   it("treats a cell held only by NoBuild vanilla specs as unfilled", () => {
     assert.deepEqual(v.unitsByCell["Land/Advanced/Structure"], [LARVA]);
     assert.ok(cells.raceUnitsFor([FABBER_ADV], v, r).includes(FX_TOWER));
@@ -1123,6 +1156,21 @@ describe("exclusive units and add-ons", () => {
       ]);
       // An orphan nothing held can build stays out.
       assert.deepEqual(cells.addonUnitsFor([ANT], v, a), [ANT, ADDON_TANK]);
+    });
+
+    it("drops a forbidden add-on stand-in, and what only a forbidden builder reaches", () => {
+      assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, [ADDON_TANK]), [
+        ANT,
+        DOX,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([FABBER_ADV], v, a, [GANTRY]), [
+        FABBER_ADV,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([ANT, DOX], v, a, [DOX]), [
+        ANT,
+        DOX,
+        ADDON_TANK,
+      ]);
     });
 
     it("keeps held parts, commander-class units and foreign paths", () => {

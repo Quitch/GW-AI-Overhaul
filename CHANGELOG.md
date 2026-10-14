@@ -10,6 +10,10 @@
 
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 
+### API
+
+- A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
+
 ## v7.6.0 - 2026-10-03
 
 ### Changed

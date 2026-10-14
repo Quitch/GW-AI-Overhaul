@@ -272,18 +272,19 @@ define([
   };
 
   // What a player of this race fields for the paths held, through its cells.
-  // See races.md, "Capability cells".
-  var fieldedFor = function (raceId, held, cells) {
+  // A path in `removed` is never brought in by translation. See races.md,
+  // "Capability cells".
+  var fieldedFor = function (raceId, held, cells, removed) {
     if (!cells) {
       return held || [];
     }
 
     if (isMla(raceId)) {
-      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race);
+      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race, removed);
     }
 
     return unitCells.buildableStockUnits(
-      unitCells.raceUnitsFor(held, cells.vanilla, cells.race),
+      unitCells.raceUnitsFor(held, cells.vanilla, cells.race, removed),
       held,
       stockUnitsFor(raceId),
       cells.vanilla,

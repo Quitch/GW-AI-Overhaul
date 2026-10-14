@@ -224,6 +224,7 @@ define([
     return battle.cellsFor(race).then(function (cells) {
       var plan = gameFilePaths.specPlan({
         units: saved.units || [],
+        removed: saved.removedUnits || [],
         extra: model.gwoSpecs,
         cells: cells,
         race: race,
@@ -270,6 +271,9 @@ define([
     return battle.cellsFor(playerRace).then(function (cells) {
       var plan = gameFilePaths.specPlan({
         units: inventory.units(),
+        // Always a live GWInventory here, so no check for the list, unlike
+        // cards.js and the tooltips, which can be handed a stub.
+        removed: inventory.removedUnits(),
         extra: battle.additionalPlayerSpecs,
         cells: cells,
         race: playerRace,

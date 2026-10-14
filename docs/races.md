@@ -287,6 +287,21 @@ published one when the caller holds none.
 held that the race owns, plus what `raceUnitsFor`, or `addonUnitsFor` for MLA,
 brings for them. `upgradeCard` reads it, so `requires` may name a race unit.
 
+**Removed units.** `inventory.removeUnits` drops every copy of each path from
+`inventory.units()` and records the path in `inventory.removedUnits()`.
+`applyCards` clears the list with `units()`. `races.fieldedFor` never lets
+translation bring a removed path in: it is not fielded as a stand-in, nor
+through the build rule, and a removed builder brings nothing that only it
+builds. A held path always wins, so a removed path that is in `units()` again
+is fielded. So a `dull()` that removes `gwoUnit.legion.shank` leaves a Legion
+player who holds the Ant with the Stoke and without the Shank, and an
+`addUnits` of the Shank later in the pass brings it back. Every `buff()` runs
+before any `dull()`, so a `dull()`'s removal still outlasts a `buff()`'s grant.
+Every caller of `fieldedFor` that reads an inventory passes the list:
+`gwoCard.fieldedUnits`, the referees' `specPlan`, the tooltips, and the co-op
+AI's view of a saved inventory. `races.reachableUnits` does not: it is what the
+race can ever field.
+
 The two card tooltips (the hand hover and a star's "Which Units?") follow the
 same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race

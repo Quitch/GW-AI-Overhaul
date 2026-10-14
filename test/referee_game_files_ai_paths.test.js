@@ -343,13 +343,15 @@ describe("coopAiMapFiles", () => {
 });
 
 describe("specPlan", () => {
+  const fieldedRemoved = [];
   const unitCells = {
     heldCommanderUnits: (held) => held.filter((unit) => unit.includes("cdr")),
   };
   const gwoRaces = {
     ownedPaths: (race, paths) =>
       paths.filter((unit) => !unit.startsWith("foreign")),
-    fieldedFor: (race, held, cells) => {
+    fieldedFor: (race, held, cells, removed) => {
+      fieldedRemoved.push(removed);
       if (!cells) {
         return held;
       }
@@ -399,6 +401,14 @@ describe("specPlan", () => {
       "legion retags ai_cdr.json",
       "legion keeps colonel_cdr.json",
     ]);
+  });
+
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("passes the removed units on, and none when it is given none", () => {
+    fieldedRemoved.length = 0;
+    plan({ removed: ["tank.json"], cells: {} });
+    plan({ cells: {} });
+    assert.deepEqual(fieldedRemoved, [["tank.json"], []]);
   });
 
   it("drops another race's units from the inventory but keeps every extra spec", () => {

@@ -287,6 +287,10 @@ define([
     return _.endsWith(cell || "", "/" + COMMANDER);
   };
 
+  var allowed = function (paths, removed) {
+    return _.isEmpty(removed) ? paths : _.difference(paths, removed);
+  };
+
   var commandersOf = function (index) {
     return _.filter(index.units, function (unit) {
       return isCommanderCell(index.cellOf[unit]);
@@ -433,7 +437,13 @@ define([
   // Bugs' research unlock tokens, made by its research factories - until
   // nothing more is reachable. `buildableOf(unit)` resolves a builder's
   // build list; the race's own table by default.
-  var buildableOrphans = function (granted, vanilla, race, buildableOf) {
+  var buildableOrphans = function (
+    granted,
+    vanilla,
+    race,
+    removed,
+    buildableOf
+  ) {
     var buildable = _.isFunction(buildableOf)
       ? buildableOf
       : function (unit) {
@@ -441,7 +451,7 @@ define([
         };
     var exclusive = race.exclusive;
     var orphans = _.filter(
-      race.units.concat(_.keys(exclusive)),
+      allowed(race.units.concat(_.keys(exclusive)), removed),
       function (unit) {
         var cell = race.cellOf[unit];
         return (
@@ -646,29 +656,34 @@ define([
       .value();
   };
 
-  // What a race player fields for the vanilla units held. See races.md,
-  // "Capability cells".
-  var raceUnitsFor = function (heldPaths, vanilla, race) {
+  // What a race player fields for the vanilla units held. A `removed` path is
+  // neither a stand-in nor reached by build, but a held one is kept. See
+  // races.md, "Capability cells".
+  var raceUnitsFor = function (heldPaths, vanilla, race, removed) {
     var kept = _.filter(heldPaths || [], function (path) {
       var cell = vanilla.cellOf[path];
       return _.isUndefined(cell)
         ? !vanilla.partIndex[path]
         : isCommanderCell(cell);
     });
-    var granted = _.uniq(kept.concat(heldStandIns(heldPaths, vanilla, race)));
+    var granted = _.uniq(
+      kept.concat(allowed(heldStandIns(heldPaths, vanilla, race), removed))
+    );
 
-    return buildableOrphans(granted, vanilla, race);
+    return buildableOrphans(granted, vanilla, race, removed);
   };
 
   // What an MLA player fields with add-ons active: everything held, plus the
   // add-on units each held vanilla unit stands for, plus what those and the
-  // held vanilla builders can build. Nothing is taken away. See races.md,
-  // "Add-ons".
-  var addonUnitsFor = function (heldPaths, vanilla, addon) {
+  // held vanilla builders can build. A `removed` path is neither a stand-in
+  // nor reached by build, but a held one is kept. See races.md, "Add-ons".
+  var addonUnitsFor = function (heldPaths, vanilla, addon, removed) {
     var held = _.uniq(heldPaths || []);
-    var granted = _.uniq(held.concat(heldStandIns(held, vanilla, addon)));
+    var granted = _.uniq(
+      held.concat(allowed(heldStandIns(held, vanilla, addon), removed))
+    );
 
-    return buildableOrphans(granted, vanilla, addon, function (unit) {
+    return buildableOrphans(granted, vanilla, addon, removed, function (unit) {
       return addon.buildableOf[unit] || vanilla.buildableOf[unit];
     });
   };
