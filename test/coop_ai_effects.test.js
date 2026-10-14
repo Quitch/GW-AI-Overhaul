@@ -143,10 +143,11 @@ const FIXTURE_CARDS = {
   fixture_coopai_strips: fixtureCard(
     "Fixture Stripping Tech",
     30,
-    (inventory) => inventory.addUnits([gwoUnit.dox, gwoUnit.jig]),
+    (inventory) =>
+      inventory.addUnits([gwoUnit.atlas, gwoUnit.bumblebee, gwoUnit.firefly]),
     (inventory) => {
-      inventory.removeUnits(gwoUnit.dox);
-      inventory.removeUnits([gwoUnit.jig, [gwoUnit.metalExtractor]]);
+      inventory.removeUnits(gwoUnit.atlas);
+      inventory.removeUnits([gwoUnit.bumblebee, [gwoUnit.firefly]]);
     }
   ),
 };
@@ -331,7 +332,7 @@ describe("coop_ai_effects", () => {
 
     assert.deepEqual(
       applied.strippedUnits.slice().sort(),
-      [gwoUnit.dox, gwoUnit.jig, gwoUnit.metalExtractor].sort()
+      [gwoUnit.atlas, gwoUnit.bumblebee, gwoUnit.firefly].sort()
     );
   });
 
@@ -481,7 +482,7 @@ const minion = (name) => ({
 });
 // A late war's hand: a loadout, tech whose mods run to some 2000 descriptors,
 // two Sub Commanders, a card that writes to its tag and its params, and one
-// that forbids units by a lone path and a nested group.
+// that grants and forbids units the rest of the hand never holds.
 const LATE_WAR = {
   cards: [
     { id: "gwaio_start_terminal" },
