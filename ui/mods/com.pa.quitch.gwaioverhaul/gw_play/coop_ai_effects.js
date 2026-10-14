@@ -4,9 +4,10 @@
 // every host apply of a co-op record is. Applies run one at a time, each
 // against a timeout, and are cached by what they apply. See tech-cards.md,
 // "How AI players judge a card".
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
-  gwoBank
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (gwoBank, unitCells) {
   // An apply depends on the cards and their tags alone: applyCards rebuilds
   // everything else from them.
   var digestOf = function (saved) {
@@ -59,9 +60,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
       var inventory = new GWInventory();
       var removeUnits = inventory.removeUnits;
       inventory.removeUnits = function (units) {
-        if (_.isArray(units)) {
-          removed.push.apply(removed, _.filter(units, _.isString));
-        }
+        removed.push.apply(
+          removed,
+          _.filter(unitCells.unitPaths(units), _.isString)
+        );
         return removeUnits.apply(inventory, arguments);
       };
       return inventory;

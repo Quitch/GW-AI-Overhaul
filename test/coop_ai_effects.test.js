@@ -104,11 +104,16 @@ const coopAiDriver = loadCouiModule(
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
+const unitCells = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js"
+);
 
-// Third-party tech cards as the New-GW-Cards template writes them: one unlocks
-// the Slammer and names it nowhere else, so a co-op AI player can only judge it
-// by what applying it does; the other throws, as a broken card mod's might.
-const fixtureCard = (name, chance, buff) => ({
+// Third-party tech cards in the New-GW-Cards template's shape. One unlocks the
+// Slammer and names it nowhere else, so a co-op AI player can only judge it by
+// what applying it does; one throws, as a broken card mod's might; one writes
+// its own tag and params; one forbids units in dull() by a lone path and a
+// nested group.
+const fixtureCard = (name, chance, buff, dull = () => {}) => ({
   visible: () => true,
   summarize: () => "!LOC:" + name,
   describe: () => "!LOC:Fixture.",
@@ -117,7 +122,7 @@ const fixtureCard = (name, chance, buff) => ({
   getContext: gwoCard.getContext,
   deal: () => ({ chance }),
   buff,
-  dull: () => {},
+  dull,
 });
 const FIXTURE_CARDS = {
   fixture_coopai_effect: fixtureCard("Fixture Slammer Tech", 60, (inventory) =>
@@ -133,6 +138,16 @@ const FIXTURE_CARDS = {
     (inventory, params) => {
       inventory.setTag("", "buffs", inventory.getTag("", "buffs", 0) + 1);
       params.buffs = (params.buffs || 0) + 1;
+    }
+  ),
+  fixture_coopai_strips: fixtureCard(
+    "Fixture Stripping Tech",
+    30,
+    (inventory) =>
+      inventory.addUnits([gwoUnit.atlas, gwoUnit.bumblebee, gwoUnit.firefly]),
+    (inventory) => {
+      inventory.removeUnits(gwoUnit.atlas);
+      inventory.removeUnits([gwoUnit.bumblebee, [gwoUnit.firefly]]);
     }
   ),
 };
@@ -309,6 +324,18 @@ describe("coop_ai_effects", () => {
     );
   });
 
+  it("lists units removed by a lone path or a nested group", async () => {
+    const applied = await effects().apply({
+      cards: BOT_AI.cards.concat([{ id: "fixture_coopai_strips" }]),
+      tags: BOT_AI.tags,
+    });
+
+    assert.deepEqual(
+      applied.strippedUnits.slice().sort(),
+      [gwoUnit.atlas, gwoUnit.bumblebee, gwoUnit.firefly].sort()
+    );
+  });
+
   it("values an upgrade for a unit the AI's loadout forbids at nothing later", async () => {
     const run = effects();
     const tourist = {
@@ -414,9 +441,9 @@ const applyWholeCopy = (saved) =>
     const inventory = new GWInventory();
     const removeUnits = inventory.removeUnits;
     inventory.removeUnits = function (units) {
-      if (Array.isArray(units)) {
-        removed.push(...units.filter((unit) => typeof unit === "string"));
-      }
+      removed.push(
+        ...unitCells.unitPaths(units).filter((unit) => typeof unit === "string")
+      );
       return removeUnits.apply(inventory, arguments);
     };
     inventory.load(_.cloneDeep(saved));
@@ -454,7 +481,8 @@ const minion = (name) => ({
   personality: { micro_type: 2, personality_tags: ["Default"] },
 });
 // A late war's hand: a loadout, tech whose mods run to some 2000 descriptors,
-// two Sub Commanders, and a card that writes to its tag and its params.
+// two Sub Commanders, a card that writes to its tag and its params, and one
+// that grants and forbids units the rest of the hand never holds.
 const LATE_WAR = {
   cards: [
     { id: "gwaio_start_terminal" },
@@ -465,6 +493,7 @@ const LATE_WAR = {
     { id: "gwc_minion", minion: minion("Alpha"), unique: 1.25 },
     { id: "gwc_minion", minion: minion("Beta"), unique: 1.5 },
     { id: "fixture_coopai_writes" },
+    { id: "fixture_coopai_strips" },
   ],
   tags: BOT_AI.tags,
 };
