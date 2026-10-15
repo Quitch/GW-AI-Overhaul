@@ -173,19 +173,14 @@ describe("star_paths.pathBetween", () => {
   });
 });
 
-// The installed game's own pathBetween, read from its gw_galaxy.js, so a PA
-// patch that changes it fails here rather than going unnoticed. Null without
-// the install, as in CI.
-function installedPathBetween() {
-  const file = path.join(
-    mediaDir(),
-    "ui/main/game/galactic_war/shared/js/gw_galaxy.js"
-  );
-  if (!fs.existsSync(file)) return null;
-  const text = fs.readFileSync(file, "utf8");
-  // Stock also keeps an older search, commented out, above this one.
-  const match = /^ *self\.pathBetween = function/m.exec(text);
-  assert.ok(match, "no pathBetween in " + file);
+// The source of `self.<name> = function ...` in an installed game file. Null
+// without the install, as in CI.
+function installedSource(file, name) {
+  const fullPath = path.join(mediaDir(), file);
+  if (!fs.existsSync(fullPath)) return null;
+  const text = fs.readFileSync(fullPath, "utf8");
+  const match = new RegExp("^ *self\\." + name + " = function", "m").exec(text);
+  assert.ok(match, "no " + name + " in " + fullPath);
   const start = match.index;
   const open = text.indexOf("{", start);
   let depth = 0;
@@ -194,10 +189,33 @@ function installedPathBetween() {
     if (text[end] === "{") depth++;
     if (text[end] === "}" && --depth === 0) break;
   }
-  const source = text.slice(text.indexOf("function", start), end + 1);
+  return text.slice(text.indexOf("function", start), end + 1);
+}
+
+// The installed game's own pathBetween, read from its gw_galaxy.js, so a PA
+// patch that changes it fails here rather than going unnoticed.
+function installedPathBetween() {
+  // Stock also keeps an older search, commented out, above this one.
+  const source = installedSource(
+    "ui/main/game/galactic_war/shared/js/gw_galaxy.js",
+    "pathBetween"
+  );
+  if (!source) return null;
   const bind = new Function("self", "_", "return " + source + ";");
   return (galaxy, from, to, noFog) =>
     bind(galaxy, require("lodash"))(from, to, noFog);
+}
+
+// The installed game's model.canSelect, read from its gw_play.js, with the
+// model as `self`.
+function installedCanSelect() {
+  const source = installedSource(
+    "ui/main/game/galactic_war/gw_play/gw_play.js",
+    "canSelect"
+  );
+  if (!source) return null;
+  const bind = new Function("self", "return " + source + ";");
+  return (model, star) => bind(model)(star);
 }
 
 describe("star_paths.pathBetween against the installed game", () => {
@@ -268,17 +286,19 @@ describe("star_paths.pathsFrom", () => {
 });
 
 describe("star_paths.selectable", () => {
-  // Stars 0-1-2 in a line, all explored; the player is on 1.
+  // Stars 0-1-2-3 in a line, 2 and 3 never visited; the player is on 1.
   function makeModel(options) {
     const galaxy = makeGalaxy(
       [
         { visited: true, explored: true },
         { visited: true, explored: true },
         { visited: false, explored: false },
+        { visited: false, explored: false },
       ],
       [
         [0, 1],
         [1, 2],
+        [2, 3],
       ]
     );
     return {
@@ -296,6 +316,7 @@ describe("star_paths.selectable", () => {
     assert.equal(canSelect(1), true);
     assert.deepEqual(canSelect(0), [1, 0]);
     assert.deepEqual(canSelect(2), [1, 2]);
+    assert.equal(canSelect(3), null);
   });
 
   it("selects only the current star while the explore collapse holds", () => {
@@ -314,6 +335,44 @@ describe("star_paths.selectable", () => {
     );
 
     assert.deepEqual(canSelect(0), [1, 0]);
+    assert.equal(canSelect(3), null);
+  });
+});
+
+describe("star_paths.selectable against the installed game", () => {
+  it("matches the base game's canSelect on random galaxies", (t) => {
+    const installed = installedCanSelect();
+    if (!installed) {
+      t.skip("no PA install at " + mediaDir());
+      return;
+    }
+    for (let seed = 1; seed <= 100; seed++) {
+      const { count, galaxy } = randomGalaxy(rng(seed));
+      galaxy.pathBetween = (from, to, noFog) =>
+        stockPathBetween(galaxy, from, to, noFog);
+      for (let current = 0; current < count; current++) {
+        [false, true].forEach((prefix) => {
+          [false, true].forEach((noFog) => {
+            const model = {
+              game: () => ({
+                currentStar: () => current,
+                galaxy: () => galaxy,
+              }),
+              cheats: { noFog: () => noFog },
+              canSelectOrMovePrefix: () => prefix,
+            };
+            const canSelect = starPaths.selectable(model);
+            for (let star = 0; star < count; star++) {
+              assert.deepEqual(
+                canSelect(star),
+                installed(model, star),
+                "seed " + seed + " current " + current + " star " + star
+              );
+            }
+          });
+        });
+      }
+    }
   });
 });
 
