@@ -355,6 +355,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_explore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_win.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
       ],
       function (
         GW,
@@ -379,7 +380,8 @@
         cardsAiStarDeal,
         cardsExplore,
         cardsWin,
-        cardsStartSubcdr
+        cardsStartSubcdr,
+        coopPublish
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -466,6 +468,7 @@
             return aiStarDeal.dealing() > 0;
           },
           busy: starCardsBusy,
+          publish: coopPublish.publish,
         });
 
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock

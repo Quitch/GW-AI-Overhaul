@@ -120,6 +120,8 @@ define([
     var aiStarDealHeld = params.aiStarDealHeld;
     // Held true while a refresh is in flight.
     var busy = params.busy;
+    // coop_publish.js's publish, passed in: that module requires this one.
+    var publish = params.publish;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
@@ -216,7 +218,9 @@ define([
 
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
-    // pendingTechCards on it since this viewer's work began.
+    // pendingTechCards on it since this viewer's work began. A viewer whose
+    // inventory changed meanwhile is skipped: their cards were dealt against
+    // the old one, and the write that changed it queues another refresh.
     var refreshViewer = function (client) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
@@ -265,7 +269,7 @@ define([
           });
 
           var fresh = findRecord(client);
-          if (!fresh) {
+          if (!fresh || !_.isEqual(fresh.inventory, record.inventory)) {
             return false;
           }
 
@@ -319,9 +323,7 @@ define([
 
       console.log("[GW COOP] refreshed co-op player star cards");
       return Promise.resolve(gwoSave(game, false)).then(function () {
-        if (connectedViewers().length) {
-          model.sendCampaignSnapshot("gwo_star_cards", true);
-        }
+        publish("gwo_star_cards");
       });
     };
 
