@@ -52,9 +52,7 @@ define(function () {
   // No seed or label contains this, so stream("a", 1) cannot collide with stream("a1").
   var SEPARATOR = "\u0000";
 
-  // A deal makes a stream per card and draws from one or two, so a stream
-  // holds its parent's state and its own text, and absorbs and seeds itself
-  // only when it is drawn from or has a stream of its own.
+  // Hashed and seeded on first use. See galaxy.md, "Streams, not a single sequence".
   var fromState = function (parentState, text) {
     var state;
     var a;

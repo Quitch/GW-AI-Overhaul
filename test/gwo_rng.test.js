@@ -210,6 +210,31 @@ describe("gwo_rng stream", () => {
   });
 });
 
+describe("gwo_rng laziness", () => {
+  // Every deal makes a stream per card and draws from one or two of them.
+  it("hashes nothing until a stream is drawn from or makes a stream", () => {
+    const parent = gwoRng.create("lazy");
+    parent.stream("resolve-parent");
+    const nativeImul = Math.imul;
+    let calls = 0;
+    Math.imul = (a, b) => {
+      calls++;
+      return nativeImul(a, b);
+    };
+
+    try {
+      const children = Array.from({ length: 50 }, (_, i) =>
+        parent.stream("card", i)
+      );
+      assert.equal(calls, 0);
+      children[0]();
+      assert.ok(calls > 0);
+    } finally {
+      Math.imul = nativeImul;
+    }
+  });
+});
+
 describe("gwo_rng independence from Math.random", () => {
   // A Math.random fallback creeping into any helper would make war generation
   // unreproducible again, and only this test would notice.
