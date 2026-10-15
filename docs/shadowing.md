@@ -268,16 +268,17 @@ An intermediate star is traversable when explored, or when visited at all under
 In `gw_play`, `systems.js` replaces the war's `pathBetween` with
 `shared/star_paths.js`. Stock's search queues a fresh `_.cloneDeep` of the path for
 every star it reaches, and can queue a star more than once. `model.canSelect` runs it
-for one star at a time, and the AI star deal, the co-op star cards and the co-op AI
+for one star at a time, and the AI star deal, the co-op star cards, and the co-op AI
 pings each ask about every star in turn. With 120 of 234 stars explored, one such
 sweep took 207 to 242 ms; with `star_paths.js`, 8 to 10 ms. It finds the same path:
 a breadth-first search that never queues a star twice returns the first path stock's
 returns, because stock's extra copies of a star are queued behind the first one
 and are checked against the same rules. `test/star_paths.test.js` compares the two on
-random galaxies, against a copy of stock's search. `pathBetween` is an own property
+random galaxies, against a copy of stock's search and, where the PA install is
+present, against the search its `gw_galaxy.js` holds. `pathBetween` is an own property
 that each `GWGalaxy` sets in its constructor, so the replacement goes on the instance.
 `gw_start` keeps stock's search. A PA patch that changes stock's `pathBetween`
-has to be carried into `star_paths.js` and the copy in its test.
+fails that last test, and has to be carried into `star_paths.js` and the copy.
 
 ## Where to look next
 

@@ -47,7 +47,6 @@ define(function () {
     return null;
   };
 
-  // pathBetween is an own property each GWGalaxy sets in its constructor.
   var install = function (galaxy) {
     galaxy.pathBetween = function (from, to, noFog) {
       return pathBetween(galaxy, from, to, noFog);

@@ -290,6 +290,14 @@
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js"],
       function (starPaths) {
         starPaths.install(galaxy);
+      },
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): star paths not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
 

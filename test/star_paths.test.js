@@ -3,10 +3,13 @@
 // shared/star_paths.js must return exactly the path the base game's
 // GWGalaxy.pathBetween returns, null included, for every graph and fog state.
 
+const fs = require("node:fs");
+const path = require("node:path");
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { mediaDir } = require("../scripts/lib/pa-install.js");
 const starPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js"
 );
@@ -167,6 +170,57 @@ describe("star_paths.pathBetween", () => {
     );
 
     assert.equal(starPaths.pathBetween(galaxy, 0, 1, true), null);
+  });
+});
+
+// The installed game's own pathBetween, read from its gw_galaxy.js, so a PA
+// patch that changes it fails here rather than going unnoticed. Null without
+// the install, as in CI.
+function installedPathBetween() {
+  const file = path.join(
+    mediaDir(),
+    "ui/main/game/galactic_war/shared/js/gw_galaxy.js"
+  );
+  if (!fs.existsSync(file)) return null;
+  const text = fs.readFileSync(file, "utf8");
+  // Stock also keeps an older search, commented out, above this one.
+  const match = /^ *self\.pathBetween = function/m.exec(text);
+  assert.ok(match, "no pathBetween in " + file);
+  const start = match.index;
+  const open = text.indexOf("{", start);
+  let depth = 0;
+  let end = open;
+  for (; end < text.length; end++) {
+    if (text[end] === "{") depth++;
+    if (text[end] === "}" && --depth === 0) break;
+  }
+  const source = text.slice(text.indexOf("function", start), end + 1);
+  const bind = new Function("self", "_", "return " + source + ";");
+  return (galaxy, from, to, noFog) =>
+    bind(galaxy, require("lodash"))(from, to, noFog);
+}
+
+describe("star_paths.pathBetween against the installed game", () => {
+  it("matches the base game's own search on random galaxies", (t) => {
+    const installed = installedPathBetween();
+    if (!installed) {
+      t.skip("no PA install at " + mediaDir());
+      return;
+    }
+    for (let seed = 1; seed <= 100; seed++) {
+      const { count, galaxy } = randomGalaxy(rng(seed));
+      for (let from = 0; from < count; from++) {
+        for (let to = 0; to < count; to++) {
+          [false, true].forEach((noFog) => {
+            assert.deepEqual(
+              starPaths.pathBetween(galaxy, from, to, noFog),
+              installed(galaxy, from, to, noFog),
+              "seed " + seed + " from " + from + " to " + to + " noFog " + noFog
+            );
+          });
+        }
+      }
+    }
   });
 });
 
