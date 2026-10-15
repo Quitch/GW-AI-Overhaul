@@ -621,6 +621,54 @@ describe("coop star cards refresh - what it writes", () => {
     assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
   });
 
+  // Stock stores inventory.save(), which carries GWInventory's methods, and
+  // coopHost.upsertRecord's JSON copy drops them: same cards, no change.
+  it("still writes a viewer whose methods were dropped from the inventory", async () => {
+    const { coopStarCards, options } = build({
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [{ id: "gwc_held" }], getTag: () => undefined },
+        },
+      },
+      onDeal: (opts) => {
+        opts.records.alice = JSON.parse(JSON.stringify(opts.records.alice));
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  it("deals a viewer no further stars once their cards change", async () => {
+    let picked = false;
+    const { coopStarCards, calls } = build({
+      stars: [{}, {}, {}],
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        bob: { id: "bob", inventory: { cards: [] } },
+      },
+      onDeal: (opts) => {
+        if (!picked) {
+          picked = true;
+          opts.records.alice = {
+            id: "alice",
+            inventory: { cards: [{ id: "gwc_picked" }] },
+          };
+        }
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["alice", "bob", "bob", "bob"]
+    );
+  });
+
   it("keeps a re-deal owed to a viewer skipped mid-deal", async () => {
     let picking = false;
     const { coopStarCards, calls, options } = build({

@@ -1099,10 +1099,12 @@ The refresh depends on two ordering rules:
   is async, so a catch-up deal can land `pendingTechCards` in the window.
   Writing over a clone captured before the deal erases it. That viewer then
   waits forever on an offer the host thinks it sent. A viewer whose
-  `inventory` changed in the window, by a tech choice, is not written at all:
-  their cards were dealt against the old inventory. The write that changed it
-  triggers another refresh, which deals them again, re-dealing them if a
-  re-deal is still owed.
+  `inventory.cards` changed in the window, by a tech choice, is not dealt any
+  further stars and not written at all: their deal was against the old cards.
+  The write that changed them triggers another refresh, which deals them
+  again, re-dealing them if a re-deal is still owed. The test compares the
+  cards, not the inventory, because stock stores `inventory.save()` with
+  GWInventory's methods on it and `coopHost.upsertRecord` drops them.
 - **A refresh must not run while anyone is still catching up.**
   `gwCampaignPlayerSetupBlocked` is not sufficient on its own. It reads
   `client.loading_status`, which arrives on `gw_campaign_control` broadcasts.
