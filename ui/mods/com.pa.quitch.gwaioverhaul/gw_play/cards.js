@@ -462,6 +462,9 @@
             return model.gwoCoopAi.clients();
           },
           aiDeciding: coopAiDeciding,
+          aiStarDealHeld: function () {
+            return aiStarDeal.dealing() > 0;
+          },
           busy: starCardsBusy,
         });
 
@@ -531,12 +534,7 @@
           game.hostTechCardDealCount();
           game.turnState();
           coopAiDeciding();
-          // The AI stars' deal re-deals every star, so a gap-fill beside it
-          // would only send a second snapshot. cards_win.js holds the deal
-          // from before the win's turn change.
-          if (!aiStarDeal.dealing()) {
-            coopStarCards.refresh();
-          }
+          coopStarCards.refresh();
         });
 
         // The handle a co-op AI player's starting loadout is set up with.

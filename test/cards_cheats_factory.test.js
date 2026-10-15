@@ -460,6 +460,21 @@ describe("cheats giveCard", () => {
     assert.deepEqual(calls.saves, [true]);
   });
 
+  it("saves without broadcasting with no viewer connected", async () => {
+    const { calls } = build({
+      clients: [
+        { id: "host", name: "host", role: "host" },
+        { id: "gwo_ai_1", name: "AI1", role: "ai" },
+      ],
+    });
+
+    giveCard();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
   it("names a card it cannot find rather than dealing nothing quietly", async () => {
     const { calls } = build({ giveCardId: "gwc_not_a_card" });
 

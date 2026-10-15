@@ -106,20 +106,27 @@ define(function () {
       return game
         .winTurn(wonIndex)
         .then(function (didWin) {
-          if (!didWin) {
-            console.error("Failed winning turn at star " + game.currentStar());
-            return $.Deferred().reject("Failed winning turn").promise();
+          // Released here, not by the chain: jQuery 2 leaves a chain whose
+          // callback throws unsettled. Once started, the deal holds itself.
+          try {
+            if (!didWin) {
+              console.error(
+                "Failed winning turn at star " + game.currentStar()
+              );
+              return $.Deferred().reject("Failed winning turn").promise();
+            }
+
+            if (model.isCampaignViewer()) {
+              model.syncViewerStarsFromGame("win_applied");
+            }
+
+            model.maybePlayCaptureSound();
+
+            return dealCardToSelectableAI(true, game.turnState());
+          } finally {
+            releaseAiStarDeal();
           }
-
-          if (model.isCampaignViewer()) {
-            model.syncViewerStarsFromGame("win_applied");
-          }
-
-          model.maybePlayCaptureSound();
-
-          return dealCardToSelectableAI(true, game.turnState());
         })
-        .always(releaseAiStarDeal)
         .then(function () {
           // A win changes no star system.
           return gwoSave(game, false);

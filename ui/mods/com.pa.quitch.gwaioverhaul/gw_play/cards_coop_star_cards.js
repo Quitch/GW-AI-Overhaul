@@ -115,6 +115,9 @@ define([
     // settling its deals. See coop.md, "AI players' tech".
     var aiClients = params.aiClients;
     var aiDeciding = params.aiDeciding;
+    // Whether the AI stars' deal is held or running. Its re-deal covers every
+    // star, so a gap-fill beside it would only send a second snapshot.
+    var aiStarDealHeld = params.aiStarDealHeld;
     // Held true while a refresh is in flight.
     var busy = params.busy;
 
@@ -349,6 +352,11 @@ define([
       var redeal = !!(options && options.redeal);
 
       if (!refereeCoop.hostingPerPlayerSession()) {
+        return Promise.resolve();
+      }
+
+      // Read here, so cards.js's computed refreshes again once the deal ends.
+      if (!redeal && aiStarDealHeld()) {
         return Promise.resolve();
       }
 

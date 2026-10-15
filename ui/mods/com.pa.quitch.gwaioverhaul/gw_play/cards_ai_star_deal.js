@@ -22,7 +22,7 @@ define([
     var hold = function () {
       aiStarDealing(aiStarDealing() + 1);
       return _.once(function () {
-        aiStarDealing(Math.max(0, aiStarDealing() - 1));
+        aiStarDealing(aiStarDealing() - 1);
       });
     };
 

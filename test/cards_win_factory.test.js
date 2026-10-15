@@ -89,7 +89,12 @@ function setup(overrides = {}) {
     sendCampaignAction: record("sendCampaignAction"),
     exitGate,
     syncViewerStarsFromGame: record("syncViewerStarsFromGame"),
-    maybePlayCaptureSound: record("maybePlayCaptureSound"),
+    maybePlayCaptureSound: () => {
+      events.push(["maybePlayCaptureSound"]);
+      if (options.captureThrows) {
+        throw new Error("capture sound threw");
+      }
+    },
     gameOver: () => options.gameOver,
   };
   stubs.setGlobal("model", model);
@@ -242,6 +247,26 @@ describe("model.win on the host", () => {
     assert.deepEqual(
       run.events.map((event) => event[0]),
       ["sendCampaignAction", "exitGate", "hold", "winTurn", "error", "release"]
+    );
+  });
+
+  // Left held, the hold would stop every co-op star-card gap-fill for the
+  // rest of the session.
+  it("releases the hold when a step before the deal throws", () => {
+    const run = build({ turnState: "explore", captureThrows: true });
+
+    assert.throws(() => run.model.win(0), /capture sound threw/);
+
+    assert.deepEqual(
+      run.events.map((event) => event[0]),
+      [
+        "sendCampaignAction",
+        "exitGate",
+        "hold",
+        "winTurn",
+        "maybePlayCaptureSound",
+        "release",
+      ]
     );
   });
 

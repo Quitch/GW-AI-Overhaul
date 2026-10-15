@@ -84,6 +84,7 @@ function setup(overrides = {}) {
       saveFails: false,
       aiClients: [],
       aiDeciding: false,
+      aiStarDealHeld: false,
     },
     overrides
   );
@@ -171,6 +172,7 @@ function setup(overrides = {}) {
     },
     aiClients: () => options.aiClients,
     aiDeciding: () => options.aiDeciding,
+    aiStarDealHeld: () => options.aiStarDealHeld,
     busy: (value) => calls.busy.push(value),
   });
 
@@ -607,6 +609,37 @@ describe("coop star cards refresh - the host's own banks", () => {
 
     assert.equal(errors.length, 1);
     assert.match(errors[0], /failed to refresh co-op player star cards/);
+  });
+});
+
+describe("coop star cards refresh - during the AI stars' deal", () => {
+  it("fills no gaps while the deal is held or running", async () => {
+    const { coopStarCards, calls } = build({ aiStarDealHeld: true });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), []);
+    assert.deepEqual(calls.busy, []);
+    assert.deepEqual(calls.snapshots, []);
+  });
+
+  it("still re-deals, since the deal's own re-deal is what it waits for", async () => {
+    const { coopStarCards, calls } = build({ aiStarDealHeld: true });
+
+    await coopStarCards.refresh({ redeal: true });
+
+    assert.deepEqual(starsDealt(calls), [0]);
+    assert.deepEqual(calls.snapshots, [["gwo_star_cards", true]]);
+  });
+
+  it("fills gaps once the deal has ended", async () => {
+    const { coopStarCards, calls, options } = build({ aiStarDealHeld: true });
+
+    await coopStarCards.refresh();
+    options.aiStarDealHeld = false;
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), [0]);
   });
 });
 

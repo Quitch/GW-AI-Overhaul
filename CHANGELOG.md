@@ -11,7 +11,7 @@
 - The galaxy map opens faster in the largest galaxies, by two seconds or more with 234 stars, and for co-op players too: its star icons are tinted once per colour rather than once per star
 - Late in a war in the largest galaxies, the galaxy map pauses less after each move, battle, and tech card, most of all in co-op with AI players: routes between stars are found many times faster
 - In co-op with AI players and no other player connected, taking a star no longer freezes the galaxy map for about a second, twice, in the largest galaxies
-- In co-op with AI players and another player connected, taking a star's tech card freezes the galaxy map for about a second once, not twice, in the largest galaxies
+- In co-op with another player connected, taking a star's tech card no longer sometimes freezes the galaxy map for an extra second in the largest galaxies: their star cards are sent once, not twice
 
 ### Bugfix
 

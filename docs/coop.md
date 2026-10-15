@@ -1039,9 +1039,10 @@ move must not disturb an offer already advertised. The first hop out of `end`
 still refreshes, through `turnState`, but that refresh only fills gaps unless a
 re-deal is owed.
 
-The computed does not refresh while the AI stars' deal is held or running
+A gap-filling refresh does not run while the AI stars' deal is held or running
 (`dealing()` in `gw_play/cards_ai_star_deal.js`), as the re-deal that ends it
-covers every star. A win from explore takes the hold in `model.win`
+covers every star. `refresh()` reads that count, so the computed refreshes
+again when it falls to zero. A win from explore takes the hold in `model.win`
 (`gw_play/cards_win.js`) before stock's `winTurn`, which sets `turnState` to
 `end` before the deal starts. Without the hold, a win that made a star
 selectable started a gap-fill that wrote it and sent its own snapshot, and the
