@@ -306,7 +306,9 @@ define([
 
       console.log("[GW COOP] refreshed co-op player star cards");
       return Promise.resolve(gwoSave(game, false)).then(function () {
-        model.sendCampaignSnapshot("gwo_star_cards", true);
+        if (refereeCoop.viewersOf(model.gwCampaignConnectedClients()).length) {
+          model.sendCampaignSnapshot("gwo_star_cards", true);
+        }
       });
     };
 

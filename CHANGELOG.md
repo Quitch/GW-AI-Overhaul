@@ -10,6 +10,7 @@
 - The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
 - The galaxy map opens faster in the largest galaxies, by two seconds or more with 234 stars, and for co-op players too: its star icons are tinted once per colour rather than once per star
 - Late in a war in the largest galaxies, the galaxy map pauses less after each move, battle, and tech card, most of all in co-op with AI players: routes between stars are found many times faster
+- In co-op with AI players and no other player connected, taking a star no longer freezes the galaxy map for about a second, twice, in the largest galaxies
 
 ### Bugfix
 

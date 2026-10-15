@@ -276,6 +276,19 @@ describe("coop star cards refresh - co-op AI players", () => {
     assert.deepEqual(cardIndexes(options.records.gwo_ai_1), ["0", "1"]);
   });
 
+  it("saves an AI player's cards but sends no snapshot with no viewer connected", async () => {
+    const { coopStarCards, calls } = build({
+      viewers: [],
+      aiClients: [AI],
+      records: { gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } } },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(calls.saves, [false]);
+    assert.deepEqual(calls.snapshots, []);
+  });
+
   it("waits while an AI player settles its deals", async () => {
     const { coopStarCards, calls } = build({
       aiClients: [AI],

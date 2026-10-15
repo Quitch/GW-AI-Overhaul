@@ -1067,6 +1067,13 @@ The record is where the debt belongs for three reasons:
   record write triggers the next refresh, so each such viewer would get a new
   card on every refresh for as long as the other viewer kept failing.
 
+A refresh that changes a record saves the war, then sends the viewers a
+snapshot. With no viewer connected, as when the host plays with AI players
+only, no snapshot goes out. The send passes `force`, which skips stock's own
+no-viewer check, and a snapshot of a large galaxy takes about a second to
+build. A viewer who joins later asks for one, and the save already holds the
+records.
+
 A failed save does not create a debt, because the re-deal already happened in
 memory. `refresh` starts `runRefresh` on a later tick for the same reason the
 records matter: owing a re-deal writes records, and `cards.js` refreshes on
