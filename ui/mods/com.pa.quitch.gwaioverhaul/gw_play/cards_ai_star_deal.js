@@ -1,7 +1,8 @@
 // The host's deal of a card to every selectable AI star.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
-], function (starPaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (starPaths, coopPublish) {
   return function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
@@ -18,11 +19,15 @@ define([
     // the cards the stars will offer. A win holds it from before the deal.
     var aiStarDealing = ko.observable(0);
 
-    // Returns the release, which only its first call honours.
+    // Returns the release, which only its first call honours. It holds the
+    // viewers' snapshot too, so a win sends one. See coop.md, "Publishing to
+    // viewers".
     var hold = function () {
+      var releasePublish = coopPublish.hold();
       aiStarDealing(aiStarDealing() + 1);
       return _.once(function () {
         aiStarDealing(aiStarDealing() - 1);
+        releasePublish();
       });
     };
 

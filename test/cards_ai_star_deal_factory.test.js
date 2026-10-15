@@ -30,6 +30,22 @@ registerModuleStub(
   { selectable: (model) => (index) => model.canSelect(index) }
 );
 
+// The viewers' snapshot hold, counted per run.
+const publishHolds = { taken: 0, released: 0, events: [] };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    hold: () => {
+      publishHolds.taken += 1;
+      publishHolds.events.push("hold");
+      return () => {
+        publishHolds.released += 1;
+        publishHolds.events.push("release");
+      };
+    },
+  }
+);
+
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_ai_star_deal.js"
 );
@@ -70,6 +86,9 @@ function setup(overrides = {}) {
     errors: [],
   };
   const systems = makeSystems(options.cardLists);
+  publishHolds.taken = 0;
+  publishHolds.released = 0;
+  publishHolds.events = [];
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -86,6 +105,7 @@ function setup(overrides = {}) {
     game: { stats: () => ({ turns: () => 7 }) },
     chooseCards: (request) => {
       calls.deals.push(request);
+      publishHolds.events.push("deal");
       return options.failDeal
         ? rejected(new Error("deck gone"))
         : resolved([{ id: "dealt_" + request.star.index }]);
@@ -108,6 +128,7 @@ function setup(overrides = {}) {
     coopStarCards: {
       refresh: (refreshOptions) => {
         calls.refreshes.push(refreshOptions);
+        publishHolds.events.push("refresh");
         if (options.holdRefresh) {
           return options.holdRefresh.promise();
         }
@@ -133,6 +154,7 @@ describe("the AI stars' deal", () => {
     assert.deepEqual(run.calls.deals, []);
     assert.deepEqual(run.calls.refreshes, []);
     assert.equal(run.handle.dealing(), 0);
+    assert.equal(publishHolds.taken, 0);
   });
 
   it("deals nothing after a fight is won, since the explore that follows does", async () => {
@@ -239,6 +261,25 @@ describe("the AI stars' deal", () => {
 
     second();
     assert.equal(run.handle.dealing(), 0);
+    assert.equal(publishHolds.taken, 2);
+    assert.equal(publishHolds.released, 2, "each release once");
+  });
+
+  // The star cards' snapshot is published inside the deal; one goes out when
+  // it ends.
+  it("holds the viewers' snapshot from before the first deal to after the re-deal", async () => {
+    const run = build();
+
+    await run.handle.dealCardToSelectableAI(false);
+
+    assert.deepEqual(publishHolds.events, [
+      "hold",
+      "deal",
+      "deal",
+      "refresh",
+      "release",
+    ]);
+    assert.equal(run.handle.dealing(), 0);
   });
 
   it("logs a failed deal and still settles", async () => {
@@ -248,6 +289,7 @@ describe("the AI stars' deal", () => {
 
     assert.deepEqual(run.calls.refreshes, []);
     assert.equal(run.handle.dealing(), 0);
+    assert.deepEqual(publishHolds.events, ["hold", "deal", "deal", "release"]);
     assert.equal(run.calls.errors.length, 1);
     assert.match(
       run.calls.errors[0],
@@ -261,6 +303,7 @@ describe("the AI stars' deal", () => {
     await run.handle.dealCardToSelectableAI(false);
 
     assert.equal(run.handle.dealing(), 0);
+    assert.equal(publishHolds.released, 1);
     assert.deepEqual(run.calls.errors, [
       "GWO failed to deal the AI stars' cards: no viewers",
     ]);

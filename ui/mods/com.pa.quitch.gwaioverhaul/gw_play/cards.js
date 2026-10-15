@@ -469,6 +469,7 @@
           },
           busy: starCardsBusy,
           publish: coopPublish.publish,
+          hold: coopPublish.hold,
         });
 
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock

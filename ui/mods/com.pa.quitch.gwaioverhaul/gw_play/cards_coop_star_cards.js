@@ -120,8 +120,10 @@ define([
     var aiStarDealHeld = params.aiStarDealHeld;
     // Held true while a refresh is in flight.
     var busy = params.busy;
-    // coop_publish.js's publish, passed in: that module requires this one.
+    // coop_publish.js's publish and hold, passed in: that module requires
+    // this one.
     var publish = params.publish;
+    var hold = params.hold;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
@@ -394,7 +396,10 @@ define([
       // cards.js refreshes on every record write. Run synchronously, that
       // refresh would start before refreshInFlight is set and run alongside
       // this one.
+      // Held, so a snapshot owed as the refresh starts goes out with its
+      // own, as one.
       busy(true);
+      var release = hold();
       refreshInFlight = Promise.resolve()
         .then(function () {
           return runRefresh(redeal);
@@ -409,7 +414,10 @@ define([
           var queued = refreshPending;
           refreshPending = undefined;
           busy(false);
-          return queued ? refresh(queued) : undefined;
+          // A queued refresh takes its hold first, so none goes out between.
+          var next = queued ? refresh(queued) : undefined;
+          release();
+          return next;
         });
 
       return refreshInFlight;
