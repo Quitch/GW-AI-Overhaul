@@ -52,15 +52,33 @@ define(function () {
   // No seed or label contains this, so stream("a", 1) cannot collide with stream("a1").
   var SEPARATOR = "\u0000";
 
-  var fromState = function (state) {
-    var words = finalise(state);
-    var a = words[0];
-    var b = words[1];
-    var c = words[2];
-    var d = words[3];
+  // A deal makes a stream per card and draws from one or two, so a stream
+  // holds its parent's state and its own text, and absorbs and seeds itself
+  // only when it is drawn from or has a stream of its own.
+  var fromState = function (parentState, text) {
+    var state;
+    var a;
+    var b;
+    var c;
+    var d;
+    var primed = false;
 
     // sfc32.
     var rng = function () {
+      if (!primed) {
+        primed = true;
+        if (!state) {
+          state = absorb(parentState, text);
+        }
+        var words = finalise(state);
+        a = words[0];
+        b = words[1];
+        c = words[2];
+        d = words[3];
+        for (var i = 0; i < WARM_UP; i++) {
+          rng();
+        }
+      }
       a >>>= 0;
       b >>>= 0;
       c >>>= 0;
@@ -74,10 +92,6 @@ define(function () {
       c = (c + t) | 0;
       return (t >>> 0) / 4294967296;
     };
-
-    for (var i = 0; i < WARM_UP; i++) {
-      rng();
-    }
 
     // Both bounds inclusive, matching _.random; ai_population.js's
     // gameModeEnabled depends on it.
@@ -120,11 +134,12 @@ define(function () {
     // Derived from the parent's hash state, not a counter, so a stream is unaffected
     // by what its parent or siblings drew first. See galaxy.md.
     rng.stream = function (label, index) {
+      if (!state) {
+        state = absorb(parentState, text);
+      }
       return fromState(
-        absorb(
-          state,
-          SEPARATOR + label + (index === undefined ? "" : SEPARATOR + index)
-        )
+        state,
+        SEPARATOR + label + (index === undefined ? "" : SEPARATOR + index)
       );
     };
 
@@ -134,7 +149,7 @@ define(function () {
   var create = function (seed) {
     // A seed can arrive as a number, and 0 has to survive.
     var seedText = seed === undefined || seed === null ? "" : String(seed);
-    return fromState(absorb(INITIAL_STATE, seedText));
+    return fromState(INITIAL_STATE, seedText);
   };
 
   return {
