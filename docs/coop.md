@@ -615,8 +615,9 @@ reload.
 So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
 every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
 (`cards_coop_ai_tech.js`), a viewer's reroll (`cards_coop_reroll.js`), a
-viewer's General Commander setup (`cards_start_subcdr.js`), and a viewer's
-report of their loadouts (`treasure_loadouts.js`). The test is the star-card refresh's own,
+viewer's General Commander setup (`cards_start_subcdr.js`), a viewer's
+report of their loadouts (`treasure_loadouts.js`), and the star-card refresh
+(`cards_coop_star_cards.js`, "Per-player pre-dealt cards"). The test is the star-card refresh's own,
 `viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
 the host is not exploring, no AI is deciding, and every viewer is loaded and
 level with the host's deal count. A viewer with an offer open is not level, so
@@ -1076,12 +1077,13 @@ The record is where the debt belongs for three reasons:
   record write triggers the next refresh, so each such viewer would get a new
   card on every refresh for as long as the other viewer kept failing.
 
-A refresh that changes a record saves the war, then sends the viewers a
-snapshot. With no viewer connected, as when the host plays with AI players
-only, no snapshot goes out. The send passes `force`, which skips stock's own
-no-viewer check, and a snapshot of a large galaxy takes about a second to
-build. A viewer who joins later asks for one, and the save already holds the
-records.
+A refresh that changes a record saves the war, then publishes a snapshot
+through `coop_publish.js` ("Publishing to viewers"). The refresh checks the
+gate only before it starts, and on a large galaxy it runs for a second or two,
+so the host can explore, or a viewer get an offer, before it ends. The held
+snapshot waits for them. With no viewer connected, as when the host plays with
+AI players only, no snapshot goes out. A viewer who joins later asks for one,
+and the save already holds the records.
 
 A failed save does not create a debt, because the re-deal already happened in
 memory. `refresh` starts `runRefresh` on a later tick for the same reason the
@@ -1096,7 +1098,13 @@ The refresh depends on two ordering rules:
   `upsertCoopPlayerInventoryData` replaces the whole record, and `chooseCards`
   is async, so a catch-up deal can land `pendingTechCards` in the window.
   Writing over a clone captured before the deal erases it. That viewer then
-  waits forever on an offer the host thinks it sent.
+  waits forever on an offer the host thinks it sent. A viewer whose
+  `inventory.cards` changed in the window, by a tech choice, is not dealt any
+  further stars and not written at all: their deal was against the old cards.
+  The write that changed them triggers another refresh, which deals them
+  again, re-dealing them if a re-deal is still owed. The test compares the
+  cards, not the inventory, because stock stores `inventory.save()` with
+  GWInventory's methods on it and `coopHost.upsertRecord` drops them.
 - **A refresh must not run while anyone is still catching up.**
   `gwCampaignPlayerSetupBlocked` is not sufficient on its own. It reads
   `client.loading_status`, which arrives on `gw_campaign_control` broadcasts.

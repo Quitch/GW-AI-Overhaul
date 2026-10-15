@@ -115,6 +115,12 @@ its siblings first. Two consequences are worth relying on:
 - Anything reached through a promise, or visited in a varying order, can be **keyed**
   instead of drawn in sequence.
 
+A stream does no hashing when it is made. It keeps its parent's state and its own
+label text, and absorbs the text, finalises, and runs its warm-up draws on its first
+draw or when it makes a stream of its own. A deal makes one stream per card in the
+deck and draws from one or two of them, so most streams never pay for it. Outputs are
+the same either way.
+
 | Stream                                                                | Consumers                                                                                         |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `factions` → `faction.<i>`                                            | the Random commander, boss `systemDescription`, Cluster planet biomes (`faction/faction_seed.js`) |
