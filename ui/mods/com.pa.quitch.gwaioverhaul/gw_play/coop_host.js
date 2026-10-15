@@ -55,24 +55,22 @@ define([
   };
 
   // Stores a patched copy of every record patchFor returns a patch for, in one
-  // write, and returns how many it patched. Each write re-renders every view
-  // bound to the records, which costs tens of milliseconds in a large war.
+  // write. See coop.md, "redealOwed".
   var upsertRecords = function (game, patchFor) {
-    var count = 0;
+    var changed = false;
     var next = _.map(game.coopPlayerInventoryData(), function (record) {
-      var patch = patchFor(record);
+      var patch = record && patchFor(record);
       if (!patch) {
         return record;
       }
 
-      count += 1;
+      changed = true;
       return patched(record, patch);
     });
 
-    if (count) {
+    if (changed) {
       game.coopPlayerInventoryData(next);
     }
-    return count;
   };
 
   return {

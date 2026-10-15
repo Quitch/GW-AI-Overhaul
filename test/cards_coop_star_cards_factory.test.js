@@ -134,6 +134,9 @@ function setup(overrides = {}) {
       next.forEach((record) => {
         options.records[record.id] = record;
       });
+      if (options.onUpsert) {
+        options.onUpsert(next);
+      }
       return undefined;
     },
     stats: () => ({ turns: () => options.turn }),

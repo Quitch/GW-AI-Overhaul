@@ -295,7 +295,7 @@ define([
     // re-deals is re-dealt on their return. See coop.md.
     var oweRedealToEveryViewer = function () {
       coopHost.upsertRecords(game, function (record) {
-        if (!record || redealOwed(record)) {
+        if (redealOwed(record)) {
           return undefined;
         }
 
