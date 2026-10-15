@@ -259,8 +259,9 @@ real viewport, so that cost scales with display resolution and refresh rate.
 Only three things change what is drawn without going through `update()` itself.
 They are the stage transform (pan/zoom), the canvas backing size, and
 `model.galaxy.parallax`. The last is a mouse-tracking offset that `self.setup`
-in `gw_play.js` applies to the nebula layer on every `body` mousemove. Diffing
-those three against the last real draw is therefore a sound dirty check.
+in `gw_play.js` writes on every `body` mousemove, and that the
+`galaxyTransform` computed applies to the nebulae and every star. Diffing those
+three against the last real draw is therefore a sound dirty check.
 
 While the camera or mouse is moving, the wrapper still draws, capped to 60 FPS
 rather than the uncapped monitor refresh. Once everything is static, it drops to
@@ -268,7 +269,7 @@ a 10 FPS heartbeat. That rate is slow enough to matter and still registers
 hover-highlight changes, because EaselJS runs its own mouseover hit testing
 inside `update()`.
 
-Two traps:
+Three traps:
 
 - **The idle heartbeat is not idle.** `systems.js` rotates the selection icon on
   every tick, and the heartbeat is what keeps that animation running. When idle,
@@ -278,6 +279,14 @@ Two traps:
   base game takes the 20/sec default). Every check hit-tests the whole
   interactive display list, up to 234 systems. This is independent of the redraw
   loop.
+- The wrapper file also holds back `model.galaxy.parallax`'s notifications
+  until it draws a frame. Every star's position, scale, and lane graphics
+  depend on `galaxyTransform`, so each notification re-evaluates some 2,000
+  computeds: about 20 ms on a 234-star map. A mouse reports far more often than
+  once a frame, and a notification per mousemove stalled the map for seconds
+  while it moved. The value itself changes at once, so the dirty check sees the
+  move. The held notification goes out just before the draw, so the frame shows
+  the stars where the new value puts them.
 
 ## Repairing wars made by older GWO versions
 
