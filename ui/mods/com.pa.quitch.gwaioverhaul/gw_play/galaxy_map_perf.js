@@ -19,6 +19,10 @@
     // Halved; the base game takes the 20/sec default.
     stage.enableMouseOver(10);
 
+    // Every parallax write moves every star and redraws every lane, so
+    // subscribers hear of at most one per frame. See architecture.md.
+    parallax.extend({ rateLimit: interactiveFrameIntervalMs });
+
     // For animated overlays, which the idle rate renders in too few frames.
     model.gwoRequestInteractiveFrames = function (durationMs) {
       interactiveUntil = Math.max(

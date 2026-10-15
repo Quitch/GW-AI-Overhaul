@@ -268,7 +268,7 @@ a 10 FPS heartbeat. That rate is slow enough to matter and still registers
 hover-highlight changes, because EaselJS runs its own mouseover hit testing
 inside `update()`.
 
-Two traps:
+Three traps:
 
 - **The idle heartbeat is not idle.** `systems.js` rotates the selection icon on
   every tick, and the heartbeat is what keeps that animation running. When idle,
@@ -278,6 +278,13 @@ Two traps:
   base game takes the 20/sec default). Every check hit-tests the whole
   interactive display list, up to 234 systems. This is independent of the redraw
   loop.
+- The wrapper file also rate-limits `model.galaxy.parallax` to one
+  notification per 60 FPS frame. Stock's `galaxyTransform` computed depends on
+  it, and every star's position, scale, and lane graphics depend on that, so each
+  write re-evaluates some 2,000 computeds: about 20 ms on a 234-star map. A
+  mouse reports far more often than once a frame, and unlimited writes stalled
+  the map for seconds while it moved. The value itself changes at once, so the
+  dirty check above still sees every move.
 
 ## Repairing wars made by older GWO versions
 

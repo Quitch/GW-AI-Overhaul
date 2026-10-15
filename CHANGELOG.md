@@ -5,6 +5,7 @@
 ### Changed
 
 - Galactic War battles launch sooner, by about 10 seconds with faction mods active: your mods are reloaded one time fewer while the battle is prepared, in solo and co-op wars
+- The galaxy map no longer stalls for seconds while the mouse moves over it in the largest galaxies
 - The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
 
 ### Bugfix
