@@ -214,6 +214,35 @@ Minion counting deliberately includes players who are not currently in the game.
 The minions of a player who leaves and rejoins therefore do not vanish and
 reappear.
 
+## Records writes
+
+Every write of `game.coopPlayerInventoryData` hands Knockout a new array, so
+every computed that reads it runs again, however little changed. The views
+bound to those computeds are what cost: a `foreach` given a new array of new
+objects tears down and rebuilds every row. In a 234-star war with a viewer and
+three AI players that was about 40 ms per write, and a co-op win makes several
+writes (star cards, AI tech, Sub Commander upserts, stock's own syncs).
+
+So the two computeds in front of `foreach` views compare their output
+structurally (`equalityComparer = _.isEqual`) and notify only when it changed:
+the slot list's `model.gwCampaignSlots` (`gw_play/coop_ai.js`) and the war
+panel's `model.gwoPlayer` (`gw_play/gwo_panel.js`). A write that changes
+nothing they show now costs about 1 ms. Two rules keep this correct:
+
+- **Rows hold plain values or stable observables.** `_.isEqual` compares a
+  function, and so an observable, by reference. The panel's cached
+  observables (`model.gwoLoadout`, each AI loadout, each co-op commander's
+  colour and race icon) are the same objects every run, and their own
+  bindings track their changes. A fresh observable minted per run would make
+  every run unequal, and the rows would re-render again.
+- **Consumers read fields, never identity.** While rows compare equal, the
+  computed keeps its previous array, so a click handler gets last run's row
+  object. The slot buttons only read its fields.
+
+Do not rate-limit `coopPlayerInventoryData` itself:
+`coop_ai_lobby.js` `removeAi` and `cards_coop_star_cards.js` `refresh` rely
+on its subscribers running synchronously.
+
 ## AI players
 
 A co-op host can drop an AI player into an open slot, so a war made for more
@@ -1082,8 +1111,8 @@ last turn's cards, which could duplicate cards they had just taken.
 The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
 A re-deal sets it on every co-op record before the gate is consulted: every
 viewer's, connected or not, every AI player's, and the host's own, in one
-write of the records array (`coopHost.upsertRecords`): each write re-renders
-every view bound to the records, about 40 ms in a 234-star war. The host's
+write of the records array (`coopHost.upsertRecords`), not one per record
+("Records writes"). The host's
 flag is inert: the refresh walks only viewers and AI players, so nothing reads
 or clears it. The write that stores a viewer's new cards drops it, so each debt
 clears only when that viewer's own re-deal succeeds. A viewer with nothing left to re-deal has the flag dropped on
