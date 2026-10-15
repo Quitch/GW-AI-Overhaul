@@ -160,7 +160,38 @@ define([
       return wanted;
     };
 
-    var dealStarCard = function (target, inventory, playerKey, record) {
+    // A refresh calls deal() on every card of the deck once per star per viewer,
+    // which is too much for one frame, so each viewer, and each star within it,
+    // runs in a task of its own. A throw rejects, so the refresh still ends.
+    var later = function (step) {
+      return new Promise(function (resolve) {
+        _.defer(function () {
+          resolve(Promise.resolve().then(step));
+        });
+      });
+    };
+
+    var inSeries = function (items, step) {
+      var results = [];
+
+      return _.reduce(
+        items,
+        function (chain, item) {
+          return chain
+            .then(function () {
+              return later(_.partial(step, item));
+            })
+            .then(function (result) {
+              results.push(result);
+            });
+        },
+        Promise.resolve()
+      ).then(function () {
+        return results;
+      });
+    };
+
+    var dealStarCard = function (target, inventory, playerKey, record, turn) {
       var existing = starCardForRecord(record, target.starIndex);
 
       return chooseCards({
@@ -173,7 +204,7 @@ define([
           warRng,
           playerKey,
           target.starIndex,
-          game.stats().turns()
+          turn
         ),
       }).then(function (cards) {
         return { starIndex: target.starIndex, card: cards && cards[0] };
@@ -204,6 +235,8 @@ define([
       }
 
       var playerKey = gwoStreams.coopPlayerKey(record, client);
+      // Read once: the host can move between two stars' deals.
+      var turn = game.stats().turns();
       var inventory;
       var applied = new Promise(function (resolve) {
         inventory = gwoBank.applyRecordInventory(
@@ -216,11 +249,9 @@ define([
 
       return applied
         .then(function () {
-          return Promise.all(
-            _.map(targets, function (target) {
-              return dealStarCard(target, inventory, playerKey, record);
-            })
-          );
+          return inSeries(targets, function (target) {
+            return dealStarCard(target, inventory, playerKey, record, turn);
+          });
         })
         .then(function (results) {
           var updates = {};
@@ -242,7 +273,7 @@ define([
               return !!(system && system.star.ai());
             }
           );
-          var next = buildStarCardsField(pruned, updates, game.stats().turns());
+          var next = buildStarCardsField(pruned, updates, turn);
 
           if (
             !redealOwed(fresh) &&
@@ -258,32 +289,9 @@ define([
         });
     };
 
-    // A refresh calls deal() on every card of the deck once per star per viewer,
-    // which is too much for one frame, so each viewer yields before starting. A
-    // throw rejects, so the refresh still ends.
-    var refreshViewerLater = function (client) {
-      return new Promise(function (resolve) {
-        _.defer(function () {
-          resolve(Promise.resolve().then(_.partial(refreshViewer, client)));
-        });
-      });
-    };
-
     var refreshEachViewer = function (viewers) {
-      var changedAny = false;
-
-      return _.reduce(
-        viewers,
-        function (chain, client) {
-          return chain
-            .then(refreshViewerLater.bind(null, client))
-            .then(function (changed) {
-              changedAny = changedAny || changed;
-            });
-        },
-        Promise.resolve()
-      ).then(function () {
-        return changedAny;
+      return inSeries(viewers, refreshViewer).then(function (changed) {
+        return _.some(changed);
       });
     };
 

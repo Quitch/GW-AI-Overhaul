@@ -938,6 +938,105 @@ describe("coop star cards refresh - a throwing step", () => {
   });
 });
 
+describe("coop star cards refresh - one star per task", () => {
+  let timers;
+
+  before(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  after(() => timers.restore());
+
+  // Runs the refresh to its end one deferred step at a time, noting how many
+  // deals each step made.
+  async function stepThrough(refreshed, calls) {
+    let settled = false;
+    refreshed.then(
+      () => {
+        settled = true;
+      },
+      () => {
+        settled = true;
+      }
+    );
+    const dealsPerStep = [];
+    for (let guard = 0; guard < 100 && !settled; guard += 1) {
+      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+        await Promise.resolve();
+      }
+      if (!timers.delayed.length) {
+        break;
+      }
+      const before = calls.deals.length;
+      timers.delayed.shift().fn();
+      for (let tick = 0; tick < 50; tick += 1) {
+        await Promise.resolve();
+      }
+      dealsPerStep.push(calls.deals.length - before);
+    }
+    await refreshed;
+    return dealsPerStep;
+  }
+
+  it("deals each star in its own deferred step, in star order", async () => {
+    const { coopStarCards, calls, options } = build({
+      stars: [{}, {}, {}],
+    });
+
+    const dealsPerStep = await stepThrough(coopStarCards.refresh(), calls);
+
+    // The viewer's own step deals nothing; each star's deals one.
+    assert.deepEqual(dealsPerStep, [0, 1, 1, 1]);
+    assert.deepEqual(starsDealt(calls), [0, 1, 2]);
+    assert.deepEqual(options.records.alice.gwaioStarCards.cards, {
+      0: { id: "card_for_0" },
+      1: { id: "card_for_1" },
+      2: { id: "card_for_2" },
+    });
+    assert.deepEqual(calls.busy, [true, false]);
+  });
+
+  it("deals and records every star at the turn the refresh began", async () => {
+    const { coopStarCards, calls, options } = build({
+      stars: [{}, {}, {}],
+      // The host moving on between two stars' deals.
+      onDeal: (opts) => {
+        opts.turn += 1;
+      },
+    });
+
+    await stepThrough(coopStarCards.refresh(), calls);
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.turn),
+      [7, 7, 7]
+    );
+    assert.equal(options.records.alice.gwaioStarCards.turn, 7);
+  });
+
+  it("ends the refresh, writing nothing, when one star's deal throws", async () => {
+    let dealt = 0;
+    const { coopStarCards, calls } = build({
+      stars: [{}, {}, {}],
+      onDeal: () => {
+        dealt += 1;
+        if (dealt === 2) {
+          throw new Error("deal threw");
+        }
+      },
+    });
+
+    const errors = await captureErrors(() =>
+      stepThrough(coopStarCards.refresh(), calls)
+    );
+
+    assert.equal(dealt, 2, "the star after the throw is not dealt");
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.busy, [true, false]);
+    assert.match(errors.join("\n"), /deal threw/);
+  });
+});
+
 describe("starCardForRecord", () => {
   it("is the record reader, exposed for cards_coop_deal.js", () => {
     const { coopStarCards } = build();
