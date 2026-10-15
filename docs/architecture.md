@@ -246,6 +246,32 @@ GWO's rule differs from stock's in three ways:
 All three results are saved as soon as `winTurn` returns, so none can be
 repaired on scene entry: by then the save no longer holds the `foes`.
 
+## Galaxy map filter cache
+
+The galaxy map tints its icons with EaselJS `ColorFilter`s. A filtered bitmap is
+drawn into its own cache canvas, and every pixel of that canvas is filtered in
+JavaScript: `getImageData`, a loop, `putImageData`. Stock does this for every
+star's owner icon, and `gw_play/systems.js` does it for every star's inner ring,
+each several times per scene load: when the bitmap is cached, when its image
+loads, and when its colour is set. On a 234-star map that was 4.6 seconds of
+every `gw_play` load.
+
+`gw_play/galaxy_map_filter_cache.js` replaces `createjs.Bitmap.prototype.updateCache`
+with one that keeps each result. A bitmap whose cache would come out the same
+gets a copy of it instead: the same image source, the same loaded state, the
+same cache rectangle, and a single `ColorFilter` with the same multipliers. Only
+a handful of colours and two images are in use, so a map needs some 25 passes,
+not 700. Anything else still goes to stock: a second filter, a colour offset, a
+source rectangle, a cache scale, an image that is not an `<img>`, such as a
+video, or a bitmap with a `draw` of its own. It keeps at most 64 results, so a
+colour that animated would cost filter passes, not memory.
+
+It cannot reach the passes that run before mod scripts load. Stock builds the
+map, owner icons included, inside the `GameViewModel` constructor, and calls
+`loadMods` after it, so the first pass of each owner icon and the one its colour
+causes are stock's. The cache takes the image-load passes and every pass of
+`systems.js`'s rings: 1.7 to 2.6 seconds of a 234-star load.
+
 ## Galaxy map redraw throttling
 
 `gw_play/galaxy_map_perf.js` wraps `model.galaxy.stage.update()` with a dirty
@@ -259,8 +285,9 @@ real viewport, so that cost scales with display resolution and refresh rate.
 Only three things change what is drawn without going through `update()` itself.
 They are the stage transform (pan/zoom), the canvas backing size, and
 `model.galaxy.parallax`. The last is a mouse-tracking offset that `self.setup`
-in `gw_play.js` applies to the nebula layer on every `body` mousemove. Diffing
-those three against the last real draw is therefore a sound dirty check.
+in `gw_play.js` writes on every `body` mousemove, and that the
+`galaxyTransform` computed applies to the nebulae and every star. Diffing those
+three against the last real draw is therefore a sound dirty check.
 
 While the camera or mouse is moving, the wrapper still draws, capped to 60 FPS
 rather than the uncapped monitor refresh. Once everything is static, it drops to
@@ -268,7 +295,7 @@ a 10 FPS heartbeat. That rate is slow enough to matter and still registers
 hover-highlight changes, because EaselJS runs its own mouseover hit testing
 inside `update()`.
 
-Two traps:
+Three traps:
 
 - **The idle heartbeat is not idle.** `systems.js` rotates the selection icon on
   every tick, and the heartbeat is what keeps that animation running. When idle,
@@ -278,6 +305,14 @@ Two traps:
   base game takes the 20/sec default). Every check hit-tests the whole
   interactive display list, up to 234 systems. This is independent of the redraw
   loop.
+- The wrapper file also holds back `model.galaxy.parallax`'s notifications
+  until it draws a frame. Every star's position, scale, and lane graphics
+  depend on `galaxyTransform`, so each notification re-evaluates some 2,000
+  computeds: about 20 ms on a 234-star map. A mouse reports far more often than
+  once a frame, and a notification per mousemove stalled the map for seconds
+  while it moved. The value itself changes at once, so the dirty check sees the
+  move. The held notification goes out just before the draw, so the frame shows
+  the stars where the new value puts them.
 
 ## Repairing wars made by older GWO versions
 

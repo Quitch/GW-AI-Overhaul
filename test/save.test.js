@@ -77,11 +77,15 @@ describe("save", () => {
     assert.deepEqual(calls.drive, [true, false]);
   });
 
-  it("marks the stars saved when they are not part of the save", () => {
+  // Stock's saveGame marks them saved once it has written them, so an
+  // earlier unsaved mark still gets its write.
+  it("leaves the stars' saved mark alone when they are not part of the save", () => {
     const calls = setup(false);
+    const war = { id: "war" };
 
-    gwoSave({ id: "war" }, false);
+    gwoSave(war, false);
 
-    assert.deepEqual(calls.saved, [true]);
+    assert.deepEqual(saves, [war]);
+    assert.deepEqual(calls.saved, []);
   });
 });

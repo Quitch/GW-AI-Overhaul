@@ -196,7 +196,7 @@ describe("model.win on the host", () => {
       ["winTurn", 0],
       ["maybePlayCaptureSound"],
       ["dealCardToSelectableAI", true, "end"],
-      ["save", true, true],
+      ["save", true, false],
       ["exitGate resolved"],
       ["playSound", "/VO/bots_found"],
     ]);
