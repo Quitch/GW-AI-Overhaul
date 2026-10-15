@@ -268,6 +268,10 @@
         return false;
       }
 
+      if (model.gwoAiStarsDealing && model.gwoAiStarsDealing()) {
+        return false;
+      }
+
       var from = game.currentStar();
       var to = model.selection.star();
 

@@ -177,7 +177,12 @@ function setup(overrides = {}) {
     aiClients: () => options.aiClients,
     aiDeciding: () => options.aiDeciding,
     aiStarDealHeld: () => options.aiStarDealHeld,
-    busy: (value) => calls.busy.push(value),
+    busy: (value) => {
+      calls.busy.push(value);
+      if (options.busyThrows && options.busyThrows(calls.busy)) {
+        throw new Error("busy subscriber");
+      }
+    },
     publish: (reason) => {
       calls.publishes.push(reason);
       calls.holds.push("publish");
@@ -836,6 +841,25 @@ describe("coop star cards refresh - coalescing", () => {
       "publish",
       "release",
     ]);
+  });
+
+  it("releases its hold when the queued refresh throws as it starts", async () => {
+    const { coopStarCards, calls } = build({
+      stars: [{}],
+      // The queued pass's busy(true), the third write.
+      busyThrows: (writes) => writes.length === 3,
+    });
+
+    await Promise.all([
+      coopStarCards.refresh(),
+      coopStarCards.refresh({ redeal: true }),
+    ]).then(null, () => undefined);
+
+    assert.deepEqual(calls.holds.slice(-1), ["release"]);
+    assert.equal(
+      calls.holds.filter((entry) => entry === "release").length,
+      calls.holds.filter((entry) => entry === "hold").length
+    );
   });
 
   // The host re-deals after a win, which is exactly when viewers hold

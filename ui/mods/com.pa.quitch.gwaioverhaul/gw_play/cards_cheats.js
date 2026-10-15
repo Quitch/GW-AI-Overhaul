@@ -102,8 +102,9 @@ define([
       return product;
     };
 
-    // The AI stars' re-deal publishes their star cards, so the hold makes the
-    // cheat's the one snapshot.
+    // The AI stars' re-deal publishes their star cards. Held, the cheat's
+    // snapshot replaces theirs without relying on its publish running before
+    // the deferred settle.
     var finishCheat = function (snapshotName) {
       var release = coopPublish.hold();
       return dealCardToSelectableAI(false).then(function () {

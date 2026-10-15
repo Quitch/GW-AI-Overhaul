@@ -4,8 +4,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
-], function (coopHost, refereeCoop, starPaths) {
+], function (coopHost, refereeCoop, gwoPromise, starPaths) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -170,34 +171,6 @@ define([
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer, and each star within it,
     // runs in a task of its own. A throw rejects, so the refresh still ends.
-    var later = function (step) {
-      return new Promise(function (resolve) {
-        _.defer(function () {
-          resolve(Promise.resolve().then(step));
-        });
-      });
-    };
-
-    var inSeries = function (items, step) {
-      var results = [];
-
-      return _.reduce(
-        items,
-        function (chain, item) {
-          return chain
-            .then(function () {
-              return later(_.partial(step, item));
-            })
-            .then(function (result) {
-              results.push(result);
-            });
-        },
-        Promise.resolve()
-      ).then(function () {
-        return results;
-      });
-    };
-
     var dealStarCard = function (target, inventory, playerKey, record, turn) {
       var existing = starCardForRecord(record, target.starIndex);
 
@@ -267,7 +240,7 @@ define([
 
       return applied
         .then(function () {
-          return inSeries(targets, function (target) {
+          return gwoPromise.inSeries(targets, function (target) {
             var fresh = findRecord(client);
             return fresh && !cardsChanged(fresh)
               ? dealStarCard(target, inventory, playerKey, record, turn)
@@ -311,9 +284,11 @@ define([
     };
 
     var refreshEachViewer = function (viewers) {
-      return inSeries(viewers, refreshViewer).then(function (changed) {
-        return _.some(changed);
-      });
+      return gwoPromise
+        .inSeries(viewers, refreshViewer)
+        .then(function (changed) {
+          return _.some(changed);
+        });
     };
 
     // Every viewer record, connected or not, so a viewer away when the host
@@ -415,9 +390,11 @@ define([
           refreshPending = undefined;
           busy(false);
           // A queued refresh takes its hold first, so none goes out between.
-          var next = queued ? refresh(queued) : undefined;
-          release();
-          return next;
+          try {
+            return queued ? refresh(queued) : undefined;
+          } finally {
+            release();
+          }
         });
 
       return refreshInFlight;

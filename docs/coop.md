@@ -616,8 +616,9 @@ So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
 every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
 (`cards_coop_ai_tech.js`), a viewer's reroll (`cards_coop_reroll.js`), a
 viewer's General Commander setup (`cards_start_subcdr.js`), a viewer's
-report of their loadouts (`treasure_loadouts.js`), and the star-card refresh
-(`cards_coop_star_cards.js`, "Per-player pre-dealt cards"). The test is the star-card refresh's own,
+report of their loadouts (`treasure_loadouts.js`), the star-card refresh
+(`cards_coop_star_cards.js`, "Per-player pre-dealt cards"), and the dev cheats
+(`cards_cheats.js`). The test is the star-card refresh's own,
 `viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
 the host is not exploring, no AI is deciding, and every viewer is loaded and
 level with the host's deal count. A viewer with an offer open is not level, so
@@ -642,13 +643,13 @@ shared tech, where the debt otherwise goes out at once.
 A reroll is the one exception. The rerolling viewer waits for the host's reply
 with its offer hidden, so it cannot choose while the snapshot goes out. The
 reroll's snapshot therefore goes out at once when no other viewer has an offer
-open or deals to catch up, which with one viewer is always, even while the
-debt is held. A reroll during the AI stars' deal can then send a second
-snapshot for that action. Only while another
+open or deals to catch up, which with one viewer is always. Only while another
 viewer has one is it held, and then the server's copy of the rerolling viewer's
 hand, and the other viewers' view of it, wait until everyone has chosen. If the
 rerolling viewer's `gw_play` reloads in that window, the server shows it the old
 hand, and a pick from it gives a different card or is refused by the host.
+The reroll does not wait for `hold()` either, so a reroll during the AI stars'
+deal can send a second snapshot for that action.
 
 ### Catching up
 
@@ -1061,6 +1062,16 @@ again when it falls to zero. A win from explore takes the hold in `model.win`
 `end` before the deal starts. Without the hold, a win that made a star
 selectable started a gap-fill that wrote it and sent its own snapshot, and the
 re-deal sent a second one about three seconds later.
+
+The host deals the AI stars one star per task, so the deal spans about a
+second on a large galaxy. The host cannot move until every star is dealt:
+`model.gwoAiStarsDealing`, set by `gw_play/cards_ai_star_deal.js`, blocks
+`canMove` in `gw_play/systems.js`. A host who moved mid-deal would reach a
+star before its new card, and a win there could start a second deal that
+interleaves with the first. A win blocks moving from before `winTurn`,
+through the same `hold()` that keeps the gap-fill off, as the deal starts only
+once `winTurn` settles. The block ends with the stars; the re-deal that follows
+does not hold it.
 
 A re-deal the gate below turns away is **owed**, not dropped. So is one made
 while no viewer is connected, and one that fails. The next refresh the gate
