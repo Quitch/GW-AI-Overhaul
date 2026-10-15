@@ -235,7 +235,7 @@ The sibling holds the logic and is unit-tested. Do **not** instead hoist helpers
 to file top level. In PA's RequireJS runtime that creates a `window` global. See
 [`constraints.md`](constraints.md).
 
-## Galaxy generation is a hijack, and `pathBetween` is the base game's
+## Galaxy generation is a hijack, and `gw_play` replaces `pathBetween`
 
 GWO shadowed `gw_galaxy.js` until PA 124670. That patch added the
 `neighborsMap[node] || []` guard that GWO carried in its own copy of the
@@ -245,8 +245,7 @@ GWO therefore dropped both that module and the shadow. `gw_start/galaxy_build.js
 patches the two prototype methods that actually differ and leaves the rest of the
 file to the base game.
 
-The consequence is that **star routing is no longer GWO's code and is no longer unit
-tested**. `shared/gw_galaxy` cannot load under the Node harness, so there is nothing
+`shared/gw_galaxy` cannot load under the Node harness, so there is nothing
 to load directly. `gw_start/gw_galaxy_connect.js` and `gw_start/gw_system_brackets.js`
 remain measured and tested. The patched `buildGraph` calls the first and `build` the
 second, not the constructor.
@@ -265,6 +264,21 @@ If a future PA patch changes `pathBetween` again, check it against these fog-of-
 rules. The last hop is allowed when either endpoint is explored, or under `noFog`.
 An intermediate star is traversable when explored, or when visited at all under
 `noFog`.
+
+In `gw_play`, `systems.js` replaces the war's `pathBetween` with
+`shared/star_paths.js`. Stock's search queues a fresh `_.cloneDeep` of the path for
+every star it reaches, and can queue a star more than once. `model.canSelect` runs it
+for one star at a time, and the AI star deal, the co-op star cards, and the co-op AI
+pings each ask about every star in turn. With 120 of 234 stars explored, one such
+sweep took 207 to 242 ms; with `star_paths.js`, 8 to 10 ms. It finds the same path:
+a breadth-first search that never queues a star twice returns the first path stock's
+returns, because stock's extra copies of a star are queued behind the first one
+and are checked against the same rules. `test/star_paths.test.js` compares the two on
+random galaxies, against a copy of stock's search and, where the PA install is
+present, against the search its `gw_galaxy.js` holds. `pathBetween` is an own property
+that each `GWGalaxy` sets in its constructor, so the replacement goes on the instance.
+`gw_start` keeps stock's search. A PA patch that changes stock's `pathBetween`
+fails that last test, and has to be carried into `star_paths.js` and the copy.
 
 ## Where to look next
 
