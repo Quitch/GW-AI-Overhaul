@@ -996,6 +996,24 @@ describe("coop star cards refresh - one star per task", () => {
     assert.deepEqual(calls.busy, [true, false]);
   });
 
+  it("deals and records every star at the turn the refresh began", async () => {
+    const { coopStarCards, calls, options } = build({
+      stars: [{}, {}, {}],
+      // The host moving on between two stars' deals.
+      onDeal: (opts) => {
+        opts.turn += 1;
+      },
+    });
+
+    await stepThrough(coopStarCards.refresh(), calls);
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.turn),
+      [7, 7, 7]
+    );
+    assert.equal(options.records.alice.gwaioStarCards.turn, 7);
+  });
+
   it("ends the refresh, writing nothing, when one star's deal throws", async () => {
     let dealt = 0;
     const { coopStarCards, calls } = build({
