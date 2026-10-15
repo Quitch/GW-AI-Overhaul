@@ -1,6 +1,6 @@
 // Galaxy generation, as a hijack of two prototype methods rather than a shadow
 // of shared/gw_galaxy.js. See shadowing.md, "Galaxy generation is a hijack, and
-// `pathBetween` is the base game's".
+// `gw_play` replaces `pathBetween`".
 define([
   "shared/gw_galaxy",
   "shared/GalaxyBuilder",

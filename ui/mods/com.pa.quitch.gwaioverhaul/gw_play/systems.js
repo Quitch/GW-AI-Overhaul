@@ -286,6 +286,13 @@
       return galaxy.pathBetween(from, to, model.cheats.noFog());
     });
 
+    requireGW(
+      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js"],
+      function (starPaths) {
+        starPaths.install(galaxy);
+      }
+    );
+
     model.displayMove = ko.computed(function () {
       return model.canShowCampaignActionButtons() && model.canMove();
     });
