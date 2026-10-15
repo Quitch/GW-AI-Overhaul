@@ -163,6 +163,14 @@ define([
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer, and each star within it,
     // runs in a task of its own. A throw rejects, so the refresh still ends.
+    var later = function (step) {
+      return new Promise(function (resolve) {
+        _.defer(function () {
+          resolve(Promise.resolve().then(step));
+        });
+      });
+    };
+
     var inSeries = function (items, step) {
       var results = [];
 
@@ -171,15 +179,7 @@ define([
         function (chain, item) {
           return chain
             .then(function () {
-              return new Promise(function (resolve) {
-                _.defer(function () {
-                  resolve(
-                    Promise.resolve().then(function () {
-                      return step(item);
-                    })
-                  );
-                });
-              });
+              return later(_.partial(step, item));
             })
             .then(function (result) {
               results.push(result);
