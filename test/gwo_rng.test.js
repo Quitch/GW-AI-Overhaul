@@ -210,6 +210,31 @@ describe("gwo_rng stream", () => {
   });
 });
 
+describe("gwo_rng laziness", () => {
+  // Every deal makes a stream per card and draws from one or two of them.
+  it("hashes nothing until a stream is drawn from or makes a stream", () => {
+    const parent = gwoRng.create("lazy");
+    parent.stream("resolve-parent");
+    const nativeImul = Math.imul;
+    let calls = 0;
+    Math.imul = (a, b) => {
+      calls++;
+      return nativeImul(a, b);
+    };
+
+    try {
+      const children = Array.from({ length: 50 }, (_, i) =>
+        parent.stream("card", i)
+      );
+      assert.equal(calls, 0);
+      children[0]();
+      assert.ok(calls > 0);
+    } finally {
+      Math.imul = nativeImul;
+    }
+  });
+});
+
 describe("gwo_rng independence from Math.random", () => {
   // A Math.random fallback creeping into any helper would make war generation
   // unreproducible again, and only this test would notice.
@@ -299,6 +324,42 @@ describe("gwo_rng pinned outputs", () => {
     assert.deepEqual(
       words(card),
       [1764322841, 1395949423, 4242652580, 3937606253]
+    );
+  });
+
+  it("matches when a helper takes a stream's first draw", () => {
+    const star = () => war().stream("star", 7);
+    assert.equal(star().int(0, 4294967295), 3438556407);
+    assert.equal(star().float(0, 4294967296), 3438556407);
+    assert.equal(star().pick(["a", "b", "c", "d", "e", "f", "g"]), "f");
+    assert.deepEqual(
+      star().shuffle([1, 2, 3, 4, 5, 6, 7, 8]),
+      [5, 6, 3, 1, 8, 2, 4, 7]
+    );
+    assert.deepEqual(star().sample([1, 2, 3, 4, 5, 6, 7, 8], 3), [5, 6, 3]);
+  });
+
+  it("matches for a child of a parent that was never drawn from", () => {
+    const drawn = war();
+    drawn();
+    drawn();
+    const untouched = war();
+    assert.deepEqual(
+      words(untouched.stream("star", 7)),
+      words(drawn.stream("star", 7))
+    );
+    assert.deepEqual(
+      words(untouched.stream("star", 7)),
+      [3438556407, 2256834813, 1166508602, 2997071892]
+    );
+  });
+
+  it("matches for a parent drawn after its child was made", () => {
+    const parent = war().stream("star", 7);
+    assert.equal(parent.stream("x")() * 4294967296, 2993979507);
+    assert.deepEqual(
+      words(parent),
+      [3438556407, 2256834813, 1166508602, 2997071892]
     );
   });
 });
