@@ -91,6 +91,7 @@ function setup(overrides = {}) {
 
   const calls = {
     upserts: [],
+    recordWrites: [],
     deals: [],
     saves: [],
     snapshots: [],
@@ -125,7 +126,19 @@ function setup(overrides = {}) {
       }
       return true;
     },
-    coopPlayerInventoryData: () => Object.values(options.records),
+    coopPlayerInventoryData: (next) => {
+      if (next === undefined) {
+        return Object.values(options.records);
+      }
+      calls.recordWrites.push(next);
+      next.forEach((record) => {
+        options.records[record.id] = record;
+      });
+      if (options.onUpsert) {
+        options.onUpsert(next);
+      }
+      return undefined;
+    },
     stats: () => ({ turns: () => options.turn }),
     hostTechCardDealCount: () => options.hostDealCount,
     turnState: () => options.turnState,
@@ -464,6 +477,28 @@ describe("coop star cards refresh - which stars get a card", () => {
     await coopStarCards.refresh({ redeal: true });
 
     assert.deepEqual(starsDealt(calls), []);
+  });
+
+  // Each records write re-renders every view bound to the records, so the
+  // debt goes on in one write: every record, the disconnected viewer's too.
+  it("owes the re-deal to every record in one write", async () => {
+    const host = { id: "host", gwaioStarCards: { redealOwed: true } };
+    const { coopStarCards, calls, options } = build({
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        bob: { id: "bob", inventory: { cards: [] } },
+        host,
+      },
+      setupBlocked: true,
+    });
+
+    await coopStarCards.refresh({ redeal: true });
+
+    assert.equal(calls.recordWrites.length, 1);
+    assert.deepEqual(calls.upserts, []);
+    assert.equal(options.records.alice.gwaioStarCards.redealOwed, true);
+    assert.equal(options.records.bob.gwaioStarCards.redealOwed, true);
+    assert.equal(options.records.host, host);
   });
 
   // Handing the outgoing card back to chooseCards is what lets the deck avoid

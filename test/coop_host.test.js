@@ -180,3 +180,77 @@ describe("coop_host.upsertRecord", () => {
     assert.equal(coopHost.upsertRecord(game, { id: "abc" }, {}), undefined);
   });
 });
+
+describe("coop_host.upsertRecords", () => {
+  const store = (records) => {
+    const writes = [];
+    let current = records;
+    return {
+      writes,
+      game: {
+        coopPlayerInventoryData: (next) => {
+          if (next === undefined) {
+            return current;
+          }
+          writes.push(next);
+          current = next;
+          return undefined;
+        },
+      },
+    };
+  };
+  const owe = (record) =>
+    record.playerId === "bob" ? undefined : { gwaioStarCards: { owed: 1 } };
+
+  it("stores every patched record in one write, in place", () => {
+    const alice = { playerId: "alice", inventory: { cards: [{ id: "a" }] } };
+    const bob = { playerId: "bob" };
+    const carol = { playerId: "carol", gwaioStarCards: { turn: 3 } };
+    const { game, writes } = store([alice, bob, carol]);
+
+    coopHost.upsertRecords(game, owe);
+
+    assert.equal(writes.length, 1);
+    const [nextAlice, nextBob, nextCarol] = writes[0];
+    assert.equal(nextBob, bob);
+    assert.deepEqual(nextAlice.inventory, alice.inventory);
+    assert.notEqual(nextAlice.inventory, alice.inventory);
+    assert.deepEqual(nextAlice.gwaioStarCards, { owed: 1 });
+    assert.deepEqual(nextCarol.gwaioStarCards, { owed: 1 });
+    assert.equal(typeof nextCarol.updatedAt, "number");
+    assert.equal(alice.gwaioStarCards, undefined);
+    assert.deepEqual(carol.gwaioStarCards, { turn: 3 });
+  });
+
+  it("stores plain data, as upsertRecord does", () => {
+    const record = { playerId: "alice", inventory: { cards: [] } };
+    record.inventory.getTag = function () {};
+    const { game, writes } = store([record]);
+
+    coopHost.upsertRecords(game, () => ({ updatedAt: 9 }));
+
+    assert.deepEqual(writes[0], [
+      { playerId: "alice", inventory: { cards: [] }, updatedAt: 9 },
+    ]);
+  });
+
+  it("writes nothing when no record needs a patch", () => {
+    const { game, writes } = store([{ playerId: "bob" }]);
+    coopHost.upsertRecords(game, owe);
+    assert.deepEqual(writes, []);
+  });
+
+  // Stock loads the records array from the save as it finds it.
+  it("keeps an empty entry without asking for its patch", () => {
+    const asked = [];
+    const { game, writes } = store([null, { playerId: "alice" }]);
+
+    coopHost.upsertRecords(game, (record) => {
+      asked.push(record.playerId);
+      return { updatedAt: 9 };
+    });
+
+    assert.deepEqual(asked, ["alice"]);
+    assert.deepEqual(writes[0], [null, { playerId: "alice", updatedAt: 9 }]);
+  });
+});

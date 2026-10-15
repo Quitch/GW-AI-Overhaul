@@ -294,14 +294,16 @@ define([
     // Every viewer record, connected or not, so a viewer away when the host
     // re-deals is re-dealt on their return. See coop.md.
     var oweRedealToEveryViewer = function () {
-      _.forEach(game.coopPlayerInventoryData(), function (record) {
-        if (record && !redealOwed(record)) {
-          coopHost.upsertRecord(game, record, {
-            gwaioStarCards: _.assign({}, record.gwaioStarCards, {
-              redealOwed: true,
-            }),
-          });
+      coopHost.upsertRecords(game, function (record) {
+        if (redealOwed(record)) {
+          return undefined;
         }
+
+        return {
+          gwaioStarCards: _.assign({}, record.gwaioStarCards, {
+            redealOwed: true,
+          }),
+        };
       });
     };
 

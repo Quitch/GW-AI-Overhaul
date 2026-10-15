@@ -1081,7 +1081,9 @@ last turn's cards, which could duplicate cards they had just taken.
 
 The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
 A re-deal sets it on every co-op record before the gate is consulted: every
-viewer's, connected or not, every AI player's, and the host's own. The host's
+viewer's, connected or not, every AI player's, and the host's own, in one
+write of the records array (`coopHost.upsertRecords`): each write re-renders
+every view bound to the records, about 40 ms in a 234-star war. The host's
 flag is inert: the refresh walks only viewers and AI players, so nothing reads
 or clears it. The write that stores a viewer's new cards drops it, so each debt
 clears only when that viewer's own re-deal succeeds. A viewer with nothing left to re-deal has the flag dropped on
