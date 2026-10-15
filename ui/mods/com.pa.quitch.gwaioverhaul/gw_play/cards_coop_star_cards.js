@@ -160,6 +160,17 @@ define([
       return wanted;
     };
 
+    // A refresh calls deal() on every card of the deck once per star per viewer,
+    // which is too much for one frame, so each viewer, and each star within it,
+    // yields before starting. A throw rejects, so the refresh still ends.
+    var later = function (step) {
+      return new Promise(function (resolve) {
+        _.defer(function () {
+          resolve(Promise.resolve().then(step));
+        });
+      });
+    };
+
     var dealStarCard = function (target, inventory, playerKey, record) {
       var existing = starCardForRecord(record, target.starIndex);
 
@@ -214,13 +225,35 @@ define([
         );
       });
 
+      var results = [];
+
       return applied
         .then(function () {
-          return Promise.all(
-            _.map(targets, function (target) {
-              return dealStarCard(target, inventory, playerKey, record);
-            })
+          return _.reduce(
+            targets,
+            function (chain, target) {
+              return chain
+                .then(
+                  later.bind(
+                    null,
+                    _.partial(
+                      dealStarCard,
+                      target,
+                      inventory,
+                      playerKey,
+                      record
+                    )
+                  )
+                )
+                .then(function (result) {
+                  results.push(result);
+                });
+            },
+            Promise.resolve()
           );
+        })
+        .then(function () {
+          return results;
         })
         .then(function (results) {
           var updates = {};
@@ -258,15 +291,8 @@ define([
         });
     };
 
-    // A refresh calls deal() on every card of the deck once per star per viewer,
-    // which is too much for one frame, so each viewer yields before starting. A
-    // throw rejects, so the refresh still ends.
     var refreshViewerLater = function (client) {
-      return new Promise(function (resolve) {
-        _.defer(function () {
-          resolve(Promise.resolve().then(_.partial(refreshViewer, client)));
-        });
-      });
+      return later(_.partial(refreshViewer, client));
     };
 
     var refreshEachViewer = function (viewers) {
