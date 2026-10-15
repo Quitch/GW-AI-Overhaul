@@ -1,4 +1,4 @@
-// The host's deal of a card to every selectable AI star.
+// The host's deal of a card to every selectable AI star, one star per task.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
 ], function (starPaths) {
@@ -35,7 +35,7 @@ define([
 
       // Avoid running twice after winning a fight
       if (!win || turnState === "end") {
-        var deferredQueue = [];
+        var targets = [];
         var dealt = hold();
 
         var canSelect = starPaths.selectable(model);
@@ -52,37 +52,44 @@ define([
               ? _.isEmpty(system.star.cardList())
               : true;
           if (canSelect(starIndex) && ai && !treasurePlanet && validForDeal) {
-            deferredQueue.push(
-              chooseCards({
-                count: 1,
-                star: system.star,
-                addSlot: false,
-                systemCards: system.star.cardList(),
-                // Every selectable AI star is re-dealt each turn, so the
-                // turn count is what stops a star repeating its own card.
-                rng: gwoStreams.aiStarDealRng(
-                  warRng,
-                  starIndex,
-                  game.stats().turns()
-                ),
-              }).then(function (card) {
-                system.star.cardList(card);
-                model.sendCampaignAction("sync_star_cards", {
-                  star: starIndex,
-                  cards: system.star.cardList(),
-                });
-                return cardNameSync.setCardName(system, card, starIndex);
-              })
-            );
+            targets.push({ starIndex: starIndex, system: system });
           }
         });
 
-        // Not $.when(deferredQueue): it takes an array as one value and
-        // resolves at once. It would need $.when.apply. Settled either
-        // way, as model.win saves and opens the exit gate only after it.
+        // Read once: the host can move between two stars' deals.
+        var turn = game.stats().turns();
+
+        // Each star's deal runs every card's deal() in one go, so each star
+        // has a task of its own. Native .then, so a throw stops the series.
+        var dealStar = function (target) {
+          var system = target.system;
+          var starIndex = target.starIndex;
+
+          return Promise.resolve(
+            chooseCards({
+              count: 1,
+              star: system.star,
+              addSlot: false,
+              systemCards: system.star.cardList(),
+              // Every selectable AI star is re-dealt each turn, so the turn
+              // count is what stops a star repeating its own card.
+              rng: gwoStreams.aiStarDealRng(warRng, starIndex, turn),
+            })
+          ).then(function (card) {
+            system.star.cardList(card);
+            model.sendCampaignAction("sync_star_cards", {
+              star: starIndex,
+              cards: system.star.cardList(),
+            });
+            return cardNameSync.setCardName(system, card, starIndex);
+          });
+        };
+
+        // Settled either way, as model.win saves and opens the exit gate
+        // only after it.
         gwoPromise
           .settled(
-            Promise.all(deferredQueue).then(function () {
+            gwoPromise.inSeries(targets, dealStar).then(function () {
               // The one caller that replaces cards viewers already hold,
               // so their offers move exactly when the host's do.
               return coopStarCards.refresh({ redeal: true });

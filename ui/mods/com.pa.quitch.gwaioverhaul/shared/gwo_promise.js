@@ -63,5 +63,43 @@ define(function () {
     });
   };
 
-  return { settled: settled, steps: steps, within: within };
+  // A native promise of step()'s result, run in a task of its own. A throw
+  // rejects it.
+  var later = function (step) {
+    return new Promise(function (resolve) {
+      _.defer(function () {
+        resolve(Promise.resolve().then(step));
+      });
+    });
+  };
+
+  // step(item) for each item in turn, each in a task of its own, resolving
+  // with their results. The first rejection stops the series and rejects it.
+  var inSeries = function (items, step) {
+    var results = [];
+
+    return _.reduce(
+      items,
+      function (chain, item) {
+        return chain
+          .then(function () {
+            return later(_.partial(step, item));
+          })
+          .then(function (result) {
+            results.push(result);
+          });
+      },
+      Promise.resolve()
+    ).then(function () {
+      return results;
+    });
+  };
+
+  return {
+    settled: settled,
+    steps: steps,
+    within: within,
+    later: later,
+    inSeries: inSeries,
+  };
 });
