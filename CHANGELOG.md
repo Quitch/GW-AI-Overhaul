@@ -4,20 +4,13 @@
 
 ### Changed
 
-- Taking a star or its tech card no longer pauses the galaxy map for about a second in the largest galaxies: the save no longer rewrites every star system
-- Galactic War battles launch sooner, by about 10 seconds with faction mods active: your mods are reloaded one time fewer while the battle is prepared, in solo and co-op wars
-- The galaxy map no longer stalls for seconds while the mouse moves over it in the largest galaxies
+- The galaxy map is much smoother in the largest galaxies:
+  - It opens faster, by two seconds or more with 234 stars
+  - Taking a star or its tech card no longer freezes it for up to a second or more, most of all in co-op
+  - Late in a war, it pauses less after each move, battle, and tech card
+  - It no longer stalls while the mouse moves over it
+- Galactic War battles launch sooner, by about 10 seconds with faction mods active
 - The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
-- The galaxy map opens faster in the largest galaxies, by two seconds or more with 234 stars, and for co-op players too: its star icons are tinted once per colour rather than once per star
-- Late in a war in the largest galaxies, the galaxy map pauses less after each move, battle, and tech card, most of all in co-op with AI players: routes between stars are found many times faster
-- In co-op with AI players and no other player connected, taking a star no longer freezes the galaxy map for about a second, twice, in the largest galaxies
-- In co-op, taking a star's tech card no longer freezes the galaxy map for up to half a second per other player in the largest galaxies
-- In co-op with another player connected, taking a star's tech card no longer sometimes freezes the galaxy map for an extra second in the largest galaxies: their star cards are sent once, not twice
-- Taking a star's tech card no longer freezes the galaxy map for up to half a second in the largest galaxies, in solo and co-op wars: the AI stars' new cards are dealt one star at a time
-- In co-op with AI players and another player connected, taking a star no longer freezes the galaxy map twice in the largest galaxies: the war is sent to them once, not twice
-- In co-op, taking a star's tech card no longer freezes the galaxy map for up to a fifth of a second in the largest galaxies: the other players' star cards are marked for a new deal all at once
-- In co-op with AI players, taking a star's tech card freezes the galaxy map for about a second less in the largest galaxies: the war is saved once, not two or three times
-- In co-op with AI players or another player, taking a star no longer stutters the galaxy map several times in the largest galaxies: the player list and war panel no longer redraw when nothing on them changed
 
 ### Bugfix
 
