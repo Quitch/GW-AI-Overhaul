@@ -4,7 +4,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
-], function (coopHost, refereeCoop) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+], function (coopHost, refereeCoop, starPaths) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -136,12 +137,13 @@ define([
 
     var starsNeedingCards = function (record, redeal) {
       var wanted = [];
+      var canSelect = starPaths.selectable(model);
 
       _.forEach(model.galaxy.systems(), function (system, starIndex) {
         var ai = system.star.ai();
         if (
           starNeedsViewerCard({
-            canSelect: model.canSelect(starIndex),
+            canSelect: canSelect(starIndex),
             ai: ai,
             treasurePlanet: isTreasureStar(starIndex),
             staticTech: gwoSettings && gwoSettings.staticTech,

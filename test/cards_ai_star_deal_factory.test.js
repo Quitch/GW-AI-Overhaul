@@ -8,7 +8,10 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -20,6 +23,12 @@ const {
   resolved,
 } = require("../scripts/lib/fake-jquery.js");
 const { makeObservable } = require("../scripts/lib/fake-knockout.js");
+
+// The sweep's lookup, answered by the stub model's canSelect.
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+  { selectable: (model) => (index) => model.canSelect(index) }
+);
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_ai_star_deal.js"

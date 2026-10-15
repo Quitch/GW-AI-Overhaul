@@ -47,6 +47,10 @@ registerModuleStub(
   )
 );
 registerModuleStub(THREAT, { measure: (ai) => ai.threat });
+// The sweep's lookup, answered by the stub model's canSelect.
+registerModuleStub(MOD + "/shared/star_paths.js", {
+  selectable: (model) => (index) => model.canSelect(index),
+});
 
 const makeGlue = loadCouiModule(MOD + "/gw_play/cards_coop_ai_pings.js");
 
