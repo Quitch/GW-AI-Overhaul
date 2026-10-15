@@ -193,6 +193,34 @@ const starsDealt = (calls) =>
 
 const cardIndexes = (record) => Object.keys(record.gwaioStarCards.cards);
 
+const twoViewers = () => ({
+  viewers: [viewer("alice"), viewer("bob")],
+  records: {
+    alice: { id: "alice", inventory: { cards: [] } },
+    bob: { id: "bob", inventory: { cards: [] } },
+  },
+});
+
+// An onDeal that, the first time it runs while armed, stands in for alice
+// taking a tech card: her record is replaced, with a card added.
+const alicePicks = (armed = () => true) => {
+  let picked = false;
+  return (opts) => {
+    if (!picked && armed()) {
+      picked = true;
+      opts.records.alice = Object.assign({}, opts.records.alice, {
+        inventory: { cards: [{ id: "gwc_picked" }] },
+      });
+    }
+  };
+};
+
+// An onDeal that replaces alice's record with a JSON copy, as every
+// coopHost.upsertRecord write does.
+const aliceCopied = (opts) => {
+  opts.records.alice = JSON.parse(JSON.stringify(opts.records.alice));
+};
+
 const { build, release } = trackActive(setup);
 
 // Collects everything console.error emits, so the factory's swallow-and-log
@@ -549,23 +577,9 @@ describe("coop star cards refresh - what it writes", () => {
   // A tech choice in the window replaces the inventory the cards were dealt
   // against. That write queues the refresh that deals them again.
   it("skips a viewer whose inventory changed while the deal was in flight", async () => {
-    let picked = false;
-    const { coopStarCards, calls, options } = build({
-      viewers: [viewer("alice"), viewer("bob")],
-      records: {
-        alice: { id: "alice", inventory: { cards: [] } },
-        bob: { id: "bob", inventory: { cards: [] } },
-      },
-      onDeal: (opts) => {
-        if (!picked) {
-          picked = true;
-          opts.records.alice = {
-            id: "alice",
-            inventory: { cards: [{ id: "gwc_picked" }] },
-          };
-        }
-      },
-    });
+    const { coopStarCards, calls, options } = build(
+      Object.assign(twoViewers(), { onDeal: alicePicks() })
+    );
 
     await coopStarCards.refresh();
 
@@ -591,14 +605,7 @@ describe("coop star cards refresh - what it writes", () => {
   });
 
   it("writes nothing and publishes nothing when the only viewer's inventory changed", async () => {
-    const { coopStarCards, calls } = build({
-      onDeal: (opts) => {
-        opts.records.alice = {
-          id: "alice",
-          inventory: { cards: [{ id: "gwc_picked" }] },
-        };
-      },
-    });
+    const { coopStarCards, calls } = build({ onDeal: alicePicks() });
 
     await coopStarCards.refresh();
 
@@ -610,11 +617,7 @@ describe("coop star cards refresh - what it writes", () => {
   // Every write clones the record, so a new object with the same inventory is
   // not a change.
   it("still writes a viewer whose record was replaced with the same inventory", async () => {
-    const { coopStarCards, options } = build({
-      onDeal: (opts) => {
-        opts.records.alice = JSON.parse(JSON.stringify(opts.records.alice));
-      },
-    });
+    const { coopStarCards, options } = build({ onDeal: aliceCopied });
 
     await coopStarCards.refresh();
 
@@ -631,9 +634,7 @@ describe("coop star cards refresh - what it writes", () => {
           inventory: { cards: [{ id: "gwc_held" }], getTag: () => undefined },
         },
       },
-      onDeal: (opts) => {
-        opts.records.alice = JSON.parse(JSON.stringify(opts.records.alice));
-      },
+      onDeal: aliceCopied,
     });
 
     await coopStarCards.refresh();
@@ -642,24 +643,9 @@ describe("coop star cards refresh - what it writes", () => {
   });
 
   it("deals a viewer no further stars once their cards change", async () => {
-    let picked = false;
-    const { coopStarCards, calls } = build({
-      stars: [{}, {}, {}],
-      viewers: [viewer("alice"), viewer("bob")],
-      records: {
-        alice: { id: "alice", inventory: { cards: [] } },
-        bob: { id: "bob", inventory: { cards: [] } },
-      },
-      onDeal: (opts) => {
-        if (!picked) {
-          picked = true;
-          opts.records.alice = {
-            id: "alice",
-            inventory: { cards: [{ id: "gwc_picked" }] },
-          };
-        }
-      },
-    });
+    const { coopStarCards, calls } = build(
+      Object.assign(twoViewers(), { stars: [{}, {}, {}], onDeal: alicePicks() })
+    );
 
     await coopStarCards.refresh();
 
@@ -672,14 +658,7 @@ describe("coop star cards refresh - what it writes", () => {
   it("keeps a re-deal owed to a viewer skipped mid-deal", async () => {
     let picking = false;
     const { coopStarCards, calls, options } = build({
-      onDeal: (opts) => {
-        if (picking) {
-          picking = false;
-          opts.records.alice = Object.assign({}, opts.records.alice, {
-            inventory: { cards: [{ id: "gwc_picked" }] },
-          });
-        }
-      },
+      onDeal: alicePicks(() => picking),
     });
 
     await coopStarCards.refresh();
