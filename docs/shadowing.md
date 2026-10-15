@@ -286,7 +286,9 @@ from one search, `pathsFrom`, which keeps each star's first allowed last hop, th
 at which `pathBetween` stops. With 125 of 234 stars explored, a co-op turn's sweeps
 took 218 to 233 ms with a search per star, and 12 to 23 ms with one per sweep. A mod
 that wraps `model.canSelect` is not consulted by these sweeps. `selectable` copies
-stock's `canSelect` from `gw_play.js`, and `test/star_paths.test.js` compares the two
+stock's `canSelect` from `gw_play.js`, but answers the current star with the path
+`[current]` where stock answers `true`, and `null` where stock answers `false`, so it
+always returns a path or `null`. `test/star_paths.test.js` compares the two
 where the PA install is present, so a PA patch that changes `canSelect` fails there
 and has to be carried into `selectable`.
 

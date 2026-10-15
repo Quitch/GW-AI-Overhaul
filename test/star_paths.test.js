@@ -313,7 +313,7 @@ describe("star_paths.selectable", () => {
       makeModel({ prefix: true, noFog: false })
     );
 
-    assert.equal(canSelect(1), true);
+    assert.deepEqual(canSelect(1), [1]);
     assert.deepEqual(canSelect(0), [1, 0]);
     assert.deepEqual(canSelect(2), [1, 2]);
     assert.equal(canSelect(3), null);
@@ -324,9 +324,9 @@ describe("star_paths.selectable", () => {
       makeModel({ prefix: false, noFog: false })
     );
 
-    assert.equal(canSelect(1), true);
-    assert.equal(canSelect(0), false);
-    assert.equal(canSelect(2), false);
+    assert.deepEqual(canSelect(1), [1]);
+    assert.equal(canSelect(0), null);
+    assert.equal(canSelect(2), null);
   });
 
   it("ignores the collapse under noFog", () => {
@@ -363,9 +363,13 @@ describe("star_paths.selectable against the installed game", () => {
             };
             const canSelect = starPaths.selectable(model);
             for (let star = 0; star < count; star++) {
+              // Stock answers true for the current star and false under the
+              // explore collapse.
+              const stock = installed(model, star);
+              const expected = stock === true ? [current] : stock || null;
               assert.deepEqual(
                 canSelect(star),
-                installed(model, star),
+                expected,
                 "seed " + seed + " current " + current + " star " + star
               );
             }

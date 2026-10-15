@@ -97,7 +97,8 @@ define(function () {
     };
   };
 
-  // The base game's model.canSelect for every star, from one search.
+  // The stars the base game's model.canSelect selects, from one search: each
+  // one's path, the current star's being itself alone, and null for the rest.
   var selectable = function (model) {
     var game = model.game();
     var current = game.currentStar();
@@ -109,9 +110,9 @@ define(function () {
 
     return function (star) {
       if (star === current) {
-        return true;
+        return [current];
       }
-      return paths ? paths(star) : false;
+      return paths ? paths(star) : null;
     };
   };
 
