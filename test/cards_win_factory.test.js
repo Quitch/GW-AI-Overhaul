@@ -45,7 +45,6 @@ function setup(overrides = {}) {
       didWin: true,
       gameOver: false,
       turnState: "end",
-      systemsSaved: true,
     },
     overrides
   );
@@ -98,7 +97,6 @@ function setup(overrides = {}) {
   const game = {
     currentStar: () => 5,
     turnState: () => options.turnState,
-    saved: () => options.systemsSaved,
     winTurn: (index) => {
       events.push(["winTurn", index]);
       return resolved(options.didWin);
@@ -202,17 +200,6 @@ describe("model.win on the host", () => {
       ["exitGate resolved"],
       ["playSound", "/VO/bots_found"],
     ]);
-  });
-
-  it("writes the star systems too when they are already marked unsaved", async () => {
-    const run = build({ systemsSaved: false });
-
-    await run.model.win(0);
-
-    assert.deepEqual(
-      run.events.find((event) => event[0] === "save"),
-      ["save", true, true]
-    );
   });
 
   it("takes nothing and plays nothing for -1", async () => {

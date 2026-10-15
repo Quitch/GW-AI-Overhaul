@@ -114,9 +114,8 @@ define(function () {
           return dealCardToSelectableAI(true, game.turnState());
         })
         .then(function () {
-          // A win changes no star system, so the systems are written only
-          // when something else has already marked them unsaved.
-          return gwoSave(game, !game.saved());
+          // A win changes no star system.
+          return gwoSave(game, false);
         })
         .then(function () {
           if (model.gameOver()) {
