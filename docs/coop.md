@@ -628,10 +628,23 @@ it makes when it first holds one, so a held snapshot goes out even if the AI
 modules fail to load. With no viewer connected the debt is dropped, since a
 viewer who joins asks for a snapshot as its first step.
 
+An action that publishes more than once holds the debt with `hold()` until it
+ends, so it sends one snapshot. The AI stars' deal (`cards_ai_star_deal.js`)
+holds it from its start to the star-card refresh it ends with, and `model.win`
+takes that hold before `winTurn`. The star-card refresh holds it while it runs,
+so an AI player's pass that ends after the deal still sends one: its snapshot
+waits for the re-deal that starts when the pass ends. A win therefore sends one snapshot
+for the AI players' deal and the star cards together. A dev cheat (`cards_cheats.js`)
+holds it across the AI stars' deal it starts, then publishes
+`gwo_cheat_test_cards` or `gwo_cheat_give_card`. A hold also applies under
+shared tech, where the debt otherwise goes out at once.
+
 A reroll is the one exception. The rerolling viewer waits for the host's reply
 with its offer hidden, so it cannot choose while the snapshot goes out. The
 reroll's snapshot therefore goes out at once when no other viewer has an offer
-open or deals to catch up, which with one viewer is always. Only while another
+open or deals to catch up, which with one viewer is always, even while the
+debt is held. A reroll during the AI stars' deal can then send a second
+snapshot for that action. Only while another
 viewer has one is it held, and then the server's copy of the rerolling viewer's
 hand, and the other viewers' view of it, wait until everyone has chosen. If the
 rerolling viewer's `gw_play` reloads in that window, the server shows it the old
