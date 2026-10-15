@@ -36,17 +36,43 @@ define([
     });
   };
 
-  // Stores a plain-data copy of the record, as a save or a snapshot makes it,
-  // with `patch` applied and updatedAt stamped, and returns that copy, or
-  // undefined when the store refused it.
-  var upsertRecord = function (game, record, patch) {
-    var next = _.assign(
+  // A plain-data copy of the record, as a save or a snapshot makes it, with
+  // `patch` applied and updatedAt stamped.
+  var patched = function (record, patch) {
+    return _.assign(
       {},
       JSON.parse(JSON.stringify(record)),
       { updatedAt: _.now() },
       patch
     );
+  };
+
+  // Stores a patched copy of the record and returns it, or undefined when the
+  // store refused it.
+  var upsertRecord = function (game, record, patch) {
+    var next = patched(record, patch);
     return game.upsertCoopPlayerInventoryData(next) ? next : undefined;
+  };
+
+  // Stores a patched copy of every record patchFor returns a patch for, in one
+  // write, and returns how many it patched. Each write re-renders every view
+  // bound to the records, which costs tens of milliseconds in a large war.
+  var upsertRecords = function (game, patchFor) {
+    var count = 0;
+    var next = _.map(game.coopPlayerInventoryData(), function (record) {
+      var patch = patchFor(record);
+      if (!patch) {
+        return record;
+      }
+
+      count += 1;
+      return patched(record, patch);
+    });
+
+    if (count) {
+      game.coopPlayerInventoryData(next);
+    }
+    return count;
   };
 
   return {
@@ -54,5 +80,6 @@ define([
     fail: fail,
     recordFor: recordFor,
     upsertRecord: upsertRecord,
+    upsertRecords: upsertRecords,
   };
 });
