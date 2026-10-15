@@ -13,6 +13,7 @@
     if (
       compositeOperation ||
       !bitmap.cacheCanvas ||
+      bitmap.draw !== createjs.Bitmap.prototype.draw ||
       !(filter instanceof createjs.ColorFilter) ||
       filter.redOffset ||
       filter.greenOffset ||
@@ -21,6 +22,7 @@
       bitmap.sourceRect ||
       bitmap._cacheScale !== 1 ||
       !image ||
+      image.tagName !== "IMG" ||
       !image.src
     ) {
       return null;
@@ -56,10 +58,15 @@
     context.drawImage(source, 0, 0);
   };
 
+  // The map uses a handful of colours; a colour that animated would add a
+  // canvas per frame.
+  var maxResults = 64;
+
   var cacheColourFilters = function (createjs) {
     var bitmap = createjs.Bitmap.prototype;
     var stockUpdateCache = bitmap.updateCache;
     var results = {};
+    var resultCount = 0;
 
     bitmap.updateCache = function (compositeOperation) {
       var key = cacheKey(this, compositeOperation, createjs);
@@ -70,14 +77,17 @@
       var result = results[key];
       if (!result) {
         stockUpdateCache.call(this);
-        result = newCanvas(createjs);
-        copyInto(this.cacheCanvas, result);
-        results[key] = result;
+        if (resultCount < maxResults) {
+          result = newCanvas(createjs);
+          copyInto(this.cacheCanvas, result);
+          results[key] = result;
+          resultCount++;
+        }
         return;
       }
 
       copyInto(result, this.cacheCanvas);
-      // What stock's updateCache does last: the stage redraws from a new id.
+      // As stock does after every pass.
       this.cacheID = createjs.DisplayObject._nextCacheID++;
     };
   };

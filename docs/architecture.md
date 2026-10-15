@@ -261,8 +261,10 @@ with one that keeps each result. A bitmap whose cache would come out the same
 gets a copy of it instead: the same image source, the same loaded state, the
 same cache rectangle, and a single `ColorFilter` with the same multipliers. Only
 a handful of colours and two images are in use, so a map needs some 25 passes,
-not 700. Anything else, such as a second filter, a colour offset, a source
-rectangle, or a cache scale, still goes to stock.
+not 700. Anything else still goes to stock: a second filter, a colour offset, a
+source rectangle, a cache scale, an image that is not an `<img>`, such as a
+video, or a bitmap with a `draw` of its own. It keeps at most 64 results, so a
+colour that animated would cost filter passes, not memory.
 
 It cannot reach the passes that run before mod scripts load. Stock builds the
 map, owner icons included, inside the `GameViewModel` constructor, and calls

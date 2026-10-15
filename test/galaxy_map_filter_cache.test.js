@@ -38,6 +38,7 @@ function fakeCreatejs() {
     this.alphaOffset = 0;
   }
   function Bitmap() {}
+  Bitmap.prototype.draw = function () {};
   const createjs = {
     ColorFilter,
     Bitmap,
@@ -52,7 +53,7 @@ function fakeCreatejs() {
     const filter = this.filters && this.filters[0];
     this.cacheCanvas.pixels =
       this.image.src +
-      (this.image.complete ? "" : " (not loaded)") +
+      (this.image.naturalWidth ? "" : " (not loaded)") +
       (filter ? " x " + filter.redMultiplier : "");
     this.cacheID = createjs.DisplayObject._nextCacheID++;
   };
@@ -61,13 +62,19 @@ function fakeCreatejs() {
 
 function bitmap(createjs, options) {
   const settings = Object.assign(
-    { src: "coui://owner.png", loaded: true, colour: [1, 0.5, 0.25, 3] },
+    {
+      src: "coui://owner.png",
+      loaded: true,
+      broken: false,
+      colour: [1, 0.5, 0.25, 3],
+    },
     options
   );
   const result = new createjs.Bitmap();
   result.image = {
+    tagName: "IMG",
     src: settings.src,
-    complete: settings.loaded,
+    complete: settings.loaded || settings.broken,
     naturalWidth: settings.loaded ? 240 : 0,
   };
   result.filters = settings.colour
@@ -153,6 +160,29 @@ describe("galaxy_map_filter_cache", () => {
     assert.equal(late.cacheCanvas.pixels, "coui://owner.png x 1");
   });
 
+  it("keys a broken image apart from the same image loaded", () => {
+    const { createjs, passes } = setup();
+    bitmap(createjs, { loaded: false, broken: true }).updateCache();
+
+    const loaded = bitmap(createjs);
+    loaded.updateCache();
+
+    assert.equal(passes.length, 2);
+    assert.equal(loaded.cacheCanvas.pixels, "coui://owner.png x 1");
+  });
+
+  it("stops keeping results after 64, and still filters every bitmap", () => {
+    const { createjs, passes } = setup();
+    for (let i = 0; i < 70; i++) {
+      bitmap(createjs, { colour: [i / 100, 1, 1, 1] }).updateCache();
+    }
+
+    bitmap(createjs, { colour: [69 / 100, 1, 1, 1] }).updateCache();
+    bitmap(createjs, { colour: [0, 1, 1, 1] }).updateCache();
+
+    assert.equal(passes.length, 71);
+  });
+
   it("leaves to stock every bitmap whose result it cannot reuse", () => {
     const { createjs, passes } = setup();
     const cases = {
@@ -186,6 +216,18 @@ describe("galaxy_map_filter_cache", () => {
       "an image with no source": (b) => {
         b.image.src = "";
         b.updateCache();
+      },
+      "a video, or anything else not an img": (b) => {
+        b.image.tagName = "VIDEO";
+        b.updateCache();
+      },
+      "a draw of its own": (b) => {
+        b.draw = function () {};
+        b.updateCache();
+      },
+      "no cache canvas": (b) => {
+        b.cacheCanvas = null;
+        assert.throws(() => b.updateCache());
       },
     };
 
