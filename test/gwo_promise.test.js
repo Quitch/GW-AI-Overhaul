@@ -2,7 +2,8 @@
 
 // shared/gwo_promise.js: settled, the adapter that turns an engine promise
 // into one jQuery waits for, steps, a chain that a step's synchronous throw
-// rejects, and within, a promise raced against a timeout. See constraints.md.
+// rejects, within, a promise raced against a timeout, and inSeries, which runs
+// one item per deferred task. See constraints.md.
 
 const { describe, it, beforeEach, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
@@ -12,6 +13,9 @@ const {
   enginePromise,
   installFakeJQuery,
 } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 
 const gwoPromise = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js"
@@ -290,5 +294,114 @@ describe("within", () => {
     await flush();
 
     await rejected;
+  });
+});
+
+describe("inSeries", () => {
+  let timers;
+
+  beforeEach(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  afterEach(() => {
+    timers.restore();
+  });
+
+  const drain = async () => {
+    for (let tick = 0; tick < 20; tick += 1) {
+      await Promise.resolve();
+    }
+  };
+
+  // Runs one deferred task, then lets its promise chain settle.
+  const runTask = async () => {
+    await drain();
+    timers.delayed.shift().fn();
+    await drain();
+  };
+
+  it("runs each item in a deferred task of its own, in order, resolving with their results", async () => {
+    const ran = [];
+    let result;
+
+    gwoPromise
+      .inSeries(["a", "b", "c"], (item) => {
+        ran.push(item);
+        return item.toUpperCase();
+      })
+      .then((value) => {
+        result = value;
+      });
+
+    await drain();
+    assert.deepEqual(ran, []);
+    assert.equal(timers.delayed.length, 1);
+
+    await runTask();
+    assert.deepEqual(ran, ["a"]);
+    await runTask();
+    assert.deepEqual(ran, ["a", "b"]);
+    await runTask();
+    assert.deepEqual(ran, ["a", "b", "c"]);
+
+    assert.deepEqual(result, ["A", "B", "C"]);
+    assert.equal(timers.delayed.length, 0);
+  });
+
+  it("waits for an item's promise before the next item's task", async () => {
+    const ran = [];
+    let release;
+
+    gwoPromise.inSeries([1, 2], (item) => {
+      ran.push(item);
+      return item === 1
+        ? new Promise((resolve) => {
+            release = resolve;
+          })
+        : item;
+    });
+
+    await runTask();
+    assert.deepEqual(ran, [1]);
+    assert.equal(timers.delayed.length, 0);
+
+    release();
+    await runTask();
+    assert.deepEqual(ran, [1, 2]);
+  });
+
+  it("rejects with an item's throw and runs no item after it", async () => {
+    const ran = [];
+    let reason;
+
+    gwoPromise
+      .inSeries([1, 2, 3], (item) => {
+        ran.push(item);
+        if (item === 2) {
+          throw new Error("item 2 threw");
+        }
+        return item;
+      })
+      .catch((error) => {
+        reason = error.message;
+      });
+
+    await runTask();
+    await runTask();
+    await drain();
+
+    assert.deepEqual(ran, [1, 2]);
+    assert.equal(reason, "item 2 threw");
+    assert.equal(timers.delayed.length, 0);
+  });
+
+  it("resolves with no results, running nothing, for no items", async () => {
+    const result = await gwoPromise.inSeries([], () => {
+      throw new Error("ran");
+    });
+
+    assert.deepEqual(result, []);
+    assert.equal(timers.delayed.length, 0);
   });
 });

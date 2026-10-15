@@ -14,6 +14,9 @@
     );
     locTree($("#hover-card"));
 
+    // Set here, before systems.js's canMove first reads it.
+    model.gwoAiStarsDealing = ko.observable(0);
+
     // Deleting a card cannot be undone, so the button asks once before it acts.
     model.gwoConfirmDiscard = ko.observable(false);
     model.gwoDiscardLabel = ko.computed(function () {
@@ -525,6 +528,7 @@
           cardNameSync: cardNameSync,
           coopStarCards: coopStarCards,
           gwoPromise: gwoPromise,
+          starsDealing: model.gwoAiStarsDealing,
         });
         var dealCardToSelectableAI = aiStarDeal.dealCardToSelectableAI;
 

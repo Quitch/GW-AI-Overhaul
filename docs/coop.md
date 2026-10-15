@@ -1049,6 +1049,16 @@ again when it falls to zero. A win from explore takes the hold in `model.win`
 selectable started a gap-fill that wrote it and sent its own snapshot, and the
 re-deal sent a second one about three seconds later.
 
+The host deals the AI stars one star per task, so the deal spans about a
+second on a large galaxy. The host cannot move until every star is dealt:
+`model.gwoAiStarsDealing`, set by `gw_play/cards_ai_star_deal.js`, blocks
+`canMove` in `gw_play/systems.js`. A host who moved mid-deal would reach a
+star before its new card, and a win there could start a second deal that
+interleaves with the first. A win blocks moving from before `winTurn`,
+through the same `hold()` that keeps the gap-fill off, as the deal starts only
+once `winTurn` settles. The block ends with the stars; the re-deal that follows
+does not hold it.
+
 A re-deal the gate below turns away is **owed**, not dropped. So is one made
 while no viewer is connected, and one that fails. The next refresh the gate
 allows pays it. This matters because the host re-deals after a win, which is
