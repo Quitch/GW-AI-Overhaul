@@ -356,7 +356,9 @@ Know the shape before you add a fix to it:
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
 for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own.
+would write a war it does not own. `gw_play/save_debt.js` wraps it for the
+host's save after a win, which waits for the deal, the star-card refresh, and
+any co-op AI pass so the war is written once (coop.md, "One save per win").
 
 ## Where state lives
 

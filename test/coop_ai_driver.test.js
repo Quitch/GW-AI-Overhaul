@@ -281,6 +281,7 @@ function setup(overrides) {
     afterPass: 0,
     running: [],
     dealt: [],
+    saveHolds: [],
   };
   const hands = _.cloneDeep(options.hands);
   const rerolled = _.cloneDeep(options.rerolled);
@@ -368,7 +369,14 @@ function setup(overrides) {
     },
     afterPass: () => {
       calls.afterPass += 1;
+      calls.saveHolds.push("afterPass");
     },
+    holdSave: options.noHoldSave
+      ? undefined
+      : () => {
+          calls.saveHolds.push("hold");
+          return () => calls.saveHolds.push("release, running " + running);
+        },
     defer: options.defer || ((fn) => setImmediate(fn)),
     decisionTimeoutMs: options.decisionTimeoutMs,
     writeTimeoutMs: options.writeTimeoutMs,
@@ -1004,6 +1012,31 @@ describe("coop_ai_driver writes", () => {
     );
   });
 
+  // The win's save is owed until the pass ends, and the star-card refresh its
+  // end starts holds it before this lets go. See coop.md, "One save per win".
+  it("holds the war save for the pass, and lets go once it stops running", async () => {
+    const run = setup();
+    await run.driver.run();
+
+    assert.deepEqual(run.calls.saveHolds, [
+      "hold",
+      "afterPass",
+      "release, running false",
+    ]);
+  });
+
+  it("holds no save when it has nothing to do", async () => {
+    const run = setup({ canRun: false });
+    await run.driver.run();
+    assert.deepEqual(run.calls.saveHolds, []);
+  });
+
+  it("runs with no save hold given", async () => {
+    const run = setup({ noHoldSave: true });
+    assert.equal(await run.driver.run(), true);
+    assert.equal(run.calls.afterPass, 1);
+  });
+
   it("runs once more when asked again mid-pass", async () => {
     const run = setup({
       history: history(1),
@@ -1020,6 +1053,12 @@ describe("coop_ai_driver writes", () => {
     await new Promise((resolve) => setTimeout(resolve, 20));
 
     assert.equal(run.store.find("gwo_ai_1").techCardDealCount, 2);
+    // The first pass settled both deals, so the rerun owes nothing to hold.
+    assert.deepEqual(run.calls.saveHolds, [
+      "hold",
+      "afterPass",
+      "release, running false",
+    ]);
   });
 });
 

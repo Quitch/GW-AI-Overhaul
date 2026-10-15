@@ -123,7 +123,7 @@ function setup(overrides = {}) {
       events.push(["hold"]);
       return record("release");
     },
-    gwoSave: (saved, withStars) => {
+    oweSave: (saved, withStars) => {
       events.push(["save", saved === game, withStars]);
       return resolved();
     },

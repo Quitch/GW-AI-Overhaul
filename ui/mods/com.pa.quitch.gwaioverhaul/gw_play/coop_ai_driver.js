@@ -92,6 +92,7 @@ define([
     var decisionTimeoutMs = params.decisionTimeoutMs || DECISION_TIMEOUT_MS;
     var fieldedFor = params.fielded || _.constant(Promise.resolve());
     var writeTimeoutMs = params.writeTimeoutMs || WRITE_TIMEOUT_MS;
+    var holdSave = params.holdSave || _.constant(_.noop);
     var timeouts = {};
     var running;
     var again = false;
@@ -645,6 +646,7 @@ define([
 
       var lookup = params.lookup();
       var wroteAny = false;
+      var releaseSave = holdSave();
       params.running(true);
       running = _.reduce(
         owing,
@@ -668,6 +670,7 @@ define([
         .then(function () {
           running = undefined;
           params.running(false);
+          releaseSave();
           if (again) {
             again = false;
             return run();

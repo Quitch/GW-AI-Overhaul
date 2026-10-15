@@ -16,6 +16,7 @@
 - Taking a star's tech card no longer freezes the galaxy map for up to half a second in the largest galaxies, in solo and co-op wars: the AI stars' new cards are dealt one star at a time
 - In co-op with AI players and another player connected, taking a star no longer freezes the galaxy map twice in the largest galaxies: the war is sent to them once, not twice
 - In co-op, taking a star's tech card no longer freezes the galaxy map for up to a fifth of a second in the largest galaxies: the other players' star cards are marked for a new deal all at once
+- In co-op with AI players, taking a star's tech card freezes the galaxy map for about a second less in the largest galaxies: the war is saved once, not two or three times
 - In co-op with AI players or another player, taking a star no longer stutters the galaxy map several times in the largest galaxies: the player list and war panel no longer redraw when nothing on them changed
 
 ### Bugfix

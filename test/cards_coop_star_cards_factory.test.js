@@ -81,7 +81,7 @@ function setup(overrides = {}) {
       onDeal: null,
       onUpsert: null,
       slowDeals: false,
-      saveFails: false,
+      saveHangs: false,
       aiClients: [],
       aiDeciding: false,
       aiStarDealHeld: false,
@@ -99,6 +99,7 @@ function setup(overrides = {}) {
     bank: [],
     busy: [],
     holds: [],
+    saveHolds: [],
   };
 
   const stubs = createGlobalStubs();
@@ -177,11 +178,13 @@ function setup(overrides = {}) {
       treasureStar: options.treasureStar,
       staticTech: options.staticTech,
     },
-    gwoSave: (savedGame, flag) => {
+    oweSave: (savedGame, flag) => {
       calls.saves.push(flag);
-      return options.saveFails
-        ? Promise.reject(new Error("save failed"))
-        : Promise.resolve();
+      return options.saveHangs ? new Promise(() => {}) : Promise.resolve();
+    },
+    holdSave: () => {
+      calls.saveHolds.push("hold");
+      return () => calls.saveHolds.push("release");
     },
     gwoTreasure: {
       isTreasureStar: (settings, starIndex) =>
@@ -405,8 +408,10 @@ describe("coop star cards refresh - co-op AI players", () => {
     const { coopStarCards, calls } = build();
     const running = coopStarCards.refresh();
     assert.deepEqual(calls.holds, ["hold"]);
+    assert.deepEqual(calls.saveHolds, ["hold"]);
     await running;
     assert.deepEqual(calls.holds, ["hold", "publish", "release"]);
+    assert.deepEqual(calls.saveHolds, ["hold", "release"]);
   });
 });
 
@@ -802,13 +807,16 @@ describe("coop star cards refresh - the host's own banks", () => {
     assert.match(errors[0], /failed to refresh co-op player star cards/);
   });
 
-  it("reports a failed save rather than rejecting into the caller", async () => {
-    const { coopStarCards } = build({ saveFails: true });
+  // The save is owed under the refresh's own hold, so waiting on it would
+  // never end. See coop.md, "One save per win".
+  it("publishes without waiting on the owed save", async () => {
+    const { coopStarCards, calls } = build({ saveHangs: true });
 
-    const errors = await captureErrors(() => coopStarCards.refresh());
+    await coopStarCards.refresh();
 
-    assert.equal(errors.length, 1);
-    assert.match(errors[0], /failed to refresh co-op player star cards/);
+    assert.deepEqual(calls.saves, [false]);
+    assert.deepEqual(calls.publishes, ["gwo_star_cards"]);
+    assert.deepEqual(calls.saveHolds, ["hold", "release"]);
   });
 });
 
@@ -1011,10 +1019,10 @@ describe("coop star cards refresh - coalescing", () => {
     );
   });
 
-  it("does not owe a re-deal whose save failed", async () => {
+  it("does not owe a re-deal whose save has not landed", async () => {
     const { coopStarCards, calls } = build({
       stars: [{}],
-      saveFails: true,
+      saveHangs: true,
       records: {
         alice: {
           id: "alice",
@@ -1024,14 +1032,12 @@ describe("coop star cards refresh - coalescing", () => {
       },
     });
 
-    const errors = await captureErrors(() =>
-      coopStarCards.refresh({ redeal: true })
-    );
-    assert.equal(errors.length, 1, "the save failed");
+    await coopStarCards.refresh({ redeal: true });
+    assert.deepEqual(calls.saves, [false]);
     assert.deepEqual(starsDealt(calls), [0]);
 
     calls.deals.length = 0;
-    await captureErrors(() => coopStarCards.refresh());
+    await coopStarCards.refresh();
     assert.deepEqual(starsDealt(calls), []);
   });
 

@@ -2,7 +2,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
-], function (starPaths, coopPublish) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
+], function (starPaths, coopPublish, saveDebt) {
   return function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
@@ -30,14 +31,17 @@ define([
       });
     };
 
-    // The deal holds the viewers' snapshot too, so a win sends one. See
-    // coop.md, "Publishing to viewers".
+    // The deal holds the viewers' snapshot and the war save too, so a win
+    // sends one and writes once. See coop.md, "Publishing to viewers" and
+    // "One save per win".
     var holdDealing = function () {
+      var releaseSave = saveDebt.hold();
       var releasePublish = coopPublish.hold();
       var releaseDealing = count(aiStarDealing);
       return function () {
         releaseDealing();
         releasePublish();
+        releaseSave();
       };
     };
 

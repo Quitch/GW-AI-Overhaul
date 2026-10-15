@@ -6,7 +6,7 @@ define(function () {
     var treasureUnlocks = params.treasureUnlocks;
     var dealCardToSelectableAI = params.dealCardToSelectableAI;
     var holdAiStarDeal = params.holdAiStarDeal;
-    var gwoSave = params.gwoSave;
+    var oweSave = params.oweSave;
 
     // A loadout won at a treasure planet unlocks the commander for later
     // wars and grants nothing in this one. Left in the inventory it would
@@ -128,8 +128,9 @@ define(function () {
           }
         })
         .then(function () {
-          // A win changes no star system.
-          return gwoSave(game, false);
+          // A win changes no star system. Owed until the deal, the star-card
+          // refresh and any co-op AI pass end, so the war is written once.
+          return oweSave(game, false);
         })
         .then(function () {
           if (model.gameOver()) {

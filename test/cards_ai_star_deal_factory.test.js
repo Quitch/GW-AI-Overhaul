@@ -55,6 +55,27 @@ registerModuleStub(
   }
 );
 
+// The war save's hold, logged beside the snapshot's.
+const saveHolds = { taken: 0, released: 0 };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
+  {
+    hold: () => {
+      saveHolds.taken += 1;
+      publishHolds.events.push("save hold");
+      let released = false;
+      return () => {
+        if (released) {
+          return;
+        }
+        released = true;
+        saveHolds.released += 1;
+        publishHolds.events.push("save release");
+      };
+    },
+  }
+);
+
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_ai_star_deal.js"
 );
@@ -103,6 +124,8 @@ function setup(overrides = {}) {
   publishHolds.taken = 0;
   publishHolds.released = 0;
   publishHolds.events = [];
+  saveHolds.taken = 0;
+  saveHolds.released = 0;
   const starsDealing = makeObservable(0);
   const heldNames = [];
 
@@ -299,21 +322,25 @@ describe("the AI stars' deal", () => {
     assert.equal(run.starsDealing(), 0);
     assert.equal(publishHolds.taken, 2);
     assert.equal(publishHolds.released, 2, "each release once");
+    assert.equal(saveHolds.taken, 2);
+    assert.equal(saveHolds.released, 2, "each save release once");
   });
 
-  // The star cards' snapshot is published inside the deal; one goes out when
-  // it ends.
-  it("holds the viewers' snapshot from before the first deal to after the re-deal", async () => {
+  // The star cards' snapshot is published, and their save owed, inside the
+  // deal; one goes out, and one write is made, when it ends.
+  it("holds the viewers' snapshot and the save from before the first deal to after the re-deal", async () => {
     const run = build();
 
     await run.handle.dealCardToSelectableAI(false);
 
     assert.deepEqual(publishHolds.events, [
+      "save hold",
       "hold",
       "deal",
       "deal",
       "refresh",
       "release",
+      "save release",
     ]);
     assert.equal(run.handle.dealing(), 0);
   });
@@ -331,7 +358,13 @@ describe("the AI stars' deal", () => {
     assert.deepEqual(run.calls.actions, []);
     assert.deepEqual(run.calls.refreshes, []);
     assert.equal(run.handle.dealing(), 0);
-    assert.deepEqual(publishHolds.events, ["hold", "deal", "release"]);
+    assert.deepEqual(publishHolds.events, [
+      "save hold",
+      "hold",
+      "deal",
+      "release",
+      "save release",
+    ]);
     assert.equal(run.calls.errors.length, 1);
     assert.match(
       run.calls.errors[0],
@@ -346,6 +379,7 @@ describe("the AI stars' deal", () => {
 
     assert.equal(run.handle.dealing(), 0);
     assert.equal(publishHolds.released, 1);
+    assert.equal(saveHolds.released, 1);
     assert.deepEqual(run.calls.errors, [
       "GWO failed to deal the AI stars' cards: no viewers",
     ]);
