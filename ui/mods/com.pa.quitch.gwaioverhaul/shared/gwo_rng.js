@@ -4,8 +4,8 @@
 // Why this exists rather than Math.seedrandom or a reseeded Math.random, and how the
 // streams are laid out: galaxy.md, "Determinism and the war seed".
 define(function () {
-  // cyrb128, split so a stream resumes its parent's state instead of rehashing the
-  // parent's whole seed text: absorbing "ab" equals absorbing "a", then "b".
+  // cyrb128, split so a stream absorbs only its own suffix into its parent's state:
+  // absorbing "ab" equals absorbing "a", then "b".
   var INITIAL_STATE = [1779033703, 3144134277, 1013904242, 2773480762];
 
   var absorb = function (state, text) {
@@ -117,8 +117,8 @@ define(function () {
       return result;
     };
 
-    // Derived from the seed text, not a counter, so a stream is unaffected by what its
-    // parent or siblings drew first. See galaxy.md.
+    // Derived from the parent's hash state, not a counter, so a stream is unaffected
+    // by what its parent or siblings drew first. See galaxy.md.
     rng.stream = function (label, index) {
       return fromState(
         absorb(

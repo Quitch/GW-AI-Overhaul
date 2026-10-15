@@ -234,8 +234,7 @@ describe("gwo_rng independence from Math.random", () => {
   });
 });
 
-// Pinned from develop before stream() resumed its parent's hash state (#513). A
-// live war's every stream is keyed by these outputs, so none may change.
+// Every stream of a live war is keyed by these outputs, so none may change.
 describe("gwo_rng pinned outputs", () => {
   const words = (rng) => draws(rng, 4).map((value) => value * 4294967296);
   const war = () => gwoRng.create("gwo-513");
@@ -254,10 +253,19 @@ describe("gwo_rng pinned outputs", () => {
     );
   });
 
-  it("matches for a null or empty seed", () => {
+  it("matches for a missing, null or empty seed", () => {
     const expected = [1029417050, 213618268, 1693991607, 1090200105];
+    assert.deepEqual(words(gwoRng.create(undefined)), expected);
     assert.deepEqual(words(gwoRng.create(null)), expected);
     assert.deepEqual(words(gwoRng.create("")), expected);
+  });
+
+  // Absorbed one UTF-16 code unit at a time, surrogates included.
+  it("matches for a label outside the Basic Multilingual Plane", () => {
+    assert.deepEqual(
+      words(war().stream("star\u{1F680}", 3)),
+      [897912706, 1363893679, 3377510255, 3112059710]
+    );
   });
 
   it("matches for a labelled stream", () => {
