@@ -16,6 +16,7 @@
 
 ### Bugfix
 
+- In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left that player unable to explore or fight until they reloaded
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 
 ### API

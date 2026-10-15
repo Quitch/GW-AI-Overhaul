@@ -94,6 +94,7 @@ function setup(overrides = {}) {
     deals: [],
     saves: [],
     snapshots: [],
+    publishes: [],
     bank: [],
     busy: [],
   };
@@ -108,6 +109,8 @@ function setup(overrides = {}) {
     getCoopPlayerTechCardDealCount: (record) => options.dealCount(record),
     galaxy: { systems: () => galaxyFor(options.stars) },
     canSelect: (starIndex) => options.canSelect(starIndex),
+    // A trap: every snapshot goes through publish, which coop_publish.js holds
+    // until the viewers are level. See coop.md, "Publishing to viewers".
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
 
@@ -174,6 +177,7 @@ function setup(overrides = {}) {
     aiDeciding: () => options.aiDeciding,
     aiStarDealHeld: () => options.aiStarDealHeld,
     busy: (value) => calls.busy.push(value),
+    publish: (reason) => calls.publishes.push(reason),
   });
 
   return {
@@ -188,6 +192,34 @@ const starsDealt = (calls) =>
   calls.deals.map((request) => request.rng.starIndex);
 
 const cardIndexes = (record) => Object.keys(record.gwaioStarCards.cards);
+
+const twoViewers = () => ({
+  viewers: [viewer("alice"), viewer("bob")],
+  records: {
+    alice: { id: "alice", inventory: { cards: [] } },
+    bob: { id: "bob", inventory: { cards: [] } },
+  },
+});
+
+// An onDeal that, the first time it runs while armed, stands in for alice
+// taking a tech card: her record is replaced, with a card added.
+const alicePicks = (armed = () => true) => {
+  let picked = false;
+  return (opts) => {
+    if (!picked && armed()) {
+      picked = true;
+      opts.records.alice = Object.assign({}, opts.records.alice, {
+        inventory: { cards: [{ id: "gwc_picked" }] },
+      });
+    }
+  };
+};
+
+// An onDeal that replaces alice's record with a JSON copy, as every
+// coopHost.upsertRecord write does.
+const aliceCopied = (opts) => {
+  opts.records.alice = JSON.parse(JSON.stringify(opts.records.alice));
+};
 
 const { build, release } = trackActive(setup);
 
@@ -278,7 +310,8 @@ describe("coop star cards refresh - co-op AI players", () => {
     assert.deepEqual(cardIndexes(options.records.gwo_ai_1), ["0", "1"]);
   });
 
-  it("saves an AI player's cards but sends no snapshot with no viewer connected", async () => {
+  // coop_publish.js drops a snapshot nobody is connected to receive.
+  it("saves an AI player's cards and publishes, with no viewer connected", async () => {
     const { coopStarCards, calls } = build({
       viewers: [{ id: "host", name: "host", role: "host" }],
       aiClients: [AI],
@@ -288,6 +321,7 @@ describe("coop star cards refresh - co-op AI players", () => {
     await coopStarCards.refresh();
 
     assert.deepEqual(calls.saves, [false]);
+    assert.deepEqual(calls.publishes, ["gwo_star_cards"]);
     assert.deepEqual(calls.snapshots, []);
   });
 
@@ -447,13 +481,14 @@ describe("coop star cards refresh - what it writes", () => {
     await coopStarCards.refresh();
     assert.equal(calls.upserts.length, 1);
     assert.deepEqual(calls.saves, [false]);
-    assert.deepEqual(calls.snapshots, [["gwo_star_cards", true]]);
+    assert.deepEqual(calls.publishes, ["gwo_star_cards"]);
 
     await coopStarCards.refresh();
 
     assert.equal(calls.upserts.length, 1);
     assert.deepEqual(calls.saves, [false]);
-    assert.equal(calls.snapshots.length, 1);
+    assert.equal(calls.publishes.length, 1);
+    assert.deepEqual(calls.snapshots, []);
   });
 
   it("leaves a viewer with no saved inventory alone", async () => {
@@ -539,6 +574,113 @@ describe("coop star cards refresh - what it writes", () => {
     assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
   });
 
+  // A tech choice in the window replaces the inventory the cards were dealt
+  // against. That write queues the refresh that deals them again.
+  it("skips a viewer whose inventory changed while the deal was in flight", async () => {
+    const { coopStarCards, calls, options } = build(
+      Object.assign(twoViewers(), { onDeal: alicePicks() })
+    );
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(
+      calls.upserts.map((record) => record.id),
+      ["bob"]
+    );
+    assert.equal(options.records.alice.gwaioStarCards, undefined);
+
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["alice"]
+    );
+    assert.deepEqual(
+      calls.deals[0].inventory.cards(),
+      [{ id: "gwc_picked" }],
+      "dealt against the new inventory"
+    );
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  it("writes nothing and publishes nothing when the only viewer's inventory changed", async () => {
+    const { coopStarCards, calls } = build({ onDeal: alicePicks() });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.saves, []);
+    assert.deepEqual(calls.publishes, []);
+  });
+
+  // Every write clones the record, so a new object with the same inventory is
+  // not a change.
+  it("still writes a viewer whose record was replaced with the same inventory", async () => {
+    const { coopStarCards, options } = build({ onDeal: aliceCopied });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  // Stock stores inventory.save(), which carries GWInventory's methods, and
+  // coopHost.upsertRecord's JSON copy drops them: same cards, no change.
+  it("still writes a viewer whose methods were dropped from the inventory", async () => {
+    const { coopStarCards, options } = build({
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [{ id: "gwc_held" }], getTag: () => undefined },
+        },
+      },
+      onDeal: aliceCopied,
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  it("deals a viewer no further stars once their cards change", async () => {
+    const { coopStarCards, calls } = build(
+      Object.assign(twoViewers(), { stars: [{}, {}, {}], onDeal: alicePicks() })
+    );
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["alice", "bob", "bob", "bob"]
+    );
+  });
+
+  it("keeps a re-deal owed to a viewer skipped mid-deal", async () => {
+    let picking = false;
+    const { coopStarCards, calls, options } = build({
+      onDeal: alicePicks(() => picking),
+    });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    picking = true;
+    await coopStarCards.refresh({ redeal: true });
+    assert.equal(options.records.alice.gwaioStarCards.redealOwed, true);
+    assert.deepEqual(options.records.alice.gwaioStarCards.cards, {
+      0: { id: "card_for_0" },
+    });
+
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [0], "the owed re-deal is paid");
+    assert.deepEqual(
+      calls.deals[0].systemCards,
+      [{ id: "card_for_0" }],
+      "a re-deal, not a gap-fill"
+    );
+    assert.equal(options.records.alice.gwaioStarCards.redealOwed, undefined);
+  });
+
   // Read at write time, the record of a viewer who left mid-deal is gone, so
   // nothing is written back for them.
   it("writes nothing when the record goes while the deal is in flight", async () => {
@@ -620,7 +762,7 @@ describe("coop star cards refresh - during the AI stars' deal", () => {
 
     assert.deepEqual(starsDealt(calls), []);
     assert.deepEqual(calls.busy, []);
-    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.publishes, []);
   });
 
   it("still re-deals, since the deal's own re-deal is what it waits for", async () => {
@@ -629,7 +771,7 @@ describe("coop star cards refresh - during the AI stars' deal", () => {
     await coopStarCards.refresh({ redeal: true });
 
     assert.deepEqual(starsDealt(calls), [0]);
-    assert.deepEqual(calls.snapshots, [["gwo_star_cards", true]]);
+    assert.deepEqual(calls.publishes, ["gwo_star_cards"]);
   });
 
   it("fills gaps once the deal has ended", async () => {

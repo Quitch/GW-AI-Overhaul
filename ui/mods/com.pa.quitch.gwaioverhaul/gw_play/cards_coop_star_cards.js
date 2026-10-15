@@ -120,6 +120,8 @@ define([
     var aiStarDealHeld = params.aiStarDealHeld;
     // Held true while a refresh is in flight.
     var busy = params.busy;
+    // coop_publish.js's publish, passed in: that module requires this one.
+    var publish = params.publish;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
@@ -216,12 +218,23 @@ define([
 
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
-    // pendingTechCards on it since this viewer's work began.
+    // pendingTechCards on it since this viewer's work began. A viewer whose
+    // cards changed meanwhile is skipped: their deal was against the old ones,
+    // and the write that changed them queues another refresh.
     var refreshViewer = function (client) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
         return Promise.resolve(false);
       }
+
+      // Cards, not the whole inventory: stock stores inventory.save(), which
+      // carries GWInventory's methods, and coopHost.upsertRecord drops them.
+      var cardsChanged = function (fresh) {
+        return !_.isEqual(
+          fresh.inventory && fresh.inventory.cards,
+          record.inventory.cards
+        );
+      };
 
       // Decided before the inventory is built, so a refresh with nothing to do
       // costs a walk of the galaxy rather than an applyCards per viewer.
@@ -253,7 +266,10 @@ define([
       return applied
         .then(function () {
           return inSeries(targets, function (target) {
-            return dealStarCard(target, inventory, playerKey, record, turn);
+            var fresh = findRecord(client);
+            return fresh && !cardsChanged(fresh)
+              ? dealStarCard(target, inventory, playerKey, record, turn)
+              : undefined;
           });
         })
         .then(function (results) {
@@ -265,7 +281,7 @@ define([
           });
 
           var fresh = findRecord(client);
-          if (!fresh) {
+          if (!fresh || cardsChanged(fresh)) {
             return false;
           }
 
@@ -319,9 +335,7 @@ define([
 
       console.log("[GW COOP] refreshed co-op player star cards");
       return Promise.resolve(gwoSave(game, false)).then(function () {
-        if (connectedViewers().length) {
-          model.sendCampaignSnapshot("gwo_star_cards", true);
-        }
+        publish("gwo_star_cards");
       });
     };
 
