@@ -246,6 +246,30 @@ GWO's rule differs from stock's in three ways:
 All three results are saved as soon as `winTurn` returns, so none can be
 repaired on scene entry: by then the save no longer holds the `foes`.
 
+## Galaxy map filter cache
+
+The galaxy map tints its icons with EaselJS `ColorFilter`s. A filtered bitmap is
+drawn into its own cache canvas, and every pixel of that canvas is filtered in
+JavaScript: `getImageData`, a loop, `putImageData`. Stock does this for every
+star's owner icon, and `gw_play/systems.js` does it for every star's inner ring,
+each several times per scene load: when the bitmap is cached, when its image
+loads, and when its colour is set. On a 234-star map that was 4.6 seconds of
+every `gw_play` load.
+
+`gw_play/galaxy_map_filter_cache.js` replaces `createjs.Bitmap.prototype.updateCache`
+with one that keeps each result. A bitmap whose cache would come out the same
+gets a copy of it instead: the same image source, the same loaded state, the
+same cache rectangle, and a single `ColorFilter` with the same multipliers. Only
+a handful of colours and two images are in use, so a map needs some 25 passes,
+not 700. Anything else, such as a second filter, a colour offset, a source
+rectangle, or a cache scale, still goes to stock.
+
+It cannot reach the passes that run before mod scripts load. Stock builds the
+map, owner icons included, inside the `GameViewModel` constructor, and calls
+`loadMods` after it, so the first pass of each owner icon and the one its colour
+causes are stock's. The cache takes the image-load passes and every pass of
+`systems.js`'s rings: 1.7 to 2.6 seconds of a 234-star load.
+
 ## Galaxy map redraw throttling
 
 `gw_play/galaxy_map_perf.js` wraps `model.galaxy.stage.update()` with a dirty
