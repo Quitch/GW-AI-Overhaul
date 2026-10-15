@@ -462,6 +462,9 @@
             return model.gwoCoopAi.clients();
           },
           aiDeciding: coopAiDeciding,
+          aiStarDealHeld: function () {
+            return aiStarDeal.dealing() > 0;
+          },
           busy: starCardsBusy,
         });
 
@@ -625,6 +628,7 @@
           helpers: helpers,
           treasureUnlocks: treasureUnlocks,
           dealCardToSelectableAI: dealCardToSelectableAI,
+          holdAiStarDeal: aiStarDeal.hold,
           gwoSave: gwoSave,
         });
 

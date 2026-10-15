@@ -15,8 +15,16 @@ define([
 
     // Deals of the selectable AI stars' cards in flight, from their start to
     // the star-card refresh they end with, so the AI players' pings judge
-    // the cards the stars will offer.
+    // the cards the stars will offer. A win holds it from before the deal.
     var aiStarDealing = ko.observable(0);
+
+    // Returns the release, which only its first call honours.
+    var hold = function () {
+      aiStarDealing(aiStarDealing() + 1);
+      return _.once(function () {
+        aiStarDealing(aiStarDealing() - 1);
+      });
+    };
 
     var dealCardToSelectableAI = function (win, turnState) {
       if (model.isCampaignViewer()) {
@@ -28,10 +36,7 @@ define([
       // Avoid running twice after winning a fight
       if (!win || turnState === "end") {
         var deferredQueue = [];
-        aiStarDealing(aiStarDealing() + 1);
-        var dealt = function () {
-          aiStarDealing(Math.max(0, aiStarDealing() - 1));
-        };
+        var dealt = hold();
 
         var canSelect = starPaths.selectable(model);
         _.forEach(model.galaxy.systems(), function (system, starIndex) {
@@ -103,6 +108,7 @@ define([
     return {
       dealCardToSelectableAI: dealCardToSelectableAI,
       dealing: aiStarDealing,
+      hold: hold,
     };
   };
 });
