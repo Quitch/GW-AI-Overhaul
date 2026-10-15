@@ -9,9 +9,11 @@ define(["shared/gw_common"], function (GW) {
       return $.Deferred().resolve().promise();
     }
 
-    var starsSaved = !saveStars;
-
-    model.game().saved(starsSaved);
+    // Stock's saveGame writes the star systems while they are marked unsaved
+    // and marks them saved once written, so a pending mark is kept.
+    if (saveStars) {
+      model.game().saved(false);
+    }
     model.driveAccessInProgress(true);
 
     return GW.manifest.saveGame(gameState).then(function () {
