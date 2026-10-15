@@ -145,6 +145,15 @@ registerModuleStub(MOD + "/shared/unit_cells.js", UNIT_CELLS);
 registerModuleStub(MOD + "/gw_play/coop_publish.js", {
   publish: (reason) => seen.events.push(["publish", reason]),
 });
+const SAVE_HOLD = () => {};
+registerModuleStub(MOD + "/gw_play/save_debt.js", {
+  owe: (saved, withStars) => {
+    seen.events.push(["owe", saved === seen.game, withStars]);
+    // Never settles: nothing waits on it.
+    return new Promise(() => {});
+  },
+  hold: SAVE_HOLD,
+});
 
 const makeTech = loadCouiModule(MOD + "/gw_play/cards_coop_ai_tech.js");
 
@@ -267,6 +276,7 @@ function setup(overrides = {}) {
     hostTechCardDealCount: () => 5,
     coopPlayerInventoryData: () => [VIEWER_RECORD].concat(records()),
   };
+  seen.game = game;
   const hostInventory = {
     owner: "host",
     cards: () => HOST_SAVED.cards,
@@ -315,10 +325,6 @@ function setup(overrides = {}) {
       dealCard: (request, loaded, cards) => ({ request, loaded, cards }),
       setupGwoDeck: (cards, deck, count, promise, ids) =>
         seen.decks.push({ cards, deck, count, promise, ids }),
-    },
-    gwoSave: (saved, withStars) => {
-      seen.events.push(["save", saved === game, withStars]);
-      return undefined;
     },
     gwoStreams: {
       coopAiDecisionRng: (warRng, serial, dealIndex, rerollsUsed) => [
@@ -852,16 +858,19 @@ describe("the co-op AI driver's wiring", () => {
     assert.equal(run.driver.canRun(), false);
   });
 
-  it("refreshes the inventory view, saves, then publishes after a pass", async () => {
+  // The pass holds the save, so publishing waits on no write. See coop.md,
+  // "One save per win".
+  it("refreshes the inventory view, owes a save and publishes at once after a pass", () => {
     const run = build();
 
-    await run.driver.afterPass();
+    assert.equal(run.driver.afterPass(), undefined);
 
     assert.deepEqual(seen.events, [
       ["refresh"],
-      ["save", true, false],
+      ["owe", true, false],
       ["publish", "gwo_coop_ai_deal"],
     ]);
+    assert.equal(run.driver.holdSave, SAVE_HOLD);
   });
 
   it("starts a pass whenever anything it depends on changes", () => {

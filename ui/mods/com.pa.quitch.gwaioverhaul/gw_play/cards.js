@@ -359,6 +359,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_win.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
       ],
       function (
         GW,
@@ -384,7 +385,8 @@
         cardsExplore,
         cardsWin,
         cardsStartSubcdr,
-        coopPublish
+        coopPublish,
+        saveDebt
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -461,7 +463,8 @@
           gwoBank: gwoBank,
           stockBank: GW.bank,
           gwoSettings: gwoSettings,
-          gwoSave: gwoSave,
+          oweSave: saveDebt.owe,
+          holdSave: saveDebt.hold,
           gwoTreasure: gwoTreasure,
           aiClients: function () {
             return model.gwoCoopAi.clients();
@@ -613,7 +616,6 @@
           GWInventory: GWInventory,
           gwoAI: gwoAI,
           gwoDeal: gwoDeal,
-          gwoSave: gwoSave,
           gwoStreams: gwoStreams,
           warRng: warRng,
           galaxy: galaxy,
@@ -637,7 +639,7 @@
           treasureUnlocks: treasureUnlocks,
           dealCardToSelectableAI: dealCardToSelectableAI,
           holdAiStarDeal: aiStarDeal.hold,
-          gwoSave: gwoSave,
+          oweSave: saveDebt.owe,
         });
 
         generalCommander.setupGeneralCommander();

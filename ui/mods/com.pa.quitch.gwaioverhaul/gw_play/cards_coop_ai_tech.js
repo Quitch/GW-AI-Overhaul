@@ -22,6 +22,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
 ], function (
   coopAiDriver,
   coopAiEffects,
@@ -41,7 +42,8 @@ define([
   gameFilePaths,
   raceAiMods,
   unitCells,
-  coopPublish
+  coopPublish,
+  saveDebt
 ) {
   return function (params) {
     var game = params.game;
@@ -372,11 +374,11 @@ define([
         );
       },
       running: model.gwoCoopAi.driving,
+      holdSave: saveDebt.hold,
       afterPass: function () {
         model.refreshGwCampaignInventoryModal();
-        return Promise.resolve(params.gwoSave(game, false)).then(function () {
-          coopPublish.publish("gwo_coop_ai_deal");
-        });
+        saveDebt.owe(game, false);
+        coopPublish.publish("gwo_coop_ai_deal");
       },
     });
 

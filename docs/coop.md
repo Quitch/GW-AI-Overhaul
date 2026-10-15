@@ -564,7 +564,8 @@ every write checks the count first, so a deal is settled only once. Each of
 these is logged ([`live-testing.md`](live-testing.md), "AI players").
 
 After a pass that wrote anything, the host refreshes an open inventory modal,
-saves the war, and owes the viewers a snapshot ("Publishing to viewers").
+owes a save of the war ("One save per win"), and owes the viewers a snapshot
+("Publishing to viewers").
 
 The driver reads nothing from the scene itself. `cards_coop_ai_tech.js` hands
 it:
@@ -587,8 +588,9 @@ it:
   `write(record, patch)`, which stores a patched copy and returns it, or
   undefined.
 - `canRun()`, false while anything a pass must wait for is in flight;
-  `running`, an observable a pass holds true; and `afterPass()`, which saves
-  and publishes.
+  `running`, an observable a pass holds true; `afterPass()`, which owes the
+  save and publishes; and `holdSave()`, `save_debt.js`'s `hold`, which a pass
+  holds until it has set `running` false.
 
 Tests also pass `defer`, `decisionTimeoutMs`, and `writeTimeoutMs`.
 
@@ -650,6 +652,36 @@ rerolling viewer's `gw_play` reloads in that window, the server shows it the old
 hand, and a pick from it gives a different card or is refused by the host.
 The reroll does not wait for `hold()` either, so a reroll during the AI stars'
 deal can send a second snapshot for that action.
+
+### One save per win
+
+A win from explore writes the war once. The AI stars' deal re-deals the star
+cards, which changes records, and an AI player's pass that the deal's turn
+starts changes them again. Each of these used to save the war, and on a large
+galaxy each write is a frame of most of a second.
+
+So `gw_play/save_debt.js` holds the host's save as a debt, as
+`coop_publish.js` holds a snapshot. `owe(game, withStars)` writes at once when
+nothing holds the debt. Otherwise every call joins one write, made a tick
+after the last `hold()` is released, which saves the star systems if any call
+asked to. The tick lets a hold taken as another ends keep the debt owed: the
+star-card refresh that a pass's end starts holds it before the pass lets go.
+The module returns one object, so the scene has one debt. A failed write is
+logged there, and rejects every call that joined it.
+
+Three things hold it, each beside its hold on the snapshot: the AI stars' deal
+(`cards_ai_star_deal.js`), from before `winTurn` to the end of its re-deal;
+the star-card refresh, while it runs; and an AI player's pass, while it runs.
+`model.win` owes its save and waits for it before it opens the exit gate, so
+when a pass is running at the pick, the gate opens once the pass and the
+refresh after it have ended. The refresh and the pass owe their saves and
+publish at once, because each holds the debt it owes: waiting for the write
+there would never end. The snapshot reads the war in memory, not the save, so
+it does not wait for the write.
+
+Every other save, a viewer's reroll among them, still writes at once through
+`save.js`. The war's first deal and the dev cheats' deals each still save
+twice.
 
 ### Catching up
 
@@ -1093,7 +1125,8 @@ them.
 The record is where the debt belongs for three reasons:
 
 - **It survives a gw_play reload.** Records are in the game save, and every
-  caller of `refresh({redeal: true})` saves afterwards. Held in memory, the
+  caller of `refresh({redeal: true})` saves afterwards, or owes a save
+  ("One save per win"). Held in memory, the
   debt was lost on a reload between the refused re-deal and the viewer's
   choice, while the viewer's `pendingTechCards` survived.
 - **It reaches a viewer who was away.** A viewer disconnected when the host
@@ -1103,16 +1136,16 @@ The record is where the debt belongs for three reasons:
   record write triggers the next refresh, so each such viewer would get a new
   card on every refresh for as long as the other viewer kept failing.
 
-A refresh that changes a record saves the war, then publishes a snapshot
-through `coop_publish.js` ("Publishing to viewers"). The refresh checks the
+A refresh that changes a record owes a save of the war ("One save per win"),
+and publishes a snapshot through `coop_publish.js` ("Publishing to viewers"). The refresh checks the
 gate only before it starts, and on a large galaxy it runs for a second or two,
 so the host can explore, or a viewer get an offer, before it ends. The held
 snapshot waits for them. With no viewer connected, as when the host plays with
 AI players only, no snapshot goes out. A viewer who joins later asks for one,
 and the save already holds the records.
 
-A failed save does not create a debt, because the re-deal already happened in
-memory. `refresh` starts `runRefresh` on a later tick for the same reason the
+A failed save does not create a re-deal debt, because the re-deal already
+happened in memory. `refresh` starts `runRefresh` on a later tick for the same reason the
 records matter: owing a re-deal writes records, and `cards.js` refreshes on
 every record write. Run synchronously, that refresh would start before
 `refreshInFlight` is set, run alongside this one, and re-deal the same viewer

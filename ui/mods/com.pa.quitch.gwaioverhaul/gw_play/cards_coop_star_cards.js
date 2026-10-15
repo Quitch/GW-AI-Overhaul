@@ -110,7 +110,9 @@ define([
     var gwoBank = params.gwoBank;
     var stockBank = params.stockBank;
     var gwoSettings = params.gwoSettings;
-    var gwoSave = params.gwoSave;
+    // gw_play/save_debt.js's owe and hold.
+    var oweSave = params.oweSave;
+    var holdSave = params.holdSave;
     var gwoTreasure = params.gwoTreasure;
     // The co-op AI players, as clients with role "ai", and whether one is
     // settling its deals. See coop.md, "AI players' tech".
@@ -313,9 +315,8 @@ define([
       }
 
       console.log("[GW COOP] refreshed co-op player star cards");
-      return Promise.resolve(gwoSave(game, false)).then(function () {
-        publish("gwo_star_cards");
-      });
+      oweSave(game, false);
+      publish("gwo_star_cards");
     };
 
     var runRefresh = function (redeal) {
@@ -376,6 +377,7 @@ define([
       // Held, so a snapshot owed as the refresh starts goes out with its
       // own, as one.
       busy(true);
+      var releaseSave = holdSave();
       var release = hold();
       refreshInFlight = Promise.resolve()
         .then(function () {
@@ -396,6 +398,7 @@ define([
             return queued ? refresh(queued) : undefined;
           } finally {
             release();
+            releaseSave();
           }
         });
 
