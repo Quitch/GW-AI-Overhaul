@@ -233,3 +233,64 @@ describe("gwo_rng independence from Math.random", () => {
     }
   });
 });
+
+// Pinned from develop before stream() resumed its parent's hash state (#513). A
+// live war's every stream is keyed by these outputs, so none may change.
+describe("gwo_rng pinned outputs", () => {
+  const words = (rng) => draws(rng, 4).map((value) => value * 4294967296);
+  const war = () => gwoRng.create("gwo-513");
+
+  it("matches for a string seed", () => {
+    assert.deepEqual(
+      words(war()),
+      [137491883, 3924939311, 4191938355, 136956164]
+    );
+  });
+
+  it("matches for numeric seed 0", () => {
+    assert.deepEqual(
+      words(gwoRng.create(0)),
+      [2745667261, 464086737, 621933456, 3428901655]
+    );
+  });
+
+  it("matches for a null or empty seed", () => {
+    const expected = [1029417050, 213618268, 1693991607, 1090200105];
+    assert.deepEqual(words(gwoRng.create(null)), expected);
+    assert.deepEqual(words(gwoRng.create("")), expected);
+  });
+
+  it("matches for a labelled stream", () => {
+    assert.deepEqual(
+      words(war().stream("star")),
+      [807632974, 644033399, 538545823, 3871109920]
+    );
+  });
+
+  it("matches for a labelled, indexed stream", () => {
+    assert.deepEqual(
+      words(war().stream("star", 7)),
+      [3438556407, 2256834813, 1166508602, 2997071892]
+    );
+  });
+
+  it("matches for a numeric label", () => {
+    assert.deepEqual(
+      words(war().stream(42)),
+      [4092672060, 3461683804, 2675141057, 1904149981]
+    );
+  });
+
+  it("matches for a co-op star card's chain of streams", () => {
+    const card = war()
+      .stream("coop_ai_star", "uber_1")
+      .stream("star", 12)
+      .stream("turn", 3)
+      .stream("iteration", 0)
+      .stream("gwc_minion");
+    assert.deepEqual(
+      words(card),
+      [1764322841, 1395949423, 4242652580, 3937606253]
+    );
+  });
+});
