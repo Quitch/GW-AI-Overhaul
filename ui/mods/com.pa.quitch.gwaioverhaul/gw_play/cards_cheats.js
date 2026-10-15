@@ -2,8 +2,8 @@
 // minions on the way. giveCard deals the one model.cheats.giveCardId() names.
 // Both use GWO's deck, not the base game's.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
-], function (refereeCoop) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (coopPublish) {
   return function (params) {
     var game = params.game;
     var galaxy = params.galaxy;
@@ -102,14 +102,18 @@ define([
       return product;
     };
 
+    // The AI stars' re-deal publishes their star cards. Held, the cheat's
+    // snapshot replaces theirs without relying on its publish running before
+    // the deferred settle.
     var finishCheat = function (snapshotName) {
+      var release = coopPublish.hold();
       return dealCardToSelectableAI(false).then(function () {
-        if (
-          model.gwCampaignActive() &&
-          model.isCampaignHost() &&
-          refereeCoop.viewersOf(model.gwCampaignConnectedClients()).length
-        ) {
-          model.sendCampaignSnapshot(snapshotName, true);
+        try {
+          if (model.gwCampaignActive() && model.isCampaignHost()) {
+            coopPublish.publish(snapshotName);
+          }
+        } finally {
+          release();
         }
         gwoSave(game, true);
       });

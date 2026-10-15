@@ -9,6 +9,15 @@ define([
 ], function (coopStarCards, refereeCoop) {
   var debt;
   var settling;
+  var holds;
+
+  // Made on first use, so loading the module reads no global.
+  var holdCount = function () {
+    if (!holds) {
+      holds = ko.observable(0);
+    }
+    return holds;
+  };
 
   var connectedClients = function () {
     var clients = model.gwCampaignConnectedClients();
@@ -64,6 +73,9 @@ define([
       debt = undefined;
       return false;
     }
+    if (holdCount().peek() > 0) {
+      return false;
+    }
     if (model.gwCampaignPerPlayerTechCards() && !viewersLevel()) {
       return false;
     }
@@ -87,6 +99,7 @@ define([
       game.turnState();
       model.gwCampaignPlayerSetupBlocked();
       model.gwoCoopAiDeciding();
+      holdCount()();
       _.defer(settle);
     });
   };
@@ -116,5 +129,17 @@ define([
       return false;
     },
     settle: settle,
+    // Keeps a debt held until the release, so an action that publishes more
+    // than once sends one snapshot. Returns the release, which only its
+    // first call honours. A reroll's `except` path does not wait for it.
+    // Peeked, so a hold taken inside a computed does not make it re-run on
+    // every release.
+    hold: function () {
+      var count = holdCount();
+      count(count.peek() + 1);
+      return _.once(function () {
+        count(count.peek() - 1);
+      });
+    },
   };
 });

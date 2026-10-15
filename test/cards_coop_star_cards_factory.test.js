@@ -97,6 +97,7 @@ function setup(overrides = {}) {
     publishes: [],
     bank: [],
     busy: [],
+    holds: [],
   };
 
   const stubs = createGlobalStubs();
@@ -176,8 +177,20 @@ function setup(overrides = {}) {
     aiClients: () => options.aiClients,
     aiDeciding: () => options.aiDeciding,
     aiStarDealHeld: () => options.aiStarDealHeld,
-    busy: (value) => calls.busy.push(value),
-    publish: (reason) => calls.publishes.push(reason),
+    busy: (value) => {
+      calls.busy.push(value);
+      if (options.busyThrows && options.busyThrows(calls.busy)) {
+        throw new Error("busy subscriber");
+      }
+    },
+    publish: (reason) => {
+      calls.publishes.push(reason);
+      calls.holds.push("publish");
+    },
+    hold: () => {
+      calls.holds.push("hold");
+      return () => calls.holds.push("release");
+    },
   });
 
   return {
@@ -371,6 +384,16 @@ describe("coop star cards refresh - co-op AI players", () => {
     assert.deepEqual(calls.busy, [true]);
     await running;
     assert.deepEqual(calls.busy, [true, false]);
+  });
+
+  // An AI player's pass can end as its re-deal starts: the pass's snapshot
+  // then waits for the refresh's own.
+  it("holds the viewers' snapshot from its start until it has published", async () => {
+    const { coopStarCards, calls } = build();
+    const running = coopStarCards.refresh();
+    assert.deepEqual(calls.holds, ["hold"]);
+    await running;
+    assert.deepEqual(calls.holds, ["hold", "publish", "release"]);
   });
 });
 
@@ -763,6 +786,7 @@ describe("coop star cards refresh - during the AI stars' deal", () => {
     assert.deepEqual(starsDealt(calls), []);
     assert.deepEqual(calls.busy, []);
     assert.deepEqual(calls.publishes, []);
+    assert.deepEqual(calls.holds, []);
   });
 
   it("still re-deals, since the deal's own re-deal is what it waits for", async () => {
@@ -808,6 +832,34 @@ describe("coop star cards refresh - coalescing", () => {
 
     // The first pass fills the gap; the queued redeal then replaces it.
     assert.deepEqual(starsDealt(calls), [0, 0]);
+    // The queued pass takes its hold before the first releases.
+    assert.deepEqual(calls.holds, [
+      "hold",
+      "publish",
+      "hold",
+      "release",
+      "publish",
+      "release",
+    ]);
+  });
+
+  it("releases its hold when the queued refresh throws as it starts", async () => {
+    const { coopStarCards, calls } = build({
+      stars: [{}],
+      // The queued pass's busy(true), the third write.
+      busyThrows: (writes) => writes.length === 3,
+    });
+
+    await Promise.all([
+      coopStarCards.refresh(),
+      coopStarCards.refresh({ redeal: true }),
+    ]).then(null, () => undefined);
+
+    assert.deepEqual(calls.holds.slice(-1), ["release"]);
+    assert.equal(
+      calls.holds.filter((entry) => entry === "release").length,
+      calls.holds.filter((entry) => entry === "hold").length
+    );
   });
 
   // The host re-deals after a win, which is exactly when viewers hold

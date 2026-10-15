@@ -8,7 +8,10 @@
 const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -17,6 +20,19 @@ const {
   installFakeJQuery,
   makeDeferred,
 } = require("../scripts/lib/fake-jquery.js");
+
+// The viewers' snapshots, as the run's calls record them.
+let publishLog = [];
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    hold: () => {
+      publishLog.push(["hold"]);
+      return () => publishLog.push(["release"]);
+    },
+    publish: (reason) => publishLog.push(["publish", reason]),
+  }
+);
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
@@ -90,6 +106,13 @@ function setup(overrides = {}) {
     aiDeals: [],
     penchants: [],
   };
+  publishLog = [];
+  Object.defineProperty(calls, "snapshots", {
+    get: () =>
+      publishLog
+        .filter((entry) => entry[0] === "publish")
+        .map((entry) => entry[1]),
+  });
 
   const inventory = makeInventory(
     options.maxCards,
@@ -116,7 +139,6 @@ function setup(overrides = {}) {
     gwCampaignActive: () => options.campaignActive,
     gwCampaignConnectedClients: () => options.clients,
     gwoCards: options.gwoCards,
-    sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
 
   makeFactory({
@@ -143,6 +165,7 @@ function setup(overrides = {}) {
     loaded: { loaded: true },
     dealCardToSelectableAI: (flag) => {
       calls.aiDeals.push(flag);
+      publishLog.push(["deal"]);
       return Promise.resolve();
     },
     helpers: {
@@ -207,7 +230,7 @@ async function assertFinishesAfterApply(cheat, snapshotName) {
   await flush();
 
   assert.deepEqual(calls.aiDeals, [false]);
-  assert.deepEqual(calls.snapshots, [[snapshotName, true]]);
+  assert.deepEqual(calls.snapshots, [snapshotName]);
   assert.deepEqual(calls.saves, [true]);
 }
 
@@ -279,34 +302,43 @@ describe("cheats testCards", () => {
     await flush();
 
     assert.deepEqual(calls.aiDeals, [false]);
-    assert.deepEqual(calls.snapshots, [["gwo_cheat_test_cards", true]]);
+    assert.deepEqual(calls.snapshots, ["gwo_cheat_test_cards"]);
     assert.deepEqual(calls.saves, [true]);
   });
 
   it("re-deals, broadcasts and saves only once the apply has finished", () =>
     assertFinishesAfterApply(testCards, "gwo_cheat_test_cards"));
 
-  // The base game logs an error for a snapshot sent with no co-op session to
-  // receive it.
-  it("saves without broadcasting in a solo war", async () => {
-    const { calls } = build({ isHost: false, campaignActive: false });
+  // The re-deal publishes the star cards; held, the cheat's snapshot is the
+  // one that goes out.
+  it("holds the viewers' snapshot across the re-deal, then saves", async () => {
+    const { calls } = build();
 
     testCards();
     await flush();
 
-    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(publishLog, [
+      ["hold"],
+      ["deal"],
+      ["publish", "gwo_cheat_test_cards"],
+      ["release"],
+    ]);
     assert.deepEqual(calls.saves, [true]);
   });
 
-  // A snapshot costs about a second in the largest galaxies, and a co-op AI
-  // player has no connection to send it to.
-  it("saves without broadcasting with no viewer connected", async () => {
-    const { calls } = build({
-      clients: [
-        { id: "host", name: "host", role: "host" },
-        { id: "gwo_ai_1", name: "AI1", role: "ai" },
-      ],
-    });
+  it("releases the hold without publishing in a solo war", async () => {
+    build({ isHost: false, campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(publishLog, [["hold"], ["deal"], ["release"]]);
+  });
+
+  // The base game logs an error for a snapshot sent with no co-op session to
+  // receive it.
+  it("saves without broadcasting in a solo war", async () => {
+    const { calls } = build({ isHost: false, campaignActive: false });
 
     testCards();
     await flush();
@@ -443,7 +475,7 @@ describe("cheats giveCard", () => {
     );
     assert.equal(inventory.applied, 1);
     assert.deepEqual(calls.aiDeals, [false]);
-    assert.deepEqual(calls.snapshots, [["gwo_cheat_give_card", true]]);
+    assert.deepEqual(calls.snapshots, ["gwo_cheat_give_card"]);
     assert.deepEqual(calls.saves, [true]);
   });
 
@@ -452,21 +484,6 @@ describe("cheats giveCard", () => {
 
   it("saves without broadcasting in a solo war", async () => {
     const { calls } = build({ isHost: false, campaignActive: false });
-
-    giveCard();
-    await flush();
-
-    assert.deepEqual(calls.snapshots, []);
-    assert.deepEqual(calls.saves, [true]);
-  });
-
-  it("saves without broadcasting with no viewer connected", async () => {
-    const { calls } = build({
-      clients: [
-        { id: "host", name: "host", role: "host" },
-        { id: "gwo_ai_1", name: "AI1", role: "ai" },
-      ],
-    });
 
     giveCard();
     await flush();

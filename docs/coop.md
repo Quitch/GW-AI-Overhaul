@@ -616,8 +616,9 @@ So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
 every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
 (`cards_coop_ai_tech.js`), a viewer's reroll (`cards_coop_reroll.js`), a
 viewer's General Commander setup (`cards_start_subcdr.js`), a viewer's
-report of their loadouts (`treasure_loadouts.js`), and the star-card refresh
-(`cards_coop_star_cards.js`, "Per-player pre-dealt cards"). The test is the star-card refresh's own,
+report of their loadouts (`treasure_loadouts.js`), the star-card refresh
+(`cards_coop_star_cards.js`, "Per-player pre-dealt cards"), and the dev cheats
+(`cards_cheats.js`). The test is the star-card refresh's own,
 `viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
 the host is not exploring, no AI is deciding, and every viewer is loaded and
 level with the host's deal count. A viewer with an offer open is not level, so
@@ -628,6 +629,17 @@ it makes when it first holds one, so a held snapshot goes out even if the AI
 modules fail to load. With no viewer connected the debt is dropped, since a
 viewer who joins asks for a snapshot as its first step.
 
+An action that publishes more than once holds the debt with `hold()` until it
+ends, so it sends one snapshot. The AI stars' deal (`cards_ai_star_deal.js`)
+holds it from its start to the star-card refresh it ends with, and `model.win`
+takes that hold before `winTurn`. The star-card refresh holds it while it runs,
+so an AI player's pass that ends after the deal still sends one: its snapshot
+waits for the re-deal that starts when the pass ends. A win therefore sends one snapshot
+for the AI players' deal and the star cards together. A dev cheat (`cards_cheats.js`)
+holds it across the AI stars' deal it starts, then publishes
+`gwo_cheat_test_cards` or `gwo_cheat_give_card`. A hold also applies under
+shared tech, where the debt otherwise goes out at once.
+
 A reroll is the one exception. The rerolling viewer waits for the host's reply
 with its offer hidden, so it cannot choose while the snapshot goes out. The
 reroll's snapshot therefore goes out at once when no other viewer has an offer
@@ -636,6 +648,8 @@ viewer has one is it held, and then the server's copy of the rerolling viewer's
 hand, and the other viewers' view of it, wait until everyone has chosen. If the
 rerolling viewer's `gw_play` reloads in that window, the server shows it the old
 hand, and a pick from it gives a different card or is refused by the host.
+The reroll does not wait for `hold()` either, so a reroll during the AI stars'
+deal can send a second snapshot for that action.
 
 ### Catching up
 

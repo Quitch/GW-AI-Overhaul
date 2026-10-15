@@ -1,7 +1,8 @@
 // The host's deal of a card to every selectable AI star, one star per task.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
-], function (starPaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (starPaths, coopPublish) {
   return function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
@@ -29,10 +30,21 @@ define([
       });
     };
 
+    // The deal holds the viewers' snapshot too, so a win sends one. See
+    // coop.md, "Publishing to viewers".
+    var holdDealing = function () {
+      var releasePublish = coopPublish.hold();
+      var releaseDealing = count(aiStarDealing);
+      return function () {
+        releaseDealing();
+        releasePublish();
+      };
+    };
+
     // A win holds both counts from before the deal, which starts only once
     // winTurn settles.
     var hold = function () {
-      var releaseDealing = count(aiStarDealing);
+      var releaseDealing = holdDealing();
       var releaseStars = count(starsDealing);
       return function () {
         releaseDealing();
@@ -50,7 +62,7 @@ define([
       // Avoid running twice after winning a fight
       if (!win || turnState === "end") {
         var targets = [];
-        var dealt = count(aiStarDealing);
+        var dealt = holdDealing();
 
         var canSelect = starPaths.selectable(model);
         _.forEach(model.galaxy.systems(), function (system, starIndex) {

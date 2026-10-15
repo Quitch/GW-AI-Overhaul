@@ -5,7 +5,8 @@
 // has it, and a snapshot replaces that copy, so a snapshot waits until every
 // viewer is level. See coop.md, "Publishing to viewers".
 //
-// The module holds one debt for the scene, so no test leaves one behind.
+// The module holds one debt and one hold count for the scene, so no test
+// leaves either behind.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -18,6 +19,7 @@ const {
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
+const { makeObservable } = require("../scripts/lib/fake-knockout.js");
 
 const coopPublish = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js"
@@ -30,6 +32,8 @@ const OPEN = { star: 3, cards: [{ id: "a" }] };
 
 // Every ko.computed the module makes, across the file: it makes one a scene.
 const computeds = [];
+// The module makes its hold count once, so its reads go to the current run.
+let currentReads = [];
 
 function setup(overrides) {
   const options = Object.assign(
@@ -47,6 +51,7 @@ function setup(overrides) {
   const snapshots = [];
 
   const reads = [];
+  currentReads = reads;
   const read = (name, value) => () => {
     reads.push(name);
     return value();
@@ -57,6 +62,17 @@ function setup(overrides) {
     computed: (fn) => {
       computeds.push(fn);
       return fn;
+    },
+    observable: (initial) => {
+      const observable = makeObservable(initial);
+      const tracked = function () {
+        if (!arguments.length) {
+          currentReads.push("held");
+        }
+        return observable.apply(null, arguments);
+      };
+      tracked.peek = observable.peek;
+      return tracked;
     },
   });
   stubs.setGlobal("model", {
@@ -248,11 +264,100 @@ describe("coop_publish", () => {
       "turnState",
       "setupBlocked",
       "aiDeciding",
+      "held",
     ]);
     assert.deepEqual(run.snapshots, [], "deferred, not run in the computed");
 
     assert.equal(timers.delayed.length, 1);
     timers.delayed[0].fn();
     assert.deepEqual(run.snapshots, [["gwo_coop_ai_add", true]]);
+  });
+
+  // A win publishes the AI players' deal, then the star cards: one snapshot
+  // carries both.
+  it("keeps a debt while held, and sends one snapshot under the latest reason at release", () => {
+    const run = build();
+    const release = coopPublish.hold();
+
+    assert.equal(coopPublish.publish("gwo_coop_ai_deal"), false);
+    assert.equal(coopPublish.publish("gwo_star_cards"), false);
+    assert.equal(coopPublish.settle(), false);
+    assert.deepEqual(run.snapshots, []);
+
+    release();
+    release();
+    assert.equal(coopPublish.settle(), true);
+    assert.equal(coopPublish.settle(), false);
+    assert.deepEqual(run.snapshots, [["gwo_star_cards", true]]);
+  });
+
+  it("keeps a debt until every hold is released", () => {
+    const run = build();
+    const first = coopPublish.hold();
+    const second = coopPublish.hold();
+    coopPublish.publish("gwo_cheat_give_card");
+
+    first();
+    assert.equal(coopPublish.settle(), false);
+    second();
+    assert.equal(coopPublish.settle(), true);
+    assert.deepEqual(run.snapshots, [["gwo_cheat_give_card", true]]);
+  });
+
+  // A star-card refresh takes one inside cards.js's computed, which would
+  // otherwise re-run, and refresh again, on every release.
+  it("takes and releases a hold, and settles, without reading the count", () => {
+    const run = build();
+    run.reads.length = 0;
+    const release = coopPublish.hold();
+    coopPublish.publish("gwo_coop_ai_deal");
+    release();
+    coopPublish.settle();
+
+    assert.equal(run.reads.includes("held"), false);
+  });
+
+  it("sends nothing at release with no debt", () => {
+    const run = build();
+    coopPublish.hold()();
+
+    assert.equal(coopPublish.settle(), false);
+    assert.deepEqual(run.snapshots, []);
+  });
+
+  it("still drops a held debt once no viewer is left to tell", () => {
+    const run = build();
+    const release = coopPublish.hold();
+    coopPublish.publish("gwo_coop_ai_deal");
+
+    run.options.connected = [HOST];
+    assert.equal(coopPublish.settle(), false);
+    run.options.connected = [HOST, ALICE];
+    release();
+    assert.equal(coopPublish.settle(), false);
+    assert.deepEqual(run.snapshots, []);
+  });
+
+  it("holds under shared tech too", () => {
+    const run = build({ perPlayerTech: false });
+    const release = coopPublish.hold();
+
+    assert.equal(coopPublish.publish("gwo_coop_ai_deal"), false);
+    release();
+    assert.equal(coopPublish.settle(), true);
+    assert.deepEqual(run.snapshots, [["gwo_coop_ai_deal", true]]);
+  });
+
+  // The rerolling viewer waits with its offer hidden.
+  it("publishes a reroll at once while held", () => {
+    const run = build();
+    const release = coopPublish.hold();
+
+    try {
+      assert.equal(coopPublish.publish("gwo_reroll_pending_tech", ALICE), true);
+      assert.deepEqual(run.snapshots, [["gwo_reroll_pending_tech", true]]);
+    } finally {
+      release();
+    }
   });
 });
