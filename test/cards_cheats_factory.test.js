@@ -75,6 +75,10 @@ function setup(overrides = {}) {
       commanderNames: {},
       missing: [],
       holdApply: false,
+      clients: [
+        { id: "host", name: "host", role: "host" },
+        { id: "alice", name: "alice", role: "viewer" },
+      ],
     },
     overrides
   );
@@ -110,6 +114,7 @@ function setup(overrides = {}) {
     isCampaignViewer: () => options.isViewer,
     isCampaignHost: () => options.isHost,
     gwCampaignActive: () => options.campaignActive,
+    gwCampaignConnectedClients: () => options.clients,
     gwoCards: options.gwoCards,
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
@@ -285,6 +290,23 @@ describe("cheats testCards", () => {
   // receive it.
   it("saves without broadcasting in a solo war", async () => {
     const { calls } = build({ isHost: false, campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  // A snapshot costs about a second in the largest galaxies, and a co-op AI
+  // player has no connection to send it to.
+  it("saves without broadcasting with no viewer connected", async () => {
+    const { calls } = build({
+      clients: [
+        { id: "host", name: "host", role: "host" },
+        { id: "gwo_ai_1", name: "AI1", role: "ai" },
+      ],
+    });
 
     testCards();
     await flush();

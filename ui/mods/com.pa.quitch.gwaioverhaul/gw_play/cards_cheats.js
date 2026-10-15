@@ -1,7 +1,9 @@
 // GWO dev cheats. testCards deals one of every card in the deck, validating
 // minions on the way. giveCard deals the one model.cheats.giveCardId() names.
 // Both use GWO's deck, not the base game's.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+], function (refereeCoop) {
   return function (params) {
     var game = params.game;
     var galaxy = params.galaxy;
@@ -102,7 +104,11 @@ define(function () {
 
     var finishCheat = function (snapshotName) {
       return dealCardToSelectableAI(false).then(function () {
-        if (model.gwCampaignActive() && model.isCampaignHost()) {
+        if (
+          model.gwCampaignActive() &&
+          model.isCampaignHost() &&
+          refereeCoop.viewersOf(model.gwCampaignConnectedClients()).length
+        ) {
           model.sendCampaignSnapshot(snapshotName, true);
         }
         gwoSave(game, true);

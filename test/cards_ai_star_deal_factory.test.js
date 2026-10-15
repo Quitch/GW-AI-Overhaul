@@ -226,6 +226,21 @@ describe("the AI stars' deal", () => {
     assert.equal(settled, true);
   });
 
+  it("counts a hold in flight until its release, which counts once", () => {
+    const run = build();
+
+    const release = run.handle.hold();
+    assert.equal(run.handle.dealing(), 1);
+
+    const second = run.handle.hold();
+    release();
+    release();
+    assert.equal(run.handle.dealing(), 1);
+
+    second();
+    assert.equal(run.handle.dealing(), 0);
+  });
+
   it("logs a failed deal and still settles", async () => {
     const run = build({ failDeal: true });
 

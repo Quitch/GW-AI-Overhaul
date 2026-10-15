@@ -5,6 +5,7 @@ define(function () {
     var helpers = params.helpers;
     var treasureUnlocks = params.treasureUnlocks;
     var dealCardToSelectableAI = params.dealCardToSelectableAI;
+    var holdAiStarDeal = params.holdAiStarDeal;
     var gwoSave = params.gwoSave;
 
     // A loadout won at a treasure planet unlocks the commander for later
@@ -97,6 +98,11 @@ define(function () {
         selectedCardIndex
       );
 
+      // Only a win from explore deals the AI stars. Held from here, as
+      // winTurn's turn change would start a co-op star-card gap-fill first.
+      var releaseAiStarDeal =
+        game.turnState() === "explore" ? holdAiStarDeal() : _.noop;
+
       return game
         .winTurn(wonIndex)
         .then(function (didWin) {
@@ -113,6 +119,7 @@ define(function () {
 
           return dealCardToSelectableAI(true, game.turnState());
         })
+        .always(releaseAiStarDeal)
         .then(function () {
           // A win changes no star system.
           return gwoSave(game, false);

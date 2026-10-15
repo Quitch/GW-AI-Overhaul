@@ -99,6 +99,10 @@ function setup(overrides = {}) {
     turnState: () => options.turnState,
     winTurn: (index) => {
       events.push(["winTurn", index]);
+      // Stock's winTurn ends the turn on a win from explore.
+      if (options.didWin && options.turnState === "explore") {
+        options.turnState = "end";
+      }
       return resolved(options.didWin);
     },
   };
@@ -109,6 +113,10 @@ function setup(overrides = {}) {
     dealCardToSelectableAI: (win, turnState) => {
       events.push(["dealCardToSelectableAI", win, turnState]);
       return resolved();
+    },
+    holdAiStarDeal: () => {
+      events.push(["hold"]);
+      return record("release");
     },
     gwoSave: (saved, withStars) => {
       events.push(["save", saved === game, withStars]);
@@ -200,6 +208,52 @@ describe("model.win on the host", () => {
       ["exitGate resolved"],
       ["playSound", "/VO/bots_found"],
     ]);
+  });
+
+  // winTurn's turn change starts a co-op star-card gap-fill unless the AI
+  // stars' deal is already held, and that gap-fill sends a snapshot of its own.
+  it("holds the AI stars' deal from before winTurn until the deal settles", async () => {
+    const run = build({ turnState: "explore" });
+
+    await run.model.win(0);
+
+    assert.deepEqual(
+      run.events.map((event) => event[0]),
+      [
+        "sendCampaignAction",
+        "exitGate",
+        "hold",
+        "winTurn",
+        "maybePlayCaptureSound",
+        "dealCardToSelectableAI",
+        "release",
+        "save",
+        "exitGate resolved",
+        "playSound",
+      ]
+    );
+  });
+
+  it("releases the hold when the win fails", async () => {
+    const run = build({ turnState: "explore", didWin: false });
+
+    await assert.rejects(() => Promise.resolve(run.model.win(0)));
+
+    assert.deepEqual(
+      run.events.map((event) => event[0]),
+      ["sendCampaignAction", "exitGate", "hold", "winTurn", "error", "release"]
+    );
+  });
+
+  it("holds nothing for a fight's win, which deals no AI star", async () => {
+    const run = build({ turnState: "fight", actionCards: [] });
+
+    await run.model.win(-1);
+
+    assert.equal(
+      run.events.some((event) => event[0] === "hold"),
+      false
+    );
   });
 
   it("takes nothing and plays nothing for -1", async () => {

@@ -531,7 +531,12 @@
           game.hostTechCardDealCount();
           game.turnState();
           coopAiDeciding();
-          coopStarCards.refresh();
+          // The AI stars' deal re-deals every star, so a gap-fill beside it
+          // would only send a second snapshot. cards_win.js holds the deal
+          // from before the win's turn change.
+          if (!aiStarDeal.dealing()) {
+            coopStarCards.refresh();
+          }
         });
 
         // The handle a co-op AI player's starting loadout is set up with.
@@ -625,6 +630,7 @@
           helpers: helpers,
           treasureUnlocks: treasureUnlocks,
           dealCardToSelectableAI: dealCardToSelectableAI,
+          holdAiStarDeal: aiStarDeal.hold,
           gwoSave: gwoSave,
         });
 
