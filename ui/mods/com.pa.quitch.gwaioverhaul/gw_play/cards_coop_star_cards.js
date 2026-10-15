@@ -169,8 +169,6 @@ define([
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer, and each star within it,
     // runs in a task of its own. A throw rejects, so the refresh still ends.
-    var inSeries = gwoPromise.inSeries;
-
     var dealStarCard = function (target, inventory, playerKey, record, turn) {
       var existing = starCardForRecord(record, target.starIndex);
 
@@ -240,7 +238,7 @@ define([
 
       return applied
         .then(function () {
-          return inSeries(targets, function (target) {
+          return gwoPromise.inSeries(targets, function (target) {
             var fresh = findRecord(client);
             return fresh && !cardsChanged(fresh)
               ? dealStarCard(target, inventory, playerKey, record, turn)
@@ -284,9 +282,11 @@ define([
     };
 
     var refreshEachViewer = function (viewers) {
-      return inSeries(viewers, refreshViewer).then(function (changed) {
-        return _.some(changed);
-      });
+      return gwoPromise
+        .inSeries(viewers, refreshViewer)
+        .then(function (changed) {
+          return _.some(changed);
+        });
     };
 
     // Every viewer record, connected or not, so a viewer away when the host

@@ -99,7 +99,6 @@ define(function () {
     settled: settled,
     steps: steps,
     within: within,
-    later: later,
     inSeries: inSeries,
   };
 });

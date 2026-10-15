@@ -65,6 +65,8 @@ function setup(overrides = {}) {
       turn: 7,
       // The host moving on while the deal runs.
       advanceTurnPerDeal: false,
+      // Card names whose module load has not finished.
+      holdNames: false,
     },
     overrides
   );
@@ -76,6 +78,8 @@ function setup(overrides = {}) {
     errors: [],
   };
   const systems = makeSystems(options.cardLists);
+  const starsDealing = makeObservable(0);
+  const heldNames = [];
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -111,6 +115,11 @@ function setup(overrides = {}) {
     cardNameSync: {
       setCardName: (system, card, index) => {
         calls.names.push([system.star.index, card, index]);
+        if (options.holdNames) {
+          const name = makeDeferred();
+          heldNames.push(name);
+          return name.promise();
+        }
         return resolved();
       },
     },
@@ -124,9 +133,17 @@ function setup(overrides = {}) {
       },
     },
     gwoPromise,
+    starsDealing,
   });
 
-  return { calls, systems, handle, restore: () => stubs.restoreGlobals() };
+  return {
+    calls,
+    systems,
+    handle,
+    starsDealing,
+    heldNames,
+    restore: () => stubs.restoreGlobals(),
+  };
 }
 
 const { build } = trackActive(setup);
@@ -235,19 +252,23 @@ describe("the AI stars' deal", () => {
     assert.equal(settled, true);
   });
 
-  it("counts a hold in flight until its release, which counts once", () => {
+  // A win's hold also stops the host moving before its deal starts.
+  it("counts a hold in flight, and as stars dealing, until its release, which counts once", () => {
     const run = build();
 
     const release = run.handle.hold();
     assert.equal(run.handle.dealing(), 1);
+    assert.equal(run.starsDealing(), 1);
 
     const second = run.handle.hold();
     release();
     release();
     assert.equal(run.handle.dealing(), 1);
+    assert.equal(run.starsDealing(), 1);
 
     second();
     assert.equal(run.handle.dealing(), 0);
+    assert.equal(run.starsDealing(), 0);
   });
 
   it("logs a failed deal and still settles", async () => {
@@ -292,7 +313,8 @@ describe("the AI stars' deal - one star per task", () => {
   after(() => timers.restore());
 
   // Runs the deal's deferred tasks one at a time until none is left, noting
-  // how many deals each task made and the in-flight count after it.
+  // how many deals each task made, and the in-flight and stars-dealing counts
+  // after it.
   async function stepThrough(run) {
     const steps = [];
     for (let guard = 0; guard < 100; guard += 1) {
@@ -307,7 +329,11 @@ describe("the AI stars' deal - one star per task", () => {
       for (let tick = 0; tick < 50; tick += 1) {
         await Promise.resolve();
       }
-      steps.push([run.calls.deals.length - before, run.handle.dealing()]);
+      steps.push([
+        run.calls.deals.length - before,
+        run.handle.dealing(),
+        run.starsDealing(),
+      ]);
     }
     return steps;
   }
@@ -317,20 +343,24 @@ describe("the AI stars' deal - one star per task", () => {
     const run = build({ holdRefresh: hold });
 
     const dealing = run.handle.dealCardToSelectableAI(false);
-    // Counted before the first task, so a gap-fill cannot start meanwhile.
+    // Counted before the first task, so a gap-fill cannot start meanwhile,
+    // nor can the host move.
     assert.equal(run.handle.dealing(), 1);
+    assert.equal(run.starsDealing(), 1);
     assert.deepEqual(run.calls.deals, []);
 
     const steps = await stepThrough(run);
     assert.deepEqual(run.calls.refreshes, [{ redeal: true }]);
+    // The viewers' re-deal still counts as dealing, but the host may move.
     assert.equal(run.handle.dealing(), 1);
+    assert.equal(run.starsDealing(), 0);
 
     hold.resolve();
     await dealing;
 
     assert.deepEqual(steps, [
-      [1, 1],
-      [1, 1],
+      [1, 1, 1],
+      [1, 1, 0],
     ]);
     assert.deepEqual(
       run.calls.actions.map(([name, payload]) => [name, payload.star]),
@@ -378,9 +408,32 @@ describe("the AI stars' deal - one star per task", () => {
     );
     assert.deepEqual(run.calls.refreshes, []);
     assert.equal(run.handle.dealing(), 0);
+    assert.equal(run.starsDealing(), 0);
     assert.match(
       run.calls.errors[0],
       /^GWO failed to deal the AI stars' cards: Error: card list threw/
     );
+  });
+
+  it("deals the next star without waiting for a star's name, and re-deals the viewers once every name is set", async () => {
+    const run = build({ holdNames: true });
+
+    const dealing = run.handle.dealCardToSelectableAI(false);
+    const steps = await stepThrough(run);
+
+    assert.deepEqual(
+      steps.map((step) => step[0]),
+      [1, 1]
+    );
+    assert.equal(run.starsDealing(), 0);
+    assert.deepEqual(run.calls.refreshes, []);
+
+    run.heldNames[0].resolve();
+    await settle();
+    assert.deepEqual(run.calls.refreshes, []);
+
+    run.heldNames[1].resolve();
+    await dealing;
+    assert.deepEqual(run.calls.refreshes, [{ redeal: true }]);
   });
 });

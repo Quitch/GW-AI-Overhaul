@@ -12,18 +12,32 @@ define([
     var cardNameSync = params.cardNameSync;
     var coopStarCards = params.coopStarCards;
     var gwoPromise = params.gwoPromise;
+    // Deals whose stars are not all dealt yet. systems.js's canMove reads it:
+    // a host who moved mid-deal would reach a star before its new card.
+    var starsDealing = params.starsDealing;
 
     // Deals of the selectable AI stars' cards in flight, from their start to
     // the star-card refresh they end with, so the AI players' pings judge
-    // the cards the stars will offer. A win holds it from before the deal.
+    // the cards the stars will offer.
     var aiStarDealing = ko.observable(0);
 
     // Returns the release, which only its first call honours.
-    var hold = function () {
-      aiStarDealing(aiStarDealing() + 1);
+    var count = function (counter) {
+      counter(counter() + 1);
       return _.once(function () {
-        aiStarDealing(aiStarDealing() - 1);
+        counter(counter() - 1);
       });
+    };
+
+    // A win holds both counts from before the deal, which starts only once
+    // winTurn settles.
+    var hold = function () {
+      var releaseDealing = count(aiStarDealing);
+      var releaseStars = count(starsDealing);
+      return function () {
+        releaseDealing();
+        releaseStars();
+      };
     };
 
     var dealCardToSelectableAI = function (win, turnState) {
@@ -36,7 +50,7 @@ define([
       // Avoid running twice after winning a fight
       if (!win || turnState === "end") {
         var targets = [];
-        var dealt = hold();
+        var dealt = count(aiStarDealing);
 
         var canSelect = starPaths.selectable(model);
         _.forEach(model.galaxy.systems(), function (system, starIndex) {
@@ -56,11 +70,15 @@ define([
           }
         });
 
-        // Read once: the host can move between two stars' deals.
+        // Read once, so every star is dealt for the turn the deal began.
         var turn = game.stats().turns();
+        var naming = [];
+
+        var starsDealt = count(starsDealing);
 
         // Each star's deal runs every card's deal() in one go, so each star
         // has a task of its own. Native .then, so a throw stops the series.
+        // A name waits on a module load, so the next star does not wait on it.
         var dealStar = function (target) {
           var system = target.system;
           var starIndex = target.starIndex;
@@ -81,7 +99,7 @@ define([
               star: starIndex,
               cards: system.star.cardList(),
             });
-            return cardNameSync.setCardName(system, card, starIndex);
+            naming.push(cardNameSync.setCardName(system, card, starIndex));
           });
         };
 
@@ -89,11 +107,20 @@ define([
         // only after it.
         gwoPromise
           .settled(
-            gwoPromise.inSeries(targets, dealStar).then(function () {
-              // The one caller that replaces cards viewers already hold,
-              // so their offers move exactly when the host's do.
-              return coopStarCards.refresh({ redeal: true });
-            }),
+            gwoPromise
+              .inSeries(targets, dealStar)
+              .then(starsDealt, function (reason) {
+                starsDealt();
+                throw reason;
+              })
+              .then(function () {
+                return Promise.all(naming);
+              })
+              .then(function () {
+                // The one caller that replaces cards viewers already hold,
+                // so their offers move exactly when the host's do.
+                return coopStarCards.refresh({ redeal: true });
+              }),
             function (reason) {
               console.error(
                 "GWO failed to deal the AI stars' cards: " +
