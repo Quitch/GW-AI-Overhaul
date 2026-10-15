@@ -278,7 +278,7 @@ describe("coop star cards refresh - co-op AI players", () => {
 
   it("saves an AI player's cards but sends no snapshot with no viewer connected", async () => {
     const { coopStarCards, calls } = build({
-      viewers: [],
+      viewers: [{ id: "host", name: "host", role: "host" }],
       aiClients: [AI],
       records: { gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } } },
     });

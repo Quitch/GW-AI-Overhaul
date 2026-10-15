@@ -125,10 +125,12 @@ define([
     var refreshInFlight;
     var refreshPending;
 
+    var connectedViewers = function () {
+      return refereeCoop.viewersOf(model.gwCampaignConnectedClients());
+    };
+
     var participants = function () {
-      return refereeCoop
-        .viewersOf(model.gwCampaignConnectedClients())
-        .concat(aiClients());
+      return connectedViewers().concat(aiClients());
     };
 
     var findRecord = function (client) {
@@ -306,7 +308,7 @@ define([
 
       console.log("[GW COOP] refreshed co-op player star cards");
       return Promise.resolve(gwoSave(game, false)).then(function () {
-        if (refereeCoop.viewersOf(model.gwCampaignConnectedClients()).length) {
+        if (connectedViewers().length) {
           model.sendCampaignSnapshot("gwo_star_cards", true);
         }
       });
