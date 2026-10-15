@@ -245,6 +245,9 @@
           )
         );
       });
+      // Every records write rebuilds equal rows; unchanged rows must not
+      // re-render the slot list. See coop.md, "Records writes".
+      model.gwCampaignSlots.equalityComparer = _.isEqual;
 
       // Explore is held too (cards_explore.js's model.explore), so it greys as
       // it does while a player sets up. gw_play.html binds that look to

@@ -240,6 +240,8 @@
           model.gwoPlayer = ko.computed(function () {
             return commanderList(loc("!LOC:Human"));
           });
+          // See coop.md, "Records writes".
+          model.gwoPlayer.equalityComparer = _.isEqual;
 
           // A per-player viewer's own record syncs late; until it does, the
           // report leaves the cards and race out rather than give the host's.
