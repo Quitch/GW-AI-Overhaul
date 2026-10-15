@@ -4,12 +4,15 @@
 // Why this exists rather than Math.seedrandom or a reseeded Math.random, and how the
 // streams are laid out: galaxy.md, "Determinism and the war seed".
 define(function () {
-  // cyrb128: seed text -> four 32-bit words.
-  var hashSeed = function (text) {
-    var h1 = 1779033703;
-    var h2 = 3144134277;
-    var h3 = 1013904242;
-    var h4 = 2773480762;
+  // cyrb128, split so a stream absorbs only its own suffix into its parent's state:
+  // absorbing "ab" equals absorbing "a", then "b".
+  var INITIAL_STATE = [1779033703, 3144134277, 1013904242, 2773480762];
+
+  var absorb = function (state, text) {
+    var h1 = state[0];
+    var h2 = state[1];
+    var h3 = state[2];
+    var h4 = state[3];
 
     for (var i = 0; i < text.length; i++) {
       var k = text.charCodeAt(i);
@@ -18,6 +21,15 @@ define(function () {
       h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
       h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
     }
+
+    return [h1, h2, h3, h4];
+  };
+
+  var finalise = function (state) {
+    var h1 = state[0];
+    var h2 = state[1];
+    var h3 = state[2];
+    var h4 = state[3];
 
     // Load-bearing: without these, two seeds differing only in their last character -
     // which is what stream() produces - yield near-identical words.
@@ -40,10 +52,8 @@ define(function () {
   // No seed or label contains this, so stream("a", 1) cannot collide with stream("a1").
   var SEPARATOR = "\u0000";
 
-  var create = function (seed) {
-    // A seed can arrive as a number, and 0 has to survive.
-    var seedText = seed === undefined || seed === null ? "" : String(seed);
-    var words = hashSeed(seedText);
+  var fromState = function (state) {
+    var words = finalise(state);
     var a = words[0];
     var b = words[1];
     var c = words[2];
@@ -107,18 +117,24 @@ define(function () {
       return result;
     };
 
-    // Derived from the seed text, not a counter, so a stream is unaffected by what its
-    // parent or siblings drew first. See galaxy.md.
+    // Derived from the parent's hash state, not a counter, so a stream is unaffected
+    // by what its parent or siblings drew first. See galaxy.md.
     rng.stream = function (label, index) {
-      return create(
-        seedText +
-          SEPARATOR +
-          label +
-          (index === undefined ? "" : SEPARATOR + index)
+      return fromState(
+        absorb(
+          state,
+          SEPARATOR + label + (index === undefined ? "" : SEPARATOR + index)
+        )
       );
     };
 
     return rng;
+  };
+
+  var create = function (seed) {
+    // A seed can arrive as a number, and 0 has to survive.
+    var seedText = seed === undefined || seed === null ? "" : String(seed);
+    return fromState(absorb(INITIAL_STATE, seedText));
   };
 
   return {
