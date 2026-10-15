@@ -224,6 +224,99 @@ describe("star_paths.pathBetween against the installed game", () => {
   });
 });
 
+describe("star_paths.pathsFrom", () => {
+  it("answers every star as pathBetween does, from one search", () => {
+    let compared = 0;
+    let missing = 0;
+    for (let seed = 1; seed <= 300; seed++) {
+      const random = rng(seed);
+      const { count, galaxy } = randomGalaxy(random);
+      for (let from = 0; from < count; from++) {
+        [false, true].forEach((noFog) => {
+          const paths = starPaths.pathsFrom(galaxy, from, noFog);
+          for (let to = 0; to < count; to++) {
+            const expected = stockPathBetween(galaxy, from, to, noFog);
+            if (expected === null) missing++;
+            assert.deepEqual(
+              paths(to),
+              expected,
+              "seed " + seed + " from " + from + " to " + to + " noFog " + noFog
+            );
+            compared++;
+          }
+        });
+      }
+    }
+    assert.ok(compared > 100000);
+    assert.ok(missing > 10000, "unreachable stars: " + missing);
+  });
+
+  it("hands out a fresh path each time", () => {
+    const galaxy = makeGalaxy(
+      [
+        { visited: true, explored: true },
+        { visited: true, explored: true },
+      ],
+      [[0, 1]]
+    );
+    const paths = starPaths.pathsFrom(galaxy, 0, false);
+
+    paths(1).push(9);
+
+    assert.deepEqual(paths(1), [0, 1]);
+  });
+});
+
+describe("star_paths.selectable", () => {
+  // Stars 0-1-2 in a line, all explored; the player is on 1.
+  function makeModel(options) {
+    const galaxy = makeGalaxy(
+      [
+        { visited: true, explored: true },
+        { visited: true, explored: true },
+        { visited: false, explored: false },
+      ],
+      [
+        [0, 1],
+        [1, 2],
+      ]
+    );
+    return {
+      game: () => ({ currentStar: () => 1, galaxy: () => galaxy }),
+      cheats: { noFog: () => options.noFog },
+      canSelectOrMovePrefix: () => options.prefix,
+    };
+  }
+
+  it("selects the current star, and paths to the rest", () => {
+    const canSelect = starPaths.selectable(
+      makeModel({ prefix: true, noFog: false })
+    );
+
+    assert.equal(canSelect(1), true);
+    assert.deepEqual(canSelect(0), [1, 0]);
+    assert.deepEqual(canSelect(2), [1, 2]);
+  });
+
+  it("selects only the current star while the explore collapse holds", () => {
+    const canSelect = starPaths.selectable(
+      makeModel({ prefix: false, noFog: false })
+    );
+
+    assert.equal(canSelect(1), true);
+    assert.equal(canSelect(0), false);
+    assert.equal(canSelect(2), false);
+  });
+
+  it("ignores the collapse under noFog", () => {
+    const canSelect = starPaths.selectable(
+      makeModel({ prefix: false, noFog: true })
+    );
+
+    assert.deepEqual(canSelect(0), [1, 0]);
+  });
+});
+
 describe("star_paths.install", () => {
   it("replaces the galaxy's own pathBetween with one bound to it", () => {
     const galaxy = makeGalaxy(

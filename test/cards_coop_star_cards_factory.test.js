@@ -12,7 +12,10 @@
 const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -25,6 +28,12 @@ const {
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
+
+// The sweep's lookup, answered by the stub model's canSelect.
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+  { selectable: (model) => (index) => model.canSelect(index) }
+);
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"

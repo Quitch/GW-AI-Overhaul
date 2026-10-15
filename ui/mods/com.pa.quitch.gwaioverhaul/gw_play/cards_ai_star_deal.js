@@ -1,5 +1,7 @@
 // The host's deal of a card to every selectable AI star.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+], function (starPaths) {
   return function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
@@ -31,6 +33,7 @@ define(function () {
           aiStarDealing(Math.max(0, aiStarDealing() - 1));
         };
 
+        var canSelect = starPaths.selectable(model);
         _.forEach(model.galaxy.systems(), function (system, starIndex) {
           var ai = system.star.ai();
           // A treasure planet offers a loadout derived at exploration, so it
@@ -43,12 +46,7 @@ define(function () {
             gwoSettings && gwoSettings.staticTech
               ? _.isEmpty(system.star.cardList())
               : true;
-          if (
-            model.canSelect(starIndex) &&
-            ai &&
-            !treasurePlanet &&
-            validForDeal
-          ) {
+          if (canSelect(starIndex) && ai && !treasurePlanet && validForDeal) {
             deferredQueue.push(
               chooseCards({
                 count: 1,
