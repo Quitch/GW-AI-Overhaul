@@ -10,6 +10,7 @@ const { createFakeJQuery, createFakeApi } = require("./fake-jquery.js");
 // options.listFiles: (path) => string[] - takes precedence, for tests that derive the
 //   listing from the requested path rather than enumerating every path up front.
 // options.getJSON: (url) => json.
+// options.ajax: (url) => data - what $.ajax hands its success callback.
 // A path or URL no option answers rejects, as in fake-jquery.js.
 function installRefereeFakes(options) {
   const opts = options || {};
@@ -18,6 +19,7 @@ function installRefereeFakes(options) {
 
   const listCalls = [];
   const getJSONCalls = [];
+  const ajaxCalls = [];
 
   global.api = createFakeApi({
     file: {
@@ -46,6 +48,15 @@ function installRefereeFakes(options) {
       }
       return opts.getJSON(url);
     },
+    ajax: (url) => {
+      ajaxCalls.push(url);
+      if (!opts.ajax) {
+        throw new Error(
+          "referee-fakes: no ajax resolver configured for " + url
+        );
+      }
+      return opts.ajax(url);
+    },
   });
 
   function restore() {
@@ -53,7 +64,7 @@ function installRefereeFakes(options) {
     global.api = previousApi;
   }
 
-  return { listCalls, getJSONCalls, restore };
+  return { listCalls, getJSONCalls, ajaxCalls, restore };
 }
 
 // referee_ai.js's default export reads its output target off `this`.

@@ -61,7 +61,12 @@ registerModuleStub(MOD + "/shared/coop_ai_cards.js", {
 });
 registerModuleStub(MOD + "/shared/coop_ai_units.js", {
   fromGroups: (groups) => ({ via: "groups", groups }),
-  fromSpecs: (loaded, units, mod) => ({ via: "specs", loaded, units, mod }),
+  fromSpecs: (loaded, units, mod) => {
+    if (loaded.badSpec) {
+      throw new TypeError("bad race spec");
+    }
+    return { via: "specs", loaded, units, mod };
+  },
 });
 registerModuleStub(MOD + "/shared/unit_groups.js", { units: ["unit_a"] });
 registerModuleStub(MOD + "/gw_play/race_cells.js", {
@@ -478,6 +483,25 @@ describe("the unit lookup a co-op AI player judges by", () => {
     assert.deepEqual(run.logs, [
       ["error", "[GW COOP AI] unit specs not read: no specs"],
     ]);
+    mock.timers.tick(8000);
+    assert.equal(run.logs.length, 1);
+  });
+
+  // A third-party race spec of an unexpected shape can make the lookup throw;
+  // the unit groups stand in at once, and only once.
+  it("judges by the unit groups when building the lookup from the specs throws", async () => {
+    const specs = pending();
+    const run = build({ specs });
+
+    specs.resolve({ units: [], badSpec: true });
+    await settle();
+
+    assert.equal(run.lookup().via, "groups");
+    assert.equal(run.logs.length, 1);
+    assert.match(
+      run.logs[0][1],
+      /^\[GW COOP AI\] unit specs not read: TypeError: bad race spec/
+    );
     mock.timers.tick(8000);
     assert.equal(run.logs.length, 1);
   });
