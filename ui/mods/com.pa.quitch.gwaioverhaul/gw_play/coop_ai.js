@@ -539,11 +539,18 @@
 
         // An AI falls back to the host's commander if none could be checked.
         var specDeps = { fetch: gameFilePaths.specFetch };
+        // The spec cache keeps a read for the visit, so none may land before
+        // GWSM's mount does.
+        var mounted = new Promise(function (resolve) {
+          raceMods.mountRoot().always(resolve);
+        });
         ownedLoad
           .then(function (owned) {
             return roster
               .mlaCommanders(owned, function (path) {
-                return specCache.fetchRaw(path, specDeps);
+                return mounted.then(function () {
+                  return specCache.fetchRaw(path, specDeps);
+                });
               })
               .then(function (commanders) {
                 console.log(
