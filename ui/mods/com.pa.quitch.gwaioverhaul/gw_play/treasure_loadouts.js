@@ -104,7 +104,17 @@ define([
     }
 
     var modBank = gwoLoadoutBanks.bankFor(id);
-    return (modBank || params.gwoBank).addStartCard({ id: id });
+    try {
+      return (modBank || params.gwoBank).addStartCard({ id: id });
+    } catch (e) {
+      console.error(
+        "Loadout bank addStartCard() threw: " +
+          id +
+          ": " +
+          ((e && e.stack) || e)
+      );
+      return false;
+    }
   };
 
   // A mod's locked loadouts join the pool through model.gwoNewStartCards. gw_play
