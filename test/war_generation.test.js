@@ -1410,6 +1410,85 @@ describe("the star systems", () => {
     failsWithSourcesMessage(war);
   });
 
+  const SOURCE_TIMEOUT_MS = 60000;
+
+  const withStalledSource = (t, names) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = withSharedSystems();
+    war.stalled = war.$.Deferred();
+    war.model.selectedNames(names);
+    war.options.push({ name: "Stalled", load: () => war.stalled.promise() });
+    return war;
+  };
+
+  it("fail the war when a source never settles and the rest give nothing", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS - 1);
+
+    assert.equal(war.generatingWar(), true);
+    assert.deepEqual(war.errors, []);
+
+    t.mock.timers.tick(1);
+
+    assert.equal(
+      war.errors[0],
+      "System source timed out after 60000ms: Stalled"
+    );
+    failsWithSourcesMessage(war);
+  });
+
+  it("skip a source that never settles", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(
+      war.errors[0],
+      "System source timed out after 60000ms: Stalled"
+    );
+    assert.deepEqual(war.pools[0].systems, [usable]);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("ignore a source that resolves after its time limit", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.stalled.resolve([usable]);
+
+    assert.deepEqual(war.builds, []);
+    assert.equal(war.saved.length, 0);
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source that fails after its time limit", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.stalled.reject();
+
+    assert.equal(
+      war.errors.filter((text) => /^System source/.test(text)).length,
+      1
+    );
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source that settles", (t) => {
+    const war = withStalledSource(t, ["Uber"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.errors, []);
+    assert.equal(war.saved.length, 1);
+  });
+
   it("fail the war when the source list fails", () => {
     const war = withSharedSystems();
     war.loadOptions = () => war.$.Deferred().reject().promise();

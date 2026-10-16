@@ -310,7 +310,9 @@ same capability check `loadSystemBrackets` uses.
 With that mod active, the systems are real `.pas` files chosen by
 `gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
 `loadSystemBrackets` in `gw_start/war_generation.js` settles each selected source
-on its own, so a source that fails to load drops only its own systems. While no
+on its own, so a source that fails to load drops only its own systems. A source
+that has not settled after `SOURCE_TIMEOUT_MS` (60 s) counts as failed, and its
+later result is dropped. While no
 source is selected, `gw_start/setup.js` keeps Go To War disabled.
 
 That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
@@ -325,7 +327,7 @@ So `loadSystemBrackets` rejects with the `SYSTEM_SOURCES` cause from
 that loader, when:
 
 - the list of sources failed to load, or `loadOptions` threw;
-- no selected source gave a system: each failed, threw, or was empty, or none was
+- no selected source gave a system: each failed, threw, timed out, or was empty, or none was
   selected;
 - a source failed, and the rest gave only systems the brackets drop.
 

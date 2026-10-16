@@ -4,6 +4,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
 ], function (galaxySizeNames) {
+  var SOURCE_TIMEOUT_MS = 60000;
+
   var generatedWarName = function (
     selectedDifficulty,
     playerCount,
@@ -187,14 +189,33 @@ define([
       // failure, so one dead source would drop every other's systems.
       var sourceSystems = function (name, loading) {
         var settled = $.Deferred();
+        var waiting = true;
+        var give = function (systems) {
+          waiting = false;
+          clearTimeout(timer);
+          settled.resolve(systems);
+        };
+        // Before $.when: a source that has already settled calls give() inside
+        // it, and give() must find the timer to clear.
+        var timer = setTimeout(function () {
+          console.error(
+            "System source timed out after " + SOURCE_TIMEOUT_MS + "ms: " + name
+          );
+          sourceFailed = true;
+          give([]);
+        }, SOURCE_TIMEOUT_MS);
         $.when(loading).then(
           function (systems) {
-            settled.resolve(systems);
+            if (waiting) {
+              give(systems);
+            }
           },
           function () {
-            console.error("System source failed to load: " + name);
-            sourceFailed = true;
-            settled.resolve([]);
+            if (waiting) {
+              console.error("System source failed to load: " + name);
+              sourceFailed = true;
+              give([]);
+            }
           }
         );
         return settled.promise();
