@@ -19,7 +19,9 @@ const section17 = loadCouiModule(MOD_ROOT + "/addon/section17.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
+const buildTypes = loadCouiModule(MOD_ROOT + "/shared/build_types.js");
 const fixture = require("./fixtures/unit_types.json").units;
+const buildable = require("./fixtures/unit_types.json").buildable;
 
 const MODS = ["com.pa.daedelus.experimentals"];
 const EXCLUSIVE_KEYS = ["bigBill", "floater", "horntail", "pineapple"];
@@ -120,21 +122,34 @@ describe("the Section 17 descriptor", () => {
     }
   });
 
-  it("ships a Solar Cell no MLA builder can build: it lacks Custom58, the Energy Coil has it (skipped without the mod)", (t) => {
-    const files = modFiles(MODS);
-    if (!files) {
-      t.skip("no Section 17 mod on disk");
+  it("harvested a Solar Cell no MLA builder can build, unlike the Energy Coil (skipped without it in the fixture)", (t) => {
+    if (!harvested) {
+      t.skip("fixture harvested without Section 17");
       return;
     }
-    const typesOf = (unit) => files.readJson(unit.slice(1)).unit_types;
+    const canBuild = (builder, key) => {
+      const unit = section17.units[key];
+      assert.ok(fixture[unit], unit + " is not in the fixture");
+      return buildTypes.matches(
+        buildable[builder],
+        fixture[unit].map(cells.bare)
+      );
+    };
 
-    assert.ok(
-      !typesOf(section17.units.solarCell).includes("UNITTYPE_Custom58"),
-      "the Solar Cell carries Custom58 now: a release has the upstream fix, see #242"
-    );
-    assert.ok(
-      typesOf(section17.units.energyCoil).includes("UNITTYPE_Custom58")
-    );
+    for (const builder of [
+      "/pa/units/commanders/base_commander/base_commander.json",
+      gwoUnit.botFabber,
+    ]) {
+      assert.ok(
+        canBuild(builder, "energyCoil"),
+        builder + " cannot build the Energy Coil, the Solar Cell pin's control"
+      );
+      assert.ok(
+        !canBuild(builder, "solarCell"),
+        builder +
+          " builds the Solar Cell: the harvest has DAEDALUS-Modding/Section-17#2, see #242"
+      );
+    }
   });
 });
 
