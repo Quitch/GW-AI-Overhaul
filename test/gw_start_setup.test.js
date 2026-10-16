@@ -355,6 +355,24 @@ describe("a war that generates", () => {
     assert.equal(scene.model.ready(), false);
   });
 
+  it("gives up on a spawn shortage once every system source is cleared", () => {
+    const scene = startScene();
+    scene.outcome = { failed: true, spawnShortage: true };
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    scene.model.selectedNames([]);
+    finishBuild(scene);
+
+    assert.deepEqual(
+      scene.builds.map((config) => config.seed),
+      ["base-seed"]
+    );
+    assert.equal(scene.model.newGameSeed(), "base-seed");
+    assert.match(scene.model.gwoWarGenerationError(), /too small/);
+  });
+
   // Shared Systems for Galactic War rerolls the seed whenever a source is
   // toggled, and nothing stops the player changing the rest.
   it("keeps the seed, galaxy size, and AI brains it started with", () => {
