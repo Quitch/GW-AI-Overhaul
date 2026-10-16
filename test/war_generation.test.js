@@ -707,6 +707,18 @@ describe("per-player tech", () => {
     assert.equal(war.records[0].perPlayerTechCards, true);
   });
 
+  it("is recorded as the war was made, not as the setting stands later", () => {
+    const war = makeWar();
+    war.holdBuild = true;
+
+    war.start();
+    war.model.newGamePerPlayerTechCards(true);
+    war.build.resolve(war.game().galaxy());
+
+    assert.equal(war.game().perPlayerTechCards(), false);
+    assert.equal(war.records[0].perPlayerTechCards, false);
+  });
+
   it("stores no record without it", () => {
     const war = makeWar();
 

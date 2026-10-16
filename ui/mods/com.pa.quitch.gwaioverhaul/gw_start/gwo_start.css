@@ -124,6 +124,18 @@
   align-self: flex-start;
 }
 
+/* While a war generates (setup.js). Stock's disabled-switch values. #start-cards
+   is restated because gw_start.css gives it pointer-events: all, which would
+   otherwise beat the inherited none. */
+#tab3.gwo-setup-locked {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+#tab3.gwo-setup-locked #start-cards {
+  pointer-events: none;
+}
+
 #gwo-game-options-panel,
 #gwo-commander-panel,
 #gwo-ai-panel {

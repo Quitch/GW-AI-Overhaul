@@ -654,7 +654,7 @@ define([
         playerRace: run.playerRace,
         raceByFaction: run.raceByFaction,
         raceInfo: run.raceInfo,
-        perPlayerTechCards: model.newGamePerPlayerTechCards(),
+        perPlayerTechCards: run.game.perPlayerTechCards(),
         uniqueAiLoadouts:
           !!model.gwoUniqueAiLoadouts && model.gwoUniqueAiLoadouts(),
         galaxy: run.game.galaxy(),

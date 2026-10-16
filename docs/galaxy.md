@@ -12,9 +12,11 @@ change to a setting does not regenerate the galaxy. Generation instead happens o
 when the player clicks **Go To War**.
 
 Generation reads the seed, the galaxy size, and the AI brains once, at the click.
-Shared Systems for Galactic War rerolls the seed whenever a source is toggled, and the
-player can do that while a war generates. Go To War stays disabled until generation
-fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
+It reads the other settings as it reaches them, so `gw_start/setup.js` locks the setup
+panel (`#tab3`, which holds every setting and the openers of the settings modals) with
+`gwo-setup-locked` while a war generates: `pointer-events: none` and a dim, and the
+name and seed fields read-only. Go To War stays disabled, and the panel locked, until
+generation fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
 stock's first `makeGame` leaves set under Shared Systems. Each step still checks that
 `makeGameBusy` holds its run's token, and only the end of the run clears it.
 
@@ -351,9 +353,10 @@ player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whiche
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
 
-A retry runs only while `model.ready()` is true, as Go To War does. The player can make
-it false while the war generates, by clearing every system source or by picking a race
-that locks the loadout; generation then gives up at once. A retry calls the module's
+A retry runs only while `model.ready()` is true, as Go To War does. Clearing every
+system source or picking a race that locks the loadout makes it false. The setup lock
+stops the player doing either while a war generates, but if it happens, generation
+gives up at once. A retry calls the module's
 `start` itself rather than `model.navToNewGame`, so the log holds one "Go To War
 clicked" per click.
 
