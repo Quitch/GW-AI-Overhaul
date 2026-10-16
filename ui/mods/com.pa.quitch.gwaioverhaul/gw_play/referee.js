@@ -47,12 +47,14 @@
         // The AI tree cache lives one launch: a co-op host's two hires share
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
+        var firstHireClientKeys = null;
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
             latestHire = null;
             treeCache = null;
+            firstHireClientKeys = null;
           }
         });
 
@@ -186,6 +188,19 @@
               },
               _.bind(gwoGenerateConfig, ref),
               function () {
+                // Both hires write viewer trees by position, and the
+                // per-player referee checks only the first's list.
+                if (ref.pass === 1) {
+                  firstHireClientKeys = ref.hireClientKeys;
+                } else if (
+                  ref.pass === 2 &&
+                  game.perPlayerTechCards() &&
+                  !_.isEqual(ref.hireClientKeys, firstHireClientKeys)
+                ) {
+                  throw new Error(
+                    "connected players changed between the co-op hires"
+                  );
+                }
                 // A co-op host's own pass is mounted on this client alone, and
                 // stock deep-clones its files first. lodash 3's cloneDeep is
                 // quadratic in the objects it copies, so they go as JSON text.

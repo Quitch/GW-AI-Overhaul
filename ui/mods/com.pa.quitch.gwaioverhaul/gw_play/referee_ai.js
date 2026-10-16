@@ -1063,6 +1063,15 @@ define([
       );
     });
 
+    // The per-player referee checks its launch clients against the list that
+    // numbers these trees. See coop.md, "The two referees".
+    self.hireClientKeys = _.map(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      function (viewer) {
+        return refereeCoop.clientKey(viewer.client.id, viewer.client.name);
+      }
+    );
+
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
       function (viewer, viewerIndex) {

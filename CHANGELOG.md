@@ -21,6 +21,7 @@
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 - Commander tech now also strengthens a stock commander that a faction-mod army keeps, such as the Guardians' Unicorn in a Legion war, which previously got none of those buffs
+- In co-op with per-player tech, a battle no longer launches with a player's Sub Commanders running another player's AI when someone joins or drops while the battle is being set up; the launch stops instead, and the host can press Fight again
 
 ## v7.6.0 - 2026-10-03
 

@@ -3,7 +3,7 @@
 // as the host's referee builds its own: the personality rebuilt from the
 // minion's recorded id, GWO's Sub Commander econ rate, and colours that continue
 // the player-faction sequence where stock leaves them on colliding raw faction
-// colours. Stock's 23 console.log calls are removed; the six console.error calls
+// colours. Stock's 23 console.log calls are removed; the seven console.error calls
 // and the console.warn are GWO's. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
@@ -267,6 +267,26 @@ define([
       playerCommanders[clientIndex] = stripKnownSpecTag(
         inventoryDataRecord.commander
       );
+    }
+
+    // GWO - only GWO's hire numbers viewer trees and records their list.
+    if (_.isArray(referee.hireClientKeys)) {
+      var clientMismatch = perPlayerTech.describeClientMismatch(
+        referee.hireClientKeys,
+        _.map(_.rest(connectedClients), function (client) {
+          return refereeCoop.clientKey(client.id, client.name);
+        })
+      );
+      if (clientMismatch) {
+        console.error(
+          "[GW COOP] Connected players differ from the referee's hire, " +
+            clientMismatch
+        );
+        config.per_player_tech_ready = false;
+        referee.config(config);
+        done.resolve(false);
+        return done.promise();
+      }
     }
 
     var playerSpecPromises = [];
