@@ -36,6 +36,7 @@
 - Penchant AIs' land attack groups hold radar and anti-nuke tanks in the same slots as other AIs' land attack groups
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
+- A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
 
 ## v7.6.0 - 2026-10-03
 

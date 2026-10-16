@@ -54,6 +54,11 @@
         '"></div>'
     );
 
+    // One spacer per card is always enough to fill the last row (gwo_start.css).
+    $("#start-cards").append(
+      '<!-- ko foreach: startCards --><div class="gwo-card-spacer"></div><!-- /ko -->'
+    );
+
     // Prevent changes to settings causing creation of new galaxies
     model.makeGame = function () {};
 

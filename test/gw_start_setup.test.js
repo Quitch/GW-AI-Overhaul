@@ -238,10 +238,13 @@ function startScene() {
   // What the lock leaves on each selector: its classes and props.
   const dom = {};
   const select = (selector) => {
-    dom[selector] = dom[selector] || { classes: [], props: {} };
+    dom[selector] = dom[selector] || { classes: [], props: {}, appended: [] };
     const node = dom[selector];
     return {
       prepend: () => {},
+      append: (html) => {
+        node.appended.push(html);
+      },
       val: () => [],
       toggleClass: (name, on) => {
         node.classes = node.classes.filter((each) => each !== name);
@@ -642,5 +645,16 @@ describe("Shared Systems' sources", () => {
 
     assert.equal(scene.builds.length, 1);
     assert.equal(scene.builds[0].gwoSystemBrackets, undefined);
+  });
+});
+
+describe("the loadout list", () => {
+  it("ends with a spacer per loadout, outside every card", () => {
+    const scene = startScene();
+
+    assert.deepEqual(scene.dom["#start-cards"].appended, [
+      '<!-- ko foreach: startCards --><div class="gwo-card-spacer"></div><!-- /ko -->',
+    ]);
+    assert.deepEqual(scene.dom["#start-cards .card"].appended, []);
   });
 });

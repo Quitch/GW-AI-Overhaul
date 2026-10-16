@@ -110,8 +110,21 @@
    card_locked as standalone states. */
 #loadouts #start-cards > .card,
 #loadouts #start-cards > .card_active,
-#loadouts #start-cards > .card_locked {
+#loadouts #start-cards > .card_locked,
+#loadouts #start-cards > .gwo-card-spacer {
   flex: 1 1 530px;
+}
+
+/* Fill a short last row, or flex-grow widens its cards past those above. Each
+   copies stock's card box sideways; the rest wrap onto zero-height lines. */
+#loadouts #start-cards > .gwo-card-spacer {
+  max-width: 640px;
+  height: 0;
+  margin: 0 16px 0 0;
+  padding: 0 16px;
+  border: solid transparent;
+  border-width: 0 1px;
+  visibility: hidden;
 }
 
 /* The shared card template centres its columns, and the icon column is a fixed
