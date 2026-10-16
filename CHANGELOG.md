@@ -31,7 +31,6 @@
 - In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
 - With Separate races, the war information panel names the AI of each race your co-op AI players field, not only your own race's
 - A co-op AI player in a Cluster war always fields MLA, as the players do, even with Separate races on
-- Penchant AIs no longer build two AA bots at once from their Unit Cannons
 - AIs with the Tactical penchant build an Anti-Nuke Launcher when they face nukes
 - Penchant AIs' land attack groups hold radar and anti-nuke tanks in the same slots as other AIs' land attack groups
 - AIs with the Platoon penchant form their largest amphibious attack groups
