@@ -468,9 +468,9 @@ has, it holds:
 
 Under Separate races the AI picks its race from those the war offers, which is
 the offer a viewer's picker gets, and prefers one that no player fields yet. The
-draw comes from the `race` child of its identity stream. Otherwise it fields the
-host's race. Its commander is then drawn as under shared tech, from its own
-race.
+draw comes from the `race` child of its identity stream. Otherwise, and always
+in a Cluster war, it fields the host's race. Its commander is then drawn as
+under shared tech, from its own race.
 
 Its loadout is drawn by what each loadout does. The candidates are the starting
 loadouts and every locked loadout the host has unlocked, less those the AI's

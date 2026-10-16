@@ -81,9 +81,9 @@ define([
         }
       }, LOOKUP_WAIT_MS);
       var specsRead = function (loaded) {
-        clearTimeout(fallback);
         specsUnits = loaded.units;
         lookup(coopAiUnits.fromSpecs(loaded, unitGroups.units, gwoSpecs.mod));
+        clearTimeout(fallback);
       };
       var specsNotRead = function (error) {
         clearTimeout(fallback);
@@ -96,7 +96,7 @@ define([
         }
       };
       raceMods.mountRoot().always(function () {
-        raceCells.load().then(specsRead, specsNotRead);
+        raceCells.load().then(specsRead).then(null, specsNotRead);
       });
     };
     // Under shared tech the lookup serves the pings alone, so it waits

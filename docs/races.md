@@ -688,8 +688,9 @@ reach its army (`ai_tech.loadoutFor` drops them). The boss keeps its Pumpkin
 either way.
 
 The player side is still MLA-only. The picker locks the race to MLA while
-Cluster is the player's faction. A race id the registry does not know reads as
-MLA. So a Cluster record of a race whose mod is gone defaults to MLA Cluster.
+Cluster is the player's faction. A Cluster war records Separate races as off,
+and a co-op AI player in one fields the host's race. A race id the registry
+does not know reads as MLA. So a Cluster record of a race whose mod is gone defaults to MLA Cluster.
 `race_check` blocks fighting such a war anyway.
 
 ## Assignment and persistence

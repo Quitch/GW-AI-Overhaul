@@ -86,6 +86,56 @@ describe("missingUnit", () => {
   });
 });
 
+describe("missingObtainableUnit", () => {
+  const holding = (units, removed) => ({
+    units: () => units,
+    removedUnits: () => removed,
+  });
+
+  it("is true when a unit of the group that was not removed is absent", () => {
+    assert.equal(
+      cards.missingObtainableUnit(holding(["a"], ["b"]), ["a", "b", "c"]),
+      true
+    );
+  });
+
+  it("is false when every absent unit of the group was removed", () => {
+    assert.equal(
+      cards.missingObtainableUnit(holding(["a"], ["b", "c"]), ["a", "b", "c"]),
+      false
+    );
+  });
+
+  it("is false when the whole group was removed", () => {
+    assert.equal(
+      cards.missingObtainableUnit(holding([], ["a", "b"]), ["a", "b"]),
+      false
+    );
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(
+      cards.missingObtainableUnit(holding(["a"], ["c"]), [["a", ["c"]]]),
+      false
+    );
+    assert.equal(
+      cards.missingObtainableUnit(holding(["a"], []), [["a", ["c"]]]),
+      true
+    );
+  });
+
+  it("counts every unit as obtainable for an inventory without removedUnits", () => {
+    assert.equal(
+      cards.missingObtainableUnit({ units: () => ["a"] }, ["a", "b"]),
+      true
+    );
+    assert.equal(
+      cards.missingObtainableUnit({ units: () => ["a", "b"] }, ["a", "b"]),
+      false
+    );
+  });
+});
+
 describe("missingAllUnits", () => {
   it("is the negation of membership for a string", () => {
     assert.equal(cards.missingAllUnits(["a", "b"], "c"), true);

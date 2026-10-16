@@ -257,6 +257,7 @@ const CARD_HELPERS = [
   "loadoutIcon",
   "lockedHint",
   "missingAllUnits",
+  "missingObtainableUnit",
   "missingUnit",
   "mods",
   "navalWeight",

@@ -150,9 +150,13 @@ async function refereeTree(gameOptions, merged, destRoot) {
     Object.assign({ aiInUse: "Titans", aiMods: [] }, gameOptions)
   );
   const restoreModel = installModel(fixture.game, []);
+  const readCoui = (url) => merged.read(url.replace(/^coui:\/\/pa\//, ""));
   const fakes = installRefereeFakes({
     listFiles: () => merged.rels.map((rel) => "/pa/" + rel),
-    getJSON: (url) => merged.read(url.replace(/^coui:\/\/pa\//, "")),
+    getJSON: readCoui,
+    // An empty unit list builds no cells, so the stock lists stay whole.
+    ajax: (url) =>
+      url === "coui://pa/units/unit_list.json" ? { units: [] } : readCoui(url),
   });
 
   const filesObj = {};
