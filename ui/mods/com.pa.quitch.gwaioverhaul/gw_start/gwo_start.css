@@ -110,14 +110,14 @@
    card_locked as standalone states. */
 #loadouts #start-cards > .card,
 #loadouts #start-cards > .card_active,
-#loadouts #start-cards > .card_locked {
+#loadouts #start-cards > .card_locked,
+#loadouts #start-cards > .gwo-card-spacer {
   flex: 1 1 530px;
 }
 
 /* Fill a short last row, or flex-grow widens its cards past those above. Each
-   matches a card's horizontal box; the rest wrap onto zero-height lines. */
+   copies stock's card box sideways; the rest wrap onto zero-height lines. */
 #loadouts #start-cards > .gwo-card-spacer {
-  flex: 1 1 530px;
   max-width: 640px;
   height: 0;
   margin: 0 16px 0 0;
