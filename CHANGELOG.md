@@ -22,6 +22,7 @@
 - Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+- In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
 - With Separate races, the war information panel names the AI of each race your co-op AI players field, not only your own race's
 - A co-op AI player in a Cluster war always fields MLA, as the players do, even with Separate races on
 - Penchant AIs no longer build two AA bots at once from their Unit Cannons
