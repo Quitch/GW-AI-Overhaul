@@ -95,6 +95,9 @@ function setup(overrides = {}) {
       saveFails: false,
       manifestFails: false,
       duringDeal: undefined,
+      upsertThrows: false,
+      offerCountThrows: false,
+      saveThrows: false,
     },
     overrides
   );
@@ -155,6 +158,9 @@ function setup(overrides = {}) {
   const game = {
     findCoopPlayerInventoryData: (query) => options.records[query.id],
     upsertCoopPlayerInventoryData: (rec) => {
+      if (options.upsertThrows) {
+        throw new Error("records subscriber threw");
+      }
       if (!options.upsertOk) {
         return false;
       }
@@ -181,6 +187,9 @@ function setup(overrides = {}) {
     },
     helpers: {
       cardsOfferedCount: (offer, inventory) => {
+        if (options.offerCountThrows) {
+          throw new Error("offer count threw");
+        }
         calls.offerCounts.push(inventory);
         return options.cardsOffered;
       },
@@ -189,6 +198,9 @@ function setup(overrides = {}) {
     GWInventory: inventoryClass(),
     numCardsToOffer: 3,
     gwoSave: () => {
+      if (options.saveThrows) {
+        throw new Error("save threw");
+      }
       calls.saves.push(true);
       return options.saveFails ? rejected("save failed") : resolved();
     },
@@ -620,6 +632,53 @@ describe("host reroll handler - the reroll", () => {
     assert.deepEqual(errorsSentBack(calls), ["stale pending tech cards"]);
     assert.deepEqual(calls.upserts, []);
     assert.deepEqual(calls.saves, []);
+  });
+});
+
+// A throw in a step jQuery 2 runs as a callback would otherwise leave the
+// result pending, and the campaign state queue waits on it.
+describe("host reroll handler - a step that throws", () => {
+  it("settles and tells the viewer when storing the new offer throws", async () => {
+    const { handlers, calls } = build({ upsertThrows: true });
+
+    await captureErrors(async () => {
+      assert.equal(
+        await rejection(handlers[REQUEST](operator())),
+        "records subscriber threw"
+      );
+    });
+
+    assert.deepEqual(errorsSentBack(calls), ["records subscriber threw"]);
+    assert.deepEqual(calls.saves, []);
+  });
+
+  it("settles and tells the viewer when dealing the new offer throws", async () => {
+    const { handlers, calls } = build({ offerCountThrows: true });
+
+    await captureErrors(async () => {
+      assert.equal(
+        await rejection(handlers[REQUEST](operator())),
+        "offer count threw"
+      );
+    });
+
+    assert.deepEqual(errorsSentBack(calls), ["offer count threw"]);
+    assert.deepEqual(calls.upserts, []);
+  });
+
+  it("settles without a second reply when a step after the reply throws", async () => {
+    const { handlers, calls } = build({ saveThrows: true });
+
+    const errors = await captureErrors(async () => {
+      assert.equal(
+        await rejection(handlers[REQUEST](operator())),
+        "save threw"
+      );
+    });
+
+    assert.equal(calls.hostOperators.length, 1);
+    assert.deepEqual(errorsSentBack(calls), []);
+    assert.match(errors[0], /after replying: save threw/);
   });
 });
 
