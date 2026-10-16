@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
-], function (gwoBrainTable, gwoBiomes, gwoVersion) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+], function (gwoBrainTable, gwoBiomes, gwoVersion, gwoAI) {
   var build = function (war) {
     var settings = war.settings;
     var brains = war.brains;
@@ -57,8 +58,12 @@ define([
       // are gone. See races.md, "Add-ons".
       addons: war.raceInfo.addonMods,
       // Only the per-player tech referee reads a viewer's own race, so a war
-      // without it never claims one. See coop.md.
-      perPlayerRace: settings.perPlayerRace() && !!war.perPlayerTechCards,
+      // without it never claims one, and a Cluster player side is MLA-only.
+      // See coop.md.
+      perPlayerRace:
+        settings.perPlayerRace() &&
+        !!war.perPlayerTechCards &&
+        settings.playerFaction() !== gwoAI.CLUSTER_FACTION,
     };
     // Only an AI player under per-player tech draws a loadout.
     gwaio.uniqueAiLoadouts = !!war.uniqueAiLoadouts && !!war.perPlayerTechCards;

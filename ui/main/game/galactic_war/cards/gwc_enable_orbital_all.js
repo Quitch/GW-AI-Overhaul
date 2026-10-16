@@ -20,7 +20,7 @@ define([
       var chance = 0;
       if (
         !inventory.hasCard("nem_start_deepspace") &&
-        gwoCard.missingUnit(inventory.units(), gwoGroup.orbital)
+        gwoCard.missingObtainableUnit(inventory, gwoGroup.orbital)
       ) {
         chance = gwoCard.travelledShort(
           system,
