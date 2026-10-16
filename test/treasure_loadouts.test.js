@@ -352,6 +352,33 @@ describe("bankStartCard", () => {
 
     assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
   });
+
+  // It runs inside model.win after win_choice has gone to viewers, so a throw
+  // would leave the host behind them.
+  it("returns false and logs when a mod's bank throws", () => {
+    const { stockBank, gwoBank } = banks();
+    const mym = modBank([]);
+    mym.addStartCard = () => {
+      throw new Error("quota exceeded");
+    };
+    const errorMock = mock.method(console, "error", () => {});
+
+    const result = withModBank("mym_start_", mym, () =>
+      treasure.bankStartCard({
+        card: { id: "mym_start_one" },
+        stockBank,
+        gwoBank,
+      })
+    );
+
+    assert.equal(result, false);
+    assert.equal(errorMock.mock.callCount(), 1);
+    assert.match(
+      errorMock.mock.calls[0].arguments[0],
+      /^Loadout bank addStartCard\(\) threw: mym_start_one: .*quota exceeded/
+    );
+    assert.deepEqual(gwoBank.added, []);
+  });
 });
 
 describe("isBaseLoadoutCardId", () => {

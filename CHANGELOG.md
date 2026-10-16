@@ -20,6 +20,7 @@
 
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+- In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
 
 ## v7.6.0 - 2026-10-03
 
