@@ -56,10 +56,7 @@ export default defineConfig([
     // Only gw_play.html loads EaselJS, so no other scene has createjs.
     // gw_lobby/specs.js also loads gw_play/specs.js, in gw_lobby and
     // gw_reconnect_loading.
-    files: [
-      "ui/main/game/galactic_war/gw_play/**/*.js",
-      "ui/mods/com.pa.quitch.gwaioverhaul/gw_play/**/*.js",
-    ],
+    files: ["ui/mods/com.pa.quitch.gwaioverhaul/gw_play/**/*.js"],
     ignores: ["ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"],
     languageOptions: {
       globals: {

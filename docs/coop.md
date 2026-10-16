@@ -69,9 +69,9 @@ of that:
 1. **The main referee** (`gw_play/referee_config.js`) builds the battle config:
    armies, personalities, planets, modes.
 2. **The per-player-tech referee**
-   (`ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js`, shadowed)
-   runs afterwards. It generates each viewer's unit specs and subcommanders and
-   adds them to that config. It builds a viewer's Sub Commander personalities
+   (`gw_play/per_player_tech_referee.js`, installed over stock's `apply` by
+   `gw_play/per_player_tech_install.js`) runs afterwards. It generates each
+   viewer's unit specs and subcommanders and adds them to that config. It builds a viewer's Sub Commander personalities
    the same way the host's are built: through `shared/ai_personality.js`, from
    each minion's recorded id and penchant.
 
@@ -194,7 +194,7 @@ duplication tech produces a single army with several commander slots.
 
 `gw_play/commander_colour.js` decides which palette entry lands where. It is
 shared rather than per-caller for a reason: `referee_config_setup.js`, the
-shadowed per-player-tech referee, `gwo_panel_view.js` and the intel panel must
+per-player-tech referee, `gwo_panel_view.js` and the intel panel must
 all agree. Otherwise the panel promises a colour the battle does not deliver. It
 orders a palette by `contrastScore`, which is squared RGB distance plus a
 luminance term weighted 16×. The commanders most likely to be confused are
@@ -1455,4 +1455,5 @@ known synchronously from the URL at scene construction.
 - [`ai-paths.md`](ai-paths.md): per-viewer path scoping.
 - [`tech-cards.md`](tech-cards.md): why `deal()` must read the passed inventory,
   and how a co-op AI player judges a card.
-- [`shadowing.md`](shadowing.md): why the per-player-tech referee is shadowed.
+- [`shadowing.md`](shadowing.md): how the per-player-tech referee replaces
+  stock's `apply` without shadowing its file.

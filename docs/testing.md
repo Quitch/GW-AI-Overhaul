@@ -28,8 +28,7 @@ engine.
 Two kinds of file are sanctioned exceptions:
 
 - **A module that seeds a `model.gwo*` modder-API array at load**:
-  `shared/loadouts.js`, `gw_play/referee_game_files.js`, and the shadowed
-  `gw_per_player_tech_referee.js`.
+  `shared/loadouts.js` and `gw_play/referee_game_files.js`.
 - **A singleton built at load**: `shared/bank.js` and `gw_start/favourites.js`
   construct their one instance at load, from `ko` observables, and the bank
   reads `localStorage` then too.
