@@ -252,6 +252,10 @@ routes:
    They deal while `gwoCard.missingObtainableUnit(inventory, group)` is true.
    It skips the units in `inventory.removedUnits()`, which a loadout's `dull()`
    removed for good, so a card that would add nothing is not dealt.
+   `gwoCard.missingUnit` is deprecated. It reads only `units()`, so it counts a
+   removed unit as missing, and it stays exported only for card mods that still
+   call it. To ask whether the player lacks a unit, use
+   `!gwoCard.hasAllUnits(inventory.units(), group)`.
 
 Gate on the same units that the card's `card_units.js` entry declares. That entry is
 the list the tooltip shows, and where the two differ, one of them is wrong.
