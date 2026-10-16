@@ -552,6 +552,36 @@ describe("the war's name", () => {
     assert.equal(war.model.newGameName(), "My War");
     assert.equal(war.game().name(), "My War");
   });
+
+  it("is made afresh for the next war after a war that failed", () => {
+    const war = makeWar();
+    war.model.newGameSizeIndex(0);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.start();
+    assert.match(war.model.newGameName(), /!LOC:Small/);
+
+    war.model.newGameSizeIndex(2);
+    war.outcome = { failed: false, spawnShortage: false };
+    war.start();
+
+    const name =
+      "!LOC:Casual - 1 !LOC:Players - !LOC:Large - !LOC:Test loadout";
+    assert.equal(war.model.newGameName(), name);
+    assert.equal(war.game().name(), name);
+  });
+
+  it("is the player's own when they named the war after a war that failed", () => {
+    const war = makeWar();
+    war.outcome = { failed: true, spawnShortage: true };
+    war.start();
+
+    war.model.newGameName("My War");
+    war.outcome = { failed: false, spawnShortage: false };
+    war.start();
+
+    assert.equal(war.model.newGameName(), "My War");
+    assert.equal(war.game().name(), "My War");
+  });
 });
 
 describe("the player's race", () => {
