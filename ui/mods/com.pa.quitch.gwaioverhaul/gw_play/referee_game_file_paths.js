@@ -262,7 +262,10 @@ define([
     }
 
     var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
-    gwoSpecs.mod(playerFiles, mods.concat(extraMods), ".player");
+    gwoSpecs.mod(playerFiles, mods, ".player");
+    if (extraMods.length) {
+      gwoSpecs.mod(playerFiles, extraMods, ".player");
+    }
     return playerFiles;
   };
 
@@ -335,9 +338,13 @@ define([
     files[params.subcommanderPath + "unit_maps/ai_unit_map_x1.json" + tag] =
       params.genAIUnitMap(params.maps.x1, tag);
 
-    var mods = (params.mods || []).concat(params.extraMods || []);
+    var mods = params.mods || [];
+    var extraMods = params.extraMods || [];
     if (mods.length) {
       params.gwoSpecs.mod(files, mods, tag);
+    }
+    if (extraMods.length) {
+      params.gwoSpecs.mod(files, extraMods, tag);
     }
     return files;
   };

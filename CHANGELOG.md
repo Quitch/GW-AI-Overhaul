@@ -22,6 +22,7 @@
 - Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+- Commander tech now also strengthens a stock commander that a faction-mod army keeps, such as the Guardians' Unicorn in a Legion war, which previously got none of those buffs
 - After a war fails to generate, the next war is named for its own settings, so a Large war is no longer named "Small" after a Small galaxy proved too small
 - A war whose galaxy proves too small while you change its system sources or race now shows why it was not created and puts your seed back, rather than stopping with no message
 - Go To War no longer stays greyed out for good when a system source under Systems never finishes loading: after a minute, the war is made without that source, or shows why it could not be created
