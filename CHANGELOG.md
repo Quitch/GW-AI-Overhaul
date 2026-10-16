@@ -4,6 +4,7 @@
 
 ### API
 
+- New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
 - A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
 
 ### Changed
@@ -18,12 +19,21 @@
 
 ### Bugfix
 
+- Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 - After a war fails to generate, the next war is named for its own settings, so a Large war is no longer named "Small" after a Small galaxy proved too small
 - A war whose galaxy proves too small while you change its system sources or race now shows why it was not created and puts your seed back, rather than stopping with no message
 - Go To War no longer stays greyed out for good when a system source under Systems never finishes loading: after a minute, the war is made without that source, or shows why it could not be created
 - The war setup screen is locked while a war generates, so a difficulty, faction, or other setting changed after Go To War no longer gives a war built from a mix of the old and new settings, such as a Gold war with Uber-strength enemies
+- In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
+- With Separate races, the war information panel names the AI of each race your co-op AI players field, not only your own race's
+- A co-op AI player in a Cluster war always fields MLA, as the players do, even with Separate races on
+- Penchant AIs no longer build two AA bots at once from their Unit Cannons
+- AIs with the Tactical penchant build an Anti-Nuke Launcher when they face nukes
+- Penchant AIs' land attack groups hold radar and anti-nuke tanks in the same slots as other AIs' land attack groups
+- AIs with the Platoon penchant form their largest amphibious attack groups
+- Cluster AI commanders no longer move faster than other factions' with the same tech
 
 ## v7.6.0 - 2026-10-03
 

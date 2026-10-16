@@ -438,9 +438,16 @@
         };
 
         // Under Separate races the AI picks from the races the war offers,
-        // preferring one no player fields; otherwise it fields the host's.
+        // preferring one no player fields; otherwise, and always in a Cluster
+        // war, it fields the host's.
         var raceFor = function (rng) {
           var hostRace = gwoRaces.raceOf(game.inventory());
+          if (
+            game.inventory().getTag("global", "playerFaction") ===
+            gwoAI.CLUSTER_FACTION
+          ) {
+            return Promise.resolve(hostRace);
+          }
           var recorded = gwoAI.originSettings(game).races;
           if (!(recorded && recorded.perPlayerRace)) {
             return Promise.resolve(hostRace);
@@ -539,11 +546,18 @@
 
         // An AI falls back to the host's commander if none could be checked.
         var specDeps = { fetch: gameFilePaths.specFetch };
+        // The spec cache keeps a read for the visit, so none may land before
+        // GWSM's mount does.
+        var mounted = new Promise(function (resolve) {
+          raceMods.mountRoot().always(resolve);
+        });
         ownedLoad
           .then(function (owned) {
             return roster
               .mlaCommanders(owned, function (path) {
-                return specCache.fetchRaw(path, specDeps);
+                return mounted.then(function () {
+                  return specCache.fetchRaw(path, specDeps);
+                });
               })
               .then(function (commanders) {
                 console.log(

@@ -160,6 +160,15 @@ define([
     return memo.units.slice();
   };
 
+  // A unit a loadout removed never returns to units(), so it is not counted.
+  var missingObtainableUnit = function (inventory, units) {
+    var removed = _.isFunction(inventory.removedUnits)
+      ? inventory.removedUnits()
+      : NONE_REMOVED;
+    var obtainable = _.difference(unitCells.unitPaths(units), removed);
+    return !hasAllUnits(inventory.units(), obtainable);
+  };
+
   // The two states that flood every planet fought on. See tech-cards.md.
   var floodsPlanets = function (inventory) {
     return (
@@ -235,6 +244,8 @@ define([
     missingUnit: function (inventoryUnits, units) {
       return !hasAllUnits(inventoryUnits, units);
     },
+
+    missingObtainableUnit: missingObtainableUnit,
 
     missingAllUnits: function (inventoryUnits, units) {
       return !hasUnit(inventoryUnits, units);

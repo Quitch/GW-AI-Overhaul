@@ -249,6 +249,9 @@ routes:
 3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
    unlock cards. Their whole purpose is to be offered to a player who has none of
    the units.
+   They deal while `gwoCard.missingObtainableUnit(inventory, group)` is true.
+   It skips the units in `inventory.removedUnits()`, which a loadout's `dull()`
+   removed for good, so a card that would add nothing is not dealt.
 
 Gate on the same units that the card's `card_units.js` entry declares. That entry is
 the list the tooltip shows, and where the two differ, one of them is wrong.
