@@ -4,6 +4,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
 ], function (galaxySizeNames) {
+  var SOURCE_TIMEOUT_MS = 60000;
+
   var generatedWarName = function (
     selectedDifficulty,
     playerCount,
@@ -72,14 +74,19 @@ define([
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt.
     var warGenerationBaseSeed;
+    var lastGeneratedName;
 
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
       scene.generatingWar(false);
-      if (generationFailure.shouldRetry(cause, warGenerationAttempts)) {
+      // After generatingWar(false), which model.ready() reads.
+      if (
+        generationFailure.shouldRetry(cause, warGenerationAttempts) &&
+        model.ready()
+      ) {
         // Derived, not re-rolled, so an entered seed reproduces the whole retry chain.
         model.newGameSeed(warGenerationBaseSeed + "-" + warGenerationAttempts);
-        model.navToNewGame();
+        start();
       } else {
         warGenerationAttempts = 0;
         // Put back, so the next click starts from the seed the player asked
@@ -182,14 +189,33 @@ define([
       // failure, so one dead source would drop every other's systems.
       var sourceSystems = function (name, loading) {
         var settled = $.Deferred();
+        var waiting = true;
+        var give = function (systems) {
+          waiting = false;
+          clearTimeout(timer);
+          settled.resolve(systems);
+        };
+        // Before $.when: a source that has already settled calls give() inside
+        // it, and give() must find the timer to clear.
+        var timer = setTimeout(function () {
+          console.error(
+            "System source timed out after " + SOURCE_TIMEOUT_MS + "ms: " + name
+          );
+          sourceFailed = true;
+          give([]);
+        }, SOURCE_TIMEOUT_MS);
         $.when(loading).then(
           function (systems) {
-            settled.resolve(systems);
+            if (waiting) {
+              give(systems);
+            }
           },
           function () {
-            console.error("System source failed to load: " + name);
-            sourceFailed = true;
-            settled.resolve([]);
+            if (waiting) {
+              console.error("System source failed to load: " + name);
+              sourceFailed = true;
+              give([]);
+            }
           }
         );
         return settled.promise();
@@ -360,16 +386,19 @@ define([
       run.largePlanets = model.gwoDifficultySettings.largePlanets();
       run.startCard = model.activeStartCard();
 
-      if (model.newGameName() === scene.defaultNewGameName) {
-        model.newGameName(
-          generatedWarName(
-            selectedDifficulty,
-            run.playerCount,
-            sizeIndex,
-            run.startCard,
-            gwoDifficulty.difficulties
-          )
+      var currentName = model.newGameName();
+      if (
+        currentName === scene.defaultNewGameName ||
+        currentName === lastGeneratedName
+      ) {
+        lastGeneratedName = generatedWarName(
+          selectedDifficulty,
+          run.playerCount,
+          sizeIndex,
+          run.startCard,
+          gwoDifficulty.difficulties
         );
+        model.newGameName(lastGeneratedName);
       }
       game.name(model.newGameName());
 
@@ -625,7 +654,7 @@ define([
         playerRace: run.playerRace,
         raceByFaction: run.raceByFaction,
         raceInfo: run.raceInfo,
-        perPlayerTechCards: model.newGamePerPlayerTechCards(),
+        perPlayerTechCards: run.game.perPlayerTechCards(),
         uniqueAiLoadouts:
           !!model.gwoUniqueAiLoadouts && model.gwoUniqueAiLoadouts(),
         galaxy: run.game.galaxy(),
@@ -716,14 +745,16 @@ define([
         .fail(onWarGenerationError.bind(null, run));
     };
 
+    var start = function () {
+      var run = begin();
+      seedWar(run);
+      createGame(run);
+      planWar(run);
+      generate(run);
+    };
+
     return {
-      start: function () {
-        var run = begin();
-        seedWar(run);
-        createGame(run);
-        planWar(run);
-        generate(run);
-      },
+      start: start,
     };
   };
 });

@@ -235,12 +235,29 @@ function makeModel() {
 }
 
 function startScene() {
-  const $ = Object.assign(
-    () => ({ prepend: () => {}, val: () => [] }),
-    createFakeJQuery({ sync: true })
-  );
+  // What the lock leaves on each selector: its classes and props.
+  const dom = {};
+  const select = (selector) => {
+    dom[selector] = dom[selector] || { classes: [], props: {} };
+    const node = dom[selector];
+    return {
+      prepend: () => {},
+      val: () => [],
+      toggleClass: (name, on) => {
+        node.classes = node.classes.filter((each) => each !== name);
+        if (on) {
+          node.classes.push(name);
+        }
+      },
+      prop: (name, value) => {
+        node.props[name] = value;
+      },
+    };
+  };
+  const $ = Object.assign(select, createFakeJQuery({ sync: true }));
   const scene = {
     $: $,
+    dom: dom,
     model: makeModel(),
     options: $.Deferred(),
     loadOptions: () => scene.options.promise(),
@@ -355,6 +372,24 @@ describe("a war that generates", () => {
     assert.equal(scene.model.ready(), false);
   });
 
+  it("gives up on a spawn shortage once every system source is cleared", () => {
+    const scene = startScene();
+    scene.outcome = { failed: true, spawnShortage: true };
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    scene.model.selectedNames([]);
+    finishBuild(scene);
+
+    assert.deepEqual(
+      scene.builds.map((config) => config.seed),
+      ["base-seed"]
+    );
+    assert.equal(scene.model.newGameSeed(), "base-seed");
+    assert.match(scene.model.gwoWarGenerationError(), /too small/);
+  });
+
   // Shared Systems for Galactic War rerolls the seed whenever a source is
   // toggled, and nothing stops the player changing the rest.
   it("keeps the seed, galaxy size, and AI brains it started with", () => {
@@ -403,6 +438,93 @@ describe("Go To War while a war generates", () => {
     assert.equal(scene.model.ready(), false);
     scene.model.selectedNames(["Uber"]);
     assert.equal(scene.model.ready(), true);
+  });
+});
+
+describe("the setup panel while a war generates", () => {
+  const LOCK = "gwo-setup-locked";
+  const TEXT_FIELDS = "#game-name, #game-seed";
+
+  const locked = (scene) => {
+    assert.equal(scene.model.gwoGeneratingWar(), true);
+    assert.deepEqual(scene.dom["#tab3"].classes, [LOCK]);
+    assert.equal(scene.dom[TEXT_FIELDS].props.readonly, true);
+  };
+
+  const unlocked = (scene) => {
+    assert.equal(scene.model.gwoGeneratingWar(), false);
+    assert.deepEqual(scene.dom["#tab3"].classes, []);
+    assert.equal(scene.dom[TEXT_FIELDS].props.readonly, false);
+  };
+
+  it("is left alone until Go To War", () => {
+    const scene = startScene();
+
+    assert.equal(scene.model.gwoGeneratingWar(), false);
+    assert.deepEqual(scene.dom["#tab3"], undefined);
+  });
+
+  it("is locked from Go To War", () => {
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+
+    locked(scene);
+  });
+
+  it("stays locked while the war opens", () => {
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    finishBuild(scene);
+
+    assert.equal(scene.window.location.href, GW_PLAY);
+    locked(scene);
+  });
+
+  it("stays locked through a retry", () => {
+    const scene = startScene();
+    scene.outcome = { failed: true, spawnShortage: true };
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    finishBuild(scene);
+
+    assert.equal(scene.builds.length, 2);
+    locked(scene);
+  });
+
+  it("is unlocked when the war fails", () => {
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    scene.build.reject("no usable star system");
+
+    assert.notEqual(scene.model.gwoWarGenerationError(), "");
+    unlocked(scene);
+  });
+
+  it("is unlocked when a system source times out", (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    t.mock.timers.tick(59999);
+    locked(scene);
+
+    t.mock.timers.tick(1);
+
+    assert.match(
+      scene.model.gwoWarGenerationError(),
+      /sources selected under Systems could not be loaded/
+    );
+    unlocked(scene);
   });
 });
 

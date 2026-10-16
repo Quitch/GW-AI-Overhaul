@@ -132,3 +132,37 @@ describe("factionTechs", () => {
     });
   });
 });
+
+describe("commander speed tech", () => {
+  const inventory = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"
+  );
+  const SPEED_PATHS = [
+    "navigation.move_speed",
+    "navigation.brake",
+    "navigation.acceleration",
+    "navigation.turn_speed",
+  ];
+
+  const multiplier = (mods, file, path) =>
+    mods
+      .filter((mod) => mod.file === file && mod.path === path)
+      .reduce((total, mod) => total * mod.value, 1);
+
+  [3, 6].forEach((slot) => {
+    it("tech " + slot + " speeds Cluster commanders as much as others", () => {
+      const legonis = aiTech.factionTechs[0][slot];
+      const cluster = aiTech.factionTechs[4][slot];
+      inventory.commanderUnits.forEach((commander) => {
+        SPEED_PATHS.forEach((path) => {
+          assert.ok(multiplier(legonis, commander, path) > 1);
+          assert.equal(
+            multiplier(cluster, commander, path),
+            multiplier(legonis, commander, path),
+            commander + " " + path
+          );
+        });
+      });
+    });
+  });
+});
