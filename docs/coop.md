@@ -640,8 +640,7 @@ Viewers learn of an AI's tech, as of its arrival and its departure, from a
 snapshot. Under per-player tech the server applies a viewer's tech choice to
 its own copy of the war before the host has it, and a snapshot replaces that
 copy whole. A snapshot sent in between drops the choice there, and the server
-then leaves that viewer picking, which blocks Explore and Fight until they
-reload.
+then leaves that viewer picking, which blocks the host's Explore and Fight.
 
 So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
 every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
