@@ -120,7 +120,7 @@ steps in order:
    that follow from the tier (a boss's commander count, the bounty value) are
    also built here. This step reads none of these values from the save. See
    galaxy.md, "Difficulty" and "AI personalities and penchants".
-5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
+5. In co-op with per-player tech, `gw_play/per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 6. Every client then enters stock's `gw_lobby`, which mounts the referee's files.
    Stock first rebuilds each army tag's specs from local files, and that
@@ -193,7 +193,7 @@ logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
 
-The per-player tech referee, `gw_per_player_tech_referee.js`, is waited on the
+The per-player tech referee, `gw_play/per_player_tech_referee.js`, is waited on the
 same way: stock calls its `apply` with no fail handler. But there stock aborts
 on its own when `apply` resolves a falsy value, through `abortRefereeLaunch`,
 which logs the reason and clears `launchingFight`. So a viewer whose unit maps

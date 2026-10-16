@@ -1,4 +1,4 @@
-// The measured half of gw_play/gw_per_player_tech_referee.js. Keep it loadable
+// The validation half of gw_play/per_player_tech_referee.js. Keep it loadable
 // under the Node AMD harness - see testing.md, "Coverage".
 define(function () {
   var armyHasAI = function (army) {

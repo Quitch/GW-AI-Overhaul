@@ -189,7 +189,8 @@ memory files, so reload the scene between hires.
 The co-op chain needs stock's referee between the two, or the per-player
 referee rejects with a player and army mismatch:
 `GWReferee.hire(game)`, then `gw_coop_referee.apply(referee, options)`, then
-`gw_per_player_tech_referee.apply(referee, options)`, with `options` as
+`gw_per_player_tech_referee.apply(referee, options)` (GWO's `apply` once
+`gw_play/per_player_tech_install.js` has run), with `options` as
 `{ active: true, sharedControl: false, perPlayerTechCards: true,
 connectedClients: _.cloneDeep(model.gwCampaignConnectedClients()) }`.
 

@@ -31,7 +31,7 @@ const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
 
-// As gw_per_player_tech_referee.js injects it, for the player faction below.
+// As gw_play/per_player_tech_referee.js injects it, for the player faction below.
 const resolvePersonality = (minion) =>
   gwoPersonality.resolve(minion, {
     side: "ally",
