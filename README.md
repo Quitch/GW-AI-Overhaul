@@ -181,6 +181,7 @@ The game also writes these details to its logs, which every bug report attaches.
 - The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
 - Some loadouts are disabled for races other than MLA due to unit dependencies
 - Bugs and Exiles are not dealt the upgrade tech cards for the MLA units they field
+- Section 17's Solar Cell cannot be built by MLA commanders or fabbers. With Second Wave also active, MLA AIs keep trying to build it and can stall - this is a Section 17 bug, fixed upstream but not yet released
 
 ## Recommended mods
 

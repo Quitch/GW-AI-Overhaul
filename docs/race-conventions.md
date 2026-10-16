@@ -240,6 +240,15 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   defines. Without Second Wave active, its Dox Materializer, Energy Coil and
   Solar Cell builds never fire. GWO documents this and never patches it
   (`test/addon_section17.test.js` pins the dependency).
+- Section 17's Solar Cell (0.8.2) lacks `UNITTYPE_Custom58`, so no MLA
+  commander (`CmdBuild & Custom58`) or fabber can build it. A player whose
+  cells grant it never sees it on a build bar. With Second Wave active, every
+  MLA AI army's Solar Cell builds are refused for the whole battle
+  (`FabberManager: … which it is not able to do`). An army with few other
+  builders can stall on them (#573). The fix is merged upstream
+  (DAEDALUS-Modding/Section-17#2) but not released. GWO documents this and
+  never patches it (`test/addon_section17.test.js` pins it; #242 removes the
+  pin).
 - Section 17's and Osmech's `unit_list.json` are stale vanilla snapshots
   missing `tank_jammer`, `orbital_mine` and `tank_anti_nuke`. GW Server Mods'
   client union and Community Mods' server merge repair the list, so nothing
