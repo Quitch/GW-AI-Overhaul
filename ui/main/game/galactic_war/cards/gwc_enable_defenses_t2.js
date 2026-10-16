@@ -17,8 +17,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
-        gwoCard.missingUnit(
-          inventory.units(),
+        gwoCard.missingObtainableUnit(
+          inventory,
           gwoGroup.structuresDefencesAdvanced
         ) &&
           (gwoCard.hasAdvancedFabber(inventory) ||

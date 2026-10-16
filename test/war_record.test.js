@@ -13,8 +13,9 @@ const warRecord = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/war_record.js"
 );
 
-function settings() {
+function settings(overrides) {
   const values = {
+    playerFaction: 0,
     factionScaling: true,
     systemScaling: true,
     simpleSystems: false,
@@ -23,6 +24,7 @@ function settings() {
     staticTech: false,
     uniqueRaces: true,
     perPlayerRace: true,
+    ...overrides,
   };
   const result = {};
   Object.keys(values).forEach((key) => {
@@ -137,6 +139,32 @@ describe("build", () => {
       warRecord.build(
         war({ perPlayerTechCards: true, uniqueAiLoadouts: false })
       ).uniqueAiLoadouts,
+      false
+    );
+  });
+
+  // Cluster's player side is MLA-only. See races.md, "Cluster".
+  it("records Separate races only under per-player tech, and never for Cluster", () => {
+    assert.equal(
+      warRecord.build(war({ perPlayerTechCards: true })).races.perPlayerRace,
+      true
+    );
+    assert.equal(
+      warRecord.build(
+        war({
+          perPlayerTechCards: true,
+          settings: settings({ perPlayerRace: false }),
+        })
+      ).races.perPlayerRace,
+      false
+    );
+    assert.equal(
+      warRecord.build(
+        war({
+          perPlayerTechCards: true,
+          settings: settings({ playerFaction: 4 }),
+        })
+      ).races.perPlayerRace,
       false
     );
   });
