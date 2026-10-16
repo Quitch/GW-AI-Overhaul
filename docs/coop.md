@@ -81,6 +81,19 @@ copies, and a battle mounts thousands of files. So the host's own pass hands its
 files over as JSON text (`gameFilePaths.cookFiles`), which clones in
 milliseconds. `mountFiles` would have made that text anyway.
 
+Each hire writes a viewer's Sub Commander tree at `.player<n>` by the viewer's
+position in the client list it read, and records that list as
+`hireClientKeys` (the `clientKey` of each viewer with a record, in order).
+Stock reads the list again for the per-player-tech referee, after both hires.
+A player who joins, leaves, or moves in between would shift every later viewer
+onto another's tree, so under per-player tech the lists must agree: the host's
+own hire fails if its
+list differs from the shared hire's, and the per-player-tech referee resolves
+`false` if the launch's viewers differ from the shared hire's. Either way the
+launch stops and Fight can be pressed again. A referee without
+`hireClientKeys` (stock's, when GWO's referee modules fail to load) wrote no
+such trees and is not checked.
+
 Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
 the host broadcasts. The war panel and the intelligence panel derive what they
 show (commander counts, eco) from the snapshot's recorded fields on the viewer's
