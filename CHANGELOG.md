@@ -21,6 +21,7 @@
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 - AIs with the Platoon penchant form their largest amphibious attack groups
+- Cluster AI commanders no longer move faster than other factions' with the same tech
 
 ## v7.6.0 - 2026-10-03
 
