@@ -93,6 +93,7 @@ function installScene(playerFaction) {
       {},
       {},
       {
+        mountRoot: () => ({ always: (settle) => settle() }),
         installedRaces: () => {
           scene.installedAsked += 1;
           return {};
