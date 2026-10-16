@@ -206,6 +206,39 @@ describe("brainSummaryFor", () => {
   });
 });
 
+describe("coopRaceIds", () => {
+  // Separate races: MLA's co-op brain is Titans, Legion's is Queller.
+  const summary = view.brainSummaryFor({
+    ai: "Titans",
+    aiCoop: "Titans",
+    aiByRace: { legion: { coop: "Queller" } },
+    races: { player: "mla", perPlayerRace: true },
+  });
+  const installAis = (ais) =>
+    stubs.setGlobal("model", { gwoCoopAi: { panel: makeObservable(ais) } });
+
+  it("is the host's race alone without co-op AI players", () => {
+    installAis([]);
+
+    assert.deepEqual(view.coopRaceIds("mla"), ["mla"]);
+    assert.equal(summary("coop", view.coopRaceIds("mla")), "Titans");
+  });
+
+  it("adds each co-op AI's race once, though the war recorded only the host's", () => {
+    installAis([
+      { name: "AI 1", race: "legion" },
+      { name: "AI 2", race: "mla" },
+      { name: "AI 3", race: "legion" },
+    ]);
+
+    assert.deepEqual(view.coopRaceIds("mla"), ["mla", "legion"]);
+    assert.equal(
+      summary("coop", view.coopRaceIds("mla")),
+      "!LOC:MLA: Titans, !LOC:Legion: Queller"
+    );
+  });
+});
+
 describe("incompatibleModNames", () => {
   it("names the mounted mods on the list, sorted by display name", () => {
     const mods = [

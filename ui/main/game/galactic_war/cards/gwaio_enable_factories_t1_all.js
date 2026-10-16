@@ -19,7 +19,7 @@ define([
     deal: function (system, context, inventory) {
       var basicFactories = gwoGroup.landFactoriesBasic;
       var chance = 0;
-      if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
+      if (gwoCard.missingObtainableUnit(inventory, basicFactories)) {
         chance = gwoCard.travelledShort(
           system,
           context,

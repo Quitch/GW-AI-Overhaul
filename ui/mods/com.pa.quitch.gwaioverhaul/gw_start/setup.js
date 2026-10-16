@@ -60,6 +60,13 @@
     // Not stock's makeGameBusy: under Shared Systems for Galactic War, stock's
     // own first makeGame fails and never clears it.
     var generatingWar = ko.observable(false);
+    model.gwoGeneratingWar = generatingWar;
+    // War generation reads settings after the click, so a change mid-run would
+    // reach only part of the war. The modals open from inside #tab3.
+    generatingWar.subscribe(function (locked) {
+      $("#tab3").toggleClass("gwo-setup-locked", locked);
+      $("#game-name, #game-seed").prop("readonly", locked);
+    });
     var systemSourceChosen = ko.observable(true);
     var gwoReady = ko.observable(false); // the modules below have loaded
     var sharedSystemsForGalacticWarActive = false;
