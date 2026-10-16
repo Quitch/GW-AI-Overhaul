@@ -283,6 +283,7 @@ function makeModel(war) {
     selectedCommander: makeObservable("/pa/units/commanders/tank/tank.json"),
     gwoWarGenerationError: makeObservable(""),
     selectedNames: makeObservable(["Uber"]),
+    ready: makeObservable(true),
   };
 }
 
@@ -386,8 +387,14 @@ function makeWar() {
       war.settingsSaved++;
     },
   });
-  // The retry goes through the scene's Go To War, as it does in game.
-  war.model.navToNewGame = () => war.generation.start();
+  // As setup.js's Go To War, which does nothing while it cannot be clicked.
+  war.clicks = 0;
+  war.model.navToNewGame = () => {
+    war.clicks++;
+    if (war.model.ready()) {
+      war.generation.start();
+    }
+  };
   war.start = () => war.generation.start();
   war.game = () => war.games[war.games.length - 1];
   return war;
@@ -1012,6 +1019,42 @@ describe("a war with too few home systems", () => {
       war.errors[war.errors.length - 1],
       "Failed to generate valid war: spawnShortage"
     );
+    assert.equal(war.clicks, 0);
+  });
+
+  // The player can clear every system source, or pick a race that locks the
+  // loadout, while the war generates.
+  it("is abandoned with the shortage message when Go To War cannot be clicked", () => {
+    const war = makeWar();
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => war.model.ready(false);
+
+    war.start();
+
+    assert.deepEqual(
+      war.builds.map((config) => config.seed),
+      ["base-seed"]
+    );
+    assert.match(war.model.gwoWarGenerationError(), /too small/);
+    assert.equal(war.model.newGameSeed(), "base-seed");
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.equal(war.clicks, 0);
+  });
+
+  it("is retried afresh, and named afresh, after a retry Go To War could not take", () => {
+    const war = makeWar();
+    war.model.newGameSizeIndex(0);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => war.model.ready(false);
+    war.start();
+    war.model.ready(true);
+    war.model.newGameSizeIndex(2);
+
+    retriedOnce(war);
+
+    assert.match(war.model.newGameName(), /!LOC:Large/);
+    assert.equal(war.model.gwoWarGenerationError(), "");
   });
 
   // The count and the seed belong to one war, whichever way it ended.

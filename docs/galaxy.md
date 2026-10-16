@@ -349,6 +349,12 @@ player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whiche
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
 
+A retry runs only while `model.ready()` is true, as Go To War does. The player can make
+it false while the war generates, by clearing every system source or by picking a race
+that locks the loadout; generation then gives up at once. A retry calls the module's
+`start` itself rather than `model.navToNewGame`, so the log holds one "Go To War
+clicked" per click.
+
 When generation gives up, the seed is put back to `<base>`, and a message appears
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
 on Faction Scaling. For Shared Systems for Galactic War sources that gave nothing to

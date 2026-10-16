@@ -77,10 +77,14 @@ define([
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
       scene.generatingWar(false);
-      if (generationFailure.shouldRetry(cause, warGenerationAttempts)) {
+      // After generatingWar(false), which model.ready() reads.
+      if (
+        generationFailure.shouldRetry(cause, warGenerationAttempts) &&
+        model.ready()
+      ) {
         // Derived, not re-rolled, so an entered seed reproduces the whole retry chain.
         model.newGameSeed(warGenerationBaseSeed + "-" + warGenerationAttempts);
-        model.navToNewGame();
+        start();
       } else {
         warGenerationAttempts = 0;
         // Put back, so the next click starts from the seed the player asked
@@ -720,14 +724,16 @@ define([
         .fail(onWarGenerationError.bind(null, run));
     };
 
+    var start = function () {
+      var run = begin();
+      seedWar(run);
+      createGame(run);
+      planWar(run);
+      generate(run);
+    };
+
     return {
-      start: function () {
-        var run = begin();
-        seedWar(run);
-        createGame(run);
-        planWar(run);
-        generate(run);
-      },
+      start: start,
     };
   };
 });
