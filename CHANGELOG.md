@@ -5,6 +5,7 @@
 ### API
 
 - New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
+- `gwoCard.missingUnit` is deprecated: use `missingObtainableUnit` to ask whether a card can still add a unit, or `!gwoCard.hasAllUnits(inventory.units(), units)` to ask whether the player lacks one. It still works
 - A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
 
 ### Changed
