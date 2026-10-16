@@ -119,6 +119,23 @@ describe("the Section 17 descriptor", () => {
       assert.ok(!(alias in map), alias + " now in the mod's own map");
     }
   });
+
+  it("ships a Solar Cell no MLA builder can build: it lacks Custom58, the Energy Coil has it (skipped without the mod)", (t) => {
+    const files = modFiles(MODS);
+    if (!files) {
+      t.skip("no Section 17 mod on disk");
+      return;
+    }
+    const typesOf = (unit) => files.readJson(unit.slice(1)).unit_types;
+
+    assert.ok(
+      !typesOf(section17.units.solarCell).includes("UNITTYPE_Custom58"),
+      "the Solar Cell carries Custom58 now: a release has the upstream fix, see #242"
+    );
+    assert.ok(
+      typesOf(section17.units.energyCoil).includes("UNITTYPE_Custom58")
+    );
+  });
 });
 
 describe("Section 17 under capability cells", () => {
