@@ -130,13 +130,18 @@ define([
             );
           }
         );
-        _.forEach(commanders, function (commander) {
-          aiInventory = aiInventory.concat(
-            gwoRaces.commanderModsFor(race, commander)
-          );
-        });
         if (aiInventory.length) {
           gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
+        }
+        // A pass of its own: the retag's replace would flatten the commander
+        // before the army's base_commander mods run. See specs.md.
+        var retagMods = _.flatten(
+          _.map(commanders, function (commander) {
+            return gwoRaces.commanderModsFor(race, commander);
+          })
+        );
+        if (retagMods.length) {
+          gwoSpecs.mod(aiFiles, retagMods, aiTag[currentCount]);
         }
         aiFactionDeferred.resolve(aiFiles);
       }

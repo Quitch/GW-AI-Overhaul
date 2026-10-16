@@ -286,6 +286,16 @@ buckets ([the op table](#the-op-table)), and each bucket keeps the list's
 order, so the rule holds for every op. `test/specs.test.js` pins both the
 doubling and this order.
 
+The buckets cut across that rule: a child flattened in an earlier bucket does
+not get a later bucket's mods on the keys it inherits. A `replace` on a child and a
+`multiply` on its base in one call leave the child with the base's old value.
+The race retag (`races.commanderModsFor`, `races.unitRetagMods`) is a `replace`
+on a stock commander, so every referee site applies it in a second
+`specs.mod` call on the same files. The army's mods then reach
+`base_commander.json` first, and the retag's flatten copies the changed values.
+A second call does not apply the first call's mods again: a file that the
+first call flattened has no `base_spec` left to read.
+
 Without a mod, a spec keeps its `base_spec`. The engine then resolves the chain
 itself, and a key that the child sets replaces the key of the base. A mod on a
 base alone therefore never reaches a child that sets the same key.

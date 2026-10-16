@@ -456,8 +456,23 @@ describe("buildCoopAiFiles", () => {
       },
     });
     assert.deepEqual(modded, [
-      [Object.keys(files), ["own", "retag"], ".player2"],
+      [Object.keys(files), ["own"], ".player2"],
+      [Object.keys(files), ["retag"], ".player2"],
     ]);
+  });
+
+  it("runs the retag alone when the AI holds no other mods", () => {
+    const modded = [];
+    refereeGameFiles.buildCoopAiFiles({
+      tag: ".player1",
+      specFiles: {},
+      subcommanderPath: "/pa/ai/player1/",
+      maps: { classic: "c", x1: "x" },
+      genAIUnitMap: (map) => map,
+      extraMods: ["retag"],
+      gwoSpecs: { mod: (target, mods) => modded.push(mods) },
+    });
+    assert.deepEqual(modded, [["retag"]]);
   });
 
   it("mods nothing when the AI holds no mods", () => {
@@ -604,9 +619,67 @@ describe("races", () => {
         op: "multiply",
         value: 2,
       },
+    ]);
+    assert.deepEqual(recorded[1].mods, [
       { file: "x", path: "y", op: "replace", value: 1 },
     ]);
+    assert.equal(recorded[1].files, recorded[0].files);
     assert.equal(recorded[0].tag, ".player");
+    assert.equal(recorded[1].tag, ".player");
+  });
+
+  describe("a retagged stock commander", () => {
+    const base = "/pa/units/commanders/base_commander/base_commander.json";
+    const unicorn = "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+    const specFiles = (tag) => {
+      const files = {};
+      files[base + tag] = { max_health: 12500, buildable_types: "Stock" };
+      files[unicorn + tag] = { base_spec: base, model: "unicorn" };
+      return files;
+    };
+    const armour = [
+      { file: base, path: "max_health", op: "multiply", value: 2 },
+    ];
+    const retag = [
+      { file: unicorn, path: "buildable_types", op: "replace", value: "Race" },
+    ];
+
+    it("takes the player's base_commander mods", () => {
+      const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
+      installModel(fixture.game);
+      const files = refereeGameFiles.buildPlayerFiles(
+        {
+          playerAIUnitMap: { unit_map: {} },
+          playerX1AIUnitMap: { unit_map: {} },
+          playerSpecFiles: specFiles(".player"),
+          inventory: fixture.inventory,
+          race: "fixture",
+          mods: armour,
+          extraMods: retag,
+        },
+        gwoAI,
+        gwoSpecs
+      );
+
+      assert.equal(files[unicorn + ".player"].max_health, 25000);
+      assert.equal(files[unicorn + ".player"].buildable_types, "Race");
+    });
+
+    it("takes a co-op AI's base_commander mods", () => {
+      const files = refereeGameFiles.buildCoopAiFiles({
+        tag: ".player1",
+        specFiles: specFiles(".player1"),
+        subcommanderPath: "/pa/ai/player1/",
+        maps: { classic: "c", x1: "x" },
+        genAIUnitMap: (map) => map,
+        mods: armour,
+        extraMods: retag,
+        gwoSpecs: gwoSpecs,
+      });
+
+      assert.equal(files[unicorn + ".player1"].max_health, 25000);
+      assert.equal(files[unicorn + ".player1"].buildable_types, "Race");
+    });
   });
 });
 

@@ -139,7 +139,12 @@ define([
             );
           };
           var mods = gwoRaces.modsFor(race, inventory.mods(), cells, has);
-          gwoSpecs.mod(playerFiles, mods.concat(plan.retagMods), playerTag);
+          gwoSpecs.mod(playerFiles, mods, playerTag);
+          // A pass of its own: the retag's replace would flatten the commander
+          // before the army's base_commander mods run. See specs.md.
+          if (plan.retagMods.length) {
+            gwoSpecs.mod(playerFiles, plan.retagMods, playerTag);
+          }
           done.resolve(playerFiles);
         });
     };
