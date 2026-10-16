@@ -18,7 +18,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.missingUnit(inventory.units(), gwoGroup.vehicles)) {
+      if (gwoCard.missingObtainableUnit(inventory, gwoGroup.vehicles)) {
         chance = gwoCard.travelledShort(
           system,
           context,

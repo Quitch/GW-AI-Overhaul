@@ -438,9 +438,16 @@
         };
 
         // Under Separate races the AI picks from the races the war offers,
-        // preferring one no player fields; otherwise it fields the host's.
+        // preferring one no player fields; otherwise, and always in a Cluster
+        // war, it fields the host's.
         var raceFor = function (rng) {
           var hostRace = gwoRaces.raceOf(game.inventory());
+          if (
+            game.inventory().getTag("global", "playerFaction") ===
+            gwoAI.CLUSTER_FACTION
+          ) {
+            return Promise.resolve(hostRace);
+          }
           var recorded = gwoAI.originSettings(game).races;
           if (!(recorded && recorded.perPlayerRace)) {
             return Promise.resolve(hostRace);

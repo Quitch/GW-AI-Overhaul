@@ -533,3 +533,48 @@ describe("Boom Upgrade Tech", () => {
     assert.deepEqual(entry.gated, [gwoUnit.boom]);
   });
 });
+
+// A loadout's dull() removes units for good, so an unlock card whose group holds
+// one must not read it as missing: taken once, the card would deal again and add
+// nothing. Tactical Nuke removes four of the five advanced defences.
+describe("an unlock card a loadout has emptied", () => {
+  const nukeDulls = (() => {
+    const removed = [];
+    byFile.get("nem_start_nuke.js").dull({
+      lookupCard: () => 0,
+      getTag: () => 1,
+      setTag: () => {},
+      removeUnits: (units) => removed.push(...units),
+    });
+    return removed;
+  })();
+  const advancedDefences = byFile.get("gwc_enable_defenses_t2.js");
+  const tacticalNuke = (units) =>
+    Object.assign(
+      makeInventory(
+        [...STARTER, gwoGroup.fabbersAdvanced[0], ...units].filter(
+          (unit) => !nukeDulls.includes(unit)
+        )
+      ),
+      { removedUnits: () => nukeDulls }
+    );
+
+  it("reads the dulls it tests against", () => {
+    assert.ok(nukeDulls.includes(gwoUnit.catapult));
+    assert.ok(!nukeDulls.includes(gwoUnit.antiNukeLauncher));
+  });
+
+  it("deals Advanced Defense Technology while it would add the Anti-Nuke", () => {
+    assert.ok(maxChance(advancedDefences, tacticalNuke([])) > 0);
+  });
+
+  it("does not deal it again once taken", () => {
+    assert.equal(
+      maxChance(
+        advancedDefences,
+        tacticalNuke(gwoGroup.structuresDefencesAdvanced)
+      ),
+      0
+    );
+  });
+});

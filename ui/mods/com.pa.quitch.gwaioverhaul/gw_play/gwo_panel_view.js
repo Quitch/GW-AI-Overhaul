@@ -94,6 +94,11 @@ define([
     };
   };
 
+  // The host's race and each co-op AI's, as the panel's AI lines name them.
+  var coopRaceIds = function (hostRace) {
+    return _.uniq([hostRace].concat(_.pluck(model.gwoCoopAi.panel(), "race")));
+  };
+
   var incompatibleModNames = function (mods) {
     var modIdentifiers = _.map(mods, "identifier");
     var incompatibleModsInUse = _.intersection(
@@ -302,6 +307,7 @@ define([
     cardName: cardName,
     registeredDeckName: registeredDeckName,
     brainSummaryFor: brainSummaryFor,
+    coopRaceIds: coopRaceIds,
     incompatibleModNames: incompatibleModNames,
     commanderList: commanderList,
   };

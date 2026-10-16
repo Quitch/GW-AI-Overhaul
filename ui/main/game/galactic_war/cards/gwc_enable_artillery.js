@@ -17,7 +17,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
-        gwoCard.missingUnit(inventory.units(), gwoGroup.structuresArtillery),
+        gwoCard.missingObtainableUnit(inventory, gwoGroup.structuresArtillery),
         100
       );
     },

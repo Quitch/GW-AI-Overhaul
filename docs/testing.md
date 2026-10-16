@@ -198,12 +198,15 @@ being dropped from every tree.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/race_trees.test.js`, `test/races.test.js`,
-`test/referee_ai_file_processing.test.js`). Run it after a PA, race or add-on
-patch. Also run it after you change `race_trees.treeFilter`,
+`test/referee_ai_file_processing.test.js`), and
+`test/validate_race_trees.test.js` runs the script itself over a fixture
+install, so a break in the script fails `verify`. Run it after a PA, race or
+add-on patch. Also run it after you change `race_trees.treeFilter`,
 `race_trees.raceLayerTest` or `referee_ai.js`'s tree writing.
 
-The validator runs the referee without the races' capability cells, so the
-race trees it checks keep the stock factory and fabber lists whole. Their
+The validator runs the referee without the races' capability cells (it
+serves an empty unit list), so the race trees it checks keep the stock
+factory and fabber lists whole. Their
 stripping (`races.md`, "Race trees") is pinned by unit tests alone
 (`test/referee_game_files_ai_paths.test.js`,
 `test/referee_ai_race_trees.test.js`).
@@ -606,7 +609,8 @@ test's own context, so the script reads the globals the test stubbed through
 `global-stubs.js`, `requireGW` included. The test answers `requireGW` with
 stand-ins for the modules the script asks for. It suits what a script does
 before its `requireGW` callback, or a callback small enough to stub:
-`test/bugfixes.test.js`, `test/coop_ai_commanders.test.js`, `test/gwo_panel.test.js`,
+`test/bugfixes.test.js`, `test/coop_ai_commanders.test.js`,
+`test/coop_ai_race_for.test.js`, `test/gwo_panel.test.js`,
 `test/per_player_loadout_race_picker.test.js`, and
 `test/race_picker_view.test.js` use it. A callback that needs
 dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
