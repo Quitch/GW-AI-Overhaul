@@ -20,6 +20,7 @@
 
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+- A co-op AI player in a Cluster war always fields MLA, as the players do, even with Separate races on
 
 ## v7.6.0 - 2026-10-03
 
