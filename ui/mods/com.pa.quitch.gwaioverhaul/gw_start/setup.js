@@ -54,6 +54,12 @@
         '"></div>'
     );
 
+    // Outside the foreach, so they stay last (gwo_start.css). Fifteen fill a
+    // 16-card row, more than an 8K screen fits.
+    $("#start-cards").append(
+      _.repeat('<div class="gwo-card-spacer"></div>', 15)
+    );
+
     // Prevent changes to settings causing creation of new galaxies
     model.makeGame = function () {};
 

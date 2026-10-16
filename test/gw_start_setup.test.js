@@ -242,6 +242,7 @@ function startScene() {
     const node = dom[selector];
     return {
       prepend: () => {},
+      append: () => {},
       val: () => [],
       toggleClass: (name, on) => {
         node.classes = node.classes.filter((each) => each !== name);
