@@ -72,6 +72,7 @@ define([
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt.
     var warGenerationBaseSeed;
+    var lastGeneratedName;
 
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
@@ -360,16 +361,19 @@ define([
       run.largePlanets = model.gwoDifficultySettings.largePlanets();
       run.startCard = model.activeStartCard();
 
-      if (model.newGameName() === scene.defaultNewGameName) {
-        model.newGameName(
-          generatedWarName(
-            selectedDifficulty,
-            run.playerCount,
-            sizeIndex,
-            run.startCard,
-            gwoDifficulty.difficulties
-          )
+      var currentName = model.newGameName();
+      if (
+        currentName === scene.defaultNewGameName ||
+        currentName === lastGeneratedName
+      ) {
+        lastGeneratedName = generatedWarName(
+          selectedDifficulty,
+          run.playerCount,
+          sizeIndex,
+          run.startCard,
+          gwoDifficulty.difficulties
         );
+        model.newGameName(lastGeneratedName);
       }
       game.name(model.newGameName());
 
