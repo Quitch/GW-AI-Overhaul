@@ -198,12 +198,15 @@ being dropped from every tree.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/race_trees.test.js`, `test/races.test.js`,
-`test/referee_ai_file_processing.test.js`). Run it after a PA, race or add-on
-patch. Also run it after you change `race_trees.treeFilter`,
+`test/referee_ai_file_processing.test.js`), and
+`test/validate_race_trees.test.js` runs the script itself over a fixture
+install, so a break in the script fails `verify`. Run it after a PA, race or
+add-on patch. Also run it after you change `race_trees.treeFilter`,
 `race_trees.raceLayerTest` or `referee_ai.js`'s tree writing.
 
-The validator runs the referee without the races' capability cells, so the
-race trees it checks keep the stock factory and fabber lists whole. Their
+The validator runs the referee without the races' capability cells (it
+serves an empty unit list), so the race trees it checks keep the stock
+factory and fabber lists whole. Their
 stripping (`races.md`, "Race trees") is pinned by unit tests alone
 (`test/referee_game_files_ai_paths.test.js`,
 `test/referee_ai_race_trees.test.js`).
