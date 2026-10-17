@@ -106,6 +106,13 @@ Steam's default Windows path is tried without either; CI has none, so the two
 scripts that need it are local-only, like `validate:race-trees`.
 `scripts/i18n/out/` is gitignored.
 
+To prove that a change to `loc-keys.js` alters nothing, save the output of
+`npm run i18n:extract -- --json` before and after and compare the two byte for
+byte. Then run
+`npm run i18n:catalog -- --regenerate` on both trees and compare the catalogs.
+A plain `i18n:catalog` keeps every existing description, so it proves nothing
+about them. Restore `en-US.json` afterwards.
+
 ## The catalog's descriptions
 
 The `description` is the only context a translator gets, and the generated note
