@@ -57,32 +57,30 @@ define(function () {
   };
 
   var legonisColours = [
-    [0, 176, 255],
     [153, 204, 255],
     [102, 178, 255],
     [51, 153, 255],
     [0, 128, 255],
-    [0, 102, 204],
-    [204, 255, 255],
+    [0, 99, 195],
+    [219, 255, 255],
     [153, 255, 255],
     [102, 255, 255],
-    [0, 204, 204],
-    [0, 153, 153],
+    [0, 201, 201],
+    [0, 159, 150],
     [0, 76, 153],
     [0, 0, 225],
     [51, 51, 255],
     [0, 255, 255],
   ];
   var foundationColours = [
-    [145, 87, 199],
     [229, 204, 255],
     [204, 153, 255],
     [178, 102, 255],
-    [153, 51, 255],
+    [150, 57, 255],
     [127, 0, 255],
-    [102, 0, 204],
+    [102, 0, 207],
     [255, 204, 255],
-    [255, 153, 255],
+    [255, 144, 255],
     [255, 102, 255],
     [255, 0, 255],
     [204, 0, 204],
@@ -93,10 +91,9 @@ define(function () {
     [255, 51, 153],
   ];
   var synchronousColours = [
-    [126, 226, 101],
     [204, 255, 153],
     [178, 255, 102],
-    [128, 255, 0],
+    [153, 255, 9],
     [102, 204, 0],
     [76, 153, 0],
     [204, 255, 204],
@@ -115,7 +112,7 @@ define(function () {
     [255, 153, 153],
     [255, 51, 51],
     [255, 0, 0],
-    [153, 0, 0],
+    [165, 0, 6],
     [255, 102, 102],
     [255, 204, 153],
     [255, 178, 102],
@@ -129,23 +126,37 @@ define(function () {
     [153, 153, 0],
   ];
   var clusterColours = [
-    [128, 128, 128],
-    [142, 107, 68],
-    [166, 166, 166],
-    [90, 90, 90],
-    [70, 70, 70],
+    [12, 12, 12],
+    [35, 35, 35],
+    [30, 40, 90],
+    [245, 240, 230],
+    [245, 220, 170],
+    [40, 52, 64],
+    [70, 100, 130],
+    [140, 185, 195],
+    [60, 40, 30],
+    [100, 15, 10],
+    [101, 67, 33],
+    [130, 70, 40],
+    [160, 82, 45],
+    [180, 130, 90],
+    [196, 164, 132],
+    [205, 190, 160],
   ];
 
-  // Sorted once: the order depends only on the palette.
+  // Sorted once: the order depends only on the palette. A spent palette
+  // gives its own colour, as a minion's own colour is the player army's.
   var factions = _.map(
     [
-      legonisColours,
-      foundationColours,
-      synchronousColours,
-      revenantsColours,
-      clusterColours,
+      { colours: legonisColours, spent: [30, 60, 120] },
+      { colours: foundationColours, spent: [80, 30, 110] },
+      { colours: synchronousColours, spent: [30, 70, 40] },
+      { colours: revenantsColours, spent: [100, 20, 30] },
+      { colours: clusterColours, spent: [145, 145, 150] },
     ],
-    sortByContrast
+    function (faction) {
+      return { palette: sortByContrast(faction.colours), spent: faction.spent };
+    }
   );
 
   return {
@@ -155,21 +166,31 @@ define(function () {
       );
     },
 
+    paletteSize: function (faction) {
+      var entry = factions[faction];
+      return entry ? entry.palette.length : 0;
+    },
+
     pick: function (faction, minionColour, count) {
-      // An unknown faction has no palette, and falls back like a spent one.
-      var palette = factions[faction];
-      if (!palette || count > palette.length - 1) {
-        // We ran out of colours
+      var guardianColour = [255, 255, 255];
+      var secondaryColour = [192, 192, 192];
+      var isGuardian = _.isEqual(_.get(minionColour, 0), guardianColour);
+
+      // An unknown faction has no palette, and keeps the caller's colour.
+      var entry = factions[faction];
+      if (!entry) {
         return minionColour;
       }
 
-      var guardianColour = [255, 255, 255];
-      var secondaryColour = [192, 192, 192];
+      if (count > entry.palette.length - 1) {
+        // We ran out of colours
+        return isGuardian ? minionColour : [entry.spent, secondaryColour];
+      }
 
-      if (_.isEqual(minionColour[0], guardianColour)) {
+      if (isGuardian) {
         return [guardianColour, secondaryColour];
       }
-      return [palette[count], secondaryColour];
+      return [entry.palette[count], secondaryColour];
     },
   };
 });

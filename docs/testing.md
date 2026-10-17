@@ -77,8 +77,8 @@ real failures as "excluded" while the run stayed green.
 ## The validators
 
 Every `validate:*` script that `npm run validate` runs has a row here.
-`validate:docs` checks that it does. `validate:race-trees` is local-only and is
-described separately below.
+`validate:docs` checks that it does. `validate:race-trees` and
+`validate:queller-maps` are local-only and are described separately below.
 
 | Command                 | Catches                                                                                                                                                                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -209,6 +209,23 @@ factory and fabber lists whole. Their
 stripping (`races.md`, "Race trees") is pinned by unit tests alone
 (`test/referee_game_files_ai_paths.test.js`,
 `test/referee_ai_race_trees.test.js`).
+
+**`npm run validate:queller-maps` is local-only too.** It reads GWO's three
+Queller unit-map shadows (`pa/ai_queller/q_{bronze,silver,uber}/unit_maps/ai_unit_map.json`)
+and the install's `pa_ex1/ai_queller/q_<tier>/unit_maps/` files. Each shadow
+must equal its tier's `ai_unit_map.json` with that tier's `mla.json`
+`unit_map` entries added. An `mla.json` entry that the base map also has fails,
+as does an `mla.json` key other than `unit_map`. The `q_bronze` and `q_silver`
+shadows must also equal the `q_uber` one, and so must the install's `q_bronze`
+and `q_silver` `ai_unit_map.json` and `ai_unit_map_x1.json`. The referee reads
+only the `q_uber` maps as base maps ([shadowing.md](shadowing.md), "Which copy
+each `pa/ai_queller/` file replaces"). A failure names each missing key, extra
+key, and differing value by its path in the file. A file with no `unit_map`
+object is named once instead. A file that is missing or does not parse is named
+with its path, and the script exits non-zero before comparing anything, as it
+does without the install. `test/validate_queller_maps.test.js` tests the
+comparison on fixtures and runs the script over fixture installs that match
+and that differ, so CI covers both. Run it after a PA patch.
 
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
@@ -608,10 +625,11 @@ test's own context, so the script reads the globals the test stubbed through
 `global-stubs.js`, `requireGW` included. The test answers `requireGW` with
 stand-ins for the modules the script asks for. It suits what a script does
 before its `requireGW` callback, or a callback small enough to stub:
-`test/bugfixes.test.js`, `test/coop_ai_commanders.test.js`,
-`test/coop_ai_race_for.test.js`, `test/gwo_panel.test.js`,
-`test/per_player_loadout_race_picker.test.js`, and
-`test/race_picker_view.test.js` use it. A callback that needs
+`test/bugfixes.test.js`, `test/coop_ai_add_slot.test.js`,
+`test/coop_ai_commanders.test.js`, `test/coop_ai_race_for.test.js`,
+`test/gwo_panel.test.js`, `test/per_player_loadout_race_picker.test.js`,
+`test/race_picker_view.test.js`, and `test/referee_hire_clients.test.js` use
+it. A callback that needs
 dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
 gets no such test. Its testable logic is extracted instead.
 

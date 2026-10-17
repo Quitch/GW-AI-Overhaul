@@ -4,7 +4,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
 ], function (galaxySizeNames) {
-  var SOURCE_TIMEOUT_MS = 60000;
+  var SOURCE_TIMEOUT_MS = 20000;
   // Stock GW.manifest.saveGame never rejects: a failed write never settles.
   var SAVE_TIMEOUT_MS = 30000;
 
@@ -78,6 +78,7 @@ define([
     // The seed the player actually asked for, captured on the first attempt.
     var warGenerationBaseSeed;
     var lastGeneratedName;
+    var timedOutSources = [];
 
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
@@ -205,6 +206,7 @@ define([
             "System source timed out after " + SOURCE_TIMEOUT_MS + "ms: " + name
           );
           sourceFailed = true;
+          timedOutSources.push(name);
           give([]);
         }, SOURCE_TIMEOUT_MS);
         $.when(loading).then(
@@ -224,6 +226,14 @@ define([
         return settled.promise();
       };
 
+      // A load without state() cannot say it has settled, so it stays skipped.
+      var stillTimedOut = function (name, load) {
+        return (
+          _.includes(timedOutSources, name) &&
+          !(load && _.isFunction(load.state) && load.state() !== "pending")
+        );
+      };
+
       var onOptionsLoaded = function (options) {
         var loading = [];
         _.forEach(model.selectedNames(), function (name) {
@@ -234,7 +244,15 @@ define([
             // It belongs to another mod, so a throw here would escape the
             // deferred callback and leave Go To War waiting on `ready`.
             try {
-              loading.push(sourceSystems(name, option.load()));
+              var load = option.load();
+              if (stillTimedOut(name, load)) {
+                console.error(
+                  "System source skipped after timing out: " + name
+                );
+                sourceFailed = true;
+              } else {
+                loading.push(sourceSystems(name, load));
+              }
             } catch (e) {
               console.error(
                 "System source failed to load: " +
@@ -261,15 +279,38 @@ define([
           withoutBrackets();
           return;
         }
+        var waiting = true;
+        var stopWaiting = function () {
+          var wasWaiting = waiting;
+          waiting = false;
+          clearTimeout(timer);
+          return wasWaiting;
+        };
+        // Before loadOptions(), as in sourceSystems.
+        var timer = setTimeout(function () {
+          waiting = false;
+          console.error(
+            "System sources timed out after " + SOURCE_TIMEOUT_MS + "ms"
+          );
+          sourcesUnavailable();
+        }, SOURCE_TIMEOUT_MS);
         // Shared Systems' own call, guarded as option.load() is above.
         try {
-          chooseStarSystemTemplates
-            .loadOptions()
-            .then(onOptionsLoaded, function () {
-              console.error("System sources failed to load");
-              sourcesUnavailable();
-            });
+          chooseStarSystemTemplates.loadOptions().then(
+            function (options) {
+              if (stopWaiting()) {
+                onOptionsLoaded(options);
+              }
+            },
+            function () {
+              if (stopWaiting()) {
+                console.error("System sources failed to load");
+                sourcesUnavailable();
+              }
+            }
+          );
         } catch (e) {
+          stopWaiting();
           console.error(
             "System sources failed to load: " + ((e && e.stack) || e)
           );
@@ -317,6 +358,7 @@ define([
       warGenerationAttempts++;
       if (warGenerationAttempts === 1) {
         warGenerationBaseSeed = run.seed;
+        timedOutSources = [];
       }
 
       run.token = {};

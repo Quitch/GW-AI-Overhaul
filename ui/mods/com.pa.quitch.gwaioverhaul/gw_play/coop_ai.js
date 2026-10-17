@@ -108,7 +108,7 @@
 
     // The colour pairs the battle gives the AIs: the players' sequence
     // continued, as stock's gwCoopPlayerColors counts the human armies.
-    var aiColours = function (aiCount) {
+    var aiColours = function (aiCount, humanCount) {
       var loaded = mods();
       var inventory = game.inventory();
       return loaded.roster.colourPairs({
@@ -116,7 +116,7 @@
         humanArmies: loaded.roster.humanArmies(
           model.gwCampaignSharedControl() &&
             !model.gwCampaignPerPlayerTechCards(),
-          model.gwCampaignConnectedClients().length
+          humanCount
         ),
         aiCount: aiCount,
         faction: loaded.factions[inventory.getTag("global", "playerFaction")],
@@ -124,7 +124,7 @@
       });
     };
 
-    var launchRoster = function () {
+    var launchRoster = function (connectedClients) {
       var loaded = mods();
       if (!loaded) {
         if (model.gwCampaignActive() && savedAiCount()) {
@@ -134,14 +134,18 @@
       }
 
       var inventory = game.inventory();
+      var humanCount = (connectedClients || model.gwCampaignConnectedClients())
+        .length;
       return loaded.roster.launchAis({
         records: game.coopPlayerInventoryData(),
         active: model.gwCampaignActive(),
         perPlayerTech: model.gwCampaignPerPlayerTechCards(),
-        humanCount: model.gwCampaignConnectedClients().length,
+        humanCount: humanCount,
         hostRace: loaded.races.raceOf(inventory),
         hostInventory: inventory,
-        colours: aiColours,
+        colours: function (aiCount) {
+          return aiColours(aiCount, humanCount);
+        },
       });
     };
 
@@ -189,7 +193,7 @@
         }
         return mods().roster.panelEntries(
           list,
-          aiColours(list.length),
+          aiColours(list.length, model.gwCampaignConnectedClients().length),
           mods().races.raceOf(game.inventory()),
           perPlayer()
         );
@@ -294,6 +298,7 @@
         return (
           stockCanAdd() &&
           !lobbyChanging() &&
+          !model.launchingFight() &&
           (!loaded ||
             loaded.roster.roomForSlot(
               parseInt(model.gwCampaignMaxClients(), 10),

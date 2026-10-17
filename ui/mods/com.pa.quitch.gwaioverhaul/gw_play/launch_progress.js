@@ -30,6 +30,12 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress_state.js",
       ],
       function (createLaunchProgress) {
+        // A co-op viewer's only stock signal is the page being replaced, so the
+        // host mirrors the panel to every viewer. The send helper no-ops
+        // off-host. Stock queues every host operator; the handler returns
+        // nothing, so later updates in that queue need not wait on it.
+        var launchProgressOperator = "gwo_launch_progress";
+
         var progress = createLaunchProgress({
           visible: model.gwoLaunchProgress.visible,
           title: model.gwoLaunchProgress.title,
@@ -39,43 +45,12 @@
             title: loc("!LOC:Preparing for battle"),
             message: loc("!LOC:Saving war"),
           },
+          loc: loc,
+          broadcast: function (payload) {
+            model.sendCampaignHostOperator(launchProgressOperator, payload);
+          },
         });
         model.gwoLaunchProgress = progress;
-
-        // A co-op viewer's only stock signal is the page being replaced, so the
-        // host mirrors the panel to every viewer. Wrapping the methods rather
-        // than the callers covers stages reported by other mods too. The send
-        // helper no-ops off-host. Stock queues every host operator; the handler
-        // returns nothing, so later updates in that queue need not wait on it.
-        var launchProgressOperator = "gwo_launch_progress";
-
-        var broadcast = function (action, text) {
-          model.sendCampaignHostOperator(launchProgressOperator, {
-            action: action,
-            message: text,
-          });
-        };
-
-        var localBegin = progress.begin;
-        progress.begin = function () {
-          localBegin();
-          broadcast("begin");
-        };
-
-        var localStage = progress.stage;
-        progress.stage = function (text) {
-          localStage(text);
-          // stage is a no-op outside a launch; mirror that.
-          if (progress.visible()) {
-            broadcast("stage", text);
-          }
-        };
-
-        var localEnd = progress.end;
-        progress.end = function () {
-          localEnd();
-          broadcast("end");
-        };
 
         model.registerCampaignHostOperatorHandler(
           launchProgressOperator,
@@ -83,14 +58,7 @@
             if (!model.isCampaignViewer()) {
               return;
             }
-            var payload = operator.payload || {};
-            if (payload.action === "begin") {
-              localBegin();
-            } else if (payload.action === "stage") {
-              localStage(payload.message);
-            } else if (payload.action === "end") {
-              localEnd();
-            }
+            progress.receive(operator.payload || {});
           }
         );
 
