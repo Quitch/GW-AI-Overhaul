@@ -73,11 +73,7 @@ define(function () {
               model.gwoCardsToUnits
             );
 
-          if (match && cardChance) {
-            cardChance = _.assign({}, cardChance, { chance: 0 });
-          }
-
-          return cardChance;
+          return match ? undefined : cardChance;
         });
 
         var resultIndex = helpers.chooseDealIndex(

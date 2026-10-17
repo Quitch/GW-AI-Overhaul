@@ -138,7 +138,8 @@ define([
       var probability = 0;
 
       _.forEach(fullHand, function (deal, index) {
-        var chance = deal ? Number(deal.chance) : 0;
+        var raw = deal && deal.chance;
+        var chance = _.isNumber(raw) || _.isString(raw) ? Number(raw) : 0;
         if (chance > 0 && isFinite(chance)) {
           hand.push({ index: index, chance: chance });
           probability += chance;
