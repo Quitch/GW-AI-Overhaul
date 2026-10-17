@@ -141,6 +141,10 @@
       _.forEach(settingNames, function (name) {
         snapshot[name] = settings[name]();
       });
+      var activeCard = model.activeStartCard();
+      if (activeCard) {
+        snapshot.chosenLoadoutId = cardId(activeCard);
+      }
       settings.previousSettings(snapshot);
     };
 
@@ -217,8 +221,19 @@
         // ui.js swaps activeStartCardIndex for the remembered setting, but
         // stock's activeStartCard computed still tracks the observable it was
         // built on, so until the list first changes it peeks stock card 0.
-        // The first build therefore resolves the id from the new list at the
-        // remembered index; later builds preserve the id already selected.
+        // The first build therefore selects the remembered loadout id, or for
+        // an older save without one, or an id no longer installed, the card at
+        // the remembered index; later builds preserve the id already selected.
+        var savedLoadoutId = function (cards) {
+          var previous =
+            model.gwoDifficultySettings.previousSettings.peek() || {};
+          var id = previous.chosenLoadoutId;
+          return _.some(cards, function (card) {
+            return cardId(card) === id;
+          })
+            ? id
+            : undefined;
+        };
         var built = false;
         model.gwoRebuildStartCards = function () {
           var savedIndex = model.activeStartCardIndex.peek();
@@ -233,7 +248,9 @@
           );
           var cards = model.startCards.peek();
           var activeId =
-            previousId || (cards[savedIndex] && cardId(cards[savedIndex]));
+            previousId ||
+            (!built && savedLoadoutId(cards)) ||
+            (cards[savedIndex] && cardId(cards[savedIndex]));
           var index = loadoutSelection.selectableIndex(
             cards,
             activeId,
