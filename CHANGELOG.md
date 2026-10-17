@@ -37,6 +37,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- In co-op with per-player tech, a player who joins while a battle is being set up no longer leaves a co-op AI player fighting with that player's tech or Sub Commanders; the launch stops instead, and the host can press Fight again
 
 ## v7.6.0 - 2026-10-03
 

@@ -99,9 +99,11 @@ This sequence ties most of the above together. `gw_play/referee.js` hijacks the
 base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
-0. `gw_play/referee.js` fixes the battle's co-op AI players as `ref.coopAis`,
-   from `model.gwoCoopAi.launchRoster()`. The steps below read the roster from
-   there, never from the war. See [`coop.md`](coop.md), "AI players".
+0. `gw_play/referee.js` reads the connected clients once as `ref.hireClients`
+   and fixes the battle's co-op AI players as `ref.coopAis`, from
+   `model.gwoCoopAi.launchRoster(ref.hireClients)`. The steps below read the
+   roster and the clients from there, never from the war or the live list. See
+   [`coop.md`](coop.md), "AI players" and "The two referees".
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
    applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".
