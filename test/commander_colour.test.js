@@ -73,6 +73,15 @@ describe("pick", () => {
     }
   });
 
+  it("colours a minion with no colour of its own from the palette", () => {
+    for (const faction of [0, 1, 2, 3, 4]) {
+      assert.deepEqual(
+        colour.pick(faction, undefined, 1),
+        colour.pick(faction, minion, 1)
+      );
+    }
+  });
+
   it("has no palette for an unknown faction", () => {
     assert.equal(colour.paletteSize(7), 0);
   });

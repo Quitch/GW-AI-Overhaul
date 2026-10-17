@@ -158,11 +158,17 @@ of the palette. Before PA 124670 the palette was private to
 own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
-No `coopPlayerColors` entry, the faction colour included, is also in that
-faction's Sub Commander palette or its spent-palette colour (below), so no Sub
-Commander ever gets a player's colour. Legonis Machina and Revenants each
-replace the one stock entry that broke this rule. Synchronous takes greens of
-GWO's own in place of stock's oranges, since its faction colour is GWO's green.
+Every colour in a faction's Sub Commander palette, and its spent-palette
+colour (below), is at least 30 from every player's colour, measured as
+straight-line RGB distance, √(Δr² + Δg² + Δb²). A closer colour looks the same
+in battle, so in the five shipped factions no Sub Commander ever gets, or looks
+like it has, a player's colour. That covers every `coopPlayerColors` entry, the
+faction colour included, the lobby's dimmed form of each, and the lobby colours
+players 7 to 12 take once the array runs out (a war seats up to 12).
+`test/faction_coop_colours.test.js` enforces this. Legonis Machina and
+Revenants each replace the one stock entry that broke this rule. Synchronous
+takes greens of GWO's own in place of stock's oranges, since its faction colour
+is GWO's green.
 
 Subcommander colours are a separate system and still GWO's own. See
 `gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
@@ -201,11 +207,13 @@ luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
 
 The palette can run out, and the battle still goes ahead. `pick()` then
-gives the faction's own spent-palette colour, one in neither its palette nor
-its `coopPlayerColors`. It does not use the caller's colour, the minion's own:
+gives the faction's own spent-palette colour, which is not in its palette and is
+at least 30 from every player's colour. It does not use the caller's colour,
+the minion's own:
 every faction's minions carry the faction colour, which is the host's army
-colour. Every Sub Commander past the palette shares that one colour. An unknown
-faction, and the Guardians, still get the caller's colour.
+colour. Every Sub Commander past the palette shares that one colour. The
+Guardians keep the caller's colour. So does a faction with no palette, such as
+one a faction mod adds, so its Sub Commanders all take the host's colour.
 
 ## Resolving viewers
 

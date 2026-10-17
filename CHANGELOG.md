@@ -37,7 +37,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
-- Sub Commanders no longer fight in a player's army colour, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
+- Sub Commanders no longer fight in a player's army colour, or one too close to tell apart, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
 
 ## v7.6.0 - 2026-10-03
 
