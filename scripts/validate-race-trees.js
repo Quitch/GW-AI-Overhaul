@@ -25,7 +25,7 @@ const refereeAi = loadCouiModule(MOD_ROOT + "/gw_play/referee_ai.js");
 const MLA = races.MLA_ID;
 const GUARDIANS_ROOT = "/pa/ai/player_guardians/";
 const EMPTY_UNIT_LIST_WARNING =
-  /^gwoRaces: no \S+ unit in the unit list read \(0 units\) - not mounted yet\?$/;
+  /^gwoRaces: no \S+ unit in the unit list read \(0 units\)/;
 
 function baseRoots() {
   return [

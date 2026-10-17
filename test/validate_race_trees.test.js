@@ -76,13 +76,14 @@ describe("validate-race-trees.js", () => {
   });
 
   it("explains the empty unit list once instead of warning per run", () => {
-    assert.doesNotMatch(run.stderr + run.stdout, /not mounted yet\?/);
-    assert.equal(
-      run.stdout.match(
-        /^Running without capability cells: the unit list is deliberately empty$/gm
-      ).length,
-      1
+    assert.doesNotMatch(
+      run.stderr + run.stdout,
+      /gwoRaces: no \S+ unit in the unit list read/
     );
+    const banner = run.stdout.match(
+      /^Running without capability cells: the unit list is deliberately empty$/gm
+    );
+    assert.equal((banner || []).length, 1, run.stdout);
   });
 
   it("reads no race but the fixture's", () => {
