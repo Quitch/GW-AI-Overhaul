@@ -62,6 +62,25 @@ Lines to ignore: `:1: Uncaught TypeError: undefined is not a function` on every
 scene load, and `Failed loading coui://download/community-mods-<scene>.js with
 404`. Both are stock.
 
+In a battle, these come from stock or a third-party mod, not from GWO:
+
+- `Error opening struct UnitSpec ... .json.<tag>` and `.json.ai0.ai0`
+  `UnitMapSpec` errors, for map units the tagged army does not hold.
+- `Control module name did not resolved to a spec` on a Sub Commander: the
+  army does not own the race's Catalyst yet.
+- `One or both metal extractor names did not resolved to a spec`, about 60 a
+  second, from the Sub Commander of a Space Excavation player. It still builds.
+- Solar Cell refusals from MLA armies with Section 17, until Section 17
+  releases its merged `Custom58` fix.
+- A missing `bug_siren` spec (Bug Faction lists the unit without shipping it),
+  and a flare tool that fails to load (Exiles).
+- A doubled army name such as "Osiris Osiris": stock joins the names of a
+  multi-slot army.
+
+A server `Offending json` dump is the spec after flattening
+([specs.md](specs.md#a-modded-spec-is-flattened)). Diff it against the file in
+the mod's zip to see what the mods changed.
+
 Lines that mean something:
 
 - `War created successfully using Galactic War Overhaul v<x>` is not the end of
