@@ -57,7 +57,6 @@ define(function () {
   };
 
   var legonisColours = [
-    [0, 176, 255],
     [153, 204, 255],
     [102, 178, 255],
     [51, 153, 255],
@@ -74,7 +73,6 @@ define(function () {
     [0, 255, 255],
   ];
   var foundationColours = [
-    [145, 87, 199],
     [229, 204, 255],
     [204, 153, 255],
     [178, 102, 255],
@@ -93,7 +91,6 @@ define(function () {
     [255, 51, 153],
   ];
   var synchronousColours = [
-    [126, 226, 101],
     [204, 255, 153],
     [178, 255, 102],
     [128, 255, 0],
@@ -129,11 +126,31 @@ define(function () {
     [153, 153, 0],
   ];
   var clusterColours = [
-    [128, 128, 128],
-    [142, 107, 68],
-    [166, 166, 166],
-    [90, 90, 90],
+    [35, 35, 35],
     [70, 70, 70],
+    [90, 90, 90],
+    [166, 166, 166],
+    [245, 240, 230],
+    [40, 52, 64],
+    [70, 100, 130],
+    [140, 150, 165],
+    [60, 40, 30],
+    [101, 67, 33],
+    [120, 100, 80],
+    [142, 107, 68],
+    [160, 82, 45],
+    [180, 130, 90],
+    [196, 164, 132],
+    [205, 190, 160],
+  ];
+
+  // For a spent palette: a minion's own colour is the player army's.
+  var spentColours = [
+    [30, 60, 120],
+    [80, 30, 110],
+    [30, 70, 40],
+    [100, 20, 30],
+    [95, 80, 60],
   ];
 
   // Sorted once: the order depends only on the palette.
@@ -155,16 +172,24 @@ define(function () {
       );
     },
 
+    paletteSize: function (faction) {
+      var palette = factions[faction];
+      return palette ? palette.length : 0;
+    },
+
     pick: function (faction, minionColour, count) {
+      var guardianColour = [255, 255, 255];
+      var secondaryColour = [192, 192, 192];
+
       // An unknown faction has no palette, and falls back like a spent one.
       var palette = factions[faction];
       if (!palette || count > palette.length - 1) {
         // We ran out of colours
+        if (palette && !_.isEqual(_.get(minionColour, 0), guardianColour)) {
+          return [spentColours[_.indexOf(factions, palette)], secondaryColour];
+        }
         return minionColour;
       }
-
-      var guardianColour = [255, 255, 255];
-      var secondaryColour = [192, 192, 192];
 
       if (_.isEqual(minionColour[0], guardianColour)) {
         return [guardianColour, secondaryColour];
