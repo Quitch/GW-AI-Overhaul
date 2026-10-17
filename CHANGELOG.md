@@ -37,6 +37,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- In co-op, a player who uses a different game language from the host sees the battle launch steps in their own language, not the host's
 
 ## v7.6.0 - 2026-10-03
 

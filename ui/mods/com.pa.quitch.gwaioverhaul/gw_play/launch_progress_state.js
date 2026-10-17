@@ -8,6 +8,48 @@ define([], function () {
     var message = deps.message;
     var steps = deps.steps;
     var labels = deps.labels;
+    var loc = deps.loc;
+    var broadcast = deps.broadcast || function () {};
+
+    var showBegin = function () {
+      if (visible()) {
+        return false;
+      }
+      steps([]);
+      title(labels.title);
+      message(labels.message);
+      visible(true);
+      return true;
+    };
+
+    // Nothing to report outside a launch: a mod may mount on scene entry too.
+    var showStage = function (text) {
+      if (!visible()) {
+        return false;
+      }
+      if (message()) {
+        steps.push(message());
+      }
+      message(text);
+      return true;
+    };
+
+    var showEnd = function () {
+      var wasVisible = visible();
+      visible(false);
+      message("");
+      steps([]);
+      return wasVisible;
+    };
+
+    // Built from keys so each co-op viewer reads the line in its own language.
+    var keyedText = function (source) {
+      var text = loc(source.key);
+      if (source.prefix) {
+        text = loc(source.prefix) + ": " + text;
+      }
+      return text;
+    };
 
     var progress = {
       visible: visible,
@@ -16,30 +58,37 @@ define([], function () {
       steps: steps,
 
       begin: function () {
-        if (visible()) {
-          return;
+        if (showBegin()) {
+          broadcast({ action: "begin" });
         }
-        steps([]);
-        title(labels.title);
-        message(labels.message);
-        visible(true);
       },
 
-      // Nothing to report outside a launch: a mod may mount on scene entry too.
-      stage: function (text) {
-        if (!visible()) {
-          return;
+      stage: function (text, source) {
+        var payload = { action: "stage", message: text };
+        if (source && source.key) {
+          payload.message = keyedText(source);
+          payload.key = source.key;
+          payload.prefix = source.prefix;
         }
-        if (message()) {
-          steps.push(message());
+        if (showStage(payload.message)) {
+          broadcast(payload);
         }
-        message(text);
       },
 
       end: function () {
-        visible(false);
-        message("");
-        steps([]);
+        if (showEnd()) {
+          broadcast({ action: "end" });
+        }
+      },
+
+      receive: function (payload) {
+        if (payload.action === "begin") {
+          showBegin();
+        } else if (payload.action === "stage") {
+          showStage(payload.key ? keyedText(payload) : payload.message);
+        } else if (payload.action === "end") {
+          showEnd();
+        }
       },
 
       // Stock fight's early returns leave launchingFight as they found it, so
