@@ -97,6 +97,25 @@ define([
       return cardsToOffer;
     },
 
+    // The host's offer size as its explore deal started, so deleting a card
+    // mid-offer cannot change it. A record from another war or star, or none,
+    // falls back to the size the hand gives now.
+    exploreCardsOffered: function (saved, gameId, star, offer, inventory) {
+      if (
+        saved &&
+        saved.gameId === gameId &&
+        saved.star === star &&
+        _.isNumber(saved.cardsOffered)
+      ) {
+        return saved.cardsOffered;
+      }
+      return helpers.cardsOfferedCount(offer, inventory);
+    },
+
+    exploreRerollsUsed: function (cardsOffered, cardsHeld) {
+      return Math.max(0, cardsOffered - cardsHeld);
+    },
+
     // Whether `card` should be withheld from a deal. Duplicates are allowed
     // across players but not within one player's deal.
     doNotDealCard: function (

@@ -88,10 +88,7 @@
         return;
       }
 
-      var cardsOffered = helpers.cardsOfferedCount(
-        numCardsToOffer,
-        game.inventory()
-      );
+      var cardsOffered = exploreCardsOffered();
       var star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
@@ -100,6 +97,20 @@
       star.cardList([]);
       game.turnState("begin");
       model.explore(true);
+    };
+
+    var exploreOffer = ko
+      .observable()
+      .extend({ session: "gwo_explore_cards_offered" });
+
+    var exploreCardsOffered = function () {
+      return helpers.exploreCardsOffered(
+        exploreOffer(),
+        String(game.id),
+        game.currentStar(),
+        numCardsToOffer,
+        game.inventory()
+      );
     };
 
     var setupTechRerolls = function () {
@@ -112,11 +123,13 @@
       // Clean start for new games in a single session
       if (game.turnState() === "begin") {
         model.gwoRerollsUsed(0);
+        exploreOffer(undefined);
       }
 
       ko.computed(function () {
         if (game.turnState() === "end") {
           model.gwoRerollsUsed(0);
+          exploreOffer(undefined);
           model.gwoOfferRerolls(true);
           model.gwoRerollPending(false);
         }
@@ -177,19 +190,19 @@
     setupTechRerolls();
 
     // A save taken mid-exploration holds a short offer, so the spent rerolls are
-    // recoverable from its length. Needs helpers for the bonus-aware offer size:
-    // against the bare constant a 4-card offer yields -1 and the next reroll is free.
+    // recoverable from its length against the offer size the deal saved. A save
+    // without one falls back to the hand's bonus-aware size now, which needs
+    // helpers, clamped at zero.
     var restoreExploreSaveRerolls = function () {
       if (game.turnState() !== "explore") {
         return;
       }
 
       var star = game.galaxy().stars()[game.currentStar()];
-      var cardsOffered = helpers.cardsOfferedCount(
-        numCardsToOffer,
-        game.inventory()
+      var cardsOffered = exploreCardsOffered();
+      model.gwoRerollsUsed(
+        helpers.exploreRerollsUsed(cardsOffered, star.cardList().length)
       );
-      model.gwoRerollsUsed(cardsOffered - star.cardList().length);
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
@@ -600,6 +613,7 @@
           inventory: inventory,
           helpers: helpers,
           numCardsToOffer: numCardsToOffer,
+          exploreOffer: exploreOffer,
           chooseCards: chooseCards,
           coopAiDeciding: coopAiDeciding,
           startCardUnlocked: startCardUnlocked,

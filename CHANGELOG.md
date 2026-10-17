@@ -21,6 +21,7 @@
 ### Bugfix
 
 - Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
+- Deleting a tech card while exploring no longer changes how many cards a reroll deals or how many rerolls you have, and reloading the galaxy map afterwards no longer gives you an extra card and an extra reroll
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 - Commander tech now also strengthens a stock commander that a faction-mod army keeps, such as the Guardians' Unicorn in a Legion war, which previously got none of those buffs

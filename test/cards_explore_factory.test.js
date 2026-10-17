@@ -51,6 +51,7 @@ function setup(overrides = {}) {
       unlocked: true,
       shownLoadout: false,
       failCoopDeal: false,
+      exploreOffer: undefined,
     },
     overrides
   );
@@ -73,6 +74,7 @@ function setup(overrides = {}) {
     hasCard: () => true,
   };
   const game = {
+    id: 1234,
     explore: () => {
       calls.explores += 1;
       if (options.gameExplores) {
@@ -97,6 +99,7 @@ function setup(overrides = {}) {
   };
   const scanning = makeObservable(false);
   const offerRerolls = makeObservable(true);
+  const exploreOffer = makeObservable(options.exploreOffer);
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -137,6 +140,7 @@ function setup(overrides = {}) {
       },
     }),
     numCardsToOffer: 3,
+    exploreOffer,
     chooseCards: (request) => {
       calls.deals.push(request);
       return options.holdDeal
@@ -183,6 +187,7 @@ function setup(overrides = {}) {
     star,
     scanning,
     offerRerolls,
+    exploreOffer,
     timers,
     inventory,
     model,
@@ -304,6 +309,55 @@ describe("model.explore", () => {
 
     assert.deepEqual(runDelayed(run), [2000]);
     assert.equal(run.scanning(), false);
+  });
+
+  it("saves the offer size as the explore deal starts", async () => {
+    const run = build({ cardsOffered: 4 });
+
+    await run.model.explore();
+
+    assert.deepEqual(run.exploreOffer(), {
+      gameId: "1234",
+      star: 2,
+      cardsOffered: 4,
+    });
+  });
+
+  it("deals a reroll from the saved offer size, not the hand now", async () => {
+    // A full hand was offered 4; a card deleted since makes the hand offer 3.
+    const saved = { gameId: "1234", star: 2, cardsOffered: 4 };
+    const run = build({
+      cardsOffered: 3,
+      rerollsUsed: 1,
+      preDealt: [],
+      exploreOffer: saved,
+    });
+
+    await run.model.explore(true);
+
+    assert.equal(run.calls.deals[0].count, 3);
+    assert.equal(run.calls.offeredTo, undefined);
+    assert.equal(run.exploreOffer(), saved);
+  });
+
+  it("deals a reroll from the hand when the saved size is another star's or war's", async () => {
+    for (const saved of [
+      undefined,
+      { gameId: "1234", star: 7, cardsOffered: 5 },
+      { gameId: "other", star: 2, cardsOffered: 5 },
+    ]) {
+      release();
+      const run = build({
+        rerollsUsed: 1,
+        preDealt: [],
+        exploreOffer: saved,
+      });
+
+      await run.model.explore(true);
+
+      assert.equal(run.calls.deals[0].count, 2);
+      assert.equal(run.exploreOffer(), saved);
+    }
   });
 
   it("records nothing for a host reroll", async () => {
