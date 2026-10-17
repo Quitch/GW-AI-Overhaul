@@ -113,6 +113,16 @@
       );
     };
 
+    var saveExploreOffer = function (cardsOffered) {
+      exploreOffer(
+        helpers.exploreOfferRecord(
+          String(game.id),
+          game.currentStar(),
+          cardsOffered
+        )
+      );
+    };
+
     var setupTechRerolls = function () {
       model.gwoOfferRerolls = ko.observable(true);
       model.gwoRerollPending = ko.observable(false);
@@ -189,20 +199,29 @@
     };
     setupTechRerolls();
 
-    // A save taken mid-exploration holds a short offer, so the spent rerolls are
-    // recoverable from its length against the offer size the deal saved. A save
-    // without one falls back to the hand's bonus-aware size now, which needs
-    // helpers, clamped at zero.
+    // The offer size and spent rerolls live in this session's storage, so a
+    // gw_play reload keeps them. After a restart, a save taken mid-exploration
+    // holds a short offer, so the spent rerolls are recoverable from its length
+    // against the hand's bonus-aware size now, which needs helpers. That size is
+    // saved here, so a card deleted later cannot change it.
     var restoreExploreSaveRerolls = function () {
       if (game.turnState() !== "explore") {
         return;
       }
 
       var star = game.galaxy().stars()[game.currentStar()];
-      var cardsOffered = exploreCardsOffered();
-      model.gwoRerollsUsed(
-        helpers.exploreRerollsUsed(cardsOffered, star.cardList().length)
+      var restored = helpers.restoredExploreRerolls(
+        exploreOffer(),
+        String(game.id),
+        game.currentStar(),
+        numCardsToOffer,
+        game.inventory(),
+        model.gwoRerollsUsed(),
+        star.cardList().length
       );
+      var cardsOffered = restored.cardsOffered;
+      saveExploreOffer(cardsOffered);
+      model.gwoRerollsUsed(restored.rerollsUsed);
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
@@ -613,7 +632,8 @@
           inventory: inventory,
           helpers: helpers,
           numCardsToOffer: numCardsToOffer,
-          exploreOffer: exploreOffer,
+          exploreCardsOffered: exploreCardsOffered,
+          saveExploreOffer: saveExploreOffer,
           chooseCards: chooseCards,
           coopAiDeciding: coopAiDeciding,
           startCardUnlocked: startCardUnlocked,

@@ -97,23 +97,60 @@ define([
       return cardsToOffer;
     },
 
+    exploreOfferRecord: function (gameId, star, cardsOffered) {
+      return { gameId: gameId, star: star, cardsOffered: cardsOffered };
+    },
+
+    exploreOfferSaved: function (saved, gameId, star) {
+      return (
+        !!saved &&
+        saved.gameId === gameId &&
+        saved.star === star &&
+        _.isNumber(saved.cardsOffered)
+      );
+    },
+
     // The host's offer size as its explore deal started, so deleting a card
     // mid-offer cannot change it. A record from another war or star, or none,
     // falls back to the size the hand gives now.
     exploreCardsOffered: function (saved, gameId, star, offer, inventory) {
-      if (
-        saved &&
-        saved.gameId === gameId &&
-        saved.star === star &&
-        _.isNumber(saved.cardsOffered)
-      ) {
-        return saved.cardsOffered;
-      }
-      return helpers.cardsOfferedCount(offer, inventory);
+      return helpers.exploreOfferSaved(saved, gameId, star)
+        ? saved.cardsOffered
+        : helpers.cardsOfferedCount(offer, inventory);
     },
 
     exploreRerollsUsed: function (cardsOffered, cardsHeld) {
       return Math.max(0, cardsOffered - cardsHeld);
+    },
+
+    // A record for this offer was written in this session, beside the rerolls
+    // it has spent, so both stand: a thin deck's short hand would count too many.
+    // Without one, the spent rerolls are counted from the hand's length.
+    restoredExploreRerolls: function (
+      saved,
+      gameId,
+      star,
+      offer,
+      inventory,
+      rerollsUsed,
+      cardsHeld
+    ) {
+      var cardsOffered = helpers.exploreCardsOffered(
+        saved,
+        gameId,
+        star,
+        offer,
+        inventory
+      );
+      var kept =
+        helpers.exploreOfferSaved(saved, gameId, star) &&
+        _.isNumber(rerollsUsed);
+      return {
+        cardsOffered: cardsOffered,
+        rerollsUsed: kept
+          ? rerollsUsed
+          : helpers.exploreRerollsUsed(cardsOffered, cardsHeld),
+      };
     },
 
     // Whether `card` should be withheld from a deal. Duplicates are allowed

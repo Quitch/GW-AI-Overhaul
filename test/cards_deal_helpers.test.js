@@ -79,6 +79,51 @@ describe("exploreCardsOffered", () => {
   });
 });
 
+describe("exploreOfferRecord", () => {
+  it("is the record exploreCardsOffered reads back", () => {
+    const record = helpers.exploreOfferRecord("war", 4, 5);
+
+    assert.deepEqual(record, { gameId: "war", star: 4, cardsOffered: 5 });
+    assert.equal(helpers.exploreCardsOffered(record, "war", 4, 3), 5);
+  });
+});
+
+describe("restoredExploreRerolls", () => {
+  const saved = { gameId: "war", star: 4, cardsOffered: 4 };
+  const notFull = { handIsFull: () => false, hasCard: () => false };
+
+  it("keeps the session's spent rerolls beside its record of the offer", () => {
+    // A thin deck dealt 3 of the 4 offered, and no reroll was spent.
+    assert.deepEqual(
+      helpers.restoredExploreRerolls(saved, "war", 4, 3, notFull, 0, 3),
+      { cardsOffered: 4, rerollsUsed: 0 }
+    );
+  });
+
+  it("counts the spent rerolls from the hand without a record", () => {
+    const fullHand = { handIsFull: () => true, hasCard: () => false };
+
+    assert.deepEqual(
+      helpers.restoredExploreRerolls(undefined, "war", 4, 3, fullHand, 0, 2),
+      { cardsOffered: 4, rerollsUsed: 2 }
+    );
+  });
+
+  it("counts the spent rerolls from the hand for another star's record", () => {
+    assert.deepEqual(
+      helpers.restoredExploreRerolls(saved, "war", 5, 3, notFull, 0, 2),
+      { cardsOffered: 3, rerollsUsed: 1 }
+    );
+  });
+
+  it("counts the spent rerolls from the hand when the session holds no count", () => {
+    assert.deepEqual(
+      helpers.restoredExploreRerolls(saved, "war", 4, 3, notFull, undefined, 2),
+      { cardsOffered: 4, rerollsUsed: 2 }
+    );
+  });
+});
+
 describe("exploreRerollsUsed", () => {
   it("counts the cards the offer has lost", () => {
     assert.equal(helpers.exploreRerollsUsed(4, 2), 2);
@@ -123,6 +168,27 @@ describe("a tech card deleted during explore", () => {
 
     assert.equal(rerollsUsed, 0);
     assert.equal(rerollDeals(cardsOffered, rerollsUsed + 1), 3);
+  });
+
+  it("keeps the size counted on a restore once it is saved", () => {
+    // After a restart the full hand still gives 4; it is saved on restore, so
+    // a card deleted afterwards cannot shrink the next reroll.
+    const fullHand = { handIsFull: () => true, hasCard: () => false };
+    const restored = helpers.restoredExploreRerolls(
+      undefined,
+      "war",
+      4,
+      3,
+      fullHand,
+      0,
+      4
+    );
+    const record = helpers.exploreOfferRecord("war", 4, restored.cardsOffered);
+
+    assert.equal(
+      helpers.exploreCardsOffered(record, "war", 4, 3, afterDelete),
+      4
+    );
   });
 
   it("restores no spent rerolls, not -1, from an old save with no saved size", () => {

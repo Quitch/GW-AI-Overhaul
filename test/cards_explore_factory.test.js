@@ -51,7 +51,7 @@ function setup(overrides = {}) {
       unlocked: true,
       shownLoadout: false,
       failCoopDeal: false,
-      exploreOffer: undefined,
+      savedCardsOffered: undefined,
     },
     overrides
   );
@@ -66,6 +66,7 @@ function setup(overrides = {}) {
     saves: [],
     wins: [],
     logs: [],
+    savedOffers: [],
   };
 
   const turnState = makeObservable("begin");
@@ -74,7 +75,6 @@ function setup(overrides = {}) {
     hasCard: () => true,
   };
   const game = {
-    id: 1234,
     explore: () => {
       calls.explores += 1;
       if (options.gameExplores) {
@@ -99,7 +99,6 @@ function setup(overrides = {}) {
   };
   const scanning = makeObservable(false);
   const offerRerolls = makeObservable(true);
-  const exploreOffer = makeObservable(options.exploreOffer);
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -140,7 +139,8 @@ function setup(overrides = {}) {
       },
     }),
     numCardsToOffer: 3,
-    exploreOffer,
+    exploreCardsOffered: () => options.savedCardsOffered,
+    saveExploreOffer: (cardsOffered) => calls.savedOffers.push(cardsOffered),
     chooseCards: (request) => {
       calls.deals.push(request);
       return options.holdDeal
@@ -187,7 +187,6 @@ function setup(overrides = {}) {
     star,
     scanning,
     offerRerolls,
-    exploreOffer,
     timers,
     inventory,
     model,
@@ -316,48 +315,23 @@ describe("model.explore", () => {
 
     await run.model.explore();
 
-    assert.deepEqual(run.exploreOffer(), {
-      gameId: "1234",
-      star: 2,
-      cardsOffered: 4,
-    });
+    assert.deepEqual(run.calls.savedOffers, [4]);
   });
 
-  it("deals a reroll from the saved offer size, not the hand now", async () => {
+  it("deals a reroll from the offer size its deal saved, not the hand now", async () => {
     // A full hand was offered 4; a card deleted since makes the hand offer 3.
-    const saved = { gameId: "1234", star: 2, cardsOffered: 4 };
     const run = build({
       cardsOffered: 3,
+      savedCardsOffered: 4,
       rerollsUsed: 1,
       preDealt: [],
-      exploreOffer: saved,
     });
 
     await run.model.explore(true);
 
     assert.equal(run.calls.deals[0].count, 3);
     assert.equal(run.calls.offeredTo, undefined);
-    assert.equal(run.exploreOffer(), saved);
-  });
-
-  it("deals a reroll from the hand when the saved size is another star's or war's", async () => {
-    for (const saved of [
-      undefined,
-      { gameId: "1234", star: 7, cardsOffered: 5 },
-      { gameId: "other", star: 2, cardsOffered: 5 },
-    ]) {
-      release();
-      const run = build({
-        rerollsUsed: 1,
-        preDealt: [],
-        exploreOffer: saved,
-      });
-
-      await run.model.explore(true);
-
-      assert.equal(run.calls.deals[0].count, 2);
-      assert.equal(run.exploreOffer(), saved);
-    }
+    assert.deepEqual(run.calls.savedOffers, []);
   });
 
   it("records nothing for a host reroll", async () => {

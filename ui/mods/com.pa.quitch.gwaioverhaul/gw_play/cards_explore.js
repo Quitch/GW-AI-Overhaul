@@ -6,7 +6,8 @@ define(function () {
     var inventory = params.inventory;
     var helpers = params.helpers;
     var numCardsToOffer = params.numCardsToOffer;
-    var exploreOffer = params.exploreOffer;
+    var exploreCardsOffered = params.exploreCardsOffered;
+    var saveExploreOffer = params.saveExploreOffer;
     var chooseCards = params.chooseCards;
     var coopAiDeciding = params.coopAiDeciding;
     var startCardUnlocked = params.startCardUnlocked;
@@ -51,23 +52,12 @@ define(function () {
 
       var starIndex = game.currentStar();
       var star = game.galaxy().stars()[starIndex];
-      var gameId = String(game.id);
       var cardsOffered;
       if (force === true) {
-        cardsOffered = helpers.exploreCardsOffered(
-          exploreOffer(),
-          gameId,
-          starIndex,
-          numCardsToOffer,
-          inventory
-        );
+        cardsOffered = exploreCardsOffered();
       } else {
         cardsOffered = helpers.cardsOfferedCount(numCardsToOffer, inventory);
-        exploreOffer({
-          gameId: gameId,
-          star: starIndex,
-          cardsOffered: cardsOffered,
-        });
+        saveExploreOffer(cardsOffered);
       }
 
       // Deriving here rather than at war creation is what lets every player
