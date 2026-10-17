@@ -46,6 +46,9 @@ const TIER_SETTINGS = [
 const usable = { name: "Usable", planets: [] };
 const unusable = { name: "Unusable", unusable: true, planets: [] };
 
+// Lets the native promise gwoPromise.within hands back run its callbacks.
+const settle = () => new Promise((resolve) => setImmediate(resolve));
+
 // What an engine call hands back: a then, and no promise() for jQuery to find.
 function engineSettled(ok, value) {
   return {
@@ -86,6 +89,7 @@ function makeGame(war) {
   };
   let current;
   const game = {
+    id: "war-" + war.games.length,
     perPlayerTechCards: makeObservable(false),
     inventory: () => inventory,
     galaxy: () => galaxy,
@@ -401,10 +405,11 @@ function makeWar() {
 }
 
 describe("a war that generates", () => {
-  it("is built, dealt its loadout, peopled, recorded, saved, and opened", () => {
+  it("is built, dealt its loadout, peopled, recorded, saved, and opened", async () => {
     const war = makeWar();
 
     war.start();
+    await settle();
 
     const game = war.game();
     assert.equal(war.builds.length, 1);
@@ -524,6 +529,136 @@ describe("a war that generates", () => {
     war.start();
 
     assert.equal(war.records[0].uniqueAiLoadouts, false);
+  });
+});
+
+describe("a war whose save never finishes", () => {
+  const SAVE_TIMEOUT_MS = 30000;
+
+  const withHeldSave = (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = makeWar();
+    war.save = war.$.Deferred();
+    war.modules.GW.manifest.saveGame = (game) => {
+      war.saved.push(game);
+      return war.save.promise();
+    };
+    return war;
+  };
+
+  const failsAsABug = (war) => {
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.model.lastSceneUrl(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "Failed to generate valid war: error"
+    );
+  };
+
+  it("waits for the save before opening the war", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS - 1);
+    await settle();
+
+    assert.equal(war.saved.length, 1);
+    assert.equal(war.generatingWar(), true);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+    assert.deepEqual(war.errors, []);
+  });
+
+  it("fails the war as a bug after 30 seconds", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: war save timed out after 30000ms/
+    );
+    failsAsABug(war);
+  });
+
+  it("does not open the war when the save finishes too late", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+    war.save.resolve();
+    await settle();
+
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when the save fails", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    war.save.reject("blocked");
+    await settle();
+
+    assert.equal(war.errors[0], "War could not be saved and opened: blocked");
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when the save throws", async (t) => {
+    const war = withHeldSave(t);
+    war.modules.GW.manifest.saveGame = () => {
+      throw new Error("no save");
+    };
+
+    war.start();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no save/
+    );
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when opening it throws", async (t) => {
+    const war = withHeldSave(t);
+    war.model.lastSceneUrl = () => {
+      throw new Error("no scene");
+    };
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no scene/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.window.location.href, GW_START);
+  });
+
+  it("opens the war when the save finishes in time", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS - 1);
+    war.save.resolve();
+    await settle();
+    t.mock.timers.tick(1);
+    await settle();
+
+    assert.equal(war.model.activeGameId(), war.game().id);
+    assert.equal(war.window.location.href, GW_PLAY);
+    assert.equal(war.model.gwoWarGenerationError(), "");
+    assert.deepEqual(war.errors, []);
   });
 });
 

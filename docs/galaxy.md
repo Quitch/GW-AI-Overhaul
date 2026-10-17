@@ -34,6 +34,18 @@ Roughly, the order is:
 Step 5 is a piggy-back channel rather than a real API. The origin system is simply
 the one object guaranteed to survive into the play scene.
 
+The run then saves the war and opens `gw_play`. Stock `GW.manifest.saveGame` never
+rejects: a failed IndexedDB write leaves its promise pending for good. So
+`gw_start/war_generation.js` waits at most `SAVE_TIMEOUT_MS` (30 s) for it, and
+sets `model.activeGameId` (`gw_active_game`) only once the save has resolved. A save
+that times out, rejects, or throws gives up with the bug-report message (see
+Retries), and the profile keeps its previous active war. A throw while opening the
+saved war gives the same message, but `gw_active_game` may already name the new
+war, which is saved.
+The timer does not cancel stock's write. A write that lands after 30 s adds the war
+to the manifest, but nothing points `gw_active_game` at it, and the archive lists
+only wars that are over, so the player never sees it.
+
 ## The isolated-star bug
 
 The base game's `GalaxyBuilder.buildGraph()` builds a Delaunay triangulation of the

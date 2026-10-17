@@ -56,6 +56,9 @@ const unusable = {
   planets: [{ generator: { biome: "oasis" } }],
 };
 
+// Lets the native promise gwoPromise.within hands back run its callbacks.
+const settle = () => new Promise((resolve) => setImmediate(resolve));
+
 // What every api.* call returns: a then that chains, and nothing jQuery reads.
 function engineResolved(value) {
   return {
@@ -355,13 +358,14 @@ function finishBuild(scene) {
 }
 
 describe("a war that generates", () => {
-  it("is saved and opened", () => {
+  it("is saved and opened", async () => {
     const scene = startScene();
 
     scene.model.navToNewGame();
     listSources(scene, ["Uber"]);
     scene.sources.Uber.resolve([earthlike]);
     finishBuild(scene);
+    await settle();
 
     assert.deepEqual(scene.saved, [scene.games[0]]);
     assert.equal(scene.window.location.href, GW_PLAY);
@@ -486,13 +490,14 @@ describe("the setup panel while a war generates", () => {
     locked(scene);
   });
 
-  it("stays locked while the war opens", () => {
+  it("stays locked while the war opens", async () => {
     const scene = startScene();
 
     scene.model.navToNewGame();
     listSources(scene, ["Uber"]);
     scene.sources.Uber.resolve([earthlike]);
     finishBuild(scene);
+    await settle();
 
     assert.equal(scene.window.location.href, GW_PLAY);
     locked(scene);
