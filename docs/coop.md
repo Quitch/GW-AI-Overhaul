@@ -81,11 +81,13 @@ copies, and a battle mounts thousands of files. So the host's own pass hands its
 files over as JSON text (`gameFilePaths.cookFiles`), which clones in
 milliseconds. `mountFiles` would have made that text anyway.
 
-Each hire writes a viewer's Sub Commander tree at `.player<n>` by the viewer's
-position in the client list it read, and records that list as
-`hireClientKeys` (the `clientKey` of each viewer with a record, in order).
-Stock reads the list again for the per-player-tech referee, after both hires.
-A player who joins, leaves, or moves in between would shift every later viewer
+Each hire reads the client list once, in its first step, as `ref.hireClients`.
+It numbers the co-op AI players' tags from that list's length, writes a
+viewer's Sub Commander tree at `.player<n>` by the viewer's position in it, and
+records it as `hireClientKeys` (the `clientKey` of each viewer with a record, in
+order). A player who joins during the hire therefore takes neither an AI's tag
+nor a tree. Stock reads the list again for the per-player-tech referee, after
+both hires. A player who joins, leaves, or moves in between would shift every later viewer
 onto another's tree, so under per-player tech the lists must agree: the host's
 own hire fails if its
 list differs from the shared hire's, and the per-player-tech referee resolves
@@ -300,8 +302,8 @@ settings apply.
 every field a stock row has, so the stock markup binds it unchanged. Its
 `canKick` and `canRemove` are false, so stock's own buttons never act on it;
 GWO's Kick does. `canAddGwCampaignSlot` counts the AIs against the server's
-limit. An open lobby's limit counts every slot, and a lock's already leaves the
-AIs out. Both are read from the server, not from the war, because stock's
+limit, and is false while a launch is under way. An open lobby's limit counts
+every slot, and a lock's already leaves the AIs out. Both are read from the server, not from the war, because stock's
 restart after a battle never re-sends the lock.
 
 ### An AI is a record
@@ -417,7 +419,9 @@ recorded meanwhile ("AI players' tech").
 ### In a battle
 
 The first step of every hire (`gw_play/referee.js`) fixes the battle's roster
-as `ref.coopAis`, from `model.gwoCoopAi.launchRoster()`. A session whose war
+as `ref.coopAis`, from `model.gwoCoopAi.launchRoster(ref.hireClients)`, so
+their tags follow the human count of the hire's own client list ("The two
+referees"). A session whose war
 has AI records but whose AI modules did not load fails the hire, rather than
 fighting without its AI players. Fight is refused for the same reason, and
 while an add or kick is under way.

@@ -40,6 +40,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- In co-op with per-player tech, a player who joins while a battle is being set up no longer leaves a co-op AI player fighting with that player's tech or Sub Commanders; the launch stops instead, and the host can press Fight again
 - In co-op, a player who uses a different game language from the host sees GWO's own battle launch steps in their own language, not the host's
 - On the galaxy map, the Saving indicator no longer stays on screen for good after you take a tech card or win a battle when the game cannot write the war, such as when the disk is full: it clears after 30 seconds, and the next save tries again
 - Sub Commanders no longer fight in a player's army colour, or one too close to tell apart, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
