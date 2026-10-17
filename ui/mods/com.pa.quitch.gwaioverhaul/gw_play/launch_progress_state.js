@@ -8,6 +8,54 @@ define([], function () {
     var message = deps.message;
     var steps = deps.steps;
     var labels = deps.labels;
+    var localise =
+      deps.loc ||
+      (typeof loc === "function"
+        ? loc
+        : function (key) {
+            return key;
+          });
+    var broadcast = deps.broadcast || function () {};
+
+    var showBegin = function () {
+      if (visible()) {
+        return false;
+      }
+      steps([]);
+      title(labels.title);
+      message(labels.message);
+      visible(true);
+      return true;
+    };
+
+    // Nothing to report outside a launch: a mod may mount on scene entry too.
+    var showStage = function (text) {
+      if (!visible()) {
+        return false;
+      }
+      if (message()) {
+        steps.push(message());
+      }
+      message(text);
+      return true;
+    };
+
+    var showEnd = function () {
+      var wasVisible = visible();
+      visible(false);
+      message("");
+      steps([]);
+      return wasVisible;
+    };
+
+    // Built from keys so each co-op viewer reads the line in its own language.
+    var keyedText = function (source) {
+      var text = localise(source.key, source.options);
+      if (source.prefix) {
+        text = localise(source.prefix) + ": " + text;
+      }
+      return text;
+    };
 
     var progress = {
       visible: visible,
@@ -16,30 +64,44 @@ define([], function () {
       steps: steps,
 
       begin: function () {
-        if (visible()) {
-          return;
+        if (showBegin()) {
+          broadcast({ action: "begin" });
         }
-        steps([]);
-        title(labels.title);
-        message(labels.message);
-        visible(true);
       },
 
-      // Nothing to report outside a launch: a mod may mount on scene entry too.
-      stage: function (text) {
-        if (!visible()) {
+      stage: function (text, source) {
+        if (!showStage(text)) {
           return;
         }
-        if (message()) {
-          steps.push(message());
+        var payload = { action: "stage", message: text };
+        if (source && source.key) {
+          payload.key = source.key;
+          if (source.prefix) {
+            payload.prefix = source.prefix;
+          }
+          if (source.options) {
+            payload.options = source.options;
+          }
         }
-        message(text);
+        broadcast(payload);
       },
 
       end: function () {
-        visible(false);
-        message("");
-        steps([]);
+        if (showEnd()) {
+          broadcast({ action: "end" });
+        }
+      },
+
+      receive: function (payload) {
+        if (payload.action === "begin") {
+          showBegin();
+        } else if (payload.action === "stage") {
+          // A viewer that joined after the host's begin still gets the panel.
+          showBegin();
+          showStage(payload.key ? keyedText(payload) : payload.message);
+        } else if (payload.action === "end") {
+          showEnd();
+        }
       },
 
       // Stock fight's early returns leave launchingFight as they found it, so
