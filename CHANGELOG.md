@@ -37,6 +37,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- The war setup screen selects the loadout of your last war again after you favourite a loadout or install or remove a loadout mod, rather than the one now in its old place
 
 ## v7.6.0 - 2026-10-03
 
