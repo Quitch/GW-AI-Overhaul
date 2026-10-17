@@ -19,6 +19,21 @@
     // Halved; the base game takes the 20/sec default.
     stage.enableMouseOver(10);
 
+    // Every parallax write moves every star and redraws every lane, so its
+    // subscribers hear of it only as a frame is drawn. See architecture.md.
+    var notifyParallax;
+    var parallaxPending = false;
+    parallax.extend({
+      rateLimit: {
+        method: function (notify) {
+          notifyParallax = notify;
+          return function () {
+            parallaxPending = true;
+          };
+        },
+      },
+    });
+
     // For animated overlays, which the idle rate renders in too few frames.
     model.gwoRequestInteractiveFrames = function (durationMs) {
       interactiveUntil = Math.max(
@@ -41,7 +56,8 @@
         canvas.width !== lastWidth ||
         canvas.height !== lastHeight ||
         currentParallax[0] !== lastParallaxX ||
-        currentParallax[1] !== lastParallaxY;
+        currentParallax[1] !== lastParallaxY ||
+        parallaxPending;
 
       var now = window.performance.now();
       var interval =
@@ -62,6 +78,10 @@
       lastParallaxX = currentParallax[0];
       lastParallaxY = currentParallax[1];
 
+      if (parallaxPending) {
+        parallaxPending = false;
+        notifyParallax();
+      }
       originalUpdate.apply(stage, arguments);
     };
   } catch (e) {

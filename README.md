@@ -174,13 +174,14 @@ GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean
 
 Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository. In the game, the Report a Galactic War Bug button on the war setup screen, in the galaxy map's menu, and in the battle menu opens a new bug report there, with your war's details, tech cards, co-op settings, mods, and game language already filled in.
 
-The game also writes these details to its logs, which every bug report attaches.
+The game also writes these details to its logs, which every bug report attaches. If you report from GitHub, you need not type them in.
 
 ### Known issues
 
 - The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
 - Some loadouts are disabled for races other than MLA due to unit dependencies
 - Bugs and Exiles are not dealt the upgrade tech cards for the MLA units they field
+- Section 17's Solar Cell cannot be built by MLA commanders or fabbers. With Second Wave also active, MLA AIs keep trying to build it and can stall - this is a Section 17 bug, fixed upstream but not yet released
 
 ## Recommended mods
 

@@ -268,6 +268,10 @@
         return false;
       }
 
+      if (model.gwoAiStarsDealing && model.gwoAiStarsDealing()) {
+        return false;
+      }
+
       var from = game.currentStar();
       var to = model.selection.star();
 
@@ -285,6 +289,21 @@
 
       return galaxy.pathBetween(from, to, model.cheats.noFog());
     });
+
+    requireGW(
+      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js"],
+      function (starPaths) {
+        starPaths.install(galaxy);
+      },
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): star paths not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
+      }
+    );
 
     model.displayMove = ko.computed(function () {
       return model.canShowCampaignActionButtons() && model.canMove();

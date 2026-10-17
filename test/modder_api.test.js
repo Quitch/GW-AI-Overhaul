@@ -63,10 +63,6 @@ const GLOBALS = [
   ["gwoNewStartCards", MOD_ROOT + "/shared/loadouts.js"],
   ["gwoStartingCards", MOD_ROOT + "/shared/loadouts.js"],
   ["gwoSpecs", MOD_ROOT + "/gw_play/referee_game_files.js"],
-  [
-    "gwoSpecs",
-    "ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js",
-  ],
   ["gwoLoadoutBanks", MOD_ROOT + "/shared/loadout_banks.js"],
   ["gwoRaces", MOD_ROOT + "/shared/race_mods.js"],
   ["gwoRaces", MOD_ROOT + "/gw_play/races.js"],
@@ -96,6 +92,14 @@ describe("the modder globals are adopted, not overwritten", () => {
     assert.match(
       source(MOD_ROOT + "/gw_start/war_generation.js"),
       /_\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
+    );
+  });
+
+  // Seeded by referee_game_files.js, then read for each co-op viewer's specs.
+  it("gwoSpecs is read by the per-player tech referee", () => {
+    assert.match(
+      source(MOD_ROOT + "/gw_play/per_player_tech_referee.js"),
+      /extra: model\.gwoSpecs/
     );
   });
 
@@ -257,6 +261,7 @@ const CARD_HELPERS = [
   "loadoutIcon",
   "lockedHint",
   "missingAllUnits",
+  "missingObtainableUnit",
   "missingUnit",
   "mods",
   "navalWeight",

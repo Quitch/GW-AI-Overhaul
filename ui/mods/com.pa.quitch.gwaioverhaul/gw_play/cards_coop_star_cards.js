@@ -4,7 +4,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
-], function (coopHost, refereeCoop) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+], function (coopHost, refereeCoop, gwoPromise, starPaths) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -108,14 +110,23 @@ define([
     var gwoBank = params.gwoBank;
     var stockBank = params.stockBank;
     var gwoSettings = params.gwoSettings;
-    var gwoSave = params.gwoSave;
+    // gw_play/save_debt.js's owe and hold.
+    var oweSave = params.oweSave;
+    var holdSave = params.holdSave;
     var gwoTreasure = params.gwoTreasure;
     // The co-op AI players, as clients with role "ai", and whether one is
     // settling its deals. See coop.md, "AI players' tech".
     var aiClients = params.aiClients;
     var aiDeciding = params.aiDeciding;
+    // Whether the AI stars' deal is held or running. Its re-deal covers every
+    // star, so a gap-fill beside it would only send a second snapshot.
+    var aiStarDealHeld = params.aiStarDealHeld;
     // Held true while a refresh is in flight.
     var busy = params.busy;
+    // coop_publish.js's publish and hold, passed in: that module requires
+    // this one.
+    var publish = params.publish;
+    var hold = params.hold;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
@@ -124,10 +135,12 @@ define([
     var refreshInFlight;
     var refreshPending;
 
+    var connectedViewers = function () {
+      return refereeCoop.viewersOf(model.gwCampaignConnectedClients());
+    };
+
     var participants = function () {
-      return refereeCoop
-        .viewersOf(model.gwCampaignConnectedClients())
-        .concat(aiClients());
+      return connectedViewers().concat(aiClients());
     };
 
     var findRecord = function (client) {
@@ -136,12 +149,13 @@ define([
 
     var starsNeedingCards = function (record, redeal) {
       var wanted = [];
+      var canSelect = starPaths.selectable(model);
 
       _.forEach(model.galaxy.systems(), function (system, starIndex) {
         var ai = system.star.ai();
         if (
           starNeedsViewerCard({
-            canSelect: model.canSelect(starIndex),
+            canSelect: canSelect(starIndex),
             ai: ai,
             treasurePlanet: isTreasureStar(starIndex),
             staticTech: gwoSettings && gwoSettings.staticTech,
@@ -156,7 +170,10 @@ define([
       return wanted;
     };
 
-    var dealStarCard = function (target, inventory, playerKey, record) {
+    // A refresh calls deal() on every card of the deck once per star per viewer,
+    // which is too much for one frame, so each viewer, and each star within it,
+    // runs in a task of its own. A throw rejects, so the refresh still ends.
+    var dealStarCard = function (target, inventory, playerKey, record, turn) {
       var existing = starCardForRecord(record, target.starIndex);
 
       return chooseCards({
@@ -169,7 +186,7 @@ define([
           warRng,
           playerKey,
           target.starIndex,
-          game.stats().turns()
+          turn
         ),
       }).then(function (cards) {
         return { starIndex: target.starIndex, card: cards && cards[0] };
@@ -178,12 +195,23 @@ define([
 
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
-    // pendingTechCards on it since this viewer's work began.
+    // pendingTechCards on it since this viewer's work began. A viewer whose
+    // cards changed meanwhile is skipped: their deal was against the old ones,
+    // and the write that changed them queues another refresh.
     var refreshViewer = function (client) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
         return Promise.resolve(false);
       }
+
+      // Cards, not the whole inventory: stock stores inventory.save(), which
+      // carries GWInventory's methods, and coopHost.upsertRecord drops them.
+      var cardsChanged = function (fresh) {
+        return !_.isEqual(
+          fresh.inventory && fresh.inventory.cards,
+          record.inventory.cards
+        );
+      };
 
       // Decided before the inventory is built, so a refresh with nothing to do
       // costs a walk of the galaxy rather than an applyCards per viewer.
@@ -200,6 +228,8 @@ define([
       }
 
       var playerKey = gwoStreams.coopPlayerKey(record, client);
+      // Read once: the host can move between two stars' deals.
+      var turn = game.stats().turns();
       var inventory;
       var applied = new Promise(function (resolve) {
         inventory = gwoBank.applyRecordInventory(
@@ -212,11 +242,12 @@ define([
 
       return applied
         .then(function () {
-          return Promise.all(
-            _.map(targets, function (target) {
-              return dealStarCard(target, inventory, playerKey, record);
-            })
-          );
+          return gwoPromise.inSeries(targets, function (target) {
+            var fresh = findRecord(client);
+            return fresh && !cardsChanged(fresh)
+              ? dealStarCard(target, inventory, playerKey, record, turn)
+              : undefined;
+          });
         })
         .then(function (results) {
           var updates = {};
@@ -227,7 +258,7 @@ define([
           });
 
           var fresh = findRecord(client);
-          if (!fresh) {
+          if (!fresh || cardsChanged(fresh)) {
             return false;
           }
 
@@ -238,7 +269,7 @@ define([
               return !!(system && system.star.ai());
             }
           );
-          var next = buildStarCardsField(pruned, updates, game.stats().turns());
+          var next = buildStarCardsField(pruned, updates, turn);
 
           if (
             !redealOwed(fresh) &&
@@ -254,46 +285,27 @@ define([
         });
     };
 
-    // A refresh calls deal() on every card of the deck once per star per viewer,
-    // which is too much for one frame, so each viewer yields before starting. A
-    // throw rejects, so the refresh still ends.
-    var refreshViewerLater = function (client) {
-      return new Promise(function (resolve) {
-        _.defer(function () {
-          resolve(Promise.resolve().then(_.partial(refreshViewer, client)));
-        });
-      });
-    };
-
     var refreshEachViewer = function (viewers) {
-      var changedAny = false;
-
-      return _.reduce(
-        viewers,
-        function (chain, client) {
-          return chain
-            .then(refreshViewerLater.bind(null, client))
-            .then(function (changed) {
-              changedAny = changedAny || changed;
-            });
-        },
-        Promise.resolve()
-      ).then(function () {
-        return changedAny;
-      });
+      return gwoPromise
+        .inSeries(viewers, refreshViewer)
+        .then(function (changed) {
+          return _.some(changed);
+        });
     };
 
     // Every viewer record, connected or not, so a viewer away when the host
     // re-deals is re-dealt on their return. See coop.md.
     var oweRedealToEveryViewer = function () {
-      _.forEach(game.coopPlayerInventoryData(), function (record) {
-        if (record && !redealOwed(record)) {
-          coopHost.upsertRecord(game, record, {
-            gwaioStarCards: _.assign({}, record.gwaioStarCards, {
-              redealOwed: true,
-            }),
-          });
+      coopHost.upsertRecords(game, function (record) {
+        if (redealOwed(record)) {
+          return undefined;
         }
+
+        return {
+          gwaioStarCards: _.assign({}, record.gwaioStarCards, {
+            redealOwed: true,
+          }),
+        };
       });
     };
 
@@ -303,9 +315,8 @@ define([
       }
 
       console.log("[GW COOP] refreshed co-op player star cards");
-      return Promise.resolve(gwoSave(game, false)).then(function () {
-        model.sendCampaignSnapshot("gwo_star_cards", true);
-      });
+      oweSave(game, false);
+      publish("gwo_star_cards");
     };
 
     var runRefresh = function (redeal) {
@@ -346,6 +357,11 @@ define([
         return Promise.resolve();
       }
 
+      // Read here, so cards.js's computed refreshes again once the deal ends.
+      if (!redeal && aiStarDealHeld()) {
+        return Promise.resolve();
+      }
+
       // A coalesced refresh re-deals if any of the calls it stands in for did.
       if (refreshInFlight) {
         refreshPending = {
@@ -358,7 +374,11 @@ define([
       // cards.js refreshes on every record write. Run synchronously, that
       // refresh would start before refreshInFlight is set and run alongside
       // this one.
+      // Held, so a snapshot owed as the refresh starts goes out with its
+      // own, as one.
       busy(true);
+      var releaseSave = holdSave();
+      var release = hold();
       refreshInFlight = Promise.resolve()
         .then(function () {
           return runRefresh(redeal);
@@ -373,7 +393,13 @@ define([
           var queued = refreshPending;
           refreshPending = undefined;
           busy(false);
-          return queued ? refresh(queued) : undefined;
+          // A queued refresh takes its hold first, so none goes out between.
+          try {
+            return queued ? refresh(queued) : undefined;
+          } finally {
+            release();
+            releaseSave();
+          }
         });
 
       return refreshInFlight;

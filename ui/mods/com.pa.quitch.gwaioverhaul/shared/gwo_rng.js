@@ -4,12 +4,15 @@
 // Why this exists rather than Math.seedrandom or a reseeded Math.random, and how the
 // streams are laid out: galaxy.md, "Determinism and the war seed".
 define(function () {
-  // cyrb128: seed text -> four 32-bit words.
-  var hashSeed = function (text) {
-    var h1 = 1779033703;
-    var h2 = 3144134277;
-    var h3 = 1013904242;
-    var h4 = 2773480762;
+  // cyrb128, split so a stream absorbs only its own suffix into its parent's state:
+  // absorbing "ab" equals absorbing "a", then "b".
+  var INITIAL_STATE = [1779033703, 3144134277, 1013904242, 2773480762];
+
+  var absorb = function (state, text) {
+    var h1 = state[0];
+    var h2 = state[1];
+    var h3 = state[2];
+    var h4 = state[3];
 
     for (var i = 0; i < text.length; i++) {
       var k = text.charCodeAt(i);
@@ -18,6 +21,15 @@ define(function () {
       h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
       h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
     }
+
+    return [h1, h2, h3, h4];
+  };
+
+  var finalise = function (state) {
+    var h1 = state[0];
+    var h2 = state[1];
+    var h3 = state[2];
+    var h4 = state[3];
 
     // Load-bearing: without these, two seeds differing only in their last character -
     // which is what stream() produces - yield near-identical words.
@@ -40,17 +52,31 @@ define(function () {
   // No seed or label contains this, so stream("a", 1) cannot collide with stream("a1").
   var SEPARATOR = "\u0000";
 
-  var create = function (seed) {
-    // A seed can arrive as a number, and 0 has to survive.
-    var seedText = seed === undefined || seed === null ? "" : String(seed);
-    var words = hashSeed(seedText);
-    var a = words[0];
-    var b = words[1];
-    var c = words[2];
-    var d = words[3];
+  // Hashed and seeded on first use. See galaxy.md, "Streams, not a single sequence".
+  var fromState = function (parentState, text) {
+    var state;
+    var a;
+    var b;
+    var c;
+    var d;
+    var primed = false;
 
     // sfc32.
     var rng = function () {
+      if (!primed) {
+        primed = true;
+        if (!state) {
+          state = absorb(parentState, text);
+        }
+        var words = finalise(state);
+        a = words[0];
+        b = words[1];
+        c = words[2];
+        d = words[3];
+        for (var i = 0; i < WARM_UP; i++) {
+          rng();
+        }
+      }
       a >>>= 0;
       b >>>= 0;
       c >>>= 0;
@@ -64,10 +90,6 @@ define(function () {
       c = (c + t) | 0;
       return (t >>> 0) / 4294967296;
     };
-
-    for (var i = 0; i < WARM_UP; i++) {
-      rng();
-    }
 
     // Both bounds inclusive, matching _.random; ai_population.js's
     // gameModeEnabled depends on it.
@@ -107,18 +129,25 @@ define(function () {
       return result;
     };
 
-    // Derived from the seed text, not a counter, so a stream is unaffected by what its
-    // parent or siblings drew first. See galaxy.md.
+    // Derived from the parent's hash state, not a counter, so a stream is unaffected
+    // by what its parent or siblings drew first. See galaxy.md.
     rng.stream = function (label, index) {
-      return create(
-        seedText +
-          SEPARATOR +
-          label +
-          (index === undefined ? "" : SEPARATOR + index)
+      if (!state) {
+        state = absorb(parentState, text);
+      }
+      return fromState(
+        state,
+        SEPARATOR + label + (index === undefined ? "" : SEPARATOR + index)
       );
     };
 
     return rng;
+  };
+
+  var create = function (seed) {
+    // A seed can arrive as a number, and 0 has to survive.
+    var seedText = seed === undefined || seed === null ? "" : String(seed);
+    return fromState(INITIAL_STATE, seedText);
   };
 
   return {

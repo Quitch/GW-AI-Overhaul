@@ -14,6 +14,9 @@
     );
     locTree($("#hover-card"));
 
+    // Set here, before systems.js's canMove first reads it.
+    model.gwoAiStarsDealing = ko.observable(0);
+
     // Deleting a card cannot be undone, so the button asks once before it acts.
     model.gwoConfirmDiscard = ko.observable(false);
     model.gwoDiscardLabel = ko.computed(function () {
@@ -85,10 +88,7 @@
         return;
       }
 
-      var cardsOffered = helpers.cardsOfferedCount(
-        numCardsToOffer,
-        game.inventory()
-      );
+      var cardsOffered = exploreCardsOffered();
       var star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
@@ -97,6 +97,30 @@
       star.cardList([]);
       game.turnState("begin");
       model.explore(true);
+    };
+
+    var exploreOffer = ko
+      .observable()
+      .extend({ session: "gwo_explore_cards_offered" });
+
+    var exploreCardsOffered = function () {
+      return helpers.exploreCardsOffered(
+        exploreOffer(),
+        String(game.id),
+        game.currentStar(),
+        numCardsToOffer,
+        game.inventory()
+      );
+    };
+
+    var saveExploreOffer = function (cardsOffered) {
+      exploreOffer(
+        helpers.exploreOfferRecord(
+          String(game.id),
+          game.currentStar(),
+          cardsOffered
+        )
+      );
     };
 
     var setupTechRerolls = function () {
@@ -109,11 +133,13 @@
       // Clean start for new games in a single session
       if (game.turnState() === "begin") {
         model.gwoRerollsUsed(0);
+        exploreOffer(undefined);
       }
 
       ko.computed(function () {
         if (game.turnState() === "end") {
           model.gwoRerollsUsed(0);
+          exploreOffer(undefined);
           model.gwoOfferRerolls(true);
           model.gwoRerollPending(false);
         }
@@ -173,20 +199,29 @@
     };
     setupTechRerolls();
 
-    // A save taken mid-exploration holds a short offer, so the spent rerolls are
-    // recoverable from its length. Needs helpers for the bonus-aware offer size:
-    // against the bare constant a 4-card offer yields -1 and the next reroll is free.
+    // The offer size and spent rerolls live in this session's storage, so a
+    // gw_play reload keeps them. After a restart, a save taken mid-exploration
+    // holds a short offer, so the spent rerolls are recoverable from its length
+    // against the hand's bonus-aware size now, which needs helpers. That size is
+    // saved here, so a card deleted later cannot change it.
     var restoreExploreSaveRerolls = function () {
       if (game.turnState() !== "explore") {
         return;
       }
 
       var star = game.galaxy().stars()[game.currentStar()];
-      var cardsOffered = helpers.cardsOfferedCount(
+      var restored = helpers.restoredExploreRerolls(
+        exploreOffer(),
+        String(game.id),
+        game.currentStar(),
         numCardsToOffer,
-        game.inventory()
+        game.inventory(),
+        model.gwoRerollsUsed(),
+        star.cardList().length
       );
-      model.gwoRerollsUsed(cardsOffered - star.cardList().length);
+      var cardsOffered = restored.cardsOffered;
+      saveExploreOffer(cardsOffered);
+      model.gwoRerollsUsed(restored.rerollsUsed);
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
@@ -355,6 +390,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_explore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_win.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
       ],
       function (
         GW,
@@ -379,7 +416,9 @@
         cardsAiStarDeal,
         cardsExplore,
         cardsWin,
-        cardsStartSubcdr
+        cardsStartSubcdr,
+        coopPublish,
+        saveDebt
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -456,13 +495,19 @@
           gwoBank: gwoBank,
           stockBank: GW.bank,
           gwoSettings: gwoSettings,
-          gwoSave: gwoSave,
+          oweSave: saveDebt.owe,
+          holdSave: saveDebt.hold,
           gwoTreasure: gwoTreasure,
           aiClients: function () {
             return model.gwoCoopAi.clients();
           },
           aiDeciding: coopAiDeciding,
+          aiStarDealHeld: function () {
+            return aiStarDeal.dealing() > 0;
+          },
           busy: starCardsBusy,
+          publish: coopPublish.publish,
+          hold: coopPublish.hold,
         });
 
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock
@@ -519,6 +564,7 @@
           cardNameSync: cardNameSync,
           coopStarCards: coopStarCards,
           gwoPromise: gwoPromise,
+          starsDealing: model.gwoAiStarsDealing,
         });
         var dealCardToSelectableAI = aiStarDeal.dealCardToSelectableAI;
 
@@ -586,6 +632,8 @@
           inventory: inventory,
           helpers: helpers,
           numCardsToOffer: numCardsToOffer,
+          exploreCardsOffered: exploreCardsOffered,
+          saveExploreOffer: saveExploreOffer,
           chooseCards: chooseCards,
           coopAiDeciding: coopAiDeciding,
           startCardUnlocked: startCardUnlocked,
@@ -602,7 +650,6 @@
           GWInventory: GWInventory,
           gwoAI: gwoAI,
           gwoDeal: gwoDeal,
-          gwoSave: gwoSave,
           gwoStreams: gwoStreams,
           warRng: warRng,
           galaxy: galaxy,
@@ -625,7 +672,8 @@
           helpers: helpers,
           treasureUnlocks: treasureUnlocks,
           dealCardToSelectableAI: dealCardToSelectableAI,
-          gwoSave: gwoSave,
+          holdAiStarDeal: aiStarDeal.hold,
+          oweSave: saveDebt.owe,
         });
 
         generalCommander.setupGeneralCommander();

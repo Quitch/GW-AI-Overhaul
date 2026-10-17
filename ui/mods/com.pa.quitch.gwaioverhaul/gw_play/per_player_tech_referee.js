@@ -1,10 +1,10 @@
-// Per-player tech in co-op. GWO extracts the validation to the measured
-// gw_play/per_player_tech.js (see testing.md). It builds viewers' subcommanders
-// as the host's referee builds its own: the personality rebuilt from the
-// minion's recorded id, GWO's Sub Commander econ rate, and colours that continue
-// the player-faction sequence where stock leaves them on colliding raw faction
-// colours. Stock's 23 console.log calls are removed; the six console.error calls
-// and the console.warn are GWO's. Glue only. See shadowing.md.
+// Per-player tech in co-op, installed over stock's apply by
+// gw_play/per_player_tech_install.js. The validation is the measured
+// gw_play/per_player_tech.js. It builds viewers' subcommanders as the host's
+// referee builds its own: the personality rebuilt from the minion's recorded id,
+// GWO's Sub Commander econ rate, and colours that continue the player-faction
+// sequence where stock leaves them on colliding raw faction colours. See
+// shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",
@@ -47,11 +47,6 @@ define([
     perPlayerTech.buildViewerSubcommanderArmies;
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
-  // Files not assigned by default that we wish to mod - global for modder
-  // compatibility, New-GW-Cards pushes here - see tech-cards.md. Seeded with
-  // GWO's own list by gw_play/referee_game_files.js, which loads first.
-  model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-
   var loadInventoryFromRecord = function (record) {
     var inventory = new GWInventory();
     // GWO - a JSON copy, as lodash 3's cloneDeep is quadratic in what it copies
@@ -88,6 +83,7 @@ define([
       var playerX1AIUnitMap = GW.specs.genAIUnitMap(maps.x1, playerTag);
       var plan = gameFilePaths.specPlan({
         units: inventory.units(),
+        removed: inventory.removedUnits(),
         extra: model.gwoSpecs,
         cells: cells,
         race: race,
@@ -138,7 +134,12 @@ define([
             );
           };
           var mods = gwoRaces.modsFor(race, inventory.mods(), cells, has);
-          gwoSpecs.mod(playerFiles, mods.concat(plan.retagMods), playerTag);
+          gwoSpecs.mod(playerFiles, mods, playerTag);
+          // A pass of its own: the retag's replace would flatten the commander
+          // before the army's base_commander mods run. See specs.md.
+          if (plan.retagMods.length) {
+            gwoSpecs.mod(playerFiles, plan.retagMods, playerTag);
+          }
           done.resolve(playerFiles);
         });
     };
@@ -261,6 +262,26 @@ define([
       playerCommanders[clientIndex] = stripKnownSpecTag(
         inventoryDataRecord.commander
       );
+    }
+
+    // GWO - only GWO's hire numbers viewer trees and records their list.
+    if (_.isArray(referee.hireClientKeys)) {
+      var clientMismatch = perPlayerTech.describeClientMismatch(
+        referee.hireClientKeys,
+        _.map(_.rest(connectedClients), function (client) {
+          return refereeCoop.clientKey(client.id, client.name);
+        })
+      );
+      if (clientMismatch) {
+        console.error(
+          "[GW COOP] Connected players differ from the referee's hire, " +
+            clientMismatch
+        );
+        config.per_player_tech_ready = false;
+        referee.config(config);
+        done.resolve(false);
+        return done.promise();
+      }
     }
 
     var playerSpecPromises = [];

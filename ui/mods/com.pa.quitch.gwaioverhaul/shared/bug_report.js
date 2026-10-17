@@ -151,7 +151,7 @@ define(function () {
       line("Race", english(input.raceName)),
       line("Commander", input.commander),
       line("Loadout", input.loadout),
-      line("System", battle.system),
+      line("System", english(battle.system)),
       line("Enemy", battle.enemy),
       line("Win conditions", winConditions(battle.gameOptions)),
     ]);

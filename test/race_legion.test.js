@@ -11,6 +11,7 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
   withheldCards,
   expectedWithheld,
@@ -153,6 +154,25 @@ describe("Legion under capability cells", () => {
     assert.ok(!withheld.includes("gwaio_upgrade_ubercannon_structure"));
     assert.ok(!withheld.includes("gwc_combat_bots"));
     assert.ok(!withheld.includes("gwc_storage_1"));
+  });
+
+  // See races.md, "Capability cells": a removal holds through translation.
+  it("does not field a removed Shank for a held Ant, and keeps the Stoke (skipped without Legion in the fixture)", (t) => {
+    if (!legionUnits.length) {
+      t.skip("fixture harvested without Legion");
+      return;
+    }
+    const index = fixtureIndex("legion");
+    const owned = races.ownedPaths("legion", [gwoUnit.ant], index);
+
+    assert.ok(
+      races.fieldedFor("legion", owned, index).includes(legion.units.shank)
+    );
+    const fielded = races.fieldedFor("legion", owned, index, [
+      legion.units.shank,
+    ]);
+    assert.equal(fielded.includes(legion.units.shank), false);
+    assert.ok(fielded.includes(legion.units.stoke));
   });
 
   it("names every unit the tooltip lists for a card Legion can be dealt (skipped without Legion in the fixture)", (t) => {

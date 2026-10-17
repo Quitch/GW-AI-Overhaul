@@ -262,7 +262,10 @@ define([
     }
 
     var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
-    gwoSpecs.mod(playerFiles, mods.concat(extraMods), ".player");
+    gwoSpecs.mod(playerFiles, mods, ".player");
+    if (extraMods.length) {
+      gwoSpecs.mod(playerFiles, extraMods, ".player");
+    }
     return playerFiles;
   };
 
@@ -286,7 +289,8 @@ define([
 
   // The units a player's specs are built for, `extra` kept whole, and the
   // retag mods its commanders need. See races.md, "Capability cells".
-  // params: units, extra, cells, race, isMla, commanders, unitCells, gwoRaces.
+  // params: units, removed, extra, cells, race, isMla, commanders, unitCells,
+  // gwoRaces.
   var specPlan = function (params) {
     var cells = params.cells;
     var gwoRaces = params.gwoRaces;
@@ -294,7 +298,8 @@ define([
     var specs = gwoRaces.fieldedFor(
       params.race,
       gwoRaces.ownedPaths(params.race, params.units, cells).concat(extra),
-      cells
+      cells,
+      params.removed || []
     );
     var keptVanilla =
       cells && !params.isMla
@@ -333,9 +338,13 @@ define([
     files[params.subcommanderPath + "unit_maps/ai_unit_map_x1.json" + tag] =
       params.genAIUnitMap(params.maps.x1, tag);
 
-    var mods = (params.mods || []).concat(params.extraMods || []);
+    var mods = params.mods || [];
+    var extraMods = params.extraMods || [];
     if (mods.length) {
       params.gwoSpecs.mod(files, mods, tag);
+    }
+    if (extraMods.length) {
+      params.gwoSpecs.mod(files, extraMods, tag);
     }
     return files;
   };

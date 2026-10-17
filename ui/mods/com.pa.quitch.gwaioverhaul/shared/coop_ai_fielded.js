@@ -43,11 +43,12 @@ define([
     };
 
     // As gw_play/referee_game_file_paths.js specPlan fields them.
-    var fieldedUnits = function (paths) {
+    var fieldedUnits = function (paths, removed) {
       return races.fieldedFor(
         race,
         races.ownedPaths(race, paths || [], cells),
-        cells
+        cells,
+        removed
       );
     };
 
@@ -74,7 +75,7 @@ define([
         return hit.fielded;
       }
 
-      var units = fieldedUnits(saved.units);
+      var units = fieldedUnits(saved.units, saved.removedUnits);
       var byUnit = {};
       _.forEach(units.concat(fieldable), function (unit) {
         byUnit[unit] = true;

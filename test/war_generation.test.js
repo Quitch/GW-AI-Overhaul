@@ -46,6 +46,9 @@ const TIER_SETTINGS = [
 const usable = { name: "Usable", planets: [] };
 const unusable = { name: "Unusable", unusable: true, planets: [] };
 
+// Lets the native promise gwoPromise.within hands back run its callbacks.
+const settle = () => new Promise((resolve) => setImmediate(resolve));
+
 // What an engine call hands back: a then, and no promise() for jQuery to find.
 function engineSettled(ok, value) {
   return {
@@ -86,6 +89,7 @@ function makeGame(war) {
   };
   let current;
   const game = {
+    id: "war-" + war.games.length,
     perPlayerTechCards: makeObservable(false),
     inventory: () => inventory,
     galaxy: () => galaxy,
@@ -283,6 +287,7 @@ function makeModel(war) {
     selectedCommander: makeObservable("/pa/units/commanders/tank/tank.json"),
     gwoWarGenerationError: makeObservable(""),
     selectedNames: makeObservable(["Uber"]),
+    ready: makeObservable(true),
   };
 }
 
@@ -386,18 +391,25 @@ function makeWar() {
       war.settingsSaved++;
     },
   });
-  // The retry goes through the scene's Go To War, as it does in game.
-  war.model.navToNewGame = () => war.generation.start();
+  // As setup.js's Go To War, which does nothing while it cannot be clicked.
+  war.clicks = 0;
+  war.model.navToNewGame = () => {
+    war.clicks++;
+    if (war.model.ready()) {
+      war.generation.start();
+    }
+  };
   war.start = () => war.generation.start();
   war.game = () => war.games[war.games.length - 1];
   return war;
 }
 
 describe("a war that generates", () => {
-  it("is built, dealt its loadout, peopled, recorded, saved, and opened", () => {
+  it("is built, dealt its loadout, peopled, recorded, saved, and opened", async () => {
     const war = makeWar();
 
     war.start();
+    await settle();
 
     const game = war.game();
     assert.equal(war.builds.length, 1);
@@ -520,6 +532,136 @@ describe("a war that generates", () => {
   });
 });
 
+describe("a war whose save never finishes", () => {
+  const SAVE_TIMEOUT_MS = 30000;
+
+  const withHeldSave = (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = makeWar();
+    war.save = war.$.Deferred();
+    war.modules.GW.manifest.saveGame = (game) => {
+      war.saved.push(game);
+      return war.save.promise();
+    };
+    return war;
+  };
+
+  const failsAsABug = (war) => {
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.model.lastSceneUrl(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "Failed to generate valid war: error"
+    );
+  };
+
+  it("waits for the save before opening the war", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS - 1);
+    await settle();
+
+    assert.equal(war.saved.length, 1);
+    assert.equal(war.generatingWar(), true);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+    assert.deepEqual(war.errors, []);
+  });
+
+  it("fails the war as a bug after 30 seconds", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: war save timed out after 30000ms/
+    );
+    failsAsABug(war);
+  });
+
+  it("does not open the war when the save finishes too late", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+    war.save.resolve();
+    await settle();
+
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when the save fails", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    war.save.reject("blocked");
+    await settle();
+
+    assert.equal(war.errors[0], "War could not be saved and opened: blocked");
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when the save throws", async (t) => {
+    const war = withHeldSave(t);
+    war.modules.GW.manifest.saveGame = () => {
+      throw new Error("no save");
+    };
+
+    war.start();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no save/
+    );
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when opening it throws", async (t) => {
+    const war = withHeldSave(t);
+    war.model.lastSceneUrl = () => {
+      throw new Error("no scene");
+    };
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no scene/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.window.location.href, GW_START);
+  });
+
+  it("opens the war when the save finishes in time", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS - 1);
+    war.save.resolve();
+    await settle();
+    t.mock.timers.tick(1);
+    await settle();
+
+    assert.equal(war.model.activeGameId(), war.game().id);
+    assert.equal(war.window.location.href, GW_PLAY);
+    assert.equal(war.model.gwoWarGenerationError(), "");
+    assert.deepEqual(war.errors, []);
+  });
+});
+
 describe("the war's name", () => {
   it("is made from the difficulty, players, size, and loadout while it is the default", () => {
     const war = makeWar();
@@ -547,6 +689,36 @@ describe("the war's name", () => {
     const war = makeWar();
     war.model.newGameName("My War");
 
+    war.start();
+
+    assert.equal(war.model.newGameName(), "My War");
+    assert.equal(war.game().name(), "My War");
+  });
+
+  it("is made afresh for the next war after a war that failed", () => {
+    const war = makeWar();
+    war.model.newGameSizeIndex(0);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.start();
+    assert.match(war.model.newGameName(), /!LOC:Small/);
+
+    war.model.newGameSizeIndex(2);
+    war.outcome = { failed: false, spawnShortage: false };
+    war.start();
+
+    const name =
+      "!LOC:Casual - 1 !LOC:Players - !LOC:Large - !LOC:Test loadout";
+    assert.equal(war.model.newGameName(), name);
+    assert.equal(war.game().name(), name);
+  });
+
+  it("is the player's own when they named the war after a war that failed", () => {
+    const war = makeWar();
+    war.outcome = { failed: true, spawnShortage: true };
+    war.start();
+
+    war.model.newGameName("My War");
+    war.outcome = { failed: false, spawnShortage: false };
     war.start();
 
     assert.equal(war.model.newGameName(), "My War");
@@ -668,6 +840,18 @@ describe("per-player tech", () => {
     assert.equal(record.techCardDealCount, 0);
     assert.equal(typeof record.updatedAt, "number");
     assert.equal(war.records[0].perPlayerTechCards, true);
+  });
+
+  it("is recorded as the war was made, not as the setting stands later", () => {
+    const war = makeWar();
+    war.holdBuild = true;
+
+    war.start();
+    war.model.newGamePerPlayerTechCards(true);
+    war.build.resolve(war.game().galaxy());
+
+    assert.equal(war.game().perPlayerTechCards(), false);
+    assert.equal(war.records[0].perPlayerTechCards, false);
   });
 
   it("stores no record without it", () => {
@@ -982,6 +1166,42 @@ describe("a war with too few home systems", () => {
       war.errors[war.errors.length - 1],
       "Failed to generate valid war: spawnShortage"
     );
+    assert.equal(war.clicks, 0);
+  });
+
+  // The player can clear every system source, or pick a race that locks the
+  // loadout, while the war generates.
+  it("is abandoned with the shortage message when Go To War cannot be clicked", () => {
+    const war = makeWar();
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => war.model.ready(false);
+
+    war.start();
+
+    assert.deepEqual(
+      war.builds.map((config) => config.seed),
+      ["base-seed"]
+    );
+    assert.match(war.model.gwoWarGenerationError(), /too small/);
+    assert.equal(war.model.newGameSeed(), "base-seed");
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.equal(war.clicks, 0);
+  });
+
+  it("is retried afresh, and named afresh, after a retry Go To War could not take", () => {
+    const war = makeWar();
+    war.model.newGameSizeIndex(0);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => war.model.ready(false);
+    war.start();
+    war.model.ready(true);
+    war.model.newGameSizeIndex(2);
+
+    retriedOnce(war);
+
+    assert.match(war.model.newGameName(), /!LOC:Large/);
+    assert.equal(war.model.gwoWarGenerationError(), "");
   });
 
   // The count and the seed belong to one war, whichever way it ended.
@@ -1334,6 +1554,269 @@ describe("the star systems", () => {
     war.start();
 
     assert.equal(war.errors[0], "System source failed to load: Dead");
+    failsWithSourcesMessage(war);
+  });
+
+  const SOURCE_TIMEOUT_MS = 20000;
+
+  const withStalledSource = (t, names) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = withSharedSystems();
+    war.stalled = war.$.Deferred();
+    war.stalledLoads = 0;
+    war.model.selectedNames(names);
+    war.options.push({
+      name: "Stalled",
+      load: () => {
+        war.stalledLoads++;
+        return war.stalled.promise();
+      },
+    });
+    return war;
+  };
+
+  it("fail the war when a source never settles and the rest give nothing", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS - 1);
+
+    assert.equal(war.generatingWar(), true);
+    assert.deepEqual(war.errors, []);
+
+    t.mock.timers.tick(1);
+
+    assert.equal(
+      war.errors[0],
+      "System source timed out after 20000ms: Stalled"
+    );
+    failsWithSourcesMessage(war);
+  });
+
+  it("skip a source that never settles", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(
+      war.errors[0],
+      "System source timed out after 20000ms: Stalled"
+    );
+    assert.deepEqual(war.pools[0].systems, [usable]);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("ignore a source that resolves after its time limit", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.stalled.resolve([usable]);
+
+    assert.deepEqual(war.builds, []);
+    assert.equal(war.saved.length, 0);
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source that fails after its time limit", (t) => {
+    const war = withStalledSource(t, ["Stalled"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.stalled.reject();
+
+    assert.equal(
+      war.errors.filter((text) => /^System source/.test(text)).length,
+      1
+    );
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source that settles", (t) => {
+    const war = withStalledSource(t, ["Uber"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.errors, []);
+    assert.equal(war.saved.length, 1);
+  });
+
+  const shortOnFirstAttempt = (war) => {
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+  };
+
+  it("skip a source that timed out on an earlier attempt at the same war", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    shortOnFirstAttempt(war);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(
+      war.builds.map((config) => config.seed),
+      ["base-seed", "base-seed-1"]
+    );
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "System source skipped after timing out: Stalled"
+    );
+    assert.deepEqual(war.pools[1].systems, [usable]);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("use a timed-out source on a retry once its load has come in", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    const late = { name: "Late", planets: [] };
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.stalled.resolve([late]);
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.pools[1].systems, [late, usable]);
+    assert.equal(war.errors.filter((text) => /skipped/.test(text)).length, 0);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("skip a timed-out source on a retry when its load cannot say it has come in", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    const loading = {
+      promise: () => loading,
+      then: (onDone, onFail) => war.stalled.then(onDone, onFail),
+    };
+    war.options[war.options.length - 1].load = () => loading;
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.stalled.resolve([{ name: "Late", planets: [] }]);
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.pools[1].systems, [usable]);
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "System source skipped after timing out: Stalled"
+    );
+  });
+
+  it("fail a retry whose other sources give nothing usable, as the first attempt would", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.options.push({
+      name: "Odd",
+      load: () => war.$.Deferred().resolve([unusable]).promise(),
+    });
+    war.onPopulate = () => war.model.selectedNames(["Stalled", "Odd"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(war.builds.length, 1);
+    assert.match(war.model.gwoWarGenerationError(), /sources selected/);
+  });
+
+  it("ask again for a source that timed out in an earlier war", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    war.start();
+
+    assert.equal(war.stalledLoads, 2);
+  });
+
+  const sourceListErrors = (war) =>
+    war.errors.filter((text) => /^System sources/.test(text));
+
+  const withStalledList = (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = withSharedSystems();
+    war.list = war.$.Deferred();
+    war.loadOptions = () => war.list.promise();
+    return war;
+  };
+
+  it("fail the war when the source list never settles", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS - 1);
+
+    assert.equal(war.generatingWar(), true);
+    assert.deepEqual(war.errors, []);
+
+    t.mock.timers.tick(1);
+
+    assert.equal(war.errors[0], "System sources timed out after 20000ms");
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source list that loads after its time limit", (t) => {
+    const war = withStalledList(t);
+    let loads = 0;
+    war.options[0].load = () => {
+      loads++;
+      return war.$.Deferred().resolve([usable]).promise();
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.list.resolve(war.options);
+
+    assert.equal(loads, 0);
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source list that fails after its time limit", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.list.reject();
+
+    assert.deepEqual(sourceListErrors(war), [
+      "System sources timed out after 20000ms",
+    ]);
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source list that fails", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    war.list.reject();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(sourceListErrors(war), ["System sources failed to load"]);
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source list that throws", (t) => {
+    const war = withStalledList(t);
+    war.loadOptions = () => {
+      throw new Error("no list");
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(sourceListErrors(war).length, 1);
     failsWithSourcesMessage(war);
   });
 

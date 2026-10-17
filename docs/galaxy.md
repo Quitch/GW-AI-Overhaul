@@ -12,9 +12,11 @@ change to a setting does not regenerate the galaxy. Generation instead happens o
 when the player clicks **Go To War**.
 
 Generation reads the seed, the galaxy size, and the AI brains once, at the click.
-Shared Systems for Galactic War rerolls the seed whenever a source is toggled, and the
-player can do that while a war generates. Go To War stays disabled until generation
-fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
+It reads the other settings as it reaches them, so `gw_start/setup.js` locks the setup
+panel (`#tab3`, which holds every setting and the openers of the settings modals) with
+`gwo-setup-locked` while a war generates: `pointer-events: none` and a dim, and the
+name and seed fields read-only. Go To War stays disabled, and the panel locked, until
+generation fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
 stock's first `makeGame` leaves set under Shared Systems. Each step still checks that
 `makeGameBusy` holds its run's token, and only the end of the run clears it.
 
@@ -31,6 +33,18 @@ Roughly, the order is:
 
 Step 5 is a piggy-back channel rather than a real API. The origin system is simply
 the one object guaranteed to survive into the play scene.
+
+The run then saves the war and opens `gw_play`. Stock `GW.manifest.saveGame` never
+rejects: a failed IndexedDB write leaves its promise pending for good. So
+`gw_start/war_generation.js` waits at most `SAVE_TIMEOUT_MS` (30 s) for it, and
+sets `model.activeGameId` (`gw_active_game`) only once the save has resolved. A save
+that times out, rejects, or throws gives up with the bug-report message (see
+Retries), and the profile keeps its previous active war. A throw while opening the
+saved war gives the same message, but `gw_active_game` may already name the new
+war, which is saved.
+The timer does not cancel stock's write. A write that lands after 30 s adds the war
+to the manifest, but nothing points `gw_active_game` at it, and the archive lists
+only wars that are over, so the player never sees it.
 
 ## The isolated-star bug
 
@@ -114,6 +128,12 @@ its siblings first. Two consequences are worth relying on:
 - Adding a draw to one phase of generation cannot shift the results of another.
 - Anything reached through a promise, or visited in a varying order, can be **keyed**
   instead of drawn in sequence.
+
+A stream does no hashing when it is made. It keeps its parent's state and its own
+label text, and absorbs the text, finalises, and runs its warm-up draws on its first
+draw or when it makes a stream of its own. A deal makes one stream per card in the
+deck and draws from one or two of them, so most streams never pay for it. Outputs are
+the same either way.
 
 | Stream                                                                | Consumers                                                                                         |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -304,7 +324,15 @@ same capability check `loadSystemBrackets` uses.
 With that mod active, the systems are real `.pas` files chosen by
 `gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
 `loadSystemBrackets` in `gw_start/war_generation.js` settles each selected source
-on its own, so a source that fails to load drops only its own systems. While no
+on its own, so a source that fails to load drops only its own systems. A source
+that has not settled after `SOURCE_TIMEOUT_MS` (20 s) counts as failed, and its
+later result is dropped. A spawn-shortage retry of the same Go To War calls the
+cached `load()` of each source that timed out again: one that has settled since is
+used, and one still pending, or without `state()` to say, is skipped as failed
+rather than waited for again. The next click asks for it again. The list of
+sources, `loadOptions()`, has the same limit, since it waits on a remote server
+list. The source limits start once the list has loaded, so the two can add up to
+40 s. While no
 source is selected, `gw_start/setup.js` keeps Go To War disabled.
 
 That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
@@ -318,8 +346,8 @@ So `loadSystemBrackets` rejects with the `SYSTEM_SOURCES` cause from
 `gw_start/war_generation_failure.js`, which fails the war before any star reaches
 that loader, when:
 
-- the list of sources failed to load, or `loadOptions` threw;
-- no selected source gave a system: each failed, threw, or was empty, or none was
+- the list of sources failed to load, timed out, or `loadOptions` threw;
+- no selected source gave a system: each failed, threw, timed out, or was empty, or none was
   selected;
 - a source failed, and the rest gave only systems the brackets drop.
 
@@ -342,6 +370,13 @@ Nothing else is retried, because a new seed cannot fix it.
 player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whichever
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
+
+A retry runs only while `model.ready()` is true, as Go To War does. Clearing every
+system source or picking a race that locks the loadout makes it false. The setup lock
+stops the player doing either while a war generates, but if it happens, generation
+gives up at once. A retry calls the module's
+`start` itself rather than `model.navToNewGame`, so the log holds one "Go To War
+clicked" per click.
 
 When generation gives up, the seed is put back to `<base>`, and a message appears
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
@@ -479,7 +514,7 @@ alone would therefore arrive too late. A skirmish instead calls `api.file.zip.mo
 on each server mod at `/server_mods/<id>/` before `localserver.startGame`. Per
 `api/file.js`, zip mounts are memory files, and the local server it spawns inherits
 them. `referee.js`'s `mountFiles` does the same for the stamped mods. It runs after
-the `unmountAllMemoryFiles` there (which Community Mods turns into a client-mod
+the launch's last `unmountAllMemoryFiles` (which Community Mods turns into a client-mod
 remount) and before `gw_play` navigates to `connect_to_game`.
 
 Clients get the same files through `config.files`. `gw_play/referee_biomes.js` mounts the

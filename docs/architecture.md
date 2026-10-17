@@ -99,9 +99,11 @@ This sequence ties most of the above together. `gw_play/referee.js` hijacks the
 base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
-0. `gw_play/referee.js` fixes the battle's co-op AI players as `ref.coopAis`,
-   from `model.gwoCoopAi.launchRoster()`. The steps below read the roster from
-   there, never from the war. See [`coop.md`](coop.md), "AI players".
+0. `gw_play/referee.js` reads the connected clients once as `ref.hireClients`
+   and fixes the battle's co-op AI players as `ref.coopAis`, from
+   `model.gwoCoopAi.launchRoster(ref.hireClients)`. The steps below read the
+   roster and the clients from there, never from the war or the live list. See
+   [`coop.md`](coop.md), "AI players" and "The two referees".
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
    applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".
@@ -120,12 +122,28 @@ steps in order:
    that follow from the tier (a boss's commander count, the bounty value) are
    also built here. This step reads none of these values from the save. See
    galaxy.md, "Difficulty" and "AI personalities and penchants".
-5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
+5. In co-op with per-player tech, `gw_play/per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 6. Every client then enters stock's `gw_lobby`, which mounts the referee's files.
    Stock first rebuilds each army tag's specs from local files, and that
    overlay would replace the referee's. `gw_lobby/specs.js` keeps the referee's
    copies. See [`specs.md`](specs.md), "The lobby overlay".
+
+Memory files outlive the battle that mounted them, so step 1 starts with
+`unmountAllMemoryFiles`: read as the base, the last battle's cooked specs would
+be modded a second time. The referee's `mountFiles` then mounts this battle's
+files. Each teardown costs seconds, because Community Mods remounts its client
+mods and rebuilds the content catalogue inside it (about 10 s per teardown,
+measured with ten server mods active). `mountFiles` therefore skips its own
+teardown, because what has been mounted since the latest hire's teardown is GW
+Server Mods' mounts, which the battle needs. The exception is a launch whose
+latest hire mounted a stamped biome mod to cook it (step 3): a mod that then
+fails to cook must not stay mounted for the server, so that launch keeps the
+teardown, and `mountFiles` mounts only the mods that cooked. A co-op host hires
+twice - a shared referee under Community Mods' restricted client mods, then its
+own. Stock restores the full client mods before the second hire starts, so that
+hire's teardown is the latest one, and the per-player tech referee that runs
+after it mounts nothing.
 
 Everything from the click to the hand-off to `connect_to_game` sits behind
 `gw_play/launch_progress.js`. That file wraps `model.fight` and shows a loading
@@ -142,12 +160,19 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   reports, rather than keeping the object it first found.
 - The referee reports its own stages through `gwoReferee.prototype.stage`. A
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
-  setup", so the repeat reads as intended.
+  setup", so the repeat reads as intended. Besides its localised text, it
+  passes `stage()` an optional second argument, `{ key, prefix, options }`:
+  the stage's `!LOC:` key, the label's key, and any `loc()` arguments. The host
+  shows the text as given; the keys are for viewers.
 - In co-op, the host mirrors `begin()`/`stage()`/`end()` to every viewer via
-  the `gwo_launch_progress` host operator. Viewers therefore see the same panel
-  and stages during a launch. The mirroring wraps the methods themselves, so it
-  also covers stages that other mods (e.g. GW Server Mods) report. Stage text
-  arrives already localised in the host's language.
+  the `gwo_launch_progress` host operator, sending `begin` and `end` only when
+  its own panel opens or closes. Viewers therefore see the same panel and
+  stages during a launch. The mirroring is inside the methods themselves, so
+  it also covers stages that other mods (e.g. GW Server Mods) report. A keyed
+  stage is sent with its keys, and each viewer builds the line with its own
+  `loc()`; plain text arrives as the host gave it. A stage that reaches a
+  viewer whose panel is closed opens it first, so a viewer who joins after
+  the host's `begin` still sees the launch.
 - Stock sets `launchingFight` only once its checks pass and it starts saving
   the war. A mod may wrap `model.fight` to do slow work first (GW Server Mods
   mounts server mods there). The panel covers such a mod from the click only if
@@ -177,7 +202,7 @@ logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
 
-The per-player tech referee, `gw_per_player_tech_referee.js`, is waited on the
+The per-player tech referee, `gw_play/per_player_tech_referee.js`, is waited on the
 same way: stock calls its `apply` with no fail handler. But there stock aborts
 on its own when `apply` resolves a falsy value, through `abortRefereeLaunch`,
 which logs the reason and clears `launchingFight`. So a viewer whose unit maps
@@ -230,6 +255,32 @@ GWO's rule differs from stock's in three ways:
 All three results are saved as soon as `winTurn` returns, so none can be
 repaired on scene entry: by then the save no longer holds the `foes`.
 
+## Galaxy map filter cache
+
+The galaxy map tints its icons with EaselJS `ColorFilter`s. A filtered bitmap is
+drawn into its own cache canvas, and every pixel of that canvas is filtered in
+JavaScript: `getImageData`, a loop, `putImageData`. Stock does this for every
+star's owner icon, and `gw_play/systems.js` does it for every star's inner ring,
+each several times per scene load: when the bitmap is cached, when its image
+loads, and when its colour is set. On a 234-star map that was 4.6 seconds of
+every `gw_play` load.
+
+`gw_play/galaxy_map_filter_cache.js` replaces `createjs.Bitmap.prototype.updateCache`
+with one that keeps each result. A bitmap whose cache would come out the same
+gets a copy of it instead: the same image source, the same loaded state, the
+same cache rectangle, and a single `ColorFilter` with the same multipliers. Only
+a handful of colours and two images are in use, so a map needs some 25 passes,
+not 700. Anything else still goes to stock: a second filter, a colour offset, a
+source rectangle, a cache scale, an image that is not an `<img>`, such as a
+video, or a bitmap with a `draw` of its own. It keeps at most 64 results, so a
+colour that animated would cost filter passes, not memory.
+
+It cannot reach the passes that run before mod scripts load. Stock builds the
+map, owner icons included, inside the `GameViewModel` constructor, and calls
+`loadMods` after it, so the first pass of each owner icon and the one its colour
+causes are stock's. The cache takes the image-load passes and every pass of
+`systems.js`'s rings: 1.7 to 2.6 seconds of a 234-star load.
+
 ## Galaxy map redraw throttling
 
 `gw_play/galaxy_map_perf.js` wraps `model.galaxy.stage.update()` with a dirty
@@ -243,8 +294,9 @@ real viewport, so that cost scales with display resolution and refresh rate.
 Only three things change what is drawn without going through `update()` itself.
 They are the stage transform (pan/zoom), the canvas backing size, and
 `model.galaxy.parallax`. The last is a mouse-tracking offset that `self.setup`
-in `gw_play.js` applies to the nebula layer on every `body` mousemove. Diffing
-those three against the last real draw is therefore a sound dirty check.
+in `gw_play.js` writes on every `body` mousemove, and that the
+`galaxyTransform` computed applies to the nebulae and every star. Diffing those
+three against the last real draw is therefore a sound dirty check.
 
 While the camera or mouse is moving, the wrapper still draws, capped to 60 FPS
 rather than the uncapped monitor refresh. Once everything is static, it drops to
@@ -252,7 +304,7 @@ a 10 FPS heartbeat. That rate is slow enough to matter and still registers
 hover-highlight changes, because EaselJS runs its own mouseover hit testing
 inside `update()`.
 
-Two traps:
+Three traps:
 
 - **The idle heartbeat is not idle.** `systems.js` rotates the selection icon on
   every tick, and the heartbeat is what keeps that animation running. When idle,
@@ -262,6 +314,14 @@ Two traps:
   base game takes the 20/sec default). Every check hit-tests the whole
   interactive display list, up to 234 systems. This is independent of the redraw
   loop.
+- The wrapper file also holds back `model.galaxy.parallax`'s notifications
+  until it draws a frame. Every star's position, scale, and lane graphics
+  depend on `galaxyTransform`, so each notification re-evaluates some 2,000
+  computeds: about 20 ms on a 234-star map. A mouse reports far more often than
+  once a frame, and a notification per mousemove stalled the map for seconds
+  while it moved. The value itself changes at once, so the dirty check sees the
+  move. The held notification goes out just before the draw, so the frame shows
+  the stars where the new value puts them.
 
 ## Repairing wars made by older GWO versions
 
@@ -305,7 +365,20 @@ Know the shape before you add a fix to it:
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
 for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own.
+would write a war it does not own. A viewer's save always resolves.
+
+Stock's `GW.manifest.saveGame` never rejects: when the write fails, its
+IndexedDB error handler calls `result.fail(event)`, which only adds a callback,
+so the save stays pending and the Saving indicator stays on. `save.js` therefore
+fails a host's save that has not landed in 30 seconds, and drops a result that
+lands later. Real saves take under a second. Only the latest save clears the
+indicator, so an earlier save that settles or times out does not clear it while
+a later one is still writing. Stock's own saves in `gw_play.js` drive the same
+indicator and have no time limit.
+
+`gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
+waits for the deal, the star-card refresh, and any co-op AI pass so the war is
+written once (coop.md, "One save per win").
 
 ## Where state lives
 

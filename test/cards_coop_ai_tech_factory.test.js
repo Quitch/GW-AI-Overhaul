@@ -61,7 +61,12 @@ registerModuleStub(MOD + "/shared/coop_ai_cards.js", {
 });
 registerModuleStub(MOD + "/shared/coop_ai_units.js", {
   fromGroups: (groups) => ({ via: "groups", groups }),
-  fromSpecs: (loaded, units, mod) => ({ via: "specs", loaded, units, mod }),
+  fromSpecs: (loaded, units, mod) => {
+    if (loaded.badSpec) {
+      throw new TypeError("bad race spec");
+    }
+    return { via: "specs", loaded, units, mod };
+  },
 });
 registerModuleStub(MOD + "/shared/unit_groups.js", { units: ["unit_a"] });
 registerModuleStub(MOD + "/gw_play/race_cells.js", {
@@ -144,6 +149,15 @@ const UNIT_CELLS = { name: "unit cells" };
 registerModuleStub(MOD + "/shared/unit_cells.js", UNIT_CELLS);
 registerModuleStub(MOD + "/gw_play/coop_publish.js", {
   publish: (reason) => seen.events.push(["publish", reason]),
+});
+const SAVE_HOLD = () => {};
+registerModuleStub(MOD + "/gw_play/save_debt.js", {
+  owe: (saved, withStars) => {
+    seen.events.push(["owe", saved === seen.game, withStars]);
+    // Never settles: nothing waits on it.
+    return new Promise(() => {});
+  },
+  hold: SAVE_HOLD,
 });
 
 const makeTech = loadCouiModule(MOD + "/gw_play/cards_coop_ai_tech.js");
@@ -267,6 +281,7 @@ function setup(overrides = {}) {
     hostTechCardDealCount: () => 5,
     coopPlayerInventoryData: () => [VIEWER_RECORD].concat(records()),
   };
+  seen.game = game;
   const hostInventory = {
     owner: "host",
     cards: () => HOST_SAVED.cards,
@@ -315,10 +330,6 @@ function setup(overrides = {}) {
       dealCard: (request, loaded, cards) => ({ request, loaded, cards }),
       setupGwoDeck: (cards, deck, count, promise, ids) =>
         seen.decks.push({ cards, deck, count, promise, ids }),
-    },
-    gwoSave: (saved, withStars) => {
-      seen.events.push(["save", saved === game, withStars]);
-      return undefined;
     },
     gwoStreams: {
       coopAiDecisionRng: (warRng, serial, dealIndex, rerollsUsed) => [
@@ -472,6 +483,25 @@ describe("the unit lookup a co-op AI player judges by", () => {
     assert.deepEqual(run.logs, [
       ["error", "[GW COOP AI] unit specs not read: no specs"],
     ]);
+    mock.timers.tick(8000);
+    assert.equal(run.logs.length, 1);
+  });
+
+  // A third-party race spec of an unexpected shape can make the lookup throw;
+  // the unit groups stand in at once, and only once.
+  it("judges by the unit groups when building the lookup from the specs throws", async () => {
+    const specs = pending();
+    const run = build({ specs });
+
+    specs.resolve({ units: [], badSpec: true });
+    await settle();
+
+    assert.equal(run.lookup().via, "groups");
+    assert.equal(run.logs.length, 1);
+    assert.match(
+      run.logs[0][1],
+      /^\[GW COOP AI\] unit specs not read: TypeError: bad race spec/
+    );
     mock.timers.tick(8000);
     assert.equal(run.logs.length, 1);
   });
@@ -852,16 +882,19 @@ describe("the co-op AI driver's wiring", () => {
     assert.equal(run.driver.canRun(), false);
   });
 
-  it("refreshes the inventory view, saves, then publishes after a pass", async () => {
+  // The pass holds the save, so publishing waits on no write. See coop.md,
+  // "One save per win".
+  it("refreshes the inventory view, owes a save and publishes at once after a pass", () => {
     const run = build();
 
-    await run.driver.afterPass();
+    assert.equal(run.driver.afterPass(), undefined);
 
     assert.deepEqual(seen.events, [
       ["refresh"],
-      ["save", true, false],
+      ["owe", true, false],
       ["publish", "gwo_coop_ai_deal"],
     ]);
+    assert.equal(run.driver.holdSave, SAVE_HOLD);
   });
 
   it("starts a pass whenever anything it depends on changes", () => {

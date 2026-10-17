@@ -130,13 +130,18 @@ define([
             );
           }
         );
-        _.forEach(commanders, function (commander) {
-          aiInventory = aiInventory.concat(
-            gwoRaces.commanderModsFor(race, commander)
-          );
-        });
         if (aiInventory.length) {
           gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
+        }
+        // A pass of its own: the retag's replace would flatten the commander
+        // before the army's base_commander mods run. See specs.md.
+        var retagMods = _.flatten(
+          _.map(commanders, function (commander) {
+            return gwoRaces.commanderModsFor(race, commander);
+          })
+        );
+        if (retagMods.length) {
+          gwoSpecs.mod(aiFiles, retagMods, aiTag[currentCount]);
         }
         aiFactionDeferred.resolve(aiFiles);
       }
@@ -224,6 +229,7 @@ define([
     return battle.cellsFor(race).then(function (cells) {
       var plan = gameFilePaths.specPlan({
         units: saved.units || [],
+        removed: saved.removedUnits || [],
         extra: model.gwoSpecs,
         cells: cells,
         race: race,
@@ -270,6 +276,9 @@ define([
     return battle.cellsFor(playerRace).then(function (cells) {
       var plan = gameFilePaths.specPlan({
         units: inventory.units(),
+        // Always a live GWInventory here, so no check for the list, unlike
+        // cards.js and the tooltips, which can be handed a stub.
+        removed: inventory.removedUnits(),
         extra: battle.additionalPlayerSpecs,
         cells: cells,
         race: playerRace,

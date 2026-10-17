@@ -3,7 +3,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
-], function (coopAiPings, starThreat) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_paths.js",
+], function (coopAiPings, starThreat, starPaths) {
   var commanderOf = function (record) {
     return (
       _.get(record, "inventory.tags.global.commander") ||
@@ -76,13 +77,14 @@ define([
       windowOpen: windowOpen,
       candidates: function () {
         var current = game.currentStar();
+        var canSelect = starPaths.selectable(model);
         var candidates = [];
         _.forEach(galaxy.stars(), function (star, index) {
           var ai = star.ai();
           if (index === current || !ai || star.explored()) {
             return;
           }
-          var path = model.canSelect(index);
+          var path = canSelect(index);
           if (path && path.length) {
             candidates.push({
               star: index,
@@ -96,12 +98,13 @@ define([
       },
       neutral: function () {
         var current = game.currentStar();
+        var canSelect = starPaths.selectable(model);
         var nearest;
         _.forEach(galaxy.stars(), function (star, index) {
           if (index === current || star.ai() || star.explored()) {
             return;
           }
-          var path = model.canSelect(index);
+          var path = canSelect(index);
           if (
             path &&
             path.length &&

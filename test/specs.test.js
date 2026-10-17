@@ -478,6 +478,67 @@ describe("specs.mod - base_spec inheritance", () => {
     assert.equal(baseFirst["child.json"].armor_damage_map.AT_Commander, 4);
   });
 
+  describe("a child replace and a base multiply", () => {
+    const fresh = () => ({
+      "base.json.ai0": { max_health: 100, buildable_types: "Base" },
+      "child.json.ai0": { base_spec: "base.json", model: "child" },
+    });
+    const baseMods = [
+      { file: "base.json", path: "max_health", op: "multiply", value: 2 },
+    ];
+    const childMods = [
+      {
+        file: "child.json",
+        path: "buildable_types",
+        op: "replace",
+        value: "Race",
+      },
+    ];
+
+    it("in one call flattens the child before the multiply reaches it", () => {
+      const data = fresh();
+      specs.mod(data, baseMods.concat(childMods), ".ai0");
+      assert.equal(data["base.json.ai0"].max_health, 200);
+      assert.equal(data["child.json.ai0"].max_health, 100);
+      assert.equal("base_spec" in data["child.json.ai0"], false);
+    });
+
+    it("in a second call gives the child the multiplied value it inherits", () => {
+      const data = fresh();
+      specs.mod(data, baseMods, ".ai0");
+      assert.equal("base_spec" in data["child.json.ai0"], true);
+      specs.mod(data, childMods, ".ai0");
+      assert.deepEqual(data["child.json.ai0"], {
+        max_health: 200,
+        buildable_types: "Race",
+        model: "child",
+      });
+      assert.equal(data["base.json.ai0"].max_health, 200);
+    });
+  });
+
+  it("does not apply a first call's mods again in a second call", () => {
+    const data = {
+      "base.json.ai0": { max_health: 100 },
+      "child.json.ai0": { base_spec: "base.json" },
+    };
+    specs.mod(
+      data,
+      [
+        { file: "child.json", path: "max_health", op: "multiply", value: 2 },
+        { file: "base.json", path: "max_health", op: "multiply", value: 3 },
+      ],
+      ".ai0"
+    );
+    specs.mod(
+      data,
+      [{ file: "child.json", path: "model", op: "replace", value: "x" }],
+      ".ai0"
+    );
+    assert.equal(data["child.json.ai0"].max_health, 200);
+    assert.equal(data["base.json.ai0"].max_health, 300);
+  });
+
   it("lists the commander's main gun ammo before the base it inherits from", () => {
     const gwoUnit = loadCouiModule(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"

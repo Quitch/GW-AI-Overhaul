@@ -108,7 +108,7 @@
 
     // The colour pairs the battle gives the AIs: the players' sequence
     // continued, as stock's gwCoopPlayerColors counts the human armies.
-    var aiColours = function (aiCount) {
+    var aiColours = function (aiCount, humanCount) {
       var loaded = mods();
       var inventory = game.inventory();
       return loaded.roster.colourPairs({
@@ -116,7 +116,7 @@
         humanArmies: loaded.roster.humanArmies(
           model.gwCampaignSharedControl() &&
             !model.gwCampaignPerPlayerTechCards(),
-          model.gwCampaignConnectedClients().length
+          humanCount
         ),
         aiCount: aiCount,
         faction: loaded.factions[inventory.getTag("global", "playerFaction")],
@@ -124,7 +124,7 @@
       });
     };
 
-    var launchRoster = function () {
+    var launchRoster = function (connectedClients) {
       var loaded = mods();
       if (!loaded) {
         if (model.gwCampaignActive() && savedAiCount()) {
@@ -134,14 +134,18 @@
       }
 
       var inventory = game.inventory();
+      var humanCount = (connectedClients || model.gwCampaignConnectedClients())
+        .length;
       return loaded.roster.launchAis({
         records: game.coopPlayerInventoryData(),
         active: model.gwCampaignActive(),
         perPlayerTech: model.gwCampaignPerPlayerTechCards(),
-        humanCount: model.gwCampaignConnectedClients().length,
+        humanCount: humanCount,
         hostRace: loaded.races.raceOf(inventory),
         hostInventory: inventory,
-        colours: aiColours,
+        colours: function (aiCount) {
+          return aiColours(aiCount, humanCount);
+        },
       });
     };
 
@@ -189,7 +193,7 @@
         }
         return mods().roster.panelEntries(
           list,
-          aiColours(list.length),
+          aiColours(list.length, model.gwCampaignConnectedClients().length),
           mods().races.raceOf(game.inventory()),
           perPlayer()
         );
@@ -245,6 +249,9 @@
           )
         );
       });
+      // Every records write rebuilds equal rows; unchanged rows must not
+      // re-render the slot list. See coop.md, "Records writes".
+      model.gwCampaignSlots.equalityComparer = _.isEqual;
 
       // Explore is held too (cards_explore.js's model.explore), so it greys as
       // it does while a player sets up. gw_play.html binds that look to
@@ -291,6 +298,7 @@
         return (
           stockCanAdd() &&
           !lobbyChanging() &&
+          !model.launchingFight() &&
           (!loaded ||
             loaded.roster.roomForSlot(
               parseInt(model.gwCampaignMaxClients(), 10),
@@ -435,9 +443,16 @@
         };
 
         // Under Separate races the AI picks from the races the war offers,
-        // preferring one no player fields; otherwise it fields the host's.
+        // preferring one no player fields; otherwise, and always in a Cluster
+        // war, it fields the host's.
         var raceFor = function (rng) {
           var hostRace = gwoRaces.raceOf(game.inventory());
+          if (
+            game.inventory().getTag("global", "playerFaction") ===
+            gwoAI.CLUSTER_FACTION
+          ) {
+            return Promise.resolve(hostRace);
+          }
           var recorded = gwoAI.originSettings(game).races;
           if (!(recorded && recorded.perPlayerRace)) {
             return Promise.resolve(hostRace);
@@ -536,11 +551,18 @@
 
         // An AI falls back to the host's commander if none could be checked.
         var specDeps = { fetch: gameFilePaths.specFetch };
+        // The spec cache keeps a read for the visit, so none may land before
+        // GWSM's mount does.
+        var mounted = new Promise(function (resolve) {
+          raceMods.mountRoot().always(resolve);
+        });
         ownedLoad
           .then(function (owned) {
             return roster
               .mlaCommanders(owned, function (path) {
-                return specCache.fetchRaw(path, specDeps);
+                return mounted.then(function () {
+                  return specCache.fetchRaw(path, specDeps);
+                });
               })
               .then(function (commanders) {
                 console.log(

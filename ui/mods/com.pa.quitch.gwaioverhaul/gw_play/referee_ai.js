@@ -1029,7 +1029,9 @@ define([
     var game = model.game();
     var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
-    var connectedClients = refereeCoop.getConnectedClients();
+    var connectedClients = _.isArray(self.hireClients)
+      ? self.hireClients
+      : refereeCoop.getConnectedClients();
     var coopAis = self.coopAis || [];
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
@@ -1062,6 +1064,15 @@ define([
         })
       );
     });
+
+    // The per-player referee checks its launch clients against the list that
+    // numbers these trees. See coop.md, "The two referees".
+    self.hireClientKeys = _.map(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      function (viewer) {
+        return refereeCoop.clientKey(viewer.client.id, viewer.client.name);
+      }
+    );
 
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),

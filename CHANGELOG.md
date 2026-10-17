@@ -1,5 +1,53 @@
 # CHANGELOG
 
+## v7.7.0 - 2026-10-17
+
+### API
+
+- New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
+- `gwoCard.missingUnit` is deprecated: use `missingObtainableUnit` to ask whether a card can still add a unit, or `!gwoCard.hasAllUnits(inventory.units(), units)` to ask whether the player lacks one. It still works
+- A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
+- A card mod's `deal()` may return the same object every time: a card whose `deal()` did so stopped being offered until the game restarted once a deal passed it over, such as while the player held it or it was already in the offer
+- A `deal()` `chance` given as a numeric string, such as `"50"`, counts as that number, where before it could leave a card of the offer undealt. A negative chance no longer skews every other card's odds, and an `Infinity` chance no longer leaves a card of the offer undealt: the card with it is not dealt instead
+
+### Changed
+
+- The galaxy map is much smoother in the largest galaxies:
+  - It opens faster, by two seconds or more with 234 stars
+  - Taking a star or its tech card no longer freezes it for up to a second or more, most of all in co-op
+  - Late in a war, it pauses less after each move, battle, and tech card
+  - It no longer stalls while the mouse moves over it
+- Galactic War battles launch sooner, by about 10 seconds with faction mods active
+- The war setup screen writes your chosen settings, mods, and game language to the game's logs when it opens, so a bug before Go To War is logged too
+
+### Bugfix
+
+- Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
+- Deleting a tech card while exploring no longer changes how many cards a reroll deals or how many rerolls you have, and reloading the galaxy map afterwards no longer gives you an extra card and an extra reroll
+- In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
+- Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
+- Commander tech now also strengthens a stock commander that a faction-mod army keeps, such as the Guardians' Unicorn in a Legion war, which previously got none of those buffs
+- In co-op with per-player tech, a battle no longer launches with a player's Sub Commanders running another player's AI when someone joins or drops while the battle is being set up; the launch stops instead, and the host can press Fight again
+- After a war fails to generate, the next war is named for its own settings, so a Large war is no longer named "Small" after a Small galaxy proved too small
+- A war whose galaxy proves too small while you change its system sources or race now shows why it was not created and puts your seed back, rather than stopping with no message
+- Go To War no longer stays greyed out for good when the new war cannot be saved: after 30 seconds, the setup screen unlocks and shows an error, and your previous war stays the one you continue
+- Go To War no longer stays greyed out for good when a system source under Systems never finishes loading: after waiting 20 seconds for that source, the war is made without it, or shows why it could not be created, and a war retried because its galaxy proved too small does not wait for that source again
+- Go To War no longer stays greyed out for good when the list of system sources under Systems never finishes loading: after 20 seconds, the war shows why it could not be created
+- The war setup screen is locked while a war generates, so a difficulty, faction, or other setting changed after Go To War no longer gives a war built from a mix of the old and new settings, such as a Gold war with Uber-strength enemies
+- In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
+- With Separate races, the war information panel names the AI of each race your co-op AI players field, not only your own race's
+- A co-op AI player in a Cluster war always fields MLA, as the players do, even with Separate races on
+- AIs with the Tactical penchant build an Anti-Nuke Launcher when they face nukes
+- Penchant AIs' land attack groups hold radar and anti-nuke tanks in the same slots as other AIs' land attack groups
+- AIs with the Platoon penchant form their largest amphibious attack groups
+- Cluster AI commanders no longer move faster than other factions' with the same tech
+- A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- In co-op with per-player tech, a player who joins while a battle is being set up no longer leaves a co-op AI player fighting with that player's tech or Sub Commanders; the launch stops instead, and the host can press Fight again
+- In co-op, a player who uses a different game language from the host sees GWO's own battle launch steps in their own language, not the host's
+- On the galaxy map, the Saving indicator no longer stays on screen for good after you take a tech card or win a battle when the game cannot write the war, such as when the disk is full: it clears after 30 seconds, and the next save tries again
+- Sub Commanders no longer fight in a player's army colour, or one too close to tell apart, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
+- The war setup screen selects the loadout of your last war again after you favourite a loadout or install or remove a loadout mod, rather than the one now in its old place
+
 ## v7.6.0 - 2026-10-03
 
 ### Changed

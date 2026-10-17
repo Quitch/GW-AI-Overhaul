@@ -218,6 +218,9 @@ function makeSyncDeferred() {
       on("rejected", forward(onFail, next.reject));
       return next.promise();
     },
+    state: function () {
+      return state;
+    },
     promise: function () {
       return deferred;
     },
@@ -433,6 +436,35 @@ function createFakeJQuery(options) {
           .then(undefined, function (err) {
             throw err;
           })
+      );
+    },
+    // Calls request.success or request.error a tick later, as a real request
+    // does, with error's (jqXHR, textStatus, errorThrown) arguments.
+    ajax: function (request) {
+      return decorate(
+        Promise.resolve()
+          .then(function () {
+            if (!opts.ajax) {
+              throw new Error(
+                "fake-jquery: no ajax resolver configured for " + request.url
+              );
+            }
+            return opts.ajax(request.url);
+          })
+          .then(
+            function (data) {
+              if (request.success) {
+                request.success(data);
+              }
+              return data;
+            },
+            function (err) {
+              if (request.error) {
+                request.error(null, "error", err);
+              }
+              throw err;
+            }
+          )
       );
     },
   };

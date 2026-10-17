@@ -1,4 +1,4 @@
-// The measured half of gw_play/gw_per_player_tech_referee.js. Keep it loadable
+// The validation half of gw_play/per_player_tech_referee.js. Keep it loadable
 // under the Node AMD harness - see testing.md, "Coverage".
 define(function () {
   var armyHasAI = function (army) {
@@ -289,7 +289,30 @@ define(function () {
     return validateRefereeState(referee, options, optionsResult.config);
   };
 
+  // Why the viewers a battle launches with are not the ones its hire wrote
+  // .playerN trees for, in order; "" when they are.
+  var describeClientMismatch = function (hireKeys, launchKeys) {
+    var dropped = _.difference(hireKeys, launchKeys);
+    if (dropped.length) {
+      return "left during setup: " + dropped.join(", ");
+    }
+    var joined = _.difference(launchKeys, hireKeys);
+    if (joined.length) {
+      return "joined during setup: " + joined.join(", ");
+    }
+    if (!_.isEqual(hireKeys, launchKeys)) {
+      return (
+        "order changed during setup: " +
+        hireKeys.join(", ") +
+        " became " +
+        launchKeys.join(", ")
+      );
+    }
+    return "";
+  };
+
   return {
+    describeClientMismatch: describeClientMismatch,
     getPlayerTagGivenIndex: getPlayerTagGivenIndex,
     stripKnownSpecTag: stripKnownSpecTag,
     getViewerSubcommanderAiPath: getViewerSubcommanderAiPath,

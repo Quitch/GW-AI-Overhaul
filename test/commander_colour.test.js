@@ -21,11 +21,8 @@ describe("pick", () => {
   it("gives each count its own palette colour, with the grey secondary", () => {
     for (const faction of [0, 1, 2, 3, 4]) {
       const primaries = [];
-      for (let count = 0; ; count++) {
+      for (let count = 0; count < colour.paletteSize(faction); count++) {
         const picked = colour.pick(faction, minion, count);
-        if (picked === minion) {
-          break;
-        }
         assert.deepEqual(picked[1], [192, 192, 192]);
         primaries.push(JSON.stringify(picked[0]));
       }
@@ -38,13 +35,55 @@ describe("pick", () => {
     }
   });
 
-  it("falls back to the minion's colour once the palette is spent", () => {
-    // Cluster's palette has five colours.
-    assert.equal(colour.pick(4, minion, 5), minion);
+  it("gives each faction its own colour once the palette is spent", () => {
+    for (const faction of [0, 1, 2, 3, 4]) {
+      const spent = colour.pick(faction, minion, colour.paletteSize(faction));
+      assert.deepEqual(spent[1], [192, 192, 192]);
+      assert.notDeepEqual(spent[0], minion[0]);
+      assert.deepEqual(colour.pick(faction, minion, 99), spent);
+      assert.deepEqual(colour.pick([faction], minion, 99), spent);
+      assert.deepEqual(colour.pick(faction, undefined, 99), spent);
+      for (let count = 0; count < colour.paletteSize(faction); count++) {
+        assert.notDeepEqual(colour.pick(faction, minion, count)[0], spent[0]);
+      }
+    }
+  });
+
+  it("gives every faction a different spent-palette colour", () => {
+    const spent = [0, 1, 2, 3, 4].map((faction) =>
+      JSON.stringify(colour.pick(faction, minion, 99)[0])
+    );
+    assert.equal(new Set(spent).size, spent.length);
   });
 
   it("falls back to the minion's colour for a faction with no palette", () => {
     assert.equal(colour.pick(7, minion, 0), minion);
+  });
+
+  it("keeps a spent palette's Guardians in their own pair", () => {
+    const guardians = [
+      [255, 255, 255],
+      [255, 192, 203],
+    ];
+    for (const faction of [0, 1, 2, 3, 4]) {
+      assert.equal(
+        colour.pick(faction, guardians, colour.paletteSize(faction)),
+        guardians
+      );
+    }
+  });
+
+  it("colours a minion with no colour of its own from the palette", () => {
+    for (const faction of [0, 1, 2, 3, 4]) {
+      assert.deepEqual(
+        colour.pick(faction, undefined, 1),
+        colour.pick(faction, minion, 1)
+      );
+    }
+  });
+
+  it("has no palette for an unknown faction", () => {
+    assert.equal(colour.paletteSize(7), 0);
   });
 
   it("keeps the Guardians white", () => {

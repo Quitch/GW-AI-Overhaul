@@ -119,7 +119,10 @@ Ordering matters and is not obvious:
   not `hasUnit`.
 - `removeUnits` strips _every_ copy of a unit. This is a GWO change to base
   behaviour. A `dull()` that removes a whole group can therefore wipe units that
-  other cards granted.
+  other cards granted. The removal also holds for a race player: a removed race
+  unit is not fielded as the stand-in of a stock unit still held. A later
+  `addUnits` of the same path lifts it ([`races.md`](races.md), "Capability
+  cells", "Removed units").
 - `applyCards` is asynchronous, and calls its `done` argument when the pass has
   finished. Save the war, or send it to co-op players, only from `done`. Until
   the `dull()`s have run, the loadout's `buffCount` tag is set, and a war saved
@@ -156,7 +159,11 @@ the saved minion is byte-identical after two battles. See
 
 `deal(system, context, inventory, rng)` returns `{ chance, params }`. `chance` is a
 weight, not a percentage. A higher weight means the dealer is more likely to offer
-the card.
+the card. `chance` is a number, or a numeric string such as `"50"` that counts as
+its number. Any other type, or a value that is not a finite number above 0 (0, a
+negative, `NaN`, or `Infinity`), means the card is not dealt. The dealer never
+writes to the object `deal()` returns, so `deal()` may return the same object every
+call.
 
 `rng` is **optional**. GWO's dealer supplies it as a seeded stream keyed by the
 card's own id. `shared/deal.js dealCard`, the dev cheats and any third-party dealer
@@ -246,6 +253,13 @@ routes:
 3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
    unlock cards. Their whole purpose is to be offered to a player who has none of
    the units.
+   They deal while `gwoCard.missingObtainableUnit(inventory, group)` is true.
+   It skips the units in `inventory.removedUnits()`, which a loadout's `dull()`
+   removed for good, so a card that would add nothing is not dealt.
+   `gwoCard.missingUnit` is deprecated. It reads only `units()`, so it counts a
+   removed unit as missing, and it stays exported only for card mods that still
+   call it. To ask whether the player lacks a unit, use
+   `!gwoCard.hasAllUnits(inventory.units(), group)`.
 
 Gate on the same units that the card's `card_units.js` entry declares. That entry is
 the list the tooltip shows, and where the two differ, one of them is wrong.
@@ -596,11 +610,12 @@ Four rules keep this affordable and safe:
   way; the team factor reads its units, mods and commander straight off the
   observables, with no copy.
 
-The apply also notes every unit that a card's `removeUnits` takes away. Those
-that no card grants back are the inventory's **stripped** units: the units a
-loadout's `dull()` forbids, such as Tourist Commander's extractors and Jig. They
-ride on the applied inventory as `strippedUnits`, which is not enumerable, so no
-copy, save, or stored record carries them.
+The applied inventory's `removedUnits` lists every unit that a card's
+`removeUnits` took away. Those that no card grants back are the inventory's
+**stripped** units: the units a loadout's `dull()` forbids, such as Tourist
+Commander's extractors and Jig. They ride on the applied inventory as
+`strippedUnits`, which is not enumerable, so no copy, save, or stored record
+carries them.
 
 ### Scoring
 
@@ -880,6 +895,7 @@ not the host's. So a card must:
   and that nothing grants back, are the ones an AI treats as forbidden: it
   never counts a stat mod on them as worth something later. All `buff()`s run
   before any `dull()`, so a `dull()` that removes units forbids them for good.
+  That covers a race unit a held stock unit would otherwise stand for.
 
 Register a card in `model.gwoCardsToUnits` only for the units it affects. A
 card that names units there, yet changes nothing the AI can see, is taken to

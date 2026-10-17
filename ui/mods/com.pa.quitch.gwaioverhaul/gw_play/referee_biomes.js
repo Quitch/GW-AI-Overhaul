@@ -39,6 +39,7 @@ define([
 
     self.biomeMods = [];
     self.biomeServed = {};
+    self.cookedStampsMounted = false;
     return gwoPromise.steps(stampedMods(system), [
       function (mods) {
         if (!mods.length) {
@@ -51,6 +52,7 @@ define([
         var mounted = $.Deferred();
 
         self.stage("!LOC:Processing biome mods");
+        self.cookedStampsMounted = cooked.length > 0;
         gwoBiomeMods.mount(cooked).always(function () {
           mounted.resolve();
         });

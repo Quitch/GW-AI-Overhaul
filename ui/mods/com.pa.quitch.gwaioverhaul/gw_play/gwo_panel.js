@@ -187,10 +187,12 @@
           var brainSummary = gwoPanelView.brainSummaryFor(gwoSettings);
           model.gwoAI = brainSummary("enemy");
           model.gwoAIAlly = brainSummary("ally");
-          // Under shared tech every co-op AI player fields the host's race.
-          model.gwoAICoop = brainSummary("coop", [
-            gwoRaces.raceOf(model.game().inventory()),
-          ]);
+          model.gwoAICoop = ko.pureComputed(function () {
+            return brainSummary(
+              "coop",
+              gwoPanelView.coopRaceIds(gwoRaces.raceOf(game.inventory()))
+            );
+          });
 
           var coopText = function (setting) {
             if (setting) {
@@ -240,6 +242,8 @@
           model.gwoPlayer = ko.computed(function () {
             return commanderList(loc("!LOC:Human"));
           });
+          // See coop.md, "Records writes".
+          model.gwoPlayer.equalityComparer = _.isEqual;
 
           // A per-player viewer's own record syncs late; until it does, the
           // report leaves the cards and race out rather than give the host's.

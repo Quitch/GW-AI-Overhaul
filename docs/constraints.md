@@ -129,6 +129,14 @@ An errback can also run a second time for the same failed module, when a later
 require reports the failure again, so a tally counts each module once
 (`_.once`).
 
+A `requireGW` callback runs **after** `ko.applyBindings`. A scene script runs
+before it, so markup the script injects is bound, but a model property that a
+callback creates does not exist yet when the bindings first evaluate. An eager
+binding (`visible`, `text`, `if`) that reads one throws "Unable to process
+binding … undefined is not a function", and an enclosing `foreach` stops after
+its first item. Create the property at scene-script time, or read it only from a
+binding that evaluates later: PA's `tooltip` binding reads its value on hover.
+
 ## Where a defensive check belongs
 
 A guard marks a **trust boundary**. Its presence should tell a reader that the
@@ -189,6 +197,17 @@ Sharing between scene scripts goes through `model.gwo*`, never `window`.
 When a base-game-shadowed module needs its logic tested, extract that logic into
 a measured sibling module. Do not hoist helpers to file top level. See
 [`shadowing.md`](shadowing.md).
+
+Two Sonar rules look as if the same reasoning covers them, and it does not.
+Both are fixed, not accepted:
+
+- `javascript:S2004` (functions nested too deeply). Name the callback one or two
+  levels up, still inside the `define(...)` factory or the scene IIFE. That
+  flattens the nesting and leaks nothing. Only a verbatim copy of stock code
+  keeps the finding.
+- `javascript:S8786` (a regular expression that can backtrack super-linearly).
+  Anchor the overlapping quantifier, as in `\s+(\S.*)$`, `\b(\w+)`, or
+  `[^<>]*`.
 
 ## Log one string
 

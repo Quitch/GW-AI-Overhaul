@@ -1,5 +1,5 @@
-name: Bug report
-description: Report unexpected behaviours
+name: Bug report (in-game but report button usage only)
+description: Used by the in-game Report a Galactic War Bug button.
 title: "[BUG] "
 labels: ["bug"]
 assignees: ["Quitch"]
@@ -10,11 +10,17 @@ body:
       label: Attestation
       options:
         - label: I searched [existing issues](https://github.com/Quitch/GW-AI-Overhaul/issues?q=is%3Aissue) and this bug is not already reported
+          required: true
         - label: I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
+          required: true
         - label: I tried it with only GWO, its dependencies, and client and server mods (races, maps, etc.) required by this war. All other mods were disabled.
+          required: true
         - label: I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
+          required: true
         - label: I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
+          required: true
         - label: I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
+          required: true
   - type: textarea
     id: description
     attributes:
@@ -27,6 +33,8 @@ body:
     attributes:
       label: Where it happened
       description: "Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub: War setup, Galaxy map, Exploring a system, Launching a battle, During a battle, Returning from a battle, or say where."
+    validations:
+      required: true
   - type: textarea
     id: reproduce
     attributes:
@@ -37,11 +45,15 @@ body:
         2. Click on '....'
         3. Scroll down to '....'
         4. See error
+    validations:
+      required: true
   - type: textarea
     id: expected
     attributes:
       label: Expected behaviour
       description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
   - type: textarea
     id: screenshots
     attributes:
@@ -52,6 +64,8 @@ body:
     attributes:
       label: GWO info
       description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub, from the top-right GWO panel.
+    validations:
+      required: true
   - type: textarea
     id: cards
     attributes:
@@ -67,11 +81,15 @@ body:
     attributes:
       label: Mods
       description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub. List every enabled client mod and every server mod, including those run through Galactic War Server Mods, and mark the race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
+    validations:
+      required: true
   - type: input
     id: language
     attributes:
       label: Game language
       description: Filled in by the in-game button. Check it, and fill it in if you opened this form from GitHub.
+    validations:
+      required: true
   - type: textarea
     id: context
     attributes:
@@ -81,4 +99,6 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Drop the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from immediately after the bug here, and a zipped copy of your `localstore` folder, found within the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).
+      description: ZIP (or 7z) the [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) from the session in which the bug happened, then drop the archive here. Find the logs inside the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).
+    validations:
+      required: true

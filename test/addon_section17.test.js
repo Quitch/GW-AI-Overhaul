@@ -19,7 +19,9 @@ const section17 = loadCouiModule(MOD_ROOT + "/addon/section17.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
+const buildTypes = loadCouiModule(MOD_ROOT + "/shared/build_types.js");
 const fixture = require("./fixtures/unit_types.json").units;
+const buildable = require("./fixtures/unit_types.json").buildable;
 
 const MODS = ["com.pa.daedelus.experimentals"];
 const EXCLUSIVE_KEYS = ["bigBill", "floater", "horntail", "pineapple"];
@@ -117,6 +119,36 @@ describe("the Section 17 descriptor", () => {
     for (const alias of ["AnyMLABasicFabber", "MLACommander"]) {
       assert.ok(referenced.has(alias), alias + " no longer referenced");
       assert.ok(!(alias in map), alias + " now in the mod's own map");
+    }
+  });
+
+  it("harvested a Solar Cell no MLA builder can build, unlike the Energy Coil (skipped without it in the fixture)", (t) => {
+    if (!harvested) {
+      t.skip("fixture harvested without Section 17");
+      return;
+    }
+    const canBuild = (builder, key) => {
+      const unit = section17.units[key];
+      assert.ok(fixture[unit], unit + " is not in the fixture");
+      return buildTypes.matches(
+        buildable[builder],
+        fixture[unit].map(cells.bare)
+      );
+    };
+
+    for (const builder of [
+      "/pa/units/commanders/base_commander/base_commander.json",
+      gwoUnit.botFabber,
+    ]) {
+      assert.ok(
+        canBuild(builder, "energyCoil"),
+        builder + " cannot build the Energy Coil, the Solar Cell pin's control"
+      );
+      assert.ok(
+        !canBuild(builder, "solarCell"),
+        builder +
+          " builds the Solar Cell: the harvest has DAEDALUS-Modding/Section-17#2, see #242"
+      );
     }
   });
 });

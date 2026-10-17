@@ -26,6 +26,12 @@
         : inventory.units || [];
     };
 
+    var removedUnits = function (inventory) {
+      return _.isFunction(inventory.removedUnits)
+        ? inventory.removedUnits()
+        : inventory.removedUnits || [];
+    };
+
     var lookupHas = function (lookup, key) {
       return Object.prototype.hasOwnProperty.call(lookup, key);
     };
@@ -58,7 +64,8 @@
           var fielded = gwoRaces.fieldedFor(
             race,
             gwoRaces.ownedPaths(race, held, cells),
-            cells
+            cells,
+            removedUnits(inventory)
           );
           _.forEach(fielded, function (unit) {
             owned[unit] = true;

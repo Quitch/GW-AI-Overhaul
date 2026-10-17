@@ -44,6 +44,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
   var plainSave = function (inventory) {
     return plain({
       units: inventory.units(),
+      removedUnits: inventory.removedUnits(),
       aiMods: inventory.aiMods(),
       mods: inventory.mods(),
       maxCards: inventory.maxCards(),
@@ -53,25 +54,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     });
   };
 
-  // A GWInventory that notes every unit its cards remove.
-  var recording = function (GWInventory, removed) {
-    return function () {
-      var inventory = new GWInventory();
-      var removeUnits = inventory.removeUnits;
-      inventory.removeUnits = function (units) {
-        if (_.isArray(units)) {
-          removed.push.apply(removed, _.filter(units, _.isString));
-        }
-        return removeUnits.apply(inventory, arguments);
-      };
-      return inventory;
-    };
-  };
-
   // Non-enumerable, so no copy or save of the result carries it.
-  var withStripped = function (applied, removed) {
+  var withStripped = function (applied) {
     Object.defineProperty(applied, "strippedUnits", {
-      value: _.difference(_.uniq(removed), applied.units || []),
+      value: _.difference(applied.removedUnits || [], applied.units || []),
     });
     return applied;
   };
@@ -90,7 +76,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     var applyOnce = function (saved) {
       return new Promise(function (resolve, reject) {
         var held;
-        var removed = [];
         var timer = setTimeout(function () {
           if (held) {
             held.abandon();
@@ -100,12 +85,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
 
         try {
           held = gwoBank.applyInventoryHeld(
-            recording(params.GWInventory, removed),
+            params.GWInventory,
             saved,
             params.stockBank,
             function (inventory) {
               clearTimeout(timer);
-              resolve(withStripped(plainSave(inventory), removed));
+              resolve(withStripped(plainSave(inventory)));
             }
           );
         } catch (error) {

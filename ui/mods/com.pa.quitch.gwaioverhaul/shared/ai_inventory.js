@@ -54,7 +54,7 @@ define([
   var revenantsUnitsMobile = gwoGroup.orbitalMobile.concat(gwoUnit.helios);
   var clusterSubCommanders = [gwoUnit.angel, gwoUnit.colonel];
   var clusterCommanderUnits = commanderUnits.concat(clusterSubCommanders);
-  var clusterUnitsMobile = clusterCommanderUnits;
+  var clusterUnitsMobile = [];
   var clusterUnitsImmobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
   var clusterUnitsFactories = gwoGroup.factories;
 
