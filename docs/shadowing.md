@@ -187,6 +187,18 @@ the map a single file, so `mla.json` needs no mounting of its own.
 | `q_silver/unit_maps/ai_unit_map.json` | `pa_ex1/` (the only one)  |
 | `q_uber/unit_maps/ai_unit_map.json`   | `pa_ex1/` (the only one)  |
 
+The referee reads only the `q_uber` copy as the base unit map, for every Queller
+army. `getAIUnitMapPath` in `gw_play/referee_game_file_paths.js` gets the brain,
+not the tier, so a `q_bronze` or `q_silver` Sub Commander's tagged maps are built
+from `q_uber` too. The `q_bronze` and `q_silver` copies reach a tree only as the
+untagged maps the engine lists (`baseMaps` in `shared/race_trees.js`). This is
+correct while the three copies are equal, which is why they must stay equal.
+
+`npm run validate:queller-maps` does this re-diff against the install. It checks
+each copy against its tier's base map merged with that tier's `mla.json`, and
+checks the `q_bronze` and `q_silver` copies against `q_uber`. Run it after a PA
+patch. See [testing.md](testing.md), "The validators".
+
 ## Marking a shadowed file
 
 Every shadowed file should say, at the top, what GWO changed relative to stock.

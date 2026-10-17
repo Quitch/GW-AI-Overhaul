@@ -77,8 +77,8 @@ real failures as "excluded" while the run stayed green.
 ## The validators
 
 Every `validate:*` script that `npm run validate` runs has a row here.
-`validate:docs` checks that it does. `validate:race-trees` is local-only and is
-described separately below.
+`validate:docs` checks that it does. `validate:race-trees` and
+`validate:queller-maps` are local-only and are described separately below.
 
 | Command                 | Catches                                                                                                                                                                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -209,6 +209,20 @@ factory and fabber lists whole. Their
 stripping (`races.md`, "Race trees") is pinned by unit tests alone
 (`test/referee_game_files_ai_paths.test.js`,
 `test/referee_ai_race_trees.test.js`).
+
+**`npm run validate:queller-maps` is local-only too.** It reads GWO's three
+Queller unit-map shadows (`pa/ai_queller/q_{bronze,silver,uber}/unit_maps/ai_unit_map.json`)
+and the install's `pa_ex1/ai_queller/q_<tier>/unit_maps/` files. Each shadow
+must equal its tier's `ai_unit_map.json` with that tier's `mla.json`
+`unit_map` entries added. An `mla.json` entry that the base map also has fails,
+as does an `mla.json` key other than `unit_map`. The `q_bronze` and `q_silver`
+shadows must also equal the `q_uber` one, which is the only copy the referee
+reads as a base map ([shadowing.md](shadowing.md), "Which copy each
+`pa/ai_queller/` file replaces"). A failure names each missing key, extra key
+and differing value by its path in the file. Without the install, the script
+names the path it looked in and exits non-zero.
+`test/validate_queller_maps.test.js` tests the comparison on fixtures and runs
+the script over a fixture install, so CI covers both. Run it after a PA patch.
 
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
