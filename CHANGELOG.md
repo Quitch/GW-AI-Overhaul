@@ -7,6 +7,8 @@
 - New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
 - `gwoCard.missingUnit` is deprecated: use `missingObtainableUnit` to ask whether a card can still add a unit, or `!gwoCard.hasAllUnits(inventory.units(), units)` to ask whether the player lacks one. It still works
 - A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
+- A card mod's `deal()` may return the same object every time: a card whose `deal()` did so stopped being offered until the game restarted once a deal passed it over, such as while the player held it or it was already in the offer
+- A `deal()` `chance` given as a numeric string, such as `"50"`, counts as that number, where before it could leave a card of the offer undealt. A negative chance no longer skews every other card's odds, and an `Infinity` chance no longer leaves a card of the offer undealt: the card with it is not dealt instead
 
 ### Changed
 
@@ -21,6 +23,7 @@
 ### Bugfix
 
 - Unlock tech cards, such as Advanced Defense Technology, are no longer offered when they would unlock nothing because your loadout gave up the units they lack, as Tactical Nuke, Space Excavation, and Tourist do
+- Deleting a tech card while exploring no longer changes how many cards a reroll deals or how many rerolls you have, and reloading the galaxy map afterwards no longer gives you an extra card and an extra reroll
 - In co-op in the largest galaxies, another player's tech card choice is no longer lost when the host explores straight after a win or a player joining, which left the war waiting on that player's pick so the host could not explore or fight
 - Bug reports name a lore system, such as The Progenitors, without a stray `!LOC:` in front
 - Commander tech now also strengthens a stock commander that a faction-mod army keeps, such as the Guardians' Unicorn in a Legion war, which previously got none of those buffs
@@ -38,6 +41,11 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- In co-op with per-player tech, a player who joins while a battle is being set up no longer leaves a co-op AI player fighting with that player's tech or Sub Commanders; the launch stops instead, and the host can press Fight again
+- In co-op, a player who uses a different game language from the host sees GWO's own battle launch steps in their own language, not the host's
+- On the galaxy map, the Saving indicator no longer stays on screen for good after you take a tech card or win a battle when the game cannot write the war, such as when the disk is full: it clears after 30 seconds, and the next save tries again
+- Sub Commanders no longer fight in a player's army colour, or one too close to tell apart, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
+- The war setup screen selects the loadout of your last war again after you favourite a loadout or install or remove a loadout mod, rather than the one now in its old place
 
 ## v7.6.0 - 2026-10-03
 

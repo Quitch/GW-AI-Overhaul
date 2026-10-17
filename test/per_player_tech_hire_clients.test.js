@@ -67,7 +67,7 @@ describe("the hire's viewer list", () => {
     }
   });
 
-  function hire(viewer2Inventory) {
+  function hire(viewer2Inventory, hireClients) {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyType: "guardians",
@@ -85,7 +85,8 @@ describe("the hire's viewer list", () => {
       getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
     }).restore;
 
-    const referee = { files: () => ({}) };
+    const files = {};
+    const referee = { files: () => files, hireClients: hireClients };
     return refereeAi.call(referee).then(() => referee);
   }
 
@@ -98,4 +99,20 @@ describe("the hire's viewer list", () => {
     hire(undefined).then((referee) => {
       assert.deepEqual(referee.hireClientKeys, ["v1::A"]);
     }));
+
+  // Issue #578: the co-op AI tags are numbered from the list the hire's first
+  // step read, so a viewer who joins later must not take a tree or a key.
+  it("numbers from the list the hire's first step read, not a later join", () => {
+    const host = { id: "host", name: "Host", role: "host" };
+    const viewer1 = { id: "v1", name: "A", role: "viewer" };
+    return hire(makeInventory({}), [host, viewer1]).then((referee) => {
+      assert.deepEqual(referee.hireClientKeys, ["v1::A"]);
+      assert.deepEqual(
+        Object.keys(referee.files()).filter((key) =>
+          key.includes("player_.player")
+        ),
+        ["/pa/ai/player_.player0/fabber_builds/x.json"]
+      );
+    });
+  });
 });

@@ -28,6 +28,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
       ],
       function (
         GW,
@@ -40,7 +41,8 @@
         raceMods,
         gameFilePaths,
         gwoPromise,
-        coopAiRoster
+        coopAiRoster,
+        refereeCoop
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -65,18 +67,16 @@
           if (!progress) {
             return;
           }
+          var source = { key: key };
           var text = loc(key);
           if (this.pass && model.gwCampaignActive() && model.isCampaignHost()) {
-            text =
-              loc(
-                this.pass === 1
-                  ? "!LOC:Co-op shared setup"
-                  : "!LOC:Co-op host setup"
-              ) +
-              ": " +
-              text;
+            source.prefix =
+              this.pass === 1
+                ? "!LOC:Co-op shared setup"
+                : "!LOC:Co-op host setup";
+            text = loc(source.prefix) + ": " + text;
           }
-          progress.stage(text);
+          progress.stage(text, source);
         };
 
         gwoReferee.prototype.stripSystems = function () {
@@ -161,12 +161,14 @@
           // be read.
           return gwoPromise
             .steps(raceMods.installedRaces(), [
-              // The co-op AI players this battle fields, fixed for the hire. A
+              // The co-op AI players this battle fields, and the clients that
+              // number their tags and the viewer trees, fixed for the hire. A
               // throw fails the hire: a battle is not fought without the AI
               // players its session has. See coop.md.
               function () {
+                ref.hireClients = _.clone(refereeCoop.getConnectedClients());
                 if (model.gwoCoopAi) {
-                  ref.coopAis = model.gwoCoopAi.launchRoster();
+                  ref.coopAis = model.gwoCoopAi.launchRoster(ref.hireClients);
                   return;
                 }
                 if (

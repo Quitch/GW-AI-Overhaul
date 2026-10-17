@@ -51,6 +51,7 @@ function setup(overrides = {}) {
       unlocked: true,
       shownLoadout: false,
       failCoopDeal: false,
+      savedCardsOffered: undefined,
     },
     overrides
   );
@@ -65,6 +66,7 @@ function setup(overrides = {}) {
     saves: [],
     wins: [],
     logs: [],
+    savedOffers: [],
   };
 
   const turnState = makeObservable("begin");
@@ -137,6 +139,8 @@ function setup(overrides = {}) {
       },
     }),
     numCardsToOffer: 3,
+    exploreCardsOffered: () => options.savedCardsOffered,
+    saveExploreOffer: (cardsOffered) => calls.savedOffers.push(cardsOffered),
     chooseCards: (request) => {
       calls.deals.push(request);
       return options.holdDeal
@@ -304,6 +308,30 @@ describe("model.explore", () => {
 
     assert.deepEqual(runDelayed(run), [2000]);
     assert.equal(run.scanning(), false);
+  });
+
+  it("saves the offer size as the explore deal starts", async () => {
+    const run = build({ cardsOffered: 4 });
+
+    await run.model.explore();
+
+    assert.deepEqual(run.calls.savedOffers, [4]);
+  });
+
+  it("deals a reroll from the offer size its deal saved, not the hand now", async () => {
+    // A full hand was offered 4; a card deleted since makes the hand offer 3.
+    const run = build({
+      cardsOffered: 3,
+      savedCardsOffered: 4,
+      rerollsUsed: 1,
+      preDealt: [],
+    });
+
+    await run.model.explore(true);
+
+    assert.equal(run.calls.deals[0].count, 3);
+    assert.equal(run.calls.offeredTo, undefined);
+    assert.deepEqual(run.calls.savedOffers, []);
   });
 
   it("records nothing for a host reroll", async () => {
