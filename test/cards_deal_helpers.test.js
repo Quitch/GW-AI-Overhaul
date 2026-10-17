@@ -310,6 +310,47 @@ describe("chooseDealIndex", () => {
     );
   });
 
+  it("counts a numeric string chance as its number", () => {
+    const fullHand = [{ chance: "50" }, { chance: 50 }];
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.49), 0);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.51), 1);
+  });
+
+  it("skips a chance that is not a finite number above 0", () => {
+    const fullHand = [
+      { chance: -10 },
+      { chance: NaN },
+      { chance: Infinity },
+      { chance: "abc" },
+      { chance: true },
+      { chance: [50] },
+      { chance: { valueOf: () => 50 } },
+      { chance: 10 },
+    ];
+    for (let i = 0; i < 100; i++) {
+      assert.equal(helpers.chooseDealIndex(fullHand, i / 100), 7);
+    }
+    assert.equal(
+      helpers.chooseDealIndex([{ chance: -5 }, { chance: Infinity }], 0),
+      undefined
+    );
+  });
+
+  it("skips a chance that would throw when read as a number", () => {
+    const fullHand = [
+      { chance: Symbol("chance") },
+      {
+        chance: {
+          valueOf: () => {
+            throw new Error("no number");
+          },
+        },
+      },
+      { chance: 10 },
+    ];
+    assert.equal(helpers.chooseDealIndex(fullHand, 0), 2);
+  });
+
   it("returns undefined when nothing is dealable", () => {
     assert.equal(helpers.chooseDealIndex(hand(0, 0), 0), undefined);
     assert.equal(helpers.chooseDealIndex([], 0), undefined);

@@ -194,9 +194,11 @@ define([
       var probability = 0;
 
       _.forEach(fullHand, function (deal, index) {
-        if (deal && deal.chance) {
-          hand.push({ index: index, chance: deal.chance });
-          probability += deal.chance;
+        var raw = deal && deal.chance;
+        var chance = _.isNumber(raw) || _.isString(raw) ? Number(raw) : 0;
+        if (chance > 0 && isFinite(chance)) {
+          hand.push({ index: index, chance: chance });
+          probability += chance;
         }
       });
 

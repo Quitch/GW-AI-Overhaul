@@ -7,6 +7,8 @@
 - New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
 - `gwoCard.missingUnit` is deprecated: use `missingObtainableUnit` to ask whether a card can still add a unit, or `!gwoCard.hasAllUnits(inventory.units(), units)` to ask whether the player lacks one. It still works
 - A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
+- A card mod's `deal()` may return the same object every time: a card whose `deal()` did so stopped being offered until the game restarted once a deal passed it over, such as while the player held it or it was already in the offer
+- A `deal()` `chance` given as a numeric string, such as `"50"`, counts as that number, where before it could leave a card of the offer undealt. A negative chance no longer skews every other card's odds, and an `Infinity` chance no longer leaves a card of the offer undealt: the card with it is not dealt instead
 
 ### Changed
 
@@ -38,6 +40,8 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- Sub Commanders no longer fight in a player's army colour, or one too close to tell apart, as a Cluster war's third Sub Commander and every one after its fourth did, and as any faction's did once there were more Sub Commanders than colours. Cluster also has as many Sub Commander colours as the other factions
+- The war setup screen selects the loadout of your last war again after you favourite a loadout or install or remove a loadout mod, rather than the one now in its old place
 
 ## v7.6.0 - 2026-10-03
 
