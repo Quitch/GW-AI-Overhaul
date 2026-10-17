@@ -28,6 +28,7 @@
 - After a war fails to generate, the next war is named for its own settings, so a Large war is no longer named "Small" after a Small galaxy proved too small
 - A war whose galaxy proves too small while you change its system sources or race now shows why it was not created and puts your seed back, rather than stopping with no message
 - Go To War no longer stays greyed out for good when a system source under Systems never finishes loading: after a minute, the war is made without that source, or shows why it could not be created
+- Go To War no longer stays greyed out for good when the new war cannot be saved: after 30 seconds, the setup screen unlocks and shows an error, and your previous war stays the one you continue
 - The war setup screen is locked while a war generates, so a difficulty, faction, or other setting changed after Go To War no longer gives a war built from a mix of the old and new settings, such as a Gold war with Uber-strength enemies
 - In co-op, a broken loadout mod that fails to record a loadout won at a treasure planet no longer leaves the other players out of step with the host
 - With Separate races, the war information panel names the AI of each race your co-op AI players field, not only your own race's

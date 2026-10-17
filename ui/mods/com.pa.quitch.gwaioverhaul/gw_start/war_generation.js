@@ -5,6 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
 ], function (galaxySizeNames) {
   var SOURCE_TIMEOUT_MS = 60000;
+  // Stock GW.manifest.saveGame never rejects: a failed write never settles.
+  var SAVE_TIMEOUT_MS = 30000;
 
   var generatedWarName = function (
     selectedDifficulty,
@@ -44,6 +46,7 @@ define([
   };
 
   var onGameSaved = function () {
+    model.activeGameId(model.newGame().id);
     model.lastSceneUrl(
       "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
     );
@@ -708,9 +711,18 @@ define([
         "War created successfully using Galactic War Overhaul v" + gwoVersion
       );
 
-      var save = GW.manifest.saveGame(model.newGame());
-      model.activeGameId(model.newGame().id);
-      save.then(onGameSaved);
+      gwoPromise
+        .within(
+          GW.manifest.saveGame(model.newGame()),
+          SAVE_TIMEOUT_MS,
+          "war save"
+        )
+        .then(onGameSaved, onSaveFailed);
+    };
+
+    var onSaveFailed = function (err) {
+      console.error("War save failed: " + ((err && err.message) || err));
+      warGenerationFailure(undefined);
     };
 
     var onWarGenerationError = function (run, err) {
