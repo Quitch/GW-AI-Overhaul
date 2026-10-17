@@ -44,9 +44,15 @@ afterEach(() => {
   pendingSave = undefined;
 });
 
-function setup(viewer) {
-  const calls = { drive: [], saved: [] };
-  installFakeJQuery(stubs);
+function setup(viewer, jQueryOptions) {
+  const calls = { drive: [], saved: [], errors: [] };
+  installFakeJQuery(stubs, jQueryOptions);
+  stubs.setGlobal(
+    "console",
+    Object.assign({}, console, {
+      error: (message) => calls.errors.push(message),
+    })
+  );
   stubs.setGlobal("model", {
     isCampaignViewer: () => viewer,
     driveAccessInProgress: (value) => calls.drive.push(value),
@@ -116,6 +122,43 @@ describe("save", () => {
     pendingSave.resolve();
     await flush();
     assert.deepEqual(calls.drive, [true, false]);
+  });
+
+  it("leaves the indicator on while a later save is still writing", async () => {
+    const calls = setup(false);
+    gwoSave({ id: "first" }, false);
+    const first = pendingSave;
+    mock.timers.tick(20000);
+    gwoSave({ id: "second" }, false);
+    const second = pendingSave;
+
+    mock.timers.tick(10000);
+    await flush();
+    first.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, true]);
+
+    second.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, true, false]);
+  });
+
+  // jQuery 2.1.4 runs callbacks inside resolve(), so a caller's throw escapes
+  // through it, into a native promise reaction that would swallow it.
+  it("logs a throw from a caller's continuation", async () => {
+    const calls = setup(false, { sync: true });
+    gwoSave({ id: "war" }, false).then(() => {
+      throw new Error("caller bug");
+    });
+
+    pendingSave.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+    assert.equal(calls.errors.length, 1);
+    assert.match(
+      calls.errors[0],
+      /^Galactic War Overhaul \(GWO\): .*caller bug/
+    );
   });
 
   // Stock's saveGame marks them saved once it has written them, so an
