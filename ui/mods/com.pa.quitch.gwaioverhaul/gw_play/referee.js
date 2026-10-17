@@ -67,18 +67,16 @@
           if (!progress) {
             return;
           }
+          var source = { key: key };
           var text = loc(key);
           if (this.pass && model.gwCampaignActive() && model.isCampaignHost()) {
-            text =
-              loc(
-                this.pass === 1
-                  ? "!LOC:Co-op shared setup"
-                  : "!LOC:Co-op host setup"
-              ) +
-              ": " +
-              text;
+            source.prefix =
+              this.pass === 1
+                ? "!LOC:Co-op shared setup"
+                : "!LOC:Co-op host setup";
+            text = loc(source.prefix) + ": " + text;
           }
-          progress.stage(text);
+          progress.stage(text, source);
         };
 
         gwoReferee.prototype.stripSystems = function () {

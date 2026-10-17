@@ -29,6 +29,15 @@ const realModules = {
   ),
 };
 
+const loadoutModules = {
+  "/gw_start/favourite_loadouts.js": loadCouiModule(
+    MOD_ROOT + "/gw_start/favourite_loadouts.js"
+  ),
+  "/shared/loadout_selection.js": loadCouiModule(
+    MOD_ROOT + "/shared/loadout_selection.js"
+  ),
+};
+
 const stubs = createGlobalStubs();
 
 afterEach(() => stubs.restoreGlobals());
@@ -234,7 +243,7 @@ function makeModel() {
   };
 }
 
-function startScene() {
+function startScene(overrides = {}) {
   // What the lock leaves on each selector: its classes and props.
   const dom = {};
   const select = (selector) => {
@@ -278,7 +287,7 @@ function startScene() {
     window: { location: { href: GW_START } },
   };
   scene.settings = scene.model.gwoDifficultySettings;
-  const modules = makeModules(scene);
+  const modules = Object.assign(makeModules(scene), overrides);
   const answer = (dep) => {
     if (dep === "cards/" + START_CARD) {
       return {};
@@ -656,5 +665,130 @@ describe("the loadout list", () => {
       '<!-- ko foreach: startCards --><div class="gwo-card-spacer"></div><!-- /ko -->',
     ]);
     assert.deepEqual(scene.dom["#start-cards .card"].appended, []);
+  });
+});
+
+// The loadout list as the scene first builds it once the loadout banks load:
+// `ids` in their installed order, favourites first, with `previous` as the
+// last war's gwo_previous_settings. A `bankIds` loadout is a locked hint with
+// no id until the banks load; `rebuildEarly` has the race picker rebuild the
+// list before that.
+function restoreLoadout({
+  ids,
+  favourites = [],
+  locked = [],
+  bankIds = [],
+  rebuildEarly = false,
+  previous,
+}) {
+  let banksLoaded = false;
+  const card = (id) =>
+    bankIds.includes(id) && !banksLoaded
+      ? { id: () => undefined }
+      : { id: () => id, gwoRaceLocked: locked.includes(id) };
+  let settle;
+  const scene = startScene(
+    Object.assign({}, loadoutModules, {
+      "/shared/loadouts.js": {
+        allCards: [{ id: START_CARD }],
+        startCards: () => ids.map(card),
+      },
+      "/shared/loadout_banks.js": {
+        load: () => ({
+          then: (onDone) => {
+            settle = onDone;
+          },
+        }),
+      },
+      "/gw_start/favourites.js": { ids: () => favourites },
+    })
+  );
+  scene.settings.previousSettings(previous);
+  scene.model.activeStartCardIndex(previous ? previous.chosenLoadout : 0);
+  if (rebuildEarly) {
+    scene.model.gwoRebuildStartCards();
+  }
+  banksLoaded = true;
+  settle();
+  const index = scene.model.activeStartCardIndex();
+  return scene.model.startCards()[index].id();
+}
+
+describe("the last war's loadout", () => {
+  it("is selected by id after a new favourite moves it", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "nuke"],
+      favourites: ["nuke"],
+      previous: { chosenLoadout: 1, chosenLoadoutId: "artillery" },
+    });
+
+    assert.equal(selected, "artillery");
+  });
+
+  it("is selected by index from a save made before ids were kept", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "nuke"],
+      previous: { chosenLoadout: 2 },
+    });
+
+    assert.equal(selected, "nuke");
+  });
+
+  it("falls back to its index once its mod is removed", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "nuke"],
+      previous: { chosenLoadout: 1, chosenLoadoutId: "mod_loadout" },
+    });
+
+    assert.equal(selected, "artillery");
+  });
+
+  it("falls back to the first unlocked loadout when its index is locked", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "nuke"],
+      locked: ["naval", "artillery"],
+      previous: { chosenLoadout: 1, chosenLoadoutId: "mod_loadout" },
+    });
+
+    assert.equal(selected, "nuke");
+  });
+
+  it("is selected by id when the race picker rebuilds before a mod's bank loads", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "mod_loadout"],
+      bankIds: ["mod_loadout"],
+      rebuildEarly: true,
+      previous: { chosenLoadout: 1, chosenLoadoutId: "mod_loadout" },
+    });
+
+    assert.equal(selected, "mod_loadout");
+  });
+
+  it("is selected by index from an old save when the race picker rebuilds before a mod's bank loads", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "mod_loadout"],
+      bankIds: ["mod_loadout"],
+      rebuildEarly: true,
+      previous: { chosenLoadout: 2 },
+    });
+
+    assert.equal(selected, "mod_loadout");
+  });
+
+  it("is the first loadout with no previous war", () => {
+    const selected = restoreLoadout({ ids: ["naval", "artillery"] });
+
+    assert.equal(selected, "naval");
+  });
+
+  it("is saved by id when a war is created", () => {
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+    listSources(scene, ["Uber"]);
+    scene.sources.Uber.resolve([earthlike]);
+    finishBuild(scene);
+
+    assert.equal(scene.settings.previousSettings().chosenLoadoutId, START_CARD);
   });
 });

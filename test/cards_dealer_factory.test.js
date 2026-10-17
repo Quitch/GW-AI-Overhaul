@@ -274,6 +274,22 @@ describe("the dealer", () => {
     );
   });
 
+  it("leaves the object a refused card's deal() returned dealable once the hold ends", async () => {
+    const shared = { chance: 1, params: { minion: "x" } };
+    const run = build({
+      cards: [card("a", () => shared), card("b", 1)],
+      notDealt: ["a"],
+    });
+
+    const held = await run.chooseCards({ count: 1, rng: dealStream([0]) });
+    assert.deepEqual(held, [{ id: "b" }]);
+    assert.deepEqual(shared, { chance: 1, params: { minion: "x" } });
+
+    run.options.notDealt.length = 0;
+    const freed = await run.chooseCards({ count: 1, rng: dealStream([0]) });
+    assert.deepEqual(freed, [{ id: "a", minion: "x" }]);
+  });
+
   it("checks each card against the hand dealt so far, the slot rule and the star's own cards", async () => {
     const run = build();
     const systemCards = [{ id: "pre_dealt" }];

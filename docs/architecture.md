@@ -160,12 +160,19 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   reports, rather than keeping the object it first found.
 - The referee reports its own stages through `gwoReferee.prototype.stage`. A
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
-  setup", so the repeat reads as intended.
+  setup", so the repeat reads as intended. Besides its localised text, it
+  passes `stage()` an optional second argument, `{ key, prefix, options }`:
+  the stage's `!LOC:` key, the label's key, and any `loc()` arguments. The host
+  shows the text as given; the keys are for viewers.
 - In co-op, the host mirrors `begin()`/`stage()`/`end()` to every viewer via
-  the `gwo_launch_progress` host operator. Viewers therefore see the same panel
-  and stages during a launch. The mirroring wraps the methods themselves, so it
-  also covers stages that other mods (e.g. GW Server Mods) report. Stage text
-  arrives already localised in the host's language.
+  the `gwo_launch_progress` host operator, sending `begin` and `end` only when
+  its own panel opens or closes. Viewers therefore see the same panel and
+  stages during a launch. The mirroring is inside the methods themselves, so
+  it also covers stages that other mods (e.g. GW Server Mods) report. A keyed
+  stage is sent with its keys, and each viewer builds the line with its own
+  `loc()`; plain text arrives as the host gave it. A stage that reaches a
+  viewer whose panel is closed opens it first, so a viewer who joins after
+  the host's `begin` still sees the launch.
 - Stock sets `launchingFight` only once its checks pass and it starts saving
   the war. A mod may wrap `model.fight` to do slow work first (GW Server Mods
   mounts server mods there). The panel covers such a mod from the click only if
@@ -358,9 +365,20 @@ Know the shape before you add a fix to it:
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
 for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own. `gw_play/save_debt.js` wraps it for the
-host's save after a win, which waits for the deal, the star-card refresh, and
-any co-op AI pass so the war is written once (coop.md, "One save per win").
+would write a war it does not own. A viewer's save always resolves.
+
+Stock's `GW.manifest.saveGame` never rejects: when the write fails, its
+IndexedDB error handler calls `result.fail(event)`, which only adds a callback,
+so the save stays pending and the Saving indicator stays on. `save.js` therefore
+fails a host's save that has not landed in 30 seconds, and drops a result that
+lands later. Real saves take under a second. Only the latest save clears the
+indicator, so an earlier save that settles or times out does not clear it while
+a later one is still writing. Stock's own saves in `gw_play.js` drive the same
+indicator and have no time limit.
+
+`gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
+waits for the deal, the star-card refresh, and any co-op AI pass so the war is
+written once (coop.md, "One save per win").
 
 ## Where state lives
 
