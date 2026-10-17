@@ -6,6 +6,8 @@ define(function () {
     var inventory = params.inventory;
     var helpers = params.helpers;
     var numCardsToOffer = params.numCardsToOffer;
+    var exploreCardsOffered = params.exploreCardsOffered;
+    var saveExploreOffer = params.saveExploreOffer;
     var chooseCards = params.chooseCards;
     var coopAiDeciding = params.coopAiDeciding;
     var startCardUnlocked = params.startCardUnlocked;
@@ -48,9 +50,15 @@ define(function () {
 
       api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-      var cardsOffered = helpers.cardsOfferedCount(numCardsToOffer, inventory);
       var starIndex = game.currentStar();
       var star = game.galaxy().stars()[starIndex];
+      var cardsOffered;
+      if (force === true) {
+        cardsOffered = exploreCardsOffered();
+      } else {
+        cardsOffered = helpers.cardsOfferedCount(numCardsToOffer, inventory);
+        saveExploreOffer(cardsOffered);
+      }
 
       // Deriving here rather than at war creation is what lets every player
       // be judged by their own unlock record. Writing the whole list also
