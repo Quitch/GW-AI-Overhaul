@@ -363,9 +363,20 @@ Know the shape before you add a fix to it:
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
 for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own. `gw_play/save_debt.js` wraps it for the
-host's save after a win, which waits for the deal, the star-card refresh, and
-any co-op AI pass so the war is written once (coop.md, "One save per win").
+would write a war it does not own. A viewer's save always resolves.
+
+Stock's `GW.manifest.saveGame` never rejects: when the write fails, its
+IndexedDB error handler calls `result.fail(event)`, which only adds a callback,
+so the save stays pending and the Saving indicator stays on. `save.js` therefore
+fails a host's save that has not landed in 30 seconds, and drops a result that
+lands later. Real saves take under a second. Only the latest save clears the
+indicator, so an earlier save that settles or times out does not clear it while
+a later one is still writing. Stock's own saves in `gw_play.js` drive the same
+indicator and have no time limit.
+
+`gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
+waits for the deal, the star-card refresh, and any co-op AI pass so the war is
+written once (coop.md, "One save per win").
 
 ## Where state lives
 
