@@ -74,7 +74,7 @@ define(function () {
             );
 
           if (match && cardChance) {
-            cardChance.chance = 0;
+            cardChance = _.assign({}, cardChance, { chance: 0 });
           }
 
           return cardChance;

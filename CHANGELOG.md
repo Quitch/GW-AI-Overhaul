@@ -7,6 +7,8 @@
 - New card helper `gwoCard.missingObtainableUnit(inventory, units)`: like `missingUnit`, but it does not count units the player's loadout removed, so an unlock card stops being offered once it would add nothing
 - `gwoCard.missingUnit` is deprecated: use `missingObtainableUnit` to ask whether a card can still add a unit, or `!gwoCard.hasAllUnits(inventory.units(), units)` to ask whether the player lacks one. It still works
 - A card mod that removes a race or add-on unit removes it even while the player holds a unit that stands for it
+- A card mod's `deal()` may return the same object every time: a card whose `deal()` did so stopped being offered until the game restarted once a deal passed it over, such as while the player held it or it was already in the offer
+- A `deal()` `chance` given as a numeric string, such as `"50"`, counts as that number, and a negative, `NaN`, or `Infinity` chance means the card is not dealt rather than skewing the odds of every other card
 
 ### Changed
 

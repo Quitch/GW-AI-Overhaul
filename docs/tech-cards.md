@@ -159,7 +159,10 @@ the saved minion is byte-identical after two battles. See
 
 `deal(system, context, inventory, rng)` returns `{ chance, params }`. `chance` is a
 weight, not a percentage. A higher weight means the dealer is more likely to offer
-the card.
+the card. The dealer reads it with `Number()`, so a numeric string such as `"50"`
+counts as its number. Anything that is not then a number above 0 means the card is
+not dealt: 0, a negative, `NaN` and `Infinity` included. The dealer never writes to
+the object `deal()` returns, so `deal()` may return the same object every call.
 
 `rng` is **optional**. GWO's dealer supplies it as a seeded stream keyed by the
 card's own id. `shared/deal.js dealCard`, the dev cheats and any third-party dealer
