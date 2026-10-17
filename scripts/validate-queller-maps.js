@@ -11,7 +11,7 @@ const {
   shadowRel,
   baseRels,
   checkShadow,
-  diffObjects,
+  checkEqual,
 } = require("./lib/queller-maps.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -19,7 +19,12 @@ const MEDIA = mediaDir();
 const READ_TIER = "q_uber";
 
 function readJson(root, rel) {
-  return JSON.parse(fs.readFileSync(path.join(root, rel), "utf8"));
+  const file = path.join(root, rel);
+  try {
+    return { json: JSON.parse(fs.readFileSync(file, "utf8")) };
+  } catch (error) {
+    return { error: "cannot read " + file + ": " + error.message };
+  }
 }
 
 function report(label, problems, success) {
@@ -32,6 +37,23 @@ function report(label, problems, success) {
   }
   console.log(label + ": " + success);
   return true;
+}
+
+function loadAll() {
+  const files = {};
+  const errors = [];
+  for (const tier of TIERS) {
+    const rels = Object.assign({ shadow: shadowRel(tier) }, baseRels(tier));
+    files[tier] = {};
+    for (const [kind, rel] of Object.entries(rels)) {
+      const read = readJson(kind === "shadow" ? REPO_ROOT : MEDIA, rel);
+      if (read.error) {
+        errors.push(read.error);
+      }
+      files[tier][kind] = { rel, json: read.json };
+    }
+  }
+  return { files, errors };
 }
 
 function main() {
@@ -49,32 +71,42 @@ function main() {
     return;
   }
 
+  const { files, errors } = loadAll();
+  if (errors.length) {
+    for (const error of errors) {
+      console.error(error);
+    }
+    process.exitCode = 1;
+    return;
+  }
+
   let ok = true;
-  const shadows = {};
   for (const tier of TIERS) {
-    const rels = baseRels(tier);
-    shadows[tier] = readJson(REPO_ROOT, shadowRel(tier));
-    const problems = checkShadow(
-      readJson(MEDIA, rels.map),
-      readJson(MEDIA, rels.mla),
-      shadows[tier]
-    );
+    const { shadow, map, mla } = files[tier];
     ok =
       report(
-        shadowRel(tier) + " against " + rels.map + " + " + rels.mla,
-        problems,
-        Object.keys(shadows[tier].unit_map || {}).length +
+        shadow.rel + " against " + map.rel + " + " + mla.rel,
+        checkShadow(map.json, mla.json, shadow.json, {
+          base: map.rel,
+          mla: mla.rel,
+          shadow: shadow.rel,
+        }),
+        Object.keys((shadow.json && shadow.json.unit_map) || {}).length +
           " entries match the merge exactly"
       ) && ok;
   }
 
+  const read = files[READ_TIER];
   for (const tier of TIERS.filter((name) => name !== READ_TIER)) {
-    ok =
-      report(
-        shadowRel(tier) + " against " + shadowRel(READ_TIER),
-        diffObjects("", shadows[READ_TIER], shadows[tier]),
-        "identical"
-      ) && ok;
+    for (const kind of ["shadow", "map", "x1"]) {
+      const file = files[tier][kind];
+      ok =
+        report(
+          file.rel + " against " + read[kind].rel,
+          checkEqual(read[kind].rel, read[kind].json, file.rel, file.json),
+          "identical"
+        ) && ok;
+    }
   }
 
   if (!ok) {

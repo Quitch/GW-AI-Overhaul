@@ -216,13 +216,16 @@ and the install's `pa_ex1/ai_queller/q_<tier>/unit_maps/` files. Each shadow
 must equal its tier's `ai_unit_map.json` with that tier's `mla.json`
 `unit_map` entries added. An `mla.json` entry that the base map also has fails,
 as does an `mla.json` key other than `unit_map`. The `q_bronze` and `q_silver`
-shadows must also equal the `q_uber` one, which is the only copy the referee
-reads as a base map ([shadowing.md](shadowing.md), "Which copy each
-`pa/ai_queller/` file replaces"). A failure names each missing key, extra key
-and differing value by its path in the file. Without the install, the script
-names the path it looked in and exits non-zero.
-`test/validate_queller_maps.test.js` tests the comparison on fixtures and runs
-the script over a fixture install, so CI covers both. Run it after a PA patch.
+shadows must also equal the `q_uber` one, and so must the install's `q_bronze`
+and `q_silver` `ai_unit_map.json` and `ai_unit_map_x1.json`. The referee reads
+only the `q_uber` maps as base maps ([shadowing.md](shadowing.md), "Which copy
+each `pa/ai_queller/` file replaces"). A failure names each missing key, extra
+key, and differing value by its path in the file. A file with no `unit_map`
+object is named once instead. A file that is missing or does not parse is named
+with its path, and the script exits non-zero before comparing anything, as it
+does without the install. `test/validate_queller_maps.test.js` tests the
+comparison on fixtures and runs the script over fixture installs that match
+and that differ, so CI covers both. Run it after a PA patch.
 
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
