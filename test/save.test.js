@@ -3,7 +3,7 @@
 // gw_play/save.js: the war save every GWO caller shares. Callers chain on what
 // it returns, on a co-op viewer as on the host.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, beforeEach, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const {
   MOD_ROOT,
@@ -31,16 +31,28 @@ registerModuleStub("shared/gw_common", {
 const gwoSave = loadCouiModule(MOD_ROOT + "/gw_play/save.js");
 
 const stubs = createGlobalStubs();
+const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+beforeEach(() => {
+  mock.timers.enable({ apis: ["setTimeout"] });
+});
 
 afterEach(() => {
+  mock.timers.reset();
   stubs.restoreGlobals();
   saves.length = 0;
   pendingSave = undefined;
 });
 
-function setup(viewer) {
-  const calls = { drive: [], saved: [] };
-  installFakeJQuery(stubs);
+function setup(viewer, jQueryOptions) {
+  const calls = { drive: [], saved: [], errors: [] };
+  installFakeJQuery(stubs, jQueryOptions);
+  stubs.setGlobal(
+    "console",
+    Object.assign({}, console, {
+      error: (message) => calls.errors.push(message),
+    })
+  );
   stubs.setGlobal("model", {
     isCampaignViewer: () => viewer,
     driveAccessInProgress: (value) => calls.drive.push(value),
@@ -75,6 +87,78 @@ describe("save", () => {
     pendingSave.resolve();
     await result;
     assert.deepEqual(calls.drive, [true, false]);
+
+    mock.timers.tick(30000);
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+  });
+
+  // Stock's saveGame never settles when the write fails.
+  it("fails a save that has not landed after 30 s, and clears the indicator", async () => {
+    const calls = setup(false);
+    let failure;
+    gwoSave({ id: "war" }, true).fail((reason) => {
+      failure = reason;
+    });
+
+    mock.timers.tick(29999);
+    await flush();
+    assert.deepEqual(calls.drive, [true]);
+    assert.equal(failure, undefined);
+
+    mock.timers.tick(1);
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+    assert.equal(failure.gwoTimedOut, true);
+    assert.equal(failure.message, "War save timed out after 30000ms");
+  });
+
+  it("ignores a save that lands after it has failed", async () => {
+    const calls = setup(false);
+    gwoSave({ id: "war" }, false);
+    mock.timers.tick(30000);
+    await flush();
+
+    pendingSave.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+  });
+
+  it("leaves the indicator on while a later save is still writing", async () => {
+    const calls = setup(false);
+    gwoSave({ id: "first" }, false);
+    const first = pendingSave;
+    mock.timers.tick(20000);
+    gwoSave({ id: "second" }, false);
+    const second = pendingSave;
+
+    mock.timers.tick(10000);
+    await flush();
+    first.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, true]);
+
+    second.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, true, false]);
+  });
+
+  // jQuery 2.1.4 runs callbacks inside resolve(), so a caller's throw escapes
+  // through it, into a native promise reaction that would swallow it.
+  it("logs a throw from a caller's continuation", async () => {
+    const calls = setup(false, { sync: true });
+    gwoSave({ id: "war" }, false).then(() => {
+      throw new Error("caller bug");
+    });
+
+    pendingSave.resolve();
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+    assert.equal(calls.errors.length, 1);
+    assert.match(
+      calls.errors[0],
+      /^Galactic War Overhaul \(GWO\): .*caller bug/
+    );
   });
 
   // Stock's saveGame marks them saved once it has written them, so an
