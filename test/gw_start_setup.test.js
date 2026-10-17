@@ -427,7 +427,8 @@ describe("a war that generates", () => {
 });
 
 describe("Go To War while a war generates", () => {
-  it("stays disabled whatever Shared Systems' selection does", () => {
+  it("stays disabled whatever Shared Systems' selection does", (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
     const scene = startScene();
 
     scene.model.navToNewGame();
@@ -476,7 +477,8 @@ describe("the setup panel while a war generates", () => {
     assert.deepEqual(scene.dom["#tab3"], undefined);
   });
 
-  it("is locked from Go To War", () => {
+  it("is locked from Go To War", (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
     const scene = startScene();
 
     scene.model.navToNewGame();
@@ -527,7 +529,24 @@ describe("the setup panel while a war generates", () => {
 
     scene.model.navToNewGame();
     listSources(scene, ["Uber"]);
-    t.mock.timers.tick(59999);
+    t.mock.timers.tick(19999);
+    locked(scene);
+
+    t.mock.timers.tick(1);
+
+    assert.match(
+      scene.model.gwoWarGenerationError(),
+      /sources selected under Systems could not be loaded/
+    );
+    unlocked(scene);
+  });
+
+  it("is unlocked when the list of system sources times out", (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const scene = startScene();
+
+    scene.model.navToNewGame();
+    t.mock.timers.tick(19999);
     locked(scene);
 
     t.mock.timers.tick(1);

@@ -313,8 +313,14 @@ With that mod active, the systems are real `.pas` files chosen by
 `gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
 `loadSystemBrackets` in `gw_start/war_generation.js` settles each selected source
 on its own, so a source that fails to load drops only its own systems. A source
-that has not settled after `SOURCE_TIMEOUT_MS` (60 s) counts as failed, and its
-later result is dropped. While no
+that has not settled after `SOURCE_TIMEOUT_MS` (20 s) counts as failed, and its
+later result is dropped. A spawn-shortage retry of the same Go To War calls the
+cached `load()` of each source that timed out again: one that has settled since is
+used, and one still pending, or without `state()` to say, is skipped as failed
+rather than waited for again. The next click asks for it again. The list of
+sources, `loadOptions()`, has the same limit, since it waits on a remote server
+list. The source limits start once the list has loaded, so the two can add up to
+40 s. While no
 source is selected, `gw_start/setup.js` keeps Go To War disabled.
 
 That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
@@ -328,7 +334,7 @@ So `loadSystemBrackets` rejects with the `SYSTEM_SOURCES` cause from
 `gw_start/war_generation_failure.js`, which fails the war before any star reaches
 that loader, when:
 
-- the list of sources failed to load, or `loadOptions` threw;
+- the list of sources failed to load, timed out, or `loadOptions` threw;
 - no selected source gave a system: each failed, threw, timed out, or was empty, or none was
   selected;
 - a source failed, and the rest gave only systems the brackets drop.

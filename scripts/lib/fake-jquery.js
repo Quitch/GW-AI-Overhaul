@@ -218,6 +218,9 @@ function makeSyncDeferred() {
       on("rejected", forward(onFail, next.reject));
       return next.promise();
     },
+    state: function () {
+      return state;
+    },
     promise: function () {
       return deferred;
     },
