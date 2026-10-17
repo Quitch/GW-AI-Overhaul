@@ -221,24 +221,36 @@
         // ui.js swaps activeStartCardIndex for the remembered setting, but
         // stock's activeStartCard computed still tracks the observable it was
         // built on, so until the list first changes it peeks stock card 0.
-        // The first build therefore selects the remembered loadout id, or for
-        // an older save without one, or an id no longer installed, the card at
-        // the remembered index; later builds preserve the id already selected.
+        // The race picker can rebuild before the banks load, when a mod's
+        // loadout is still a locked hint with no id, so until the build after
+        // the banks load the remembered loadout is looked up again: by its
+        // saved id if that is listed, else by the remembered index (a save
+        // from before ids were kept, or an id no longer installed). A locked
+        // result moves to the first unlocked card. Later builds preserve the
+        // id already selected.
         var savedLoadoutId = function (cards) {
           var previous =
             model.gwoDifficultySettings.previousSettings.peek() || {};
           var id = previous.chosenLoadoutId;
+          if (!_.isString(id) || !id) {
+            return undefined;
+          }
           return _.some(cards, function (card) {
             return cardId(card) === id;
           })
             ? id
             : undefined;
         };
-        var built = false;
+        var banksLoaded = false;
+        var restored = false;
+        var rememberedIndex;
         model.gwoRebuildStartCards = function () {
-          var savedIndex = model.activeStartCardIndex.peek();
+          if (rememberedIndex === undefined) {
+            rememberedIndex = model.activeStartCardIndex.peek();
+          }
           var activeCard = model.activeStartCard.peek();
-          var previousId = built && activeCard ? cardId(activeCard) : undefined;
+          var previousId =
+            restored && activeCard ? cardId(activeCard) : undefined;
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -249,8 +261,8 @@
           var cards = model.startCards.peek();
           var activeId =
             previousId ||
-            (!built && savedLoadoutId(cards)) ||
-            (cards[savedIndex] && cardId(cards[savedIndex]));
+            (!restored && savedLoadoutId(cards)) ||
+            (cards[rememberedIndex] && cardId(cards[rememberedIndex]));
           var index = loadoutSelection.selectableIndex(
             cards,
             activeId,
@@ -260,9 +272,10 @@
           if (index !== -1) {
             model.activeStartCardIndex(index);
           }
-          built = true;
+          restored = banksLoaded;
         };
         gwoLoadoutBanks.load().then(function () {
+          banksLoaded = true;
           model.gwoRebuildStartCards();
         });
         var processedStartCards = {};

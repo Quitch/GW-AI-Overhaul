@@ -670,9 +670,22 @@ describe("the loadout list", () => {
 
 // The loadout list as the scene first builds it once the loadout banks load:
 // `ids` in their installed order, favourites first, with `previous` as the
-// last war's gwo_previous_settings.
-function restoreLoadout({ ids, favourites = [], locked = [], previous }) {
-  const card = (id) => ({ id: () => id, gwoRaceLocked: locked.includes(id) });
+// last war's gwo_previous_settings. A `bankIds` loadout is a locked hint with
+// no id until the banks load; `rebuildEarly` has the race picker rebuild the
+// list before that.
+function restoreLoadout({
+  ids,
+  favourites = [],
+  locked = [],
+  bankIds = [],
+  rebuildEarly = false,
+  previous,
+}) {
+  let banksLoaded = false;
+  const card = (id) =>
+    bankIds.includes(id) && !banksLoaded
+      ? { id: () => undefined }
+      : { id: () => id, gwoRaceLocked: locked.includes(id) };
   let settle;
   const scene = startScene(
     Object.assign({}, loadoutModules, {
@@ -692,6 +705,10 @@ function restoreLoadout({ ids, favourites = [], locked = [], previous }) {
   );
   scene.settings.previousSettings(previous);
   scene.model.activeStartCardIndex(previous ? previous.chosenLoadout : 0);
+  if (rebuildEarly) {
+    scene.model.gwoRebuildStartCards();
+  }
+  banksLoaded = true;
   settle();
   const index = scene.model.activeStartCardIndex();
   return scene.model.startCards()[index].id();
@@ -734,6 +751,28 @@ describe("the last war's loadout", () => {
     });
 
     assert.equal(selected, "nuke");
+  });
+
+  it("is selected by id when the race picker rebuilds before a mod's bank loads", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "mod_loadout"],
+      bankIds: ["mod_loadout"],
+      rebuildEarly: true,
+      previous: { chosenLoadout: 1, chosenLoadoutId: "mod_loadout" },
+    });
+
+    assert.equal(selected, "mod_loadout");
+  });
+
+  it("is selected by index from an old save when the race picker rebuilds before a mod's bank loads", () => {
+    const selected = restoreLoadout({
+      ids: ["naval", "artillery", "mod_loadout"],
+      bankIds: ["mod_loadout"],
+      rebuildEarly: true,
+      previous: { chosenLoadout: 2 },
+    });
+
+    assert.equal(selected, "mod_loadout");
   });
 
   it("is the first loadout with no previous war", () => {
