@@ -24,6 +24,8 @@ const refereeAi = loadCouiModule(MOD_ROOT + "/gw_play/referee_ai.js");
 
 const MLA = races.MLA_ID;
 const GUARDIANS_ROOT = "/pa/ai/player_guardians/";
+const EMPTY_UNIT_LIST_WARNING =
+  /^gwoRaces: no \S+ unit in the unit list read \(0 units\) - not mounted yet\?$/;
 
 function baseRoots() {
   return [
@@ -160,9 +162,16 @@ async function refereeTree(gameOptions, merged, destRoot) {
   });
 
   const filesObj = {};
+  const warn = console.warn;
+  console.warn = (...args) => {
+    if (args.length !== 1 || !EMPTY_UNIT_LIST_WARNING.test(args[0])) {
+      warn.apply(console, args);
+    }
+  };
   try {
     await runRefereeAi(refereeAi, filesObj);
   } finally {
+    console.warn = warn;
     fakes.restore();
     restoreModel();
   }
@@ -330,6 +339,9 @@ async function main() {
     process.exitCode = 1;
     return;
   }
+  console.log(
+    "Running without capability cells: the unit list is deliberately empty"
+  );
   const layers = descriptorLayers();
   const addonRoots = mountedAddons.flatMap((addon) =>
     modRoots(addon.serverMods)

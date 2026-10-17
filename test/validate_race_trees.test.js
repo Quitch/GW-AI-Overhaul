@@ -75,6 +75,16 @@ describe("validate-race-trees.js", () => {
     }
   });
 
+  it("explains the empty unit list once instead of warning per run", () => {
+    assert.doesNotMatch(run.stderr + run.stdout, /not mounted yet\?/);
+    assert.equal(
+      run.stdout.match(
+        /^Running without capability cells: the unit list is deliberately empty$/gm
+      ).length,
+      1
+    );
+  });
+
   it("reads no race but the fixture's", () => {
     assert.doesNotMatch(run.stdout, /^(legion|bugs):/m);
   });
