@@ -223,20 +223,33 @@ define([
         return settled.promise();
       };
 
+      // A load without state() cannot say it has settled, so it stays skipped.
+      var stillTimedOut = function (name, load) {
+        return (
+          _.includes(timedOutSources, name) &&
+          !(load && _.isFunction(load.state) && load.state() !== "pending")
+        );
+      };
+
       var onOptionsLoaded = function (options) {
         var loading = [];
         _.forEach(model.selectedNames(), function (name) {
           var option = _.find(options, "name", name);
-          if (option && _.includes(timedOutSources, name)) {
-            console.error("System source skipped after timing out: " + name);
-            sourceFailed = true;
-          } else if (option) {
+          if (option) {
             // load() caches per source. Its loading/selected observables
             // drive Shared Systems' own spinner - leave them alone.
             // It belongs to another mod, so a throw here would escape the
             // deferred callback and leave Go To War waiting on `ready`.
             try {
-              loading.push(sourceSystems(name, option.load()));
+              var load = option.load();
+              if (stillTimedOut(name, load)) {
+                console.error(
+                  "System source skipped after timing out: " + name
+                );
+                sourceFailed = true;
+              } else {
+                loading.push(sourceSystems(name, load));
+              }
             } catch (e) {
               console.error(
                 "System source failed to load: " +

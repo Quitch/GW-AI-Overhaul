@@ -1524,7 +1524,6 @@ describe("the star systems", () => {
     war.start();
     t.mock.timers.tick(SOURCE_TIMEOUT_MS);
 
-    assert.equal(war.stalledLoads, 1);
     assert.deepEqual(
       war.builds.map((config) => config.seed),
       ["base-seed", "base-seed-1"]
@@ -1535,6 +1534,50 @@ describe("the star systems", () => {
     );
     assert.deepEqual(war.pools[1].systems, [usable]);
     assert.equal(war.saved.length, 1);
+  });
+
+  it("use a timed-out source on a retry once its load has come in", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    const late = { name: "Late", planets: [] };
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.stalled.resolve([late]);
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.pools[1].systems, [late, usable]);
+    assert.equal(war.errors.filter((text) => /skipped/.test(text)).length, 0);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("skip a timed-out source on a retry when its load cannot say it has come in", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    const loading = {
+      promise: () => loading,
+      then: (onDone, onFail) => war.stalled.then(onDone, onFail),
+    };
+    war.options[war.options.length - 1].load = () => loading;
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.stalled.resolve([{ name: "Late", planets: [] }]);
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(war.pools[1].systems, [usable]);
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "System source skipped after timing out: Stalled"
+    );
   });
 
   it("fail a retry whose other sources give nothing usable, as the first attempt would", (t) => {
@@ -1549,7 +1592,6 @@ describe("the star systems", () => {
     war.start();
     t.mock.timers.tick(SOURCE_TIMEOUT_MS);
 
-    assert.equal(war.stalledLoads, 1);
     assert.equal(war.builds.length, 1);
     assert.match(war.model.gwoWarGenerationError(), /sources selected/);
   });
