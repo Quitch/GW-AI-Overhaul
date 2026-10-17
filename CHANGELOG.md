@@ -37,6 +37,7 @@
 - AIs with the Platoon penchant form their largest amphibious attack groups
 - Cluster AI commanders no longer move faster than other factions' with the same tech
 - A loadout alone on the last row of the war setup screen is no longer wider than the loadouts above it
+- On the galaxy map, the Saving indicator no longer stays on screen for good when the game cannot write the war, such as when the disk is full: it clears after 30 seconds, and the next save tries again
 
 ## v7.6.0 - 2026-10-03
 

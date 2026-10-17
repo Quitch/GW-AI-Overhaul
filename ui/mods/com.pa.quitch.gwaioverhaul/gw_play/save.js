@@ -1,4 +1,10 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+], function (GW, gwoPromise) {
+  // Stock's saveGame never rejects: a failed write leaves it pending.
+  var timeLimitMs = 30000;
+
   // A viewer writes no save: stock keeps its local copy of the war, and
   // cards_coop_reroll.js's result handler saves that with
   // GW.manifest.saveGame. It still clears the Saving indicator, and resolves
@@ -16,8 +22,19 @@ define(["shared/gw_common"], function (GW) {
     }
     model.driveAccessInProgress(true);
 
-    return GW.manifest.saveGame(gameState).then(function () {
-      model.driveAccessInProgress(false);
-    });
+    var done = $.Deferred();
+    gwoPromise
+      .within(GW.manifest.saveGame(gameState), timeLimitMs, "War save")
+      .then(
+        function () {
+          model.driveAccessInProgress(false);
+          done.resolve();
+        },
+        function (error) {
+          model.driveAccessInProgress(false);
+          done.reject(error);
+        }
+      );
+    return done.promise();
   };
 });

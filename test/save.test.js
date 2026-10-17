@@ -3,7 +3,7 @@
 // gw_play/save.js: the war save every GWO caller shares. Callers chain on what
 // it returns, on a co-op viewer as on the host.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, beforeEach, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const {
   MOD_ROOT,
@@ -31,8 +31,14 @@ registerModuleStub("shared/gw_common", {
 const gwoSave = loadCouiModule(MOD_ROOT + "/gw_play/save.js");
 
 const stubs = createGlobalStubs();
+const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+beforeEach(() => {
+  mock.timers.enable({ apis: ["setTimeout"] });
+});
 
 afterEach(() => {
+  mock.timers.reset();
   stubs.restoreGlobals();
   saves.length = 0;
   pendingSave = undefined;
@@ -74,6 +80,41 @@ describe("save", () => {
 
     pendingSave.resolve();
     await result;
+    assert.deepEqual(calls.drive, [true, false]);
+
+    mock.timers.tick(30000);
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+  });
+
+  // Stock's saveGame never settles when the write fails.
+  it("fails a save that has not landed after 30 s, and clears the indicator", async () => {
+    const calls = setup(false);
+    let failure;
+    gwoSave({ id: "war" }, true).fail((reason) => {
+      failure = reason;
+    });
+
+    mock.timers.tick(29999);
+    await flush();
+    assert.deepEqual(calls.drive, [true]);
+    assert.equal(failure, undefined);
+
+    mock.timers.tick(1);
+    await flush();
+    assert.deepEqual(calls.drive, [true, false]);
+    assert.equal(failure.gwoTimedOut, true);
+    assert.equal(failure.message, "War save timed out after 30000ms");
+  });
+
+  it("ignores a save that lands after it has failed", async () => {
+    const calls = setup(false);
+    gwoSave({ id: "war" }, false);
+    mock.timers.tick(30000);
+    await flush();
+
+    pendingSave.resolve();
+    await flush();
     assert.deepEqual(calls.drive, [true, false]);
   });
 
