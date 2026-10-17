@@ -580,9 +580,9 @@ describe("a war whose save never finishes", () => {
     t.mock.timers.tick(SAVE_TIMEOUT_MS);
     await settle();
 
-    assert.equal(
+    assert.match(
       war.errors[0],
-      "War save failed: war save timed out after 30000ms"
+      /^War could not be saved and opened: Error: war save timed out after 30000ms/
     );
     failsAsABug(war);
   });
@@ -606,8 +606,43 @@ describe("a war whose save never finishes", () => {
     war.save.reject("blocked");
     await settle();
 
-    assert.equal(war.errors[0], "War save failed: blocked");
+    assert.equal(war.errors[0], "War could not be saved and opened: blocked");
     failsAsABug(war);
+  });
+
+  it("fails the war as a bug when the save throws", async (t) => {
+    const war = withHeldSave(t);
+    war.modules.GW.manifest.saveGame = () => {
+      throw new Error("no save");
+    };
+
+    war.start();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no save/
+    );
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug when opening it throws", async (t) => {
+    const war = withHeldSave(t);
+    war.model.lastSceneUrl = () => {
+      throw new Error("no scene");
+    };
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved and opened: Error: no scene/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.window.location.href, GW_START);
   });
 
   it("opens the war when the save finishes in time", async (t) => {

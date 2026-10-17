@@ -711,17 +711,23 @@ define([
         "War created successfully using Galactic War Overhaul v" + gwoVersion
       );
 
-      gwoPromise
-        .within(
-          GW.manifest.saveGame(model.newGame()),
-          SAVE_TIMEOUT_MS,
-          "war save"
-        )
-        .then(onGameSaved, onSaveFailed);
+      new Promise(function (resolve) {
+        resolve(
+          gwoPromise.within(
+            GW.manifest.saveGame(model.newGame()),
+            SAVE_TIMEOUT_MS,
+            "war save"
+          )
+        );
+      })
+        .then(onGameSaved)
+        .then(null, onWarNotOpened);
     };
 
-    var onSaveFailed = function (err) {
-      console.error("War save failed: " + ((err && err.message) || err));
+    var onWarNotOpened = function (err) {
+      console.error(
+        "War could not be saved and opened: " + ((err && err.stack) || err)
+      );
       warGenerationFailure(undefined);
     };
 
