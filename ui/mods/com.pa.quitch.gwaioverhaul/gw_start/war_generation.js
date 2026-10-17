@@ -4,7 +4,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_sizes.js",
 ], function (galaxySizeNames) {
-  var SOURCE_TIMEOUT_MS = 60000;
+  var SOURCE_TIMEOUT_MS = 20000;
 
   var generatedWarName = function (
     selectedDifficulty,
@@ -75,6 +75,7 @@ define([
     // The seed the player actually asked for, captured on the first attempt.
     var warGenerationBaseSeed;
     var lastGeneratedName;
+    var timedOutSources = [];
 
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
@@ -202,6 +203,7 @@ define([
             "System source timed out after " + SOURCE_TIMEOUT_MS + "ms: " + name
           );
           sourceFailed = true;
+          timedOutSources.push(name);
           give([]);
         }, SOURCE_TIMEOUT_MS);
         $.when(loading).then(
@@ -225,7 +227,10 @@ define([
         var loading = [];
         _.forEach(model.selectedNames(), function (name) {
           var option = _.find(options, "name", name);
-          if (option) {
+          if (option && _.includes(timedOutSources, name)) {
+            console.error("System source skipped after timing out: " + name);
+            sourceFailed = true;
+          } else if (option) {
             // load() caches per source. Its loading/selected observables
             // drive Shared Systems' own spinner - leave them alone.
             // It belongs to another mod, so a throw here would escape the
@@ -258,15 +263,38 @@ define([
           withoutBrackets();
           return;
         }
+        var waiting = true;
+        var stopWaiting = function () {
+          var wasWaiting = waiting;
+          waiting = false;
+          clearTimeout(timer);
+          return wasWaiting;
+        };
+        // Before loadOptions(), as in sourceSystems.
+        var timer = setTimeout(function () {
+          waiting = false;
+          console.error(
+            "System sources timed out after " + SOURCE_TIMEOUT_MS + "ms"
+          );
+          sourcesUnavailable();
+        }, SOURCE_TIMEOUT_MS);
         // Shared Systems' own call, guarded as option.load() is above.
         try {
-          chooseStarSystemTemplates
-            .loadOptions()
-            .then(onOptionsLoaded, function () {
-              console.error("System sources failed to load");
-              sourcesUnavailable();
-            });
+          chooseStarSystemTemplates.loadOptions().then(
+            function (options) {
+              if (stopWaiting()) {
+                onOptionsLoaded(options);
+              }
+            },
+            function () {
+              if (stopWaiting()) {
+                console.error("System sources failed to load");
+                sourcesUnavailable();
+              }
+            }
+          );
         } catch (e) {
+          stopWaiting();
           console.error(
             "System sources failed to load: " + ((e && e.stack) || e)
           );
@@ -314,6 +342,7 @@ define([
       warGenerationAttempts++;
       if (warGenerationAttempts === 1) {
         warGenerationBaseSeed = run.seed;
+        timedOutSources = [];
       }
 
       run.token = {};

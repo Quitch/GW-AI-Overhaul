@@ -1422,14 +1422,21 @@ describe("the star systems", () => {
     failsWithSourcesMessage(war);
   });
 
-  const SOURCE_TIMEOUT_MS = 60000;
+  const SOURCE_TIMEOUT_MS = 20000;
 
   const withStalledSource = (t, names) => {
     t.mock.timers.enable({ apis: ["setTimeout"] });
     const war = withSharedSystems();
     war.stalled = war.$.Deferred();
+    war.stalledLoads = 0;
     war.model.selectedNames(names);
-    war.options.push({ name: "Stalled", load: () => war.stalled.promise() });
+    war.options.push({
+      name: "Stalled",
+      load: () => {
+        war.stalledLoads++;
+        return war.stalled.promise();
+      },
+    });
     return war;
   };
 
@@ -1446,7 +1453,7 @@ describe("the star systems", () => {
 
     assert.equal(
       war.errors[0],
-      "System source timed out after 60000ms: Stalled"
+      "System source timed out after 20000ms: Stalled"
     );
     failsWithSourcesMessage(war);
   });
@@ -1459,7 +1466,7 @@ describe("the star systems", () => {
 
     assert.equal(
       war.errors[0],
-      "System source timed out after 60000ms: Stalled"
+      "System source timed out after 20000ms: Stalled"
     );
     assert.deepEqual(war.pools[0].systems, [usable]);
     assert.equal(war.saved.length, 1);
@@ -1499,6 +1506,141 @@ describe("the star systems", () => {
 
     assert.deepEqual(war.errors, []);
     assert.equal(war.saved.length, 1);
+  });
+
+  const shortOnFirstAttempt = (war) => {
+    war.outcome = { failed: true, spawnShortage: true };
+    war.onPopulate = () => {
+      war.onPopulate = () => {
+        war.outcome = { failed: false, spawnShortage: false };
+      };
+    };
+  };
+
+  it("skip a source that timed out on an earlier attempt at the same war", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    shortOnFirstAttempt(war);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(war.stalledLoads, 1);
+    assert.deepEqual(
+      war.builds.map((config) => config.seed),
+      ["base-seed", "base-seed-1"]
+    );
+    assert.equal(
+      war.errors[war.errors.length - 1],
+      "System source skipped after timing out: Stalled"
+    );
+    assert.deepEqual(war.pools[1].systems, [usable]);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("fail a retry whose other sources give nothing usable, as the first attempt would", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    war.outcome = { failed: true, spawnShortage: true };
+    war.options.push({
+      name: "Odd",
+      load: () => war.$.Deferred().resolve([unusable]).promise(),
+    });
+    war.onPopulate = () => war.model.selectedNames(["Stalled", "Odd"]);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(war.stalledLoads, 1);
+    assert.equal(war.builds.length, 1);
+    assert.match(war.model.gwoWarGenerationError(), /sources selected/);
+  });
+
+  it("ask again for a source that timed out in an earlier war", (t) => {
+    const war = withStalledSource(t, ["Stalled", "Uber"]);
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    war.start();
+
+    assert.equal(war.stalledLoads, 2);
+  });
+
+  const sourceListErrors = (war) =>
+    war.errors.filter((text) => /^System sources/.test(text));
+
+  const withStalledList = (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = withSharedSystems();
+    war.list = war.$.Deferred();
+    war.loadOptions = () => war.list.promise();
+    return war;
+  };
+
+  it("fail the war when the source list never settles", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS - 1);
+
+    assert.equal(war.generatingWar(), true);
+    assert.deepEqual(war.errors, []);
+
+    t.mock.timers.tick(1);
+
+    assert.equal(war.errors[0], "System sources timed out after 20000ms");
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source list that loads after its time limit", (t) => {
+    const war = withStalledList(t);
+    let loads = 0;
+    war.options[0].load = () => {
+      loads++;
+      return war.$.Deferred().resolve([usable]).promise();
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.list.resolve(war.options);
+
+    assert.equal(loads, 0);
+    failsWithSourcesMessage(war);
+  });
+
+  it("ignore a source list that fails after its time limit", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+    war.list.reject();
+
+    assert.deepEqual(sourceListErrors(war), [
+      "System sources timed out after 20000ms",
+    ]);
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source list that fails", (t) => {
+    const war = withStalledList(t);
+
+    war.start();
+    war.list.reject();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.deepEqual(sourceListErrors(war), ["System sources failed to load"]);
+    failsWithSourcesMessage(war);
+  });
+
+  it("stop the time limit of a source list that throws", (t) => {
+    const war = withStalledList(t);
+    war.loadOptions = () => {
+      throw new Error("no list");
+    };
+
+    war.start();
+    t.mock.timers.tick(SOURCE_TIMEOUT_MS);
+
+    assert.equal(sourceListErrors(war).length, 1);
+    failsWithSourcesMessage(war);
   });
 
   it("fail the war when the source list fails", () => {
