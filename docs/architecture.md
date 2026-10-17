@@ -158,16 +158,19 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   reports, rather than keeping the object it first found.
 - The referee reports its own stages through `gwoReferee.prototype.stage`. A
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
-  setup", so the repeat reads as intended. It passes `stage()` an optional
-  second argument, `{ key, prefix }`, holding the stage's `!LOC:` key and the
-  label's key, and the panel builds the line from those with `loc()`.
+  setup", so the repeat reads as intended. Besides its localised text, it
+  passes `stage()` an optional second argument, `{ key, prefix, options }`:
+  the stage's `!LOC:` key, the label's key, and any `loc()` arguments. The host
+  shows the text as given; the keys are for viewers.
 - In co-op, the host mirrors `begin()`/`stage()`/`end()` to every viewer via
   the `gwo_launch_progress` host operator, sending `begin` and `end` only when
   its own panel opens or closes. Viewers therefore see the same panel and
   stages during a launch. The mirroring is inside the methods themselves, so
   it also covers stages that other mods (e.g. GW Server Mods) report. A keyed
-  stage is sent with its keys, and each viewer builds the line in its own
-  language; plain text arrives as the host gave it.
+  stage is sent with its keys, and each viewer builds the line with its own
+  `loc()`; plain text arrives as the host gave it. A stage that reaches a
+  viewer whose panel is closed opens it first, so a viewer who joins after
+  the host's `begin` still sees the launch.
 - Stock sets `launchingFight` only once its checks pass and it starts saving
   the war. A mod may wrap `model.fight` to do slow work first (GW Server Mods
   mounts server mods there). The panel covers such a mod from the click only if

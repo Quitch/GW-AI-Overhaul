@@ -138,8 +138,13 @@ describe("co-op mirroring", () => {
       broadcast,
     });
 
-  const hostLoc = (key) => key.replace("!LOC:", "");
-  const viewerLoc = (key) => "de:" + key.replace("!LOC:", "");
+  const hostLoc = () => {
+    throw new Error("the host shows the caller's text as given");
+  };
+  const viewerLoc = (key, options) =>
+    "de:" +
+    key.replace("!LOC:", "") +
+    (options ? " " + JSON.stringify(options) : "");
 
   beforeEach(() => {
     sent = [];
@@ -157,7 +162,7 @@ describe("co-op mirroring", () => {
 
   it("sends a keyed stage's key and prefix, and the viewer localises them", () => {
     host.begin();
-    host.stage("Processing tech cards", {
+    host.stage("Co-op shared setup: Processing tech cards", {
       key: "!LOC:Processing tech cards",
       prefix: "!LOC:Co-op shared setup",
     });
@@ -176,15 +181,67 @@ describe("co-op mirroring", () => {
     assert.deepEqual(viewer.steps(), ["Saving"]);
   });
 
-  it("builds a keyed stage without a prefix from the key alone", () => {
+  it("sends no prefix for a keyed stage without one", () => {
     host.begin();
     host.stage("Mounting game files", {
       key: "!LOC:Mounting game files",
       prefix: "",
     });
+    assert.deepEqual(sent[1], {
+      action: "stage",
+      message: "Mounting game files",
+      key: "!LOC:Mounting game files",
+    });
     relay();
     assert.equal(host.message(), "Mounting game files");
     assert.equal(viewer.message(), "de:Mounting game files");
+  });
+
+  it("keeps the caller's interpolated text and sends its loc options", () => {
+    host.begin();
+    host.stage("Processing 3 mods", {
+      key: "!LOC:Processing __count__ mods",
+      options: { count: 3 },
+    });
+    assert.equal(host.message(), "Processing 3 mods");
+    assert.deepEqual(sent[1].options, { count: 3 });
+    relay();
+    assert.equal(viewer.message(), 'de:Processing __count__ mods {"count":3}');
+  });
+
+  // GW Server Mods holds stock fight while it mounts, so a viewer can join
+  // between the host's one begin and its first stage.
+  it("opens a viewer's panel for a stage that arrives before any begin", () => {
+    host.begin();
+    host.stage("Mounting server mods");
+    viewer.receive(sent[1]);
+    assert.equal(viewer.visible(), true);
+    assert.equal(viewer.title(), "PREPARING");
+    assert.equal(viewer.message(), "Mounting server mods");
+    assert.deepEqual(viewer.steps(), ["Saving"]);
+  });
+
+  it("builds a keyed stage without a loc dependency", () => {
+    const bare = createLaunchProgress({
+      visible: makeObservable(false),
+      title: makeObservable(""),
+      message: makeObservable(""),
+      steps: makeObservableArray([]),
+      labels: { title: "PREPARING", message: "Saving" },
+    });
+    bare.begin();
+    bare.stage("Mounting game files", { key: "!LOC:Mounting game files" });
+    assert.equal(bare.message(), "Mounting game files");
+    bare.receive({
+      action: "stage",
+      message: "Processing tech cards",
+      key: "!LOC:Processing tech cards",
+      prefix: "!LOC:Co-op shared setup",
+    });
+    assert.equal(
+      bare.message(),
+      "!LOC:Co-op shared setup: !LOC:Processing tech cards"
+    );
   });
 
   // GW Server Mods passes text it localised itself.

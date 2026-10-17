@@ -8,7 +8,13 @@ define([], function () {
     var message = deps.message;
     var steps = deps.steps;
     var labels = deps.labels;
-    var loc = deps.loc;
+    var localise =
+      deps.loc ||
+      (typeof loc === "function"
+        ? loc
+        : function (key) {
+            return key;
+          });
     var broadcast = deps.broadcast || function () {};
 
     var showBegin = function () {
@@ -44,9 +50,9 @@ define([], function () {
 
     // Built from keys so each co-op viewer reads the line in its own language.
     var keyedText = function (source) {
-      var text = loc(source.key);
+      var text = localise(source.key, source.options);
       if (source.prefix) {
-        text = loc(source.prefix) + ": " + text;
+        text = localise(source.prefix) + ": " + text;
       }
       return text;
     };
@@ -64,15 +70,20 @@ define([], function () {
       },
 
       stage: function (text, source) {
+        if (!showStage(text)) {
+          return;
+        }
         var payload = { action: "stage", message: text };
         if (source && source.key) {
-          payload.message = keyedText(source);
           payload.key = source.key;
-          payload.prefix = source.prefix;
+          if (source.prefix) {
+            payload.prefix = source.prefix;
+          }
+          if (source.options) {
+            payload.options = source.options;
+          }
         }
-        if (showStage(payload.message)) {
-          broadcast(payload);
-        }
+        broadcast(payload);
       },
 
       end: function () {
@@ -85,6 +96,8 @@ define([], function () {
         if (payload.action === "begin") {
           showBegin();
         } else if (payload.action === "stage") {
+          // A viewer that joined after the host's begin still gets the panel.
+          showBegin();
           showStage(payload.key ? keyedText(payload) : payload.message);
         } else if (payload.action === "end") {
           showEnd();
