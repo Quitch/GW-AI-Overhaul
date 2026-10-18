@@ -7,48 +7,31 @@
     var helpers;
     var races;
     var factions;
-    var strategicIcon;
     var icons = {};
 
     model.gwoLoadoutRaces = ko.observableArray([]);
 
-    var painted = function (image, colour) {
-      var canvas = document.createElement("canvas");
-      canvas.width = image.width;
-      canvas.height = image.height;
-      var context = canvas.getContext("2d");
-      context.drawImage(image, 0, 0);
-      var pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-      strategicIcon.paint(pixels.data, colour);
-      var box = strategicIcon.bounds(pixels.data, canvas.width, canvas.height);
-      var cropped = document.createElement("canvas");
-      cropped.width = box.width;
-      cropped.height = box.height;
-      cropped.getContext("2d").putImageData(pixels, -box.x, -box.y);
-      return cropped.toDataURL();
+    var cssUrl = function (url) {
+      return 'url("' + url.replace(/["\\]/g, "\\$&") + '")';
     };
 
-    // A race whose client mod is off has no icon file, so it shows the stock
-    // commander instead.
-    var imageFor = function (url, colour) {
-      var key = url + "|" + colour.join(",");
+    var cssPair = function (icon) {
+      return { fill: cssUrl(icon.fill), outline: cssUrl(icon.outline) };
+    };
+
+    // A mask over a missing image paints nothing, so a race whose client mod
+    // is off shows the base game's player icon instead.
+    var iconFor = function (badge) {
+      var key = badge.fill + "|" + badge.outline;
 
       if (!icons[key]) {
-        var css = ko.observable("");
-        var load = function (src) {
-          var image = new Image();
-          image.onload = function () {
-            css('url("' + painted(image, colour) + '")');
-          };
-          image.onerror = function () {
-            if (src !== races.STOCK_COMMANDER_ICON) {
-              load(races.STOCK_COMMANDER_ICON);
-            }
-          };
-          image.src = src;
+        var icon = ko.observable(cssPair(badge));
+        var image = new Image();
+        image.onerror = function () {
+          icon(cssPair(races.STOCK_PLAYER_ICON));
         };
-        load(url);
-        icons[key] = css;
+        image.src = badge.fill;
+        icons[key] = icon;
       }
 
       return icons[key];
@@ -65,20 +48,24 @@
         helpers.compatibleRaces(card.id(), raceList),
         function (race) {
           var badge = races.raceBadge(race, factions);
-          badge.image = imageFor(badge.icon, badge.colour);
+          badge.icon = iconFor(badge);
           return badge;
         }
       );
     };
 
     // Before ko.applyBindings, so foreach clones it per unlocked loadout.
-    // .card_locked is excluded.
+    // .card_locked is excluded. The fill and outline layers are the
+    // live_game player list's.
     $("#start-cards .card").append(
       '<div class="gwo-loadout-races" data-bind="foreach: model.gwoLoadoutRaceBadges($data)">' +
-        '<div class="gwo-loadout-race gwo-tip" data-bind="' +
-        "style: { backgroundImage: image }, " +
-        "tooltip: name" +
-        '"></div></div>'
+        '<div class="gwo-loadout-race gwo-tip" data-bind="tooltip: name">' +
+        '<div class="gwo-loadout-race-fill" data-bind="' +
+        "style: { backgroundColor: colour, webkitMaskImage: icon().fill }" +
+        '"></div>' +
+        '<div class="gwo-loadout-race-outline" data-bind="' +
+        "style: { backgroundImage: icon().outline }" +
+        '"></div></div></div>'
     );
 
     requireGW(
@@ -86,13 +73,11 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "shared/gw_factions",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/strategic_icon.js",
       ],
-      function (gwoHelpers, gwoRaces, GWFactions, gwoStrategicIcon) {
+      function (gwoHelpers, gwoRaces, GWFactions) {
         helpers = gwoHelpers;
         races = gwoRaces;
         factions = GWFactions;
-        strategicIcon = gwoStrategicIcon;
         modulesReady(true);
       },
       function (err) {

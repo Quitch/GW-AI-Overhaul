@@ -15,8 +15,6 @@ define(function () {
     unitTypeBit: "Custom2",
     // The preview art ships in the green team paint.
     commanderArtHue: 120,
-    commanderIcon:
-      "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_bug_commander.png",
     colourFaction: 2,
     commanderTypes: {
       unitType: "UNITTYPE_Custom2",

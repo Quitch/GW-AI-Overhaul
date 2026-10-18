@@ -23,8 +23,13 @@ define([
   var VANILLA_UNIT_TYPE = "UNITTYPE_" + VANILLA_BIT;
   // The hue MLA's commander preview art ships in (blue team paint).
   var MLA_ART_HUE = 210;
-  var STOCK_COMMANDER_ICON =
-    "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_commander.png";
+  // The base game's player-list icon, which MLA and any race without its own
+  // pair shows.
+  var STOCK_PLAYER_ICON = {
+    fill: "coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png",
+    outline:
+      "coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png",
+  };
   var NEUTRAL_COLOUR = [160, 160, 160];
 
   var registry = {};
@@ -109,7 +114,6 @@ define([
     name: "!LOC:MLA",
     serverMods: [],
     unitTypeBit: VANILLA_BIT,
-    commanderIcon: STOCK_COMMANDER_ICON,
     colourFaction: 0,
     commanderTypes: {
       unitType: VANILLA_UNIT_TYPE,
@@ -664,20 +668,34 @@ define([
     return isRgb(colour) ? colour : undefined;
   };
 
-  // A loadout card's icon for the race, in its GW faction's colour. `factions`
-  // is shared/gw_factions. See races.md, "Loadout card race icons".
+  var isIconPair = function (icon) {
+    return (
+      !!icon &&
+      _.isString(icon.fill) &&
+      icon.fill.length > 0 &&
+      _.isString(icon.outline) &&
+      icon.outline.length > 0
+    );
+  };
+
+  // A loadout card's icon for the race: its player-list icon in its GW
+  // faction's colour. `factions` is shared/gw_factions. See races.md,
+  // "Loadout card race icons".
   var raceBadge = function (race, factions) {
     var descriptor = race || MLA;
     var rgb =
       factionColour(factions, descriptor.colourFaction) ||
       (isRgb(descriptor.raceColour) ? descriptor.raceColour : NEUTRAL_COLOUR);
-    var icon = descriptor.commanderIcon;
+    var icon = isIconPair(descriptor.playerIcon)
+      ? descriptor.playerIcon
+      : STOCK_PLAYER_ICON;
 
     return {
       id: descriptor.id,
       name: descriptor.name,
-      icon: _.isString(icon) && icon.length ? icon : STOCK_COMMANDER_ICON,
-      colour: _.map(rgb.slice(0, 3), Math.round),
+      fill: icon.fill,
+      outline: icon.outline,
+      colour: "rgb(" + _.map(rgb.slice(0, 3), Math.round).join(",") + ")",
     };
   };
 
@@ -818,7 +836,7 @@ define([
     commanderModsFor: commanderModsFor,
     isRaceCommander: isRaceCommander,
     commanderArtHue: commanderArtHue,
-    STOCK_COMMANDER_ICON: STOCK_COMMANDER_ICON,
+    STOCK_PLAYER_ICON: STOCK_PLAYER_ICON,
     raceBadge: raceBadge,
     commanderFor: commanderFor,
     engineKeysFor: engineKeysFor,

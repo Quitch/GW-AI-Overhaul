@@ -20,15 +20,32 @@
   display: none;
 }
 
-/* 24px: the 2.5.8 target size for the tooltip, and the size at which the
-   emblem's detail survives. */
+/* A 24px target, the 2.5.8 size for the tooltip, around the 16px icon. The
+   icon files are 16px, and scaled up they blur. */
 #start-cards > .card .gwo-loadout-race {
+  position: relative;
   width: 24px;
   height: 24px;
   margin-left: 4px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+}
+
+/* The live_game player list's layers: the fill masked and painted in the
+   race colour, the outline over it. */
+#start-cards > .card .gwo-loadout-race-fill,
+#start-cards > .card .gwo-loadout-race-outline {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+#start-cards > .card .gwo-loadout-race-fill {
+  -webkit-mask-size: cover;
+}
+
+#start-cards > .card .gwo-loadout-race-outline {
+  background-size: cover;
 }
 
 /* Bootstrap inserts the tooltip inside the card, which is overflow: auto

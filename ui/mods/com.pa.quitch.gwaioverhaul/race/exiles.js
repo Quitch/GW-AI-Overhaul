@@ -13,8 +13,6 @@ define(function () {
     // The preview art ships in the blue team paint, a touch greener than
     // MLA's.
     commanderArtHue: 200,
-    commanderIcon:
-      "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_ft_commander.png",
     colourFaction: 1,
     commanderTypes: {
       unitType: "UNITTYPE_Custom6",
