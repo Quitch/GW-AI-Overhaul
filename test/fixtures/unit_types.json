@@ -676,7 +676,8 @@
       "UNITTYPE_Transport",
       "UNITTYPE_Basic",
       "UNITTYPE_FactoryBuild",
-      "UNITTYPE_Custom1"
+      "UNITTYPE_Custom1",
+      "UNITTYPE_Offense"
     ],
     "/pa/units/air/scout/dragonfly.json": [
       "UNITTYPE_Scout",
@@ -3239,7 +3240,8 @@
       "UNITTYPE_FabBuild",
       "UNITTYPE_CombatFabBuild",
       "UNITTYPE_Recon",
-      "UNITTYPE_Custom1"
+      "UNITTYPE_Custom1",
+      "UNITTYPE_Radar"
     ],
     "/pa/units/land/l_radar_adv/l_radar_adv.json": [
       "UNITTYPE_Land",
@@ -3247,7 +3249,8 @@
       "UNITTYPE_Advanced",
       "UNITTYPE_Recon",
       "UNITTYPE_FabAdvBuild",
-      "UNITTYPE_Custom1"
+      "UNITTYPE_Custom1",
+      "UNITTYPE_Radar"
     ],
     "/pa/units/land/l_riot_bot/l_riot_bot.json": [
       "UNITTYPE_Bot",
@@ -4581,7 +4584,8 @@
       "UNITTYPE_Recon",
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_Custom1",
-      "UNITTYPE_Interplanetary"
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Radar"
     ],
     "/pa/units/orbital/l_radar_satellite_adv/l_radar_satellite_adv.json": [
       "UNITTYPE_Mobile",
@@ -4590,7 +4594,8 @@
       "UNITTYPE_Recon",
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_Custom1",
-      "UNITTYPE_Interplanetary"
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Radar"
     ],
     "/pa/units/orbital/l_titan_orbital/l_titan_orbital.json": [
       "UNITTYPE_Mobile",
