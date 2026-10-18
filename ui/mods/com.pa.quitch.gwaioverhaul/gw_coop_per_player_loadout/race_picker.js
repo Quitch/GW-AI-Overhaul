@@ -75,6 +75,10 @@
             );
           });
 
+          // The host's races either way: without Separate races the viewer
+          // plays the host's.
+          model.gwoLoadoutRaces(host.races);
+
           // Nothing at all unless the host asked for it: no control, no mount,
           // and gwo_loadouts.js goes on stamping the host's race. A viewer
           // shares the host's faction, and Cluster fields Angels and Colonels,

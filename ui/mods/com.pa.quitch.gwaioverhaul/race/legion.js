@@ -12,6 +12,9 @@ define(function () {
     unitTypeBit: "Custom1",
     // The preview art ships in the red team paint.
     commanderArtHue: 0,
+    commanderIcon:
+      "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_l_commander.png",
+    colourFaction: 3,
     commanderTypes: {
       unitType: "UNITTYPE_Custom1",
       buildable: "CmdBuild & Custom1",

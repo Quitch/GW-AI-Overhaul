@@ -23,6 +23,9 @@ define([
   var VANILLA_UNIT_TYPE = "UNITTYPE_" + VANILLA_BIT;
   // The hue MLA's commander preview art ships in (blue team paint).
   var MLA_ART_HUE = 210;
+  var STOCK_COMMANDER_ICON =
+    "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_commander.png";
+  var NEUTRAL_COLOUR = [160, 160, 160];
 
   var registry = {};
   var order = [];
@@ -106,6 +109,8 @@ define([
     name: "!LOC:MLA",
     serverMods: [],
     unitTypeBit: VANILLA_BIT,
+    commanderIcon: STOCK_COMMANDER_ICON,
+    colourFaction: 0,
     commanderTypes: {
       unitType: VANILLA_UNIT_TYPE,
       buildable: "CmdBuild & Custom58",
@@ -644,6 +649,38 @@ define([
     return _.isNumber(hue) ? hue : MLA_ART_HUE;
   };
 
+  var isRgb = function (value) {
+    return (
+      _.isArray(value) &&
+      value.length >= 3 &&
+      _.every(value.slice(0, 3), _.isNumber)
+    );
+  };
+
+  var factionColour = function (factions, index) {
+    var faction = _.isNumber(index) && factions && factions[index];
+    var colour = faction && _.isArray(faction.color) && faction.color[0];
+
+    return isRgb(colour) ? colour : undefined;
+  };
+
+  // A loadout card's icon for the race, in its GW faction's colour. `factions`
+  // is shared/gw_factions. See races.md, "Loadout card race icons".
+  var raceBadge = function (race, factions) {
+    var descriptor = race || MLA;
+    var rgb =
+      factionColour(factions, descriptor.colourFaction) ||
+      (isRgb(descriptor.raceColour) ? descriptor.raceColour : NEUTRAL_COLOUR);
+    var icon = descriptor.commanderIcon;
+
+    return {
+      id: descriptor.id,
+      name: descriptor.name,
+      icon: _.isString(icon) && icon.length ? icon : STOCK_COMMANDER_ICON,
+      colour: "rgb(" + _.map(rgb.slice(0, 3), Math.round).join(",") + ")",
+    };
+  };
+
   var isRaceCommander = function (raceId, commanderPath) {
     var race = byId(raceId);
 
@@ -781,6 +818,8 @@ define([
     commanderModsFor: commanderModsFor,
     isRaceCommander: isRaceCommander,
     commanderArtHue: commanderArtHue,
+    STOCK_COMMANDER_ICON: STOCK_COMMANDER_ICON,
+    raceBadge: raceBadge,
     commanderFor: commanderFor,
     engineKeysFor: engineKeysFor,
     stockUnitsFor: stockUnitsFor,

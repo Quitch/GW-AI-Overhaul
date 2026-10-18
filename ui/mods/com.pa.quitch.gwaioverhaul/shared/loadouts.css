@@ -5,3 +5,19 @@
   opacity: 0.45;
   pointer-events: none;
 }
+
+#start-cards > .card > .gwo-loadout-races {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+}
+
+#start-cards > .card .gwo-loadout-race {
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}

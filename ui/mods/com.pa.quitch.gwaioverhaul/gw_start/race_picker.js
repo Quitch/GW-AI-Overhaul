@@ -227,10 +227,14 @@
 
               // Zip mounts only, no content remount. Always, not done: a failed
               // mount must not leave a race's player on MLA's commanders.
+              // After the mount: an Exiles icon may come from its server zip.
               if (model.gwoRacesAvailable()) {
                 raceMods.mountRoot().always(function () {
                   mounted(true);
+                  model.gwoLoadoutRaces(info.races);
                 });
+              } else {
+                model.gwoLoadoutRaces(info.races);
               }
             } catch (e) {
               logError(e);
