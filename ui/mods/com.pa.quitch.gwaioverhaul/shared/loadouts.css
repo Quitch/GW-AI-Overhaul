@@ -6,11 +6,18 @@
   pointer-events: none;
 }
 
+/* A line of its own under the card's text, which it would otherwise cover,
+   held to the bottom of a card stretched to its neighbours' height. The card
+   is a column flexbox. */
 #start-cards > .card > .gwo-loadout-races {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
   display: flex;
+  align-self: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+#start-cards > .card > .gwo-loadout-races:empty {
+  display: none;
 }
 
 /* 24px: the 2.5.8 target size for the tooltip, and the size at which the
