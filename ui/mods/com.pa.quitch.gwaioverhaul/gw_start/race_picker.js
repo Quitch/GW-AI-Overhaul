@@ -227,14 +227,25 @@
 
               // Zip mounts only, no content remount. Always, not done: a failed
               // mount must not leave a race's player on MLA's commanders.
+              // The races the picker offers, which Cluster's lock narrows to MLA.
+              var offerLoadoutRaces = function () {
+                ko.computed(function () {
+                  model.gwoLoadoutRaces(
+                    model.gwoRaceSelectDisabled()
+                      ? [races.byId(races.MLA_ID)]
+                      : info.races
+                  );
+                });
+              };
+
               // After the mount: an Exiles icon may come from its server zip.
               if (model.gwoRacesAvailable()) {
                 raceMods.mountRoot().always(function () {
                   mounted(true);
-                  model.gwoLoadoutRaces(info.races);
+                  offerLoadoutRaces();
                 });
               } else {
-                model.gwoLoadoutRaces(info.races);
+                offerLoadoutRaces();
               }
             } catch (e) {
               logError(e);

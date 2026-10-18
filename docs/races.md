@@ -241,10 +241,11 @@ painted through a `-webkit-mask-image` in the colour of GW faction
 
 `shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
 `model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills
-`startCards` before then. `gw_start/race_picker.js` fills the races once the
-race zips are mounted, since the Exiles icon can come from its server zip. The
-co-op `race_picker.js` fills them with the host's races, with or without
-Separate races. Each icon URL is loaded once, and one that fails to load, such
+`startCards` before then. `gw_start/race_picker.js` fills them with the
+races the picker offers, MLA alone under Cluster, once the race zips are
+mounted, since the Exiles icon can come from its server zip. The co-op
+`race_picker.js` fills them with the host's races, with or without Separate
+races, after its own mount when it offers the picker. Each icon URL is loaded once, and one that fails to load, such
 as a race whose server mod is active and client mod is not, shows the stock
 commander. The icons on a locked card are dimmed with it, and show no tooltip
 there, because the card takes no pointer events.

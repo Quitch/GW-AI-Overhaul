@@ -75,9 +75,10 @@
             );
           });
 
-          // The host's races either way: without Separate races the viewer
-          // plays the host's.
-          model.gwoLoadoutRaces(host.races);
+          // Every race the host's war carries, with or without the picker.
+          var offerLoadoutRaces = function () {
+            model.gwoLoadoutRaces(host.races);
+          };
 
           // Nothing at all unless the host asked for it: no control, no mount,
           // and gwo_loadouts.js goes on stamping the host's race. A viewer
@@ -88,6 +89,7 @@
             host.races.length < 2 ||
             host.faction === gwoAI.CLUSTER_FACTION
           ) {
+            offerLoadoutRaces();
             return;
           }
 
@@ -113,6 +115,8 @@
           // commander read before its zip is mounted fails, and its tile shows
           // the spec path until a later render reads it again.
           raceMods.mountRoot().always(function () {
+            // After the mount: an Exiles icon may come from its server zip.
+            offerLoadoutRaces();
             var stock;
             var offerRaceCommanders = function () {
               var choices = pickerOptions.commanderChoices(

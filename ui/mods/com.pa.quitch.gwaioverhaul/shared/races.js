@@ -653,7 +653,7 @@ define([
     return (
       _.isArray(value) &&
       value.length >= 3 &&
-      _.every(value.slice(0, 3), _.isNumber)
+      _.every(value.slice(0, 3), _.isFinite)
     );
   };
 

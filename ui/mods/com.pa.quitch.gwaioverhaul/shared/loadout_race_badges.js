@@ -13,15 +13,19 @@
 
     // A mask over a missing image paints nothing, so a race whose client mod
     // is off shows the stock commander instead.
-    var iconFor = function (url) {
+    var cssUrl = function (url) {
+      return 'url("' + url.replace(/["\\]/g, "\\$&") + '")';
+    };
+
+    var maskFor = function (url) {
       if (!icons[url]) {
-        var icon = ko.observable(url);
+        var mask = ko.observable(cssUrl(url));
         var image = new Image();
         image.onerror = function () {
-          icon(races.STOCK_COMMANDER_ICON);
+          mask(cssUrl(races.STOCK_COMMANDER_ICON));
         };
         image.src = url;
-        icons[url] = icon;
+        icons[url] = mask;
       }
 
       return icons[url];
@@ -38,7 +42,7 @@
         helpers.compatibleRaces(card.id(), raceList),
         function (race) {
           var badge = races.raceBadge(race, factions);
-          badge.icon = iconFor(badge.icon);
+          badge.mask = maskFor(badge.icon);
           return badge;
         }
       );
@@ -49,7 +53,7 @@
     $("#start-cards .card").append(
       '<div class="gwo-loadout-races" data-bind="foreach: model.gwoLoadoutRaceBadges($data)">' +
         '<div class="gwo-loadout-race gwo-tip" data-bind="' +
-        "style: { backgroundColor: colour, webkitMaskImage: 'url(' + icon() + ')' }, " +
+        "style: { backgroundColor: colour, webkitMaskImage: mask }, " +
         "tooltip: name" +
         '"></div></div>'
     );
