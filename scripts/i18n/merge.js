@@ -13,6 +13,7 @@ const {
   TRANSLATIONS_DIR,
   sortedKeys,
 } = require("../lib/loc-keys.js");
+const { writeText } = require("../lib/write-text.js");
 
 const OUT_DIR = path.join(__dirname, "out");
 const WORK_LIST = /^missing\.([A-Za-z]{2}(?:-[A-Za-z]{2})?)\.\d+\.json$/;
@@ -71,7 +72,7 @@ function mergeLocale(locale, files) {
     );
     return;
   }
-  fs.writeFileSync(target, JSON.stringify(out, null, 2) + "\n");
+  writeText(target, JSON.stringify(out, null, 2) + "\n");
   console.log(
     "i18n:merge: " +
       locale.padEnd(6) +

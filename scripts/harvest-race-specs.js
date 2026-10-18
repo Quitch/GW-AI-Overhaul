@@ -17,6 +17,7 @@ const { mediaDir } = require("./lib/pa-install.js");
 const { folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { TABLES } = require("./lib/race-table-inputs.js");
+const { writeText } = require("./lib/write-text.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
@@ -170,7 +171,7 @@ async function main() {
     JSON.stringify({ baseUnits: baseUnits(), tables }),
     { ...(await prettier.resolveConfig(OUT)), filepath: OUT }
   );
-  fs.writeFileSync(OUT, json);
+  writeText(OUT, json);
   console.log(
     "harvest-race-specs: " +
       TABLES.map((table) => table.id).join(", ") +
