@@ -130,14 +130,13 @@ hand, after a PA patch adds tests.**
 **`test/fixtures/unit_types.json` is harvested from the install too, by a
 script.** `npm run harvest:unit-types` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
-installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
-disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
+installed game (`pa_ex1` over `pa`) and the race and add-on server mods'
+`download/` zips. A `server_mods/` build is never read, because it can hold
+changes the mod has not released.
 The mods are the shipped descriptors' `serverMods`, every race's and then
 every add-on's, as `validate:race-trees` layers them. A companion mod that a
 descriptor does not list, such as the Bugs commander-merge, is in
 `scripts/lib/server-mods.js`. The mods are read in that order.
-`GWO_RACE_ROOTS`, a list of mod folders separated by the platform's path
-delimiter, adds each folder's `pa/` after every other source.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
@@ -232,11 +231,11 @@ The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
 data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
 The two harvests and `validate:race-trees` read `pa/` files through
-`scripts/lib/mod-roots.js`. A server mod mounts as its `download/` zip, then any
-`server_mods/` build, which shadows the zip. The race and add-on tests that
-check a mod's files read them the same way, through `scripts/lib/addon-fixture.js`'s
-`modFiles`, so they see what the harvests saw. Without the mod on disk in
-either form, those tests are skipped.
+`scripts/lib/mod-roots.js`, which reads a server mod from its `download/` zip
+only, so they see what players have, not unreleased work in a `server_mods/`
+build. The race and add-on tests that check a mod's files read them the same
+way, through `scripts/lib/addon-fixture.js`'s `modFiles`, so they see what
+the harvests saw. Without the zip, those tests are skipped.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
