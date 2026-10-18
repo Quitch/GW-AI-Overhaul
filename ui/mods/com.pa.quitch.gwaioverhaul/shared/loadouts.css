@@ -17,7 +17,14 @@
   width: 16px;
   height: 16px;
   margin-left: 4px;
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Bootstrap inserts the tooltip inside the card, which is overflow: auto
+   (gwt_card.css), and below the card's bottom edge it adds a scrollbar that
+   shifts the card's contents. Fixed, it is out of the card's overflow. */
+#start-cards > .card .gwo-loadout-races .tooltip {
+  position: fixed;
 }

@@ -677,7 +677,7 @@ define([
       id: descriptor.id,
       name: descriptor.name,
       icon: _.isString(icon) && icon.length ? icon : STOCK_COMMANDER_ICON,
-      colour: "rgb(" + _.map(rgb.slice(0, 3), Math.round).join(",") + ")",
+      colour: _.map(rgb.slice(0, 3), Math.round),
     };
   };
 

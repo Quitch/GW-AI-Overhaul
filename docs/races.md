@@ -233,11 +233,16 @@ unusable prize.
 Each unlocked loadout card in both scenes carries one icon per race that can
 use it, from the races the scene can offer: a vanilla player sees MLA alone.
 `cards_deal_helpers.compatibleRaces` is the races `raceLocksLoadout` does not
-lock the loadout for. `races.raceBadge` gives each one its `commanderIcon`,
-painted through a `-webkit-mask-image` in the colour of GW faction
-`colourFaction` (`shared/gw_factions`, `color[0]`). A race with no usable
-`colourFaction` takes `raceColour`, then a neutral grey, and one with no
-`commanderIcon` the stock commander.
+lock the loadout for. `races.raceBadge` gives each one its `commanderIcon` and
+the colour of GW faction `colourFaction` (`shared/gw_factions`, `color[0]`). A
+race with no usable `colourFaction` takes `raceColour`, then a neutral grey,
+and one with no `commanderIcon` the stock commander.
+
+A strategic icon is not a shape in its alpha channel, which covers the whole
+badge, so a CSS mask paints a disc. It is channel-coded for the engine: red is
+the badge body, green the emblem, and black the outline.
+`shared/strategic_icon.js` repaints it on a canvas as the game draws it, with
+the body in the race colour and the emblem in white.
 
 `shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
 `model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills
@@ -248,7 +253,10 @@ mounted, since the Exiles icon can come from its server zip. The co-op
 races, after its own mount when it offers the picker. Each icon URL is loaded once, and one that fails to load, such
 as a race whose server mod is active and client mod is not, shows the stock
 commander. The icons on a locked card are dimmed with it, and show no tooltip
-there, because the card takes no pointer events.
+there, because the card takes no pointer events. An icon's tooltip is
+`position: fixed` (`shared/loadouts.css`): Bootstrap inserts it inside the
+card, which is `overflow: auto`, and below the card's bottom edge it would add
+a scrollbar.
 
 The deal gives any other card when `races.cardUsable` finds a race unit that a
 unit its `card_units.js` entry names stands for. A card with no entry passes,

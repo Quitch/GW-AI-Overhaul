@@ -558,7 +558,7 @@ describe("raceBadge", () => {
       id: "mla",
       name: "!LOC:MLA",
       icon: ICON_ROOT + "icon_si_commander.png",
-      colour: "rgb(0,176,255)",
+      colour: [0, 176, 255],
     });
     assert.deepEqual(
       races.raceBadge(undefined, factions),
@@ -568,9 +568,9 @@ describe("raceBadge", () => {
 
   it("reads each shipped race's icon and faction colour", () => {
     const expected = {
-      legion: ["rgb(236,34,35)", "icon_si_l_commander.png"],
-      bugs: ["rgb(126,226,101)", "icon_si_bug_commander.png"],
-      exiles: ["rgb(145,87,199)", "icon_si_ft_commander.png"],
+      legion: [[236, 34, 35], "icon_si_l_commander.png"],
+      bugs: [[126, 226, 101], "icon_si_bug_commander.png"],
+      exiles: [[145, 87, 199], "icon_si_ft_commander.png"],
     };
     assert.deepEqual(
       shipped.map((descriptor) => descriptor.id).sort(),
@@ -578,7 +578,7 @@ describe("raceBadge", () => {
     );
     for (const descriptor of shipped) {
       const badge = races.raceBadge(descriptor, factions);
-      assert.equal(badge.colour, expected[descriptor.id][0], descriptor.id);
+      assert.deepEqual(badge.colour, expected[descriptor.id][0], descriptor.id);
       assert.equal(badge.icon, ICON_ROOT + expected[descriptor.id][1]);
     }
   });
@@ -588,11 +588,11 @@ describe("raceBadge", () => {
       { id: "x", name: "X", raceColour: [10.4, 20, 30], commanderIcon: "" },
       factions
     );
-    assert.equal(own.colour, "rgb(10,20,30)");
+    assert.deepEqual(own.colour, [10, 20, 30]);
     assert.equal(own.icon, races.STOCK_COMMANDER_ICON);
 
     const bare = races.raceBadge({ id: "x", name: "X" }, factions);
-    assert.equal(bare.colour, "rgb(160,160,160)");
+    assert.deepEqual(bare.colour, [160, 160, 160]);
     assert.equal(bare.icon, races.STOCK_COMMANDER_ICON);
   });
 
@@ -602,28 +602,28 @@ describe("raceBadge", () => {
       [Infinity, 0, 0],
       [1, 2],
     ]) {
-      assert.equal(
+      assert.deepEqual(
         races.raceBadge({ id: "x", raceColour }, factions).colour,
-        "rgb(160,160,160)",
+        [160, 160, 160],
         String(raceColour)
       );
     }
     for (const colourFaction of [9, -1, "1", null]) {
-      assert.equal(
+      assert.deepEqual(
         races.raceBadge({ id: "x", colourFaction }, factions).colour,
-        "rgb(160,160,160)",
+        [160, 160, 160],
         String(colourFaction)
       );
     }
-    assert.equal(
+    assert.deepEqual(
       races.raceBadge({ id: "x", colourFaction: 0 }, [{ color: [["a"]] }])
         .colour,
-      "rgb(160,160,160)"
+      [160, 160, 160]
     );
-    assert.equal(
+    assert.deepEqual(
       races.raceBadge({ id: "x", colourFaction: 0, raceColour: [1, 2, 3] })
         .colour,
-      "rgb(1,2,3)"
+      [1, 2, 3]
     );
   });
 });
