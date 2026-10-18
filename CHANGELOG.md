@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Loadout cards show which races can use them
+
 ## v7.7.0 - 2026-10-17
 
 ### API

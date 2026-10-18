@@ -39,6 +39,9 @@ A descriptor:
   stockUnits: [paths], // optional: stock units the race builds with an MLA builder
   commanders: [{ spec: "/pa/units/commanders/l_raptor/l_raptor.json" }, …],
   commanderArtHue: 0, // the paint the preview art ships in; MLA's is 210 (blue)
+  commanderIcon: "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_l_commander.png",
+  colourFaction: 3, // the GW faction whose colour the race's loadout icons take
+  raceColour: [r, g, b], // optional, in place of colourFaction
   playerIcon: { fill: "coui://…/icon_player_fill_l.png", outline: "…" },
   ai: {
     titans: { unitMaps: [paths], sources: [{ dir, match }] },
@@ -224,6 +227,27 @@ scene's `ready` refuses it. When the race changes,
 a locked card to the first usable one. `gw_play/treasure_loadouts.js` still
 excludes them from a race player's treasure pool, because they would be an
 unusable prize.
+
+### Loadout card race icons
+
+Each unlocked loadout card in both scenes carries one icon per race that can
+use it, from the races the scene can offer: a vanilla player sees MLA alone.
+`cards_deal_helpers.compatibleRaces` is the races `raceLocksLoadout` does not
+lock the loadout for. `races.raceBadge` gives each one its `commanderIcon`,
+painted through a `-webkit-mask-image` in the colour of GW faction
+`colourFaction` (`shared/gw_factions`, `color[0]`). A race with no usable
+`colourFaction` takes `raceColour`, then a neutral grey, and one with no
+`commanderIcon` the stock commander.
+
+`shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
+`model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills
+`startCards` before then. `gw_start/race_picker.js` fills the races once the
+race zips are mounted, since the Exiles icon can come from its server zip. The
+co-op `race_picker.js` fills them with the host's races, with or without
+Separate races. Each icon URL is loaded once, and one that fails to load, such
+as a race whose server mod is active and client mod is not, shows the stock
+commander. The icons on a locked card are dimmed with it, and show no tooltip
+there, because the card takes no pointer events.
 
 The deal gives any other card when `races.cardUsable` finds a race unit that a
 unit its `card_units.js` entry names stands for. A card with no entry passes,
@@ -795,7 +819,8 @@ The descriptor is `race/legion.js`. The server mod is
 commanders are Overwatch, Cyclopes, Cataphract, Scion, Core, and Reclaimer
 (`l_overwatch`, `l_cyclops`, `l_cataphract`, `l_raptor`, `l_quad`, and
 `l_tank`). The player icon comes from the client mod's own
-`icon_player_{fill,outline}_l.png`.
+`icon_player_{fill,outline}_l.png`. The loadout card icon is the client mod's
+`icon_si_l_commander.png`, in Revenants red (faction 3).
 
 Under Titans its build orders are the flat `legion_*` files beside the stock
 ones, plus `unit_maps/legion.json`. Under Queller every tier already carries a
@@ -820,7 +845,8 @@ The descriptor is `race/bugs.js`. The server mod is `com.pa.ferretmaster.bugs`,
 and its companion `commander-merge` supplies the commander's base spec. The
 unit-type bit is `Custom2`. There is one commander, the Bug Alpha Commander,
 whose art ships in green paint (hue 120). The player icon comes from the client
-mod's own `bug_icon_{fill,outline}.png`.
+mod's own `bug_icon_{fill,outline}.png`. The loadout card icon is the client
+mod's `icon_si_bug_commander.png`, in Synchronous green (faction 2).
 
 Bugs is Titans only. Its build orders are the `bugs/` sub-directories under
 each build directory, plus `unit_maps/bugs.json` and
@@ -844,7 +870,9 @@ The descriptor is `race/exiles.js`. The server mod is `com.pa.nik.exiles`, with
 companions `commander-merge` and `build-bar-tabs`. The unit-type bit is
 `Custom6`. There are four commanders: Maxim, Taurus, Blueberry, and Brainiac,
 whose art is in blue paint (hue 200). The player icon comes from the server
-mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
+mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`. The
+loadout card icon is `icon_si_ft_commander.png`, which both its mods ship, in
+Foundation purple (faction 1).
 
 Exiles is Titans only. Its build orders are the `exiles/` sub-directories under
 each build directory, plus `unit_maps/exiles.json`. Exiles has no orbital

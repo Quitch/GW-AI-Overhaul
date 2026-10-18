@@ -11,8 +11,8 @@ race needs something new.
    `shared/races_shipped.js`. Its fields are `id`, `name`, `serverMods` (every
    identifier that counts as the mod active, matched exactly), `unitTypeBit`
    (`Custom<N>`), `commanderTypes`, `engineKeys` (see "Conventions the code
-   relies on" below), `commanders`, `commanderArtHue`, `playerIcon`, `ai`,
-   `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
+   relies on" below), `commanders`, `commanderArtHue`, `commanderIcon`,
+   `colourFaction`, `playerIcon`, `ai`, `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
    builds with an MLA builder it fields, although a race unit shares their cell
    (Exiles' teleporter and basic metal extractor; [`races.md`](races.md),
    "Units a race builds itself").
@@ -192,6 +192,13 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
 - **Commander art hue.** `commanderArtHue` is the hue that the preview art
   ships in (MLA 210 blue, Legion 0 red). The war setup's Commander picker and
   the co-op loadout scene both rotate from there to the faction colour.
+- **Loadout card icon.** `commanderIcon` is the race's commander strategic
+  icon, `coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_<name>.png`,
+  named by the race-level `si_name` rather than a commander's own, which a
+  companion mod may change. `colourFaction` is the GW faction (0-3) whose
+  colour the icon takes. A race no faction colour suits gives
+  `raceColour: [r, g, b]` instead. See [`races.md`](races.md), "Loadout card
+  race icons".
 - **Player icon** is a 16px fill/outline pair at `coui://ui/mods/<mod>/img/…`.
   Legion and Bugs ship theirs only in their client mods, which the game mounts
   itself. Exiles ships its pair in both its client and its server mod, and GW
