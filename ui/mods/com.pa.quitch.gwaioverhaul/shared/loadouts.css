@@ -13,9 +13,11 @@
   display: flex;
 }
 
+/* 24px: the 2.5.8 target size for the tooltip, and the size at which the
+   emblem's detail survives. */
 #start-cards > .card .gwo-loadout-race {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   margin-left: 4px;
   background-position: center;
   background-repeat: no-repeat;

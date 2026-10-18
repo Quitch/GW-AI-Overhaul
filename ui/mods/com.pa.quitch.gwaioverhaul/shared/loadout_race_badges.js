@@ -20,8 +20,12 @@
       context.drawImage(image, 0, 0);
       var pixels = context.getImageData(0, 0, canvas.width, canvas.height);
       strategicIcon.paint(pixels.data, colour);
-      context.putImageData(pixels, 0, 0);
-      return canvas.toDataURL();
+      var box = strategicIcon.bounds(pixels.data, canvas.width, canvas.height);
+      var cropped = document.createElement("canvas");
+      cropped.width = box.width;
+      cropped.height = box.height;
+      cropped.getContext("2d").putImageData(pixels, -box.x, -box.y);
+      return cropped.toDataURL();
     };
 
     // A race whose client mod is off has no icon file, so it shows the stock

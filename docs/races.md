@@ -242,9 +242,10 @@ A strategic icon is not a shape in its alpha channel, which covers the whole
 badge, so a CSS mask paints a disc. It is channel-coded for the engine: red is
 the badge body, green the emblem, and black the outline.
 `shared/strategic_icon.js` repaints it on a canvas as the game draws it, with
-the body in the race colour. The emblem is a darker shade of that colour
-rather than the game's white, which at 16px outweighs the body and washes the
-colour out.
+the body in the race colour and the emblem in white. The icons are 24px, the
+2.5.8 target size their tooltips need (see
+[`accessibility.md`](accessibility.md)). Smaller, the white emblem outweighs
+the body and washes the colour out.
 
 `shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
 `model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills
