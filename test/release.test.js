@@ -80,12 +80,29 @@ describe("stampVersionJs", () => {
     );
     assert.match(after, /^ {2}return "9\.9\.9";$/m);
   });
+
+  it("keeps CRLF line endings", () => {
+    assert.equal(
+      stampVersionJs(
+        'define(function () {\r\n  return "1.0.0";\r\n});\r\n',
+        "9.9.9"
+      ),
+      'define(function () {\r\n  return "9.9.9";\r\n});\r\n'
+    );
+  });
 });
 
 describe("stampSonar", () => {
   it("rewrites sonar.projectVersion", () => {
     const after = stampSonar(read("sonar-project.properties"), "9.9.9");
     assert.match(after, /^sonar\.projectVersion=9\.9\.9$/m);
+  });
+
+  it("keeps CRLF line endings", () => {
+    assert.equal(
+      stampSonar("a=1\r\nsonar.projectVersion=1.0.0\r\nb=2\r\n", "9.9.9"),
+      "a=1\r\nsonar.projectVersion=9.9.9\r\nb=2\r\n"
+    );
   });
 });
 

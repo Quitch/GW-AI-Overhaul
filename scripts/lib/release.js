@@ -39,7 +39,7 @@ function stampModinfo(text, stamp) {
   for (const key of ["version", "date", "build"]) {
     out = replaceOnce(
       out,
-      new RegExp('^(\\s*"' + key + '":\\s*)"[^"]*"', "m"),
+      new RegExp('^( *"' + key + '": *)"[^"]*"', "m"),
       "$1" + JSON.stringify(stamp[key]),
       "modinfo.json " + key
     );
@@ -50,7 +50,7 @@ function stampModinfo(text, stamp) {
 function stampVersionJs(text, version) {
   return replaceOnce(
     text,
-    /^(\s*return )"[^"]*";$/m,
+    /^( *return )"[^"]*";$/m,
     "$1" + JSON.stringify(version) + ";",
     "version.js return"
   );
