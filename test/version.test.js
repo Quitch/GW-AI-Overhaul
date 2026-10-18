@@ -2,8 +2,7 @@
 
 // shared/version.js, modinfo.json and sonar-project.properties all carry the
 // version and none can derive another, so a half-finished bump is invisible until
-// a save or the Sonar dashboard claims the wrong one. See CONTRIBUTING.md,
-// "Releasing".
+// a save or the Sonar dashboard claims the wrong one. See docs/releasing.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

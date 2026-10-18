@@ -25,6 +25,7 @@
     "generate:race-tables": "node scripts/generate-race-tables.js",
     "harvest:unit-types": "node scripts/harvest-unit-types.js",
     "minify:json": "node scripts/minify-json.js",
+    "release": "node scripts/release.js",
     "i18n:extract": "node scripts/i18n/extract.js",
     "i18n:catalog": "node scripts/i18n/catalog.js",
     "i18n:missing": "node scripts/i18n/missing.js",

@@ -40,9 +40,7 @@ Any submissions should follow the requirements below:
 
 ### Releasing
 
-The version lives in three places: `modinfo.json` (what the game reads), `ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js` (what the war panel shows and new saves record), and `sonar.projectVersion` in `sonar-project.properties`. `test/version.test.js` fails until all three match. Bump them together, move the `## Unreleased` entries under a `## v<version> - <date>` heading in `CHANGELOG.md`, and publish a GitHub release tagged `v<version>`. `release.yml` then runs `npm run verify` at the tag and checks that the tag matches `modinfo.json`'s version and that `CHANGELOG.md` has a `## v<version>` heading. It runs after the release is published, so it is an alarm rather than a gate: the checks are yours to make before clicking Publish.
-
-`develop` carries the identifier `com.pa.quitch.gwaioverhaul-dev` and the display name `Galactic War Overhaul DEV`, so a working copy installs alongside the released mod rather than over it. `master` carries the release identifier and display name, and the release zip is built from `master`. Nothing in the code special-cases the `-dev` identifier.
+Releases are cut by the repo owner, so a pull request leaves the version in `modinfo.json`, `version.js` and `sonar-project.properties` alone, and its `CHANGELOG.md` entries stay under `## Unreleased`. `develop` carries the identifier `com.pa.quitch.gwaioverhaul-dev` and the display name `Galactic War Overhaul DEV`, so a working copy installs alongside the released mod rather than over it. How a release is cut: [docs/releasing.md](docs/releasing.md).
 
 ### Available Libraries
 
