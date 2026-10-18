@@ -48,11 +48,13 @@ describe("writeText", () => {
     assert.equal(read(), "{\n}\n");
   });
 
-  it("leaves a file alone when its content is unchanged", () => {
-    fs.writeFileSync(file, "{\r\n}\r\n");
-    const old = new Date(2000, 0, 1);
-    fs.utimesSync(file, old, old);
-    writeText(file, "{\n}\n");
-    assert.equal(fs.statSync(file).mtimeMs, old.getTime());
-  });
+  for (const existing of ["{\r\n}\r\n", "{\n}\n"]) {
+    it("leaves an unchanged " + JSON.stringify(existing) + " alone", () => {
+      fs.writeFileSync(file, existing);
+      const old = new Date(2000, 0, 1);
+      fs.utimesSync(file, old, old);
+      writeText(file, "{\n}\n");
+      assert.equal(fs.statSync(file).mtimeMs, old.getTime());
+    });
+  }
 });
