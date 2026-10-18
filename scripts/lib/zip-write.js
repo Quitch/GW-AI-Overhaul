@@ -11,6 +11,7 @@ const zlib = require("node:zlib");
 function writeZip(filePath, entries) {
   const locals = [];
   const centrals = [];
+  let count = 0;
   let offset = 0;
   for (const [name, content] of Object.entries(entries)) {
     const nameBytes = Buffer.from(name, "utf8");
@@ -40,13 +41,14 @@ function writeZip(filePath, entries) {
     centrals.push(central, nameBytes);
 
     offset += local.length + nameBytes.length + data.length;
+    count++;
   }
 
   const directory = Buffer.concat(centrals);
   const end = Buffer.alloc(22);
   end.writeUInt32LE(0x06054b50, 0);
-  end.writeUInt16LE(centrals.length / 2, 8);
-  end.writeUInt16LE(centrals.length / 2, 10);
+  end.writeUInt16LE(count, 8);
+  end.writeUInt16LE(count, 10);
   end.writeUInt32LE(directory.length, 12);
   end.writeUInt32LE(offset, 16);
 

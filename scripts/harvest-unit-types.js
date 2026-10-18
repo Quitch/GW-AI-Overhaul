@@ -4,8 +4,8 @@
 // with its effective unit_types and buildable_types (base_spec chain
 // resolved), from the PA install (pa_ex1 over pa) and the race and add-on
 // server mods' zips under download/, later roots shadowing earlier ones as
-// the runtime virtual filesystem does. CI has none of it, so the fixture is committed - re-run
-// after a PA, race or add-on patch.
+// the runtime virtual filesystem does. CI has none of it, so the fixture is
+// committed - re-run after a PA, race or add-on patch.
 // See testing.md.
 
 const fs = require("node:fs");

@@ -335,7 +335,10 @@ async function main() {
     .addons()
     .filter((addon) => modRoots(addon.serverMods).length);
   if (!candidates.length) {
-    console.error("No race server mods found under " + userDataDir());
+    console.error(
+      "No race server mod zips found under " +
+        path.join(userDataDir(), "download")
+    );
     process.exitCode = 1;
     return;
   }

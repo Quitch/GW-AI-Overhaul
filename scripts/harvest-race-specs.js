@@ -27,14 +27,13 @@ const MEDIA = mediaDir();
 
 // Searched first to last. The base game's carry no `mod`.
 function tableRoots(table) {
-  let roots = [];
-  for (const mod of table.mods) {
-    const found = modRoots([mod]);
-    if (!found.length) {
+  const roots = table.mods.map((mod) => {
+    const [root] = modRoots([mod]);
+    if (!root) {
       throw new Error(mod + " has no zip under download/");
     }
-    roots = roots.concat(found);
-  }
+    return root;
+  });
   if (table.baseGame) {
     roots.push(
       folderRoot(path.join(MEDIA, "pa_ex1")),

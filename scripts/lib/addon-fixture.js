@@ -11,9 +11,9 @@ const { modRoots } = require("./mod-roots.js");
 const raceCells = loadCouiModule(MOD_ROOT + "/gw_play/race_cells.js");
 const fixture = require("../../test/fixtures/unit_types.json");
 
-// The mods' files as the harvests read them, through mod-roots.js: each
-// mod's store zip. Undefined when none is on disk. `has(name)`, `names()` and `readJson(name)` take and give
-// "pa/..." paths.
+// The mods' files from their store zips, through mod-roots.js. Undefined
+// when none is on disk. `has(name)`, `names()` and `readJson(name)` take
+// and give "pa/..." paths.
 function modFiles(identifiers) {
   const roots = modRoots(identifiers);
   if (!roots.length) {
