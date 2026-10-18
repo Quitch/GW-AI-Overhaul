@@ -75,9 +75,14 @@
             );
           });
 
-          // Every race the host's war carries, with or without the picker.
+          // Every race the host's war carries, with or without the picker;
+          // MLA alone under Cluster, as in gw_start.
           var offerLoadoutRaces = function () {
-            model.gwoLoadoutRaces(host.races);
+            model.gwoLoadoutRaces(
+              host.faction === gwoAI.CLUSTER_FACTION
+                ? [races.byId(races.MLA_ID)]
+                : host.races
+            );
           };
 
           // Nothing at all unless the host asked for it: no control, no mount,
