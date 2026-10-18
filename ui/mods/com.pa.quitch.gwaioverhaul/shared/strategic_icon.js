@@ -1,18 +1,20 @@
-// A strategic icon is channel-coded for the engine to paint: red is the badge
-// body, which takes the team colour, green the emblem, painted white over it,
-// and black the outline.
+// A strategic icon is channel-coded for the engine to paint. This is
+// media/shaders/particle_icon.fs for an unselected unit: red masks the badge,
+// green picks the team colour over the badge's black, and every channel is
+// first remapped by (v - 0.27) / 0.7.
 define(function () {
+  var channel = function (value) {
+    return Math.min(1, Math.max(0, (value / 255 - 0.27) / 0.7));
+  };
+
   // `pixels` is canvas RGBA data, repainted in place for `rgb`.
   var paint = function (pixels, rgb) {
     for (var i = 0; i < pixels.length; i += 4) {
-      var body = pixels[i] / 255;
-      var emblem = pixels[i + 1] / 255;
+      var weight =
+        channel(pixels[i]) * Math.pow(channel(pixels[i + 1]), 1 / 2.2);
 
-      for (var channel = 0; channel < 3; channel += 1) {
-        pixels[i + channel] = Math.min(
-          255,
-          Math.round(body * rgb[channel] + emblem * (255 - rgb[channel]))
-        );
+      for (var c = 0; c < 3; c += 1) {
+        pixels[i + c] = Math.min(255, Math.round(weight * rgb[c]));
       }
     }
 

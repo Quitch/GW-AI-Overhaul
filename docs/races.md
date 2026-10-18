@@ -239,13 +239,13 @@ race with no usable `colourFaction` takes `raceColour`, then a neutral grey,
 and one with no `commanderIcon` the stock commander.
 
 A strategic icon is not a shape in its alpha channel, which covers the whole
-badge, so a CSS mask paints a disc. It is channel-coded for the engine: red is
-the badge body, green the emblem, and black the outline.
+badge, so a CSS mask paints a disc. It is channel-coded for the engine: red
+masks the badge, green marks the emblem, and black is the outline.
 `shared/strategic_icon.js` repaints it on a canvas as the game draws it, with
-the body in the race colour and the emblem in white. The icons are 24px, the
-2.5.8 target size their tooltips need (see
-[`accessibility.md`](accessibility.md)). Smaller, the white emblem outweighs
-the body and washes the colour out.
+the same formula as `media/shaders/particle_icon.fs` for an unselected unit:
+the emblem in the race colour on a black badge. The icons are 24px, the 2.5.8
+target size their tooltips need (see [`accessibility.md`](accessibility.md)),
+and are cropped to their visible pixels so the badge fills the slot.
 
 `shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
 `model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills

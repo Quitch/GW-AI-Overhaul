@@ -12,26 +12,27 @@ const LEGION = [236, 34, 35];
 const paintOne = (pixel) => strategicIcon.paint(pixel.slice(), LEGION);
 
 describe("paint", () => {
-  it("paints the body in the colour", () => {
-    assert.deepEqual(paintOne([255, 0, 0, 255]), [236, 34, 35, 255]);
+  it("paints the emblem in the colour", () => {
+    assert.deepEqual(paintOne([255, 255, 0, 255]), [236, 34, 35, 255]);
   });
 
-  it("paints the emblem white", () => {
-    assert.deepEqual(paintOne([255, 255, 0, 255]), [255, 255, 255, 255]);
-  });
-
-  it("keeps the outline black and the alpha as it was", () => {
+  it("paints the badge body and the outline black", () => {
+    assert.deepEqual(paintOne([255, 0, 0, 255]), [0, 0, 0, 255]);
     assert.deepEqual(paintOne([0, 0, 0, 255]), [0, 0, 0, 255]);
-    assert.deepEqual(paintOne([255, 0, 0, 0]), [236, 34, 35, 0]);
   });
 
-  it("blends an antialiased edge in proportion", () => {
-    assert.deepEqual(paintOne([128, 0, 0, 200]), [118, 17, 18, 200]);
+  it("keeps the alpha as it was", () => {
+    assert.deepEqual(paintOne([255, 255, 0, 0]), [236, 34, 35, 0]);
+  });
+
+  it("remaps each channel as the engine does, with green gamma-corrected", () => {
+    assert.deepEqual(paintOne([69, 255, 0, 255]), [0, 0, 0, 255]);
+    assert.deepEqual(paintOne([255, 170, 0, 255]), [182, 26, 27, 255]);
   });
 
   it("clamps a colour component above 255", () => {
     assert.deepEqual(
-      strategicIcon.paint([255, 0, 0, 255], [300, 0, 0]),
+      strategicIcon.paint([255, 255, 0, 255], [300, 0, 0]),
       [255, 0, 0, 255]
     );
   });
@@ -59,7 +60,7 @@ describe("paint", () => {
   });
 
   it("repaints every pixel in place", () => {
-    const pixels = [255, 0, 0, 255, 0, 0, 0, 255];
+    const pixels = [255, 255, 0, 255, 255, 0, 0, 255];
     assert.equal(strategicIcon.paint(pixels, LEGION), pixels);
     assert.deepEqual(pixels, [236, 34, 35, 255, 0, 0, 0, 255]);
   });
