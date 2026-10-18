@@ -4,8 +4,8 @@
 // scripts/lib/race-table-inputs.js lists, the mod's unit list and every spec
 // its table is built from - the listed units the mod ships, and what their
 // base_spec, tools, ammo and death weapons reach - trimmed to the fields the
-// generator reads. Specs come from the table's server mods (a folder under
-// server_mods/ or a zip under download/, the first mod listed winning), then
+// generator reads. Specs come from the table's server mods (each one's zip
+// under download/, the first mod listed winning), then
 // the PA install (pa_ex1 over pa) for a table that falls back to it. CI has
 // none of it, so the fixture is committed - re-run after a race or add-on
 // patch, then `npm run generate:race-tables`. See testing.md.
@@ -25,14 +25,13 @@ const OUT =
 
 const MEDIA = mediaDir();
 
-// Searched first to last, so a mod's roots run against mount order: a
-// folder build ahead of its zip. The base game's carry no `mod`.
+// Searched first to last. The base game's carry no `mod`.
 function tableRoots(table) {
   let roots = [];
   for (const mod of table.mods) {
-    const found = modRoots([mod]).reverse();
+    const found = modRoots([mod]);
     if (!found.length) {
-      throw new Error(mod + " is on disk neither as a zip nor as a folder");
+      throw new Error(mod + " has no zip under download/");
     }
     roots = roots.concat(found);
   }

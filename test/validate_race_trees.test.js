@@ -10,6 +10,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { writeZip } = require("../scripts/lib/zip-write.js");
 
 const SCRIPT = path.join(__dirname, "..", "scripts", "validate-race-trees.js");
 const RACE_MOD = "com.pa.nik.exiles";
@@ -29,15 +30,20 @@ function buildFixture(dir) {
   writeJson(base, "ai/fabber_builds/fixture_fabber.json", { build_list: [] });
   fs.mkdirSync(path.join(media, "pa_ex1"), { recursive: true });
 
-  const mod = path.join(userData, "server_mods", RACE_MOD, "pa");
-  writeJson(mod, "ai/unit_maps/exiles.json", { unit_map: {} });
-  writeJson(mod, "ai/fabber_builds/exiles/fixture.json", { build_list: [] });
-  writeJson(mod, "ai/factory_builds/exiles/fixture.json", { build_list: [] });
-  writeJson(mod, "ai/platoon_builds/exiles/fixture.json", {
-    build_list: [{ to_build: "FixturePlatoon" }],
-  });
-  writeJson(mod, "ai/platoon_templates/exiles/fixture.json", {
-    platoon_templates: { FixturePlatoon: {} },
+  writeZip(path.join(userData, "download", RACE_MOD + ".zip"), {
+    "pa/ai/unit_maps/exiles.json": JSON.stringify({ unit_map: {} }),
+    "pa/ai/fabber_builds/exiles/fixture.json": JSON.stringify({
+      build_list: [],
+    }),
+    "pa/ai/factory_builds/exiles/fixture.json": JSON.stringify({
+      build_list: [],
+    }),
+    "pa/ai/platoon_builds/exiles/fixture.json": JSON.stringify({
+      build_list: [{ to_build: "FixturePlatoon" }],
+    }),
+    "pa/ai/platoon_templates/exiles/fixture.json": JSON.stringify({
+      platoon_templates: { FixturePlatoon: {} },
+    }),
   });
   return { media, userData };
 }
