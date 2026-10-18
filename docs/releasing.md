@@ -64,10 +64,6 @@ build has changed. After a PA patch, collect `KNOWN_TEST_TYPES` in
 It does not translate the missing keys or merge Playglot work. That is the
 workflow in [translations.md](translations.md).
 
-The harvest and catalog scripts write LF line endings, so in a CRLF checkout
-`git status` lists `test/fixtures/*.json` and `en-US.json` as modified even when
-their content is unchanged. `git diff --stat` shows the real changes.
-
 ## After publishing
 
 `release.yml` runs `npm run verify` at the tag and checks that the tag matches

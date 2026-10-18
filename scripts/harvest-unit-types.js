@@ -14,6 +14,7 @@ const { mediaDir } = require("./lib/pa-install.js");
 const { folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { shippedServerMods } = require("./lib/server-mods.js");
+const { writeText } = require("./lib/write-text.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
@@ -94,7 +95,7 @@ function main() {
     }
   }
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  fs.writeFileSync(OUT, JSON.stringify({ units, buildable }, null, 2) + "\n");
+  writeText(OUT, JSON.stringify({ units, buildable }, null, 2) + "\n");
   console.log(
     "harvest-unit-types: " +
       Object.keys(units).length +
