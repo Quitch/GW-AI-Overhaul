@@ -840,13 +840,14 @@ offered cards.
 
 That count needs the size the offer was dealt at, not the size the viewer's hand
 is worth now. A viewer can delete a card while the offer is open, and a delete
-from a full hand, or of the Lucky card, makes the hand worth one card fewer. The
-server strips `cardsOffered` from the offer ("Per-player pre-dealt cards"), so
-`cards_coop_deal.js` also writes the size to a top-level `gwaioPendingOffer`
-field on the record, `{star, dealIndex, cardsOffered}`, before it sends the
-deal. `rerolledHandFor` uses that size when its star and `dealIndex` match the
-open offer. Otherwise, as for an offer dealt before the field existed, it falls
-back to the size of the hand as it is now.
+from a full hand, or of the Lucky card, makes the hand worth one card fewer.
+`rerolledHandFor` therefore never weighs the inventory. The server strips
+`cardsOffered` from the offer ("Per-player pre-dealt cards"), but an offer not
+yet rerolled is still as long as it was dealt, so the first reroll takes the
+offer's length. That reroll writes `cardsOffered` to the host's own copy of the
+record, and every later reroll reads it from there. A thin deck's short hand is
+sized by its length as well. That deals the same hands as counting each missing
+card as a reroll spent.
 
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
@@ -1125,8 +1126,7 @@ Note the asymmetry that makes this work. The server drops anything added inside
 `_.assign` over the existing one, on both the server and the client, so a novel
 top-level field survives. `cardsOffered`/`rerollsUsed` are the standing example
 of the first half: they only persist on the reroll path, which writes the record
-locally. `gwaioPendingOffer` ("Rerolls") is the second example of the other
-half.
+locally.
 
 **Only the host's own per-turn deal replaces a card a viewer already holds.**
 Only `dealCardToSelectableAI` calls `refresh({redeal: true})`. Every other

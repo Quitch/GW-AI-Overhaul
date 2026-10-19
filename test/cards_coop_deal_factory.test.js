@@ -67,13 +67,7 @@ function setup(overrides = {}) {
     overrides
   );
 
-  const calls = {
-    deals: [],
-    sent: [],
-    bank: [],
-    offerCounts: [],
-    upserts: [],
-  };
+  const calls = { deals: [], sent: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -94,11 +88,6 @@ function setup(overrides = {}) {
   const handle = makeFactory({
     game: {
       findCoopPlayerInventoryData: (query) => options.records[query.id],
-      upsertCoopPlayerInventoryData: (rec) => {
-        calls.upserts.push(rec);
-        options.records[rec.id] = rec;
-        return true;
-      },
       hostTechCardDealCount: () => 4,
       hostTechCardDealHistory: () => ["star-1"],
       inventory: hostInventory,
@@ -564,36 +553,6 @@ describe("dealCoopPlayerPendingTechCards - delivery", () => {
       await rejection(deal(1)),
       /set_player_pending_tech_cards failed/
     );
-  });
-
-  // The server rebuilds the offer without cardsOffered, so a reroll after a
-  // delete reads the dealt size from the record. Issue #605.
-  it("records each viewer's offer size on their record before it sends", async () => {
-    let atSend;
-    const run = build({
-      cardsOffered: 4,
-      sendMessage: (name, payload, done) => {
-        atSend = run.options.records.alice;
-        done(true, {});
-      },
-    });
-
-    await deal(1, undefined, { dealIndex: 2 });
-
-    assert.deepEqual(atSend.gwaioPendingOffer, {
-      star: 1,
-      dealIndex: 2,
-      cardsOffered: 4,
-    });
-    assert.equal(atSend.pendingTechCards, undefined);
-  });
-
-  it("records no size for a loadout offer, which cannot be rerolled", async () => {
-    const { calls } = build({ treasureStar: 1 });
-
-    await deal(1, undefined, { dealIndex: 2 });
-
-    assert.deepEqual(calls.upserts, []);
   });
 
   it("sends nothing when every viewer was skipped", async () => {

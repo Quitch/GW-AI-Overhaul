@@ -89,14 +89,13 @@ function setup(overrides = {}) {
       isHost: true,
       perPlayerTech: true,
       stars: [{ id: 0 }, { id: 1 }, { id: 2 }],
-      cardsOffered: 3,
       containsLoadout: false,
       upsertOk: true,
       saveFails: false,
       manifestFails: false,
       duringDeal: undefined,
       upsertThrows: false,
-      offerCountThrows: false,
+      dealThrows: false,
       saveThrows: false,
     },
     overrides
@@ -113,7 +112,6 @@ function setup(overrides = {}) {
     rerollsUsed: [],
     offerRerolls: [],
     bank: [],
-    offerCounts: [],
     viewerOperators: [],
     published: [],
     prepared: 0,
@@ -175,6 +173,9 @@ function setup(overrides = {}) {
     game,
     galaxy: { stars: () => options.stars },
     chooseCards: (request) => {
+      if (options.dealThrows) {
+        throw new Error("deal threw");
+      }
       calls.deals.push(request);
       if (options.duringDeal) {
         options.duringDeal(options.records);
@@ -186,13 +187,6 @@ function setup(overrides = {}) {
       );
     },
     helpers: {
-      cardsOfferedCount: (offer, inventory) => {
-        if (options.offerCountThrows) {
-          throw new Error("offer count threw");
-        }
-        calls.offerCounts.push(inventory);
-        return options.cardsOffered;
-      },
       pendingCardsContainLoadout: () => options.containsLoadout,
     },
     GWInventory: inventoryClass(),
@@ -283,13 +277,14 @@ describe("rerollHandForRecord", () => {
   });
 
   it("refuses once no reroll remains", async () => {
-    const run = build({ cardsOffered: 3 });
+    const run = build();
     await assert.rejects(
       run.handle.rerollHandForRecord({
         record: aiRecord(),
         client: AI,
         pendingTechCards: Object.assign(pendingTechCards(), {
           cards: [{ id: "last" }],
+          cardsOffered: 3,
           rerollsUsed: 2,
         }),
         star: { id: 2 },
@@ -504,18 +499,6 @@ describe("host reroll handler - the reroll", () => {
     ]);
   });
 
-  // The hand size is a function of what the player already holds, so reading it
-  // off a different inventory than the one dealt against would size the
-  // replacement offer on somebody else's full hand.
-  it("sizes the replacement hand from the inventory it deals against", async () => {
-    const { handlers, calls } = build();
-
-    await handlers[REQUEST](operator());
-
-    assert.equal(calls.offerCounts.length, 1);
-    assert.equal(calls.offerCounts[0], calls.deals[0].inventory);
-  });
-
   // A reroll is a child of the deal it replaces, so rerolling the same offer
   // twice gives a different hand each time.
   it("keys the deal to the viewer, the deal index and the reroll count", async () => {
@@ -530,18 +513,18 @@ describe("host reroll handler - the reroll", () => {
     });
   });
 
-  // A full hand was offered 4, then the viewer deleted a card, so the hand as
-  // it is now is worth only 3. The server strips cardsOffered from the offer,
-  // so only the record's own field still knows it was 4. Issue #605.
-  it("sizes the reroll from the offer as dealt, not the hand as it is now", async () => {
+  // A full hand was offered 4, and the viewer then deleted a card, so the hand
+  // is worth only 3 now. The server strips cardsOffered from the offer, but it
+  // is still 4 cards long. The helpers stub has no cardsOfferedCount, so
+  // sizing from the inventory would throw. Issue #605.
+  it("sizes a first reroll from the offer's length, not the hand's worth now", async () => {
     const { handlers, calls } = build({
-      cardsOffered: 3,
       records: {
         alice: record({
+          inventory: { cards: [] },
           pendingTechCards: pendingTechCards({
             cards: [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
           }),
-          gwaioPendingOffer: { star: 2, dealIndex: 4, cardsOffered: 4 },
         }),
       },
     });
@@ -554,15 +537,14 @@ describe("host reroll handler - the reroll", () => {
     assert.equal(calls.hostOperators[0][1].offer_rerolls, true);
   });
 
-  it("sizes the reroll from the hand as it is now when the record names another deal", async () => {
+  it("sizes a later reroll from the size the first one stored", async () => {
     const { handlers, calls } = build({
-      cardsOffered: 3,
       records: {
         alice: record({
           pendingTechCards: pendingTechCards({
-            cards: [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
+            cardsOffered: 4,
+            rerollsUsed: 1,
           }),
-          gwaioPendingOffer: { star: 2, dealIndex: 3, cardsOffered: 4 },
         }),
       },
     });
@@ -570,7 +552,9 @@ describe("host reroll handler - the reroll", () => {
     await handlers[REQUEST](operator());
 
     assert.equal(calls.deals[0].count, 2);
-    assert.equal(calls.upserts[0].pendingTechCards.cardsOffered, 3);
+    assert.equal(calls.upserts[0].pendingTechCards.cardsOffered, 4);
+    assert.equal(calls.hostOperators[0][1].rerolls_used, 2);
+    assert.equal(calls.hostOperators[0][1].offer_rerolls, true);
   });
 
   it("tells the viewer when the last reroll has been spent", async () => {
@@ -696,16 +680,16 @@ describe("host reroll handler - a step that throws", () => {
   });
 
   it("settles and tells the viewer when dealing the new offer throws", async () => {
-    const { handlers, calls } = build({ offerCountThrows: true });
+    const { handlers, calls } = build({ dealThrows: true });
 
     await captureErrors(async () => {
       assert.equal(
         await rejection(handlers[REQUEST](operator())),
-        "offer count threw"
+        "deal threw"
       );
     });
 
-    assert.deepEqual(errorsSentBack(calls), ["offer count threw"]);
+    assert.deepEqual(errorsSentBack(calls), ["deal threw"]);
     assert.deepEqual(calls.upserts, []);
   });
 

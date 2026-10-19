@@ -32,50 +32,6 @@ describe("computeRerollDeal", () => {
   });
 });
 
-describe("dealtOfferSize", () => {
-  const pending = { star: 2, cards: [], dealIndex: 4 };
-  const recordWith = (offer) => ({ gwaioPendingOffer: offer });
-
-  it("reads the size recorded for this star and deal", () => {
-    assert.equal(
-      reroll.dealtOfferSize(
-        recordWith({ star: 2, dealIndex: 4, cardsOffered: 4 }),
-        pending
-      ),
-      4
-    );
-  });
-
-  it("has no size for a record that recorded none", () => {
-    assert.equal(reroll.dealtOfferSize({}, pending), undefined);
-    assert.equal(reroll.dealtOfferSize(undefined, pending), undefined);
-  });
-
-  it("has no size when the record names another star or deal", () => {
-    for (const offer of [
-      { star: 3, dealIndex: 4, cardsOffered: 4 },
-      { star: 2, dealIndex: 3, cardsOffered: 4 },
-      { star: 2, cardsOffered: 4 },
-    ]) {
-      assert.equal(
-        reroll.dealtOfferSize(recordWith(offer), pending),
-        undefined,
-        JSON.stringify(offer)
-      );
-    }
-  });
-
-  it("has no size when the recorded size is not a number", () => {
-    assert.equal(
-      reroll.dealtOfferSize(
-        recordWith({ star: 2, dealIndex: 4, cardsOffered: "4" }),
-        pending
-      ),
-      undefined
-    );
-  });
-});
-
 describe("pendingTechRerollValidationError", () => {
   const pending = { star: 2, cards: [{ id: "a" }], dealIndex: 1 };
 

@@ -26,22 +26,6 @@ define([
     };
   };
 
-  // The size the open offer was dealt at, or undefined when the deal did not
-  // record one. See coop.md, "Rerolls".
-  var dealtOfferSize = function (record, pendingTechCards) {
-    var offer = record && record.gwaioPendingOffer;
-    if (
-      !offer ||
-      !_.isNumber(offer.cardsOffered) ||
-      offer.star !== pendingTechCards.star ||
-      offer.dealIndex !== pendingTechCards.dealIndex
-    ) {
-      return undefined;
-    }
-
-    return offer.cardsOffered;
-  };
-
   // The reject reason, or undefined when the request is valid.
   var pendingTechRerollValidationError = function (
     payload,
@@ -93,7 +77,6 @@ define([
     var chooseCards = params.chooseCards;
     var helpers = params.helpers;
     var GWInventory = params.GWInventory;
-    var numCardsToOffer = params.numCardsToOffer;
     var gwoSave = params.gwoSave;
     var GW = params.GW;
     var gwoStreams = params.gwoStreams;
@@ -141,10 +124,12 @@ define([
     var rerolledHandFor = function (params) {
       var result = $.Deferred();
       var pendingTechCards = params.pendingTechCards;
-      var dealtSize = dealtOfferSize(params.record, pendingTechCards);
-      var cardsOffered = _.isNumber(dealtSize)
-        ? dealtSize
-        : helpers.cardsOfferedCount(numCardsToOffer, params.inventory);
+      // Not the hand's worth now, which a delete since the deal can lower.
+      // The server strips cardsOffered, but an offer not yet rerolled is
+      // still as long as it was dealt. See coop.md, "Rerolls".
+      var cardsOffered = _.isNumber(pendingTechCards.cardsOffered)
+        ? pendingTechCards.cardsOffered
+        : pendingTechCards.cards.length;
       var rerollState = computeRerollDeal(
         cardsOffered,
         pendingTechCards.cards.length
@@ -444,7 +429,6 @@ define([
     // eslint-disable-next-line no-undef
     module.exports = {
       computeRerollDeal: computeRerollDeal,
-      dealtOfferSize: dealtOfferSize,
       pendingTechRerollValidationError: pendingTechRerollValidationError,
       pendingTechRerollRng: pendingTechRerollRng,
     };
