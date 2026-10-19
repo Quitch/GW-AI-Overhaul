@@ -4,8 +4,8 @@
     // and submitLoadout reads self.ready() on the same object, so the swap
     // gates both. A race-locked loadout can never be joined with.
     var stockReady = model.ready;
-    // The requireGW below has resolved and the war has been read. Before the
-    // read the loadouts lock for no race, so Join waits for it.
+    // The list has been built from the resolved banks for the war's race.
+    // Until then it is stock's, with nothing locked.
     var modulesReady = ko.observable(false);
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
@@ -45,24 +45,22 @@
         startingInventory
       ) {
         var banksResolved = false;
-        var host = ko.observable();
+        var war;
 
-        // Read by shared/loadouts.js for the lock. A war that records no race
-        // is an MLA one, as gw_start's default is, so a loadout whose `races`
-        // leave MLA out still locks.
-        model.gwoViewerPlayerRace = ko.computed(function () {
-          var war = host();
+        // Read by shared/loadouts.js for the lock. An inventory with no race
+        // tag plays MLA, so a war that records no race locks as MLA.
+        model.gwoViewerPlayerRace = function () {
           return war
             ? hostWar.playerRace(war, model.gwoViewerRace()) || "mla"
             : undefined;
-        });
+        };
 
         // Called again whenever the race changes, so a selection resting on
         // a newly locked loadout moves. See races.md. Peeked, not read:
         // race_picker.js calls this from inside a ko.computed, and a read
         // would make it rebuild the list on every selection change.
         model.gwoRebuildStartCards = function () {
-          if (!banksResolved) {
+          if (!banksResolved || !war) {
             return;
           }
           var activeCard = model.activeStartCard.peek();
@@ -77,6 +75,7 @@
           if (index !== -1) {
             model.activeStartCardIndex(index);
           }
+          modulesReady(true);
         };
 
         // A viewer picking their own loadout must see the mod ones they have
@@ -85,7 +84,6 @@
           banksResolved = true;
           model.gwoRebuildStartCards();
         });
-        model.gwoViewerPlayerRace.subscribe(model.gwoRebuildStartCards);
 
         // Dealt from the list the picker offers, or a loadout another card mod
         // added is selectable and then cannot be dealt, and Join does nothing.
@@ -139,10 +137,10 @@
         };
         // The race picker and Join wait on the same promise, and jQuery runs
         // no later callback on it once one throws.
-        hostWar.load().then(function (war) {
+        hostWar.load().then(function (host) {
           try {
-            host(war);
-            modulesReady(true);
+            war = host;
+            model.gwoRebuildStartCards();
           } catch (e) {
             console.error(
               "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)

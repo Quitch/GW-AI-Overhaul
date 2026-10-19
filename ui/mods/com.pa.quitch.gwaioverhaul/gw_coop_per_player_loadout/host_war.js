@@ -115,8 +115,8 @@ define([
   };
 
   // The race the viewer plays: its own pick under Separate races, the host's
-  // otherwise. Its loadouts lock for this race and its inventory is stamped
-  // with it, so the two cannot disagree. See races.md.
+  // otherwise. The loadout lock and the inventory stamp both read it. See
+  // races.md.
   var playerRace = function (host, pickedRace) {
     return (host && host.perPlayerRace && pickedRace) || (host && host.race);
   };
