@@ -18,12 +18,14 @@ define([
     return units.join("|");
   };
 
+  var UNTAGGED_LIST = "/pa/units/gwo_untagged_unit_list.json";
+
   // coui:, not spec: - spec: pins the first read of a path for the process,
   // and the merged list is a memory file that changes as mods mount.
-  var loadUnitList = function () {
+  var readUnitList = function (path) {
     return new Promise(function (resolve, reject) {
       $.ajax({
-        url: "coui://pa/units/unit_list.json",
+        url: "coui:/" + path,
         cache: false,
         success: function (data) {
           resolve(_.isString(data) ? JSON.parse(data) : data);
@@ -33,6 +35,47 @@ define([
         },
       });
     });
+  };
+
+  var isTagged = function (list) {
+    return _.some(list.units, function (unit) {
+      return !_.endsWith(unit, ".json");
+    });
+  };
+
+  // From a battle on, the list is the referee's, every unit tagged, and the
+  // untagged one is the copy the referee mounted beside it.
+  var loadUnitList = function () {
+    return readUnitList("/pa/units/unit_list.json").then(function (list) {
+      if (!isTagged(list)) {
+        return list;
+      }
+      return readUnitList(UNTAGGED_LIST).then(function (kept) {
+        if (isTagged(kept)) {
+          throw new Error(UNTAGGED_LIST + " is tagged");
+        }
+        return kept;
+      });
+    });
+  };
+
+  // The untagged list for the referee to mount beside its tagged one, as a
+  // memory file map. Empty when there is none to keep.
+  var untaggedListFile = function () {
+    return loadUnitList().then(
+      function (list) {
+        var file = {};
+        file[UNTAGGED_LIST] = list;
+        return file;
+      },
+      function (error) {
+        console.error(
+          "gwoRaces: no untagged unit list kept: " +
+            gameFilePaths.describeError(error)
+        );
+        return {};
+      }
+    );
   };
 
   // Every listed unit and the closure of what it references, keyed by path,
@@ -225,5 +268,6 @@ define([
     buildIndex: buildIndex,
     indexFor: indexFor,
     prime: prime,
+    untaggedListFile: untaggedListFile,
   };
 });

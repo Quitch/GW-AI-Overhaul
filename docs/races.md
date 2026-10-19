@@ -238,7 +238,9 @@ One unit list read serves every race. A read taken before the mount has no race
 unit, and it is discarded. If each race took its own read, some reads would
 land either side of the mount and prime only some races. A read in which a spec
 failed is used but not kept, cells included, so the next caller reads that spec
-again.
+again. From a battle on, `/pa/units/unit_list.json` is the referee's list, in
+which every unit is tagged. The referee mounts the untagged list it read beside
+it, at `/pa/units/gwo_untagged_unit_list.json`, and the read takes that one.
 
 **Race and add-on cards.** A card whose entry names a race or add-on unit is
 written for that race or add-on. A foreign unit is any path in a registered

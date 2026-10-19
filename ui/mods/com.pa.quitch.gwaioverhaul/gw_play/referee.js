@@ -29,6 +29,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
       ],
       function (
         GW,
@@ -42,7 +43,8 @@
         gameFilePaths,
         gwoPromise,
         coopAiRoster,
-        refereeCoop
+        refereeCoop,
+        raceCells
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -93,6 +95,8 @@
           var self = this;
 
           var deferred = $.Deferred();
+          // Read before anything here mounts or unmounts the bare list.
+          var keepUntagged = raceCells.untaggedListFile();
 
           // GWO - shallow: keys are added below and no value is changed.
           var allFiles = _.assign({}, self.files());
@@ -128,8 +132,14 @@
 
           var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
-            api.file.mountMemoryFiles(cookedFiles).then(function () {
-              gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
+            keepUntagged.then(function (kept) {
+              api.file
+                .mountMemoryFiles(
+                  _.assign({}, cookedFiles, gameFilePaths.cookFiles(kept))
+                )
+                .then(function () {
+                  gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
+                });
             });
           };
 
