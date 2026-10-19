@@ -661,6 +661,46 @@ describe("a war whose save never finishes", () => {
     assert.equal(war.window.location.href, GW_START);
   });
 
+  it("fails the war as a bug when naming it the active war throws", async (t) => {
+    const war = withHeldSave(t);
+    war.model.activeGameId = () => {
+      throw new Error("no active war");
+    };
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War was saved but could not be opened: Error: no active war/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.window.location.href, GW_START);
+  });
+
+  it("fails the war as a bug when opening gw_play throws", async (t) => {
+    const war = withHeldSave(t);
+    Object.defineProperty(war.window.location, "href", {
+      get: () => GW_START,
+      set: () => {
+        throw new Error("no navigation");
+      },
+    });
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War was saved but could not be opened: Error: no navigation/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+  });
+
   it("opens the war when the save finishes in time", async (t) => {
     const war = withHeldSave(t);
 
