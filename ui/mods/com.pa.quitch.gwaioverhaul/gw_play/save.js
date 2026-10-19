@@ -1,25 +1,14 @@
 define([
-  "shared/gw_common",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
-], function (GW, gwoPromise) {
-  // Stock's saveGame never rejects: a failed write leaves it pending.
-  var timeLimitMs = 30000;
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_limit.js",
+], function (saveLimit) {
   var latest = 0;
 
-  // Runs in a native promise reaction, which would swallow a throw from the
-  // caller's continuations that the engine used to log.
   var settle = function (serial, finish) {
     return function (value) {
-      try {
-        if (serial === latest) {
-          model.driveAccessInProgress(false);
-        }
-        finish(value);
-      } catch (e) {
-        console.error(
-          "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-        );
+      if (serial === latest) {
+        model.driveAccessInProgress(false);
       }
+      finish(value);
     };
   };
 
@@ -43,16 +32,14 @@ define([
 
     latest += 1;
     var done = $.Deferred();
-    gwoPromise
-      .within(GW.manifest.saveGame(gameState), timeLimitMs, "War save")
-      .then(
-        settle(latest, function () {
-          done.resolve();
-        }),
-        settle(latest, function (error) {
-          done.reject(error);
-        })
-      );
+    saveLimit.save(gameState).then(
+      settle(latest, function () {
+        done.resolve();
+      }),
+      settle(latest, function (error) {
+        done.reject(error);
+      })
+    );
     return done.promise();
   };
 });

@@ -69,8 +69,9 @@ deal is GWO's end to end.
 
 A base-game module's export can be hijacked the same way, when its consumer reads
 the property off the module object at call time. `gw_play/referee.js` replaces
-`GWReferee.hire`, and `gw_play/per_player_tech_install.js` replaces
-`GWPerPlayerTechReferee.apply` with `gw_play/per_player_tech_referee.js`'s. Each
+`GWReferee.hire`, `gw_play/per_player_tech_install.js` replaces
+`GWPerPlayerTechReferee.apply` with `gw_play/per_player_tech_referee.js`'s, and
+`gw_play/save_limit_install.js` replaces `GW.manifest.saveGame`. Each
 loads its modules with `requireGW` and an errback. A listed module that fails to
 load or throws at define time, and usually a deeper one, reaches that errback,
 which logs and leaves stock's function in place. In a shadow, the same throw
