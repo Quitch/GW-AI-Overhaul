@@ -546,7 +546,7 @@ describe("a war whose save never finishes", () => {
     return war;
   };
 
-  const failsAsABug = (war) => {
+  const failsAsABug = (war, logged = []) => {
     assert.equal(war.generatingWar(), false);
     assert.equal(war.model.makeGameBusy(), false);
     assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
@@ -557,7 +557,7 @@ describe("a war whose save never finishes", () => {
       war.errors[war.errors.length - 1],
       "Failed to generate valid war: error"
     );
-    assert.deepEqual(war.logged, []);
+    assert.deepEqual(war.logged, logged);
     assert.equal(war.settingsSaved, 1);
   };
 
@@ -585,12 +585,12 @@ describe("a war whose save never finishes", () => {
 
     assert.match(
       war.errors[0],
-      /^War could not be saved and opened: Error: war save timed out after 30000ms/
+      /^War could not be saved: Error: war save timed out after 30000ms/
     );
     failsAsABug(war);
   });
 
-  it("does not open the war when the save finishes too late", async (t) => {
+  it("does not open the war when the save finishes too late, and logs it", async (t) => {
     const war = withHeldSave(t);
 
     war.start();
@@ -599,6 +599,21 @@ describe("a war whose save never finishes", () => {
     war.save.resolve();
     await settle();
 
+    failsAsABug(war, [
+      "War save completed after the time limit: " + war.game().id,
+    ]);
+  });
+
+  it("logs nothing more when the save fails after the time limit", async (t) => {
+    const war = withHeldSave(t);
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+    war.save.reject("blocked");
+    await settle();
+
+    assert.equal(war.errors.length, 2);
     failsAsABug(war);
   });
 
@@ -609,7 +624,7 @@ describe("a war whose save never finishes", () => {
     war.save.reject("blocked");
     await settle();
 
-    assert.equal(war.errors[0], "War could not be saved and opened: blocked");
+    assert.equal(war.errors[0], "War could not be saved: blocked");
     failsAsABug(war);
   });
 
@@ -622,10 +637,7 @@ describe("a war whose save never finishes", () => {
     war.start();
     await settle();
 
-    assert.match(
-      war.errors[0],
-      /^War could not be saved and opened: Error: no save/
-    );
+    assert.match(war.errors[0], /^War could not be saved: Error: no save/);
     failsAsABug(war);
   });
 
@@ -641,12 +653,52 @@ describe("a war whose save never finishes", () => {
 
     assert.match(
       war.errors[0],
-      /^War could not be saved and opened: Error: no scene/
+      /^War was saved but could not be opened: Error: no scene/
     );
     assert.deepEqual(war.logged, []);
     assert.equal(war.generatingWar(), false);
     assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
     assert.equal(war.window.location.href, GW_START);
+  });
+
+  it("fails the war as a bug when naming it the active war throws", async (t) => {
+    const war = withHeldSave(t);
+    war.model.activeGameId = () => {
+      throw new Error("no active war");
+    };
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War was saved but could not be opened: Error: no active war/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.window.location.href, GW_START);
+  });
+
+  it("fails the war as a bug when opening gw_play throws", async (t) => {
+    const war = withHeldSave(t);
+    Object.defineProperty(war.window.location, "href", {
+      get: () => GW_START,
+      set: () => {
+        throw new Error("no navigation");
+      },
+    });
+
+    war.start();
+    war.save.resolve();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War was saved but could not be opened: Error: no navigation/
+    );
+    assert.equal(war.generatingWar(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
   });
 
   it("opens the war when the save finishes in time", async (t) => {

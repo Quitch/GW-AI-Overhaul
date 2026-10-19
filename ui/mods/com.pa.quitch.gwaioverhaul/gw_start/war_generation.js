@@ -741,35 +741,43 @@ define([
       // Before the save, so a player whose save fails gets these settings back.
       scene.saveDifficultySettings();
 
+      var game = model.newGame();
+      var save;
       new Promise(function (resolve) {
-        resolve(
-          gwoPromise.within(
-            GW.manifest.saveGame(model.newGame()),
-            SAVE_TIMEOUT_MS,
-            "war save"
-          )
-        );
-      })
-        .then(onGameSaved)
-        .then(null, onWarNotOpened);
+        save = GW.manifest.saveGame(game);
+        resolve(gwoPromise.within(save, SAVE_TIMEOUT_MS, "war save"));
+      }).then(onGameSaved, function (err) {
+        onWarNotSaved(err, save, game.id);
+      });
     };
 
     var onGameSaved = function () {
-      model.activeGameId(model.newGame().id);
-      model.lastSceneUrl(
-        "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
-      );
-      console.log(
-        "War created successfully using Galactic War Overhaul v" + gwoVersion
-      );
-      window.location.href =
-        "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+      try {
+        model.activeGameId(model.newGame().id);
+        model.lastSceneUrl(
+          "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+        );
+        console.log(
+          "War created successfully using Galactic War Overhaul v" + gwoVersion
+        );
+        window.location.href =
+          "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+      } catch (err) {
+        console.error(
+          "War was saved but could not be opened: " +
+            ((err && err.stack) || err)
+        );
+        warGenerationFailure(undefined);
+      }
     };
 
-    var onWarNotOpened = function (err) {
-      console.error(
-        "War could not be saved and opened: " + ((err && err.stack) || err)
-      );
+    var onWarNotSaved = function (err, save, id) {
+      console.error("War could not be saved: " + ((err && err.stack) || err));
+      if (err && err.gwoTimedOut) {
+        save.then(function () {
+          console.log("War save completed after the time limit: " + id);
+        });
+      }
       warGenerationFailure(undefined);
     };
 
