@@ -16,6 +16,7 @@
 - In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session
 - In co-op with separate tech, a player who deletes a tech card while a tech offer is open still gets the full number of cards when they reroll it. Before, each reroll dealt one card too few, and the last reroll was lost
 - When the war cannot be saved, for example because the disk is full, the galaxy map recovers after 30 seconds: moving to a star or deleting a tech card no longer leaves the Saving indicator on for good, losing a war still opens the war summary, and pressing Fight closes the battle preparation screen so you can try again, where before each of these waited for good
+- In co-op, when the host's battle preparation fails, Fight works again only once the host's mods have been put back. Before, pressing Fight straight away could prepare the next battle with the wrong mods, or leave the host's mods changed after it
 
 ## v7.7.0 - 2026-10-17
 

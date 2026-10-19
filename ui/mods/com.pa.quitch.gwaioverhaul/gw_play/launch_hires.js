@@ -5,6 +5,28 @@
 define(function () {
   var current = null;
 
+  // Stock starts its restore remount in the same step as the first hire's
+  // failure, after the hire's own handlers, so busy2 is read a task later.
+  // busy2 starts true and only a remount's end sets it false, so a busy2
+  // still true at the failure means no remount ran, and none follows.
+  var afterRestore = function (fn) {
+    var manager = window.CommunityModsManager;
+    var busy = manager && manager.busy2;
+    var idle = _.isFunction(busy) && !busy();
+    _.defer(function () {
+      if (!idle || !busy()) {
+        fn();
+        return;
+      }
+      var subscription = busy.subscribe(function (value) {
+        if (!value) {
+          subscription.dispose();
+          fn();
+        }
+      });
+    });
+  };
+
   return {
     begin: function (expected) {
       current = {
@@ -20,6 +42,10 @@ define(function () {
         return;
       }
       launch.started += 1;
+      var restores = launch.expected === 2 && launch.started === 1;
+      var end = function () {
+        launch.done.resolve();
+      };
       hire.then(
         function () {
           launch.resolved += 1;
@@ -28,11 +54,15 @@ define(function () {
             launch.resolved >= launch.expected &&
             launch.resolved === launch.started
           ) {
-            launch.done.resolve();
+            end();
           }
         },
         function () {
-          launch.done.resolve();
+          if (restores) {
+            afterRestore(end);
+          } else {
+            end();
+          }
         }
       );
     },

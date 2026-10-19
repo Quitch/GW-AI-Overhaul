@@ -3,13 +3,15 @@
 // gw_play/referee.js, run as the scene runs it, for the hire's first step
 // alone: it reads the connected clients once and numbers the co-op AI tags
 // from that same list, which gwoGenerateAI then reads (issue #578). Also the
-// hire's registration with the launch's tracker (issue #626).
+// hire's registration with the launch's tracker (issue #626), and which failed
+// hire clears launchingFight (issue #629).
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeObservable } = require("../scripts/lib/fake-knockout.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const { runSceneScript } = require("../scripts/lib/scene-script.js");
 
 const stubs = createGlobalStubs();
@@ -36,7 +38,7 @@ function installScene(options) {
   stubs.setGlobal("model", {
     game: () => game,
     launchingFight: makeObservable(false),
-    gwCampaignActive: () => true,
+    gwCampaignActive: () => options.active !== false,
     isCampaignHost: () => !!options.host,
     gwoCoopAi: options.coopAi
       ? {
@@ -60,11 +62,16 @@ function installScene(options) {
       () => {},
       {},
       { installedRaces: () => ({}) },
-      {},
+      { describeError: (error) => error.message },
       {
         steps: (first, steps) => {
           scene.steps = steps;
-          return { then: () => scene.chain };
+          return {
+            then: (done, fail) => {
+              scene.fail = fail;
+              return scene.chain;
+            },
+          };
         },
       },
       { aiRecords: () => [] },
@@ -76,7 +83,11 @@ function installScene(options) {
       }
     )
   );
-  stubs.setGlobal("console", { log: () => {}, error: () => {} });
+  scene.errors = [];
+  stubs.setGlobal("console", {
+    log: () => {},
+    error: (message) => scene.errors.push(message),
+  });
 
   runSceneScript(MOD_ROOT + "/gw_play/referee.js");
   // The last step returns the hire's referee, which the first fills in.
@@ -144,5 +155,53 @@ describe("the launch's tracker", () => {
 
     assert.equal(hire, scene.chain);
     assert.deepEqual(scene.tracked, [scene.chain]);
+  });
+});
+
+describe("a failed hire", () => {
+  // Stock's restore remount follows a co-op host's first hire, and stock
+  // clears launchingFight itself once it ends.
+  function fail(options, hires) {
+    installFakeJQuery(stubs, { sync: true });
+    const scene = installScene(options);
+    model.launchingFight(true);
+    for (let i = 0; i < hires; i += 1) {
+      scene.GWReferee.hire(model.game());
+    }
+    let failure;
+    scene.fail(new Error("spec read failed")).then(null, (error) => {
+      failure = error;
+    });
+    scene.failure = failure;
+    return scene;
+  }
+
+  it("leaves launchingFight to stock after a co-op host's first hire", () => {
+    const scene = fail({ host: true }, 1);
+
+    assert.equal(model.launchingFight(), true);
+    assert.equal(scene.failure.message, "spec read failed");
+    assert.deepEqual(scene.errors, [
+      "Galactic War Overhaul (GWO): battle preparation failed: spec read failed",
+    ]);
+  });
+
+  it("clears launchingFight after a co-op host's second hire", () => {
+    const scene = fail({ host: true }, 2);
+
+    assert.equal(model.launchingFight(), false);
+    assert.equal(scene.failure.message, "spec read failed");
+  });
+
+  it("clears launchingFight after a co-op viewer's hire", () => {
+    fail({ host: false }, 1);
+
+    assert.equal(model.launchingFight(), false);
+  });
+
+  it("clears launchingFight after a solo hire", () => {
+    fail({ host: true, active: false }, 1);
+
+    assert.equal(model.launchingFight(), false);
   });
 });
