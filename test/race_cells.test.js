@@ -160,8 +160,11 @@ describe("the unit list read", () => {
         setImmediate(() => {
           if (options.url === BARE || options.url === KEPT) {
             listUrls.push(options.url);
-            if (lists[options.url]) {
-              options.success(JSON.stringify({ units: lists[options.url] }));
+            const list = lists[options.url];
+            if (typeof list === "string") {
+              options.success(list);
+            } else if (list) {
+              options.success(JSON.stringify({ units: list }));
             } else {
               options.error({}, "error", "Not Found");
             }
@@ -171,12 +174,10 @@ describe("the unit list read", () => {
         });
       },
     });
-    mock.method(console, "error", () => {});
   });
 
   afterEach(() => {
     stubs.restoreGlobals();
-    mock.restoreAll();
   });
 
   it("reads the bare list alone when it is untagged", async () => {
@@ -206,7 +207,22 @@ describe("the unit list read", () => {
   it("rejects when the bare list is tagged and none is kept", async () => {
     lists = { [BARE]: ["/pa/units/d.json.player"] };
 
-    await assert.rejects(raceCells.load());
+    await assert.rejects(raceCells.load(), /kept no untagged copy/);
+  });
+
+  it("counts only the referee's tags as tagged", async () => {
+    lists = { [BARE]: ["/pa/units/i.JSON", "/pa/units/j.json "] };
+
+    const loaded = await raceCells.load();
+
+    assert.deepEqual(loaded.units, ["/pa/units/i.JSON", "/pa/units/j.json "]);
+    assert.deepEqual(listUrls, [BARE]);
+  });
+
+  it("rejects a list that does not parse", async () => {
+    lists = { [BARE]: "{ not json" };
+
+    await assert.rejects(raceCells.load(), SyntaxError);
   });
 
   it("rejects when the kept list is tagged too", async () => {
@@ -226,21 +242,13 @@ describe("the unit list read", () => {
     });
   });
 
-  it("hands the referee the kept list again once the bare one is tagged", async () => {
+  it("hands the referee nothing to keep once the bare list is tagged", async () => {
     lists = {
       [BARE]: ["/pa/units/g.json.player"],
       [KEPT]: ["/pa/units/g.json"],
     };
 
-    assert.deepEqual(await raceCells.untaggedListFile(), {
-      "/pa/units/gwo_untagged_unit_list.json": { units: ["/pa/units/g.json"] },
-    });
-  });
-
-  it("hands the referee nothing to keep when no untagged list is read", async () => {
-    lists = { [BARE]: ["/pa/units/h.json.player"] };
-
-    assert.deepEqual(await raceCells.untaggedListFile(), {});
-    assert.equal(console.error.mock.callCount(), 1);
+    await assert.rejects(raceCells.untaggedListFile(), /is tagged/);
+    assert.deepEqual(listUrls, [BARE]);
   });
 });

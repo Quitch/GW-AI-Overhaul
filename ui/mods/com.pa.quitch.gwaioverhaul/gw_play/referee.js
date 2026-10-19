@@ -95,8 +95,16 @@
           var self = this;
 
           var deferred = $.Deferred();
-          // Read before anything here mounts or unmounts the bare list.
-          var keepUntagged = raceCells.untaggedListFile();
+          // A battle needs no kept list, so its read never holds the mount.
+          var keepUntagged = gwoPromise
+            .within(raceCells.untaggedListFile(), 10000, "unit list read")
+            .then(null, function (error) {
+              console.error(
+                "gwoRaces: no untagged unit list kept: " +
+                  gameFilePaths.describeError(error)
+              );
+              return {};
+            });
 
           // GWO - shallow: keys are added below and no value is changed.
           var allFiles = _.assign({}, self.files());

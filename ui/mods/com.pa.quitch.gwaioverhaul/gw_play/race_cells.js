@@ -19,6 +19,8 @@ define([
   };
 
   var UNTAGGED_LIST = "/pa/units/gwo_untagged_unit_list.json";
+  // The tags the referee gives each army's units.
+  var TAGGED = /\.json\.(player|ai)\d*$/;
 
   // coui:, not spec: - spec: pins the first read of a path for the process,
   // and the merged list is a memory file that changes as mods mount.
@@ -28,7 +30,11 @@ define([
         url: "coui:/" + path,
         cache: false,
         success: function (data) {
-          resolve(_.isString(data) ? JSON.parse(data) : data);
+          try {
+            resolve(_.isString(data) ? JSON.parse(data) : data);
+          } catch (error) {
+            reject(error);
+          }
         },
         error: function (request, status, error) {
           reject(error);
@@ -39,7 +45,7 @@ define([
 
   var isTagged = function (list) {
     return _.some(list.units, function (unit) {
-      return !_.endsWith(unit, ".json");
+      return TAGGED.test(unit);
     });
   };
 
@@ -50,32 +56,35 @@ define([
       if (!isTagged(list)) {
         return list;
       }
-      return readUnitList(UNTAGGED_LIST).then(function (kept) {
-        if (isTagged(kept)) {
-          throw new Error(UNTAGGED_LIST + " is tagged");
+      return readUnitList(UNTAGGED_LIST).then(
+        function (kept) {
+          if (isTagged(kept)) {
+            throw new Error(UNTAGGED_LIST + " is tagged");
+          }
+          return kept;
+        },
+        function (error) {
+          throw new Error(
+            "the unit list is tagged, and the battle kept no untagged copy (" +
+              gameFilePaths.describeError(error) +
+              ")"
+          );
         }
-        return kept;
-      });
+      );
     });
   };
 
   // The untagged list for the referee to mount beside its tagged one, as a
-  // memory file map. Empty when there is none to keep.
+  // memory file map: empty if the list it reads is not untagged.
   var untaggedListFile = function () {
-    return loadUnitList().then(
-      function (list) {
-        var file = {};
-        file[UNTAGGED_LIST] = list;
-        return file;
-      },
-      function (error) {
-        console.error(
-          "gwoRaces: no untagged unit list kept: " +
-            gameFilePaths.describeError(error)
-        );
-        return {};
+    return readUnitList("/pa/units/unit_list.json").then(function (list) {
+      if (isTagged(list)) {
+        throw new Error("the unit list is tagged");
       }
-    );
+      var file = {};
+      file[UNTAGGED_LIST] = list;
+      return file;
+    });
   };
 
   // Every listed unit and the closure of what it references, keyed by path,
