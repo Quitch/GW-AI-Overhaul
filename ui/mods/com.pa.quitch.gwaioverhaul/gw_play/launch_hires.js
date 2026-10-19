@@ -7,17 +7,27 @@ define(function () {
 
   return {
     begin: function (expected) {
-      current = { expected: expected, resolved: 0, done: $.Deferred() };
+      current = {
+        expected: expected,
+        started: 0,
+        resolved: 0,
+        done: $.Deferred(),
+      };
     },
     track: function (hire) {
       var launch = current;
       if (!launch) {
         return;
       }
+      launch.started += 1;
       hire.then(
         function () {
           launch.resolved += 1;
-          if (launch.resolved >= launch.expected) {
+          // Another mod's hire may run beside stock's.
+          if (
+            launch.resolved >= launch.expected &&
+            launch.resolved === launch.started
+          ) {
             launch.done.resolve();
           }
         },

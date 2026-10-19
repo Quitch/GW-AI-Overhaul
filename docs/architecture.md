@@ -399,8 +399,9 @@ client-mod restriction windows would otherwise overlap, and one launch's
 restore could remount the full mod set under the other's shared referee.
 Stock's `hireRefereesForLaunch` is private to `gw_play.js`, so
 `gw_play/launch_hires.js` infers its end from the hires `referee.js` reports:
-one hire, or two on a co-op host, the same test stock uses. The second starts
-only once the first has resolved and stock has remounted the client mods. A
+one hire, or two on a co-op host, the same test stock uses, and no other hire
+still running. The second starts only once the first has resolved and stock
+has remounted the client mods. A
 failed hire ends the launch: `referee.js` has already cleared `launchingFight`,
 even while a co-op host's restore remount still runs. The call-off clears
 `launchingFight` only if its launch is still the current one. Without GWO's referee no launch is tracked, and the

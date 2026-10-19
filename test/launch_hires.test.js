@@ -5,11 +5,28 @@
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const fs = require("node:fs");
+const {
+  MOD_ROOT,
+  couiToFsPath,
+  loadCouiModule,
+} = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
-const launchHires = loadCouiModule(MOD_ROOT + "/gw_play/launch_hires.js");
+const LAUNCH_HIRES = MOD_ROOT + "/gw_play/launch_hires.js";
+const launchHires = loadCouiModule(LAUNCH_HIRES);
+
+// A copy no test has begun a launch on: the loaded module keeps its launch.
+function freshLaunchHires() {
+  let factory;
+  new Function("define", fs.readFileSync(couiToFsPath(LAUNCH_HIRES), "utf8"))(
+    (fn) => {
+      factory = fn;
+    }
+  );
+  return factory();
+}
 
 const stubs = createGlobalStubs();
 
@@ -28,7 +45,7 @@ describe("launch hires", () => {
   it("is settled before any launch is begun", () => {
     installFakeJQuery(stubs, { sync: true });
 
-    assert.equal(outcome(launchHires.settled()).state, "settled");
+    assert.equal(outcome(freshLaunchHires().settled()).state, "settled");
   });
 
   it("is not settled while a launch has started no hire", () => {
@@ -64,6 +81,22 @@ describe("launch hires", () => {
     const second = $.Deferred();
     launchHires.track(second.promise());
     second.resolve({});
+    assert.equal(seen.state, "settled");
+  });
+
+  it("waits for another mod's hire running beside the launch's", () => {
+    installFakeJQuery(stubs, { sync: true });
+    launchHires.begin(1);
+    const seen = outcome(launchHires.settled());
+
+    const other = $.Deferred();
+    launchHires.track(other.promise());
+    const stock = $.Deferred();
+    launchHires.track(stock.promise());
+    stock.resolve({});
+    assert.equal(seen.state, "pending");
+
+    other.resolve({});
     assert.equal(seen.state, "settled");
   });
 
