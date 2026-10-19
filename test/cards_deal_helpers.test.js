@@ -9,6 +9,33 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const helpers = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js"
 );
+const gwoLoadoutIds = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"
+);
+
+const mlaOnlyLoadouts = [
+  "gwaio_start_paratrooper",
+  "gwaio_start_nomad",
+  "gwaio_start_rapid",
+  "nem_start_nuke",
+  "nem_start_planetary",
+  "nem_start_deepspace",
+  "nem_start_tower_rush",
+  "gwc_start_artillery",
+];
+
+describe("GWO's loadout races", () => {
+  it("names MLA alone for the MLA-only loadouts, each a shipped loadout", () => {
+    assert.deepEqual(
+      gwoLoadoutIds.entries.map((entry) => entry.id),
+      mlaOnlyLoadouts
+    );
+    for (const entry of gwoLoadoutIds.entries) {
+      assert.deepEqual(entry.races, ["mla"], entry.id);
+      assert.ok(gwoLoadoutIds.all.includes(entry.id), entry.id);
+    }
+  });
+});
 
 describe("cardsOfferedCount", () => {
   function inventory(opts) {
@@ -876,31 +903,23 @@ describe("races", () => {
     );
   });
 
-  it("withholds the MLA-only cards from a race, the commander upgrades excepted", () => {
-    for (const id of helpers.MLA_ONLY) {
-      assert.equal(helpers.mlaOnlyCard(id), true, id);
-      assert.equal(
-        helpers.raceCanDeal(races, inventoryOf("fixture"), id, []),
-        false
-      );
-      assert.equal(
-        helpers.raceCanDeal(races, inventoryOf("mla"), id, []),
-        true
-      );
-    }
-    assert.deepEqual(helpers.MLA_ONLY, [
-      "gwaio_start_paratrooper",
-      "gwaio_start_nomad",
-      "gwaio_protocol_killswitch",
-      "gwaio_enable_planetaryradar",
-      "gwaio_start_rapid",
-      "nem_start_nuke",
-      "nem_start_planetary",
-      "nem_start_deepspace",
-      "nem_start_tower_rush",
-      "gwc_start_artillery",
-    ]);
+  it("withholds the _upgrade_ cards from a race, the commander upgrades excepted", () => {
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "gwaio_upgrade_ant",
+        []
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("mla"), "gwaio_upgrade_ant", []),
+      true
+    );
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
+    assert.equal(helpers.mlaOnlyCard("gwaio_start_paratrooper"), false);
+    assert.equal(helpers.mlaOnlyCard("gwaio_protocol_killswitch"), false);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
     assert.equal(
       helpers.mlaOnlyCard("gwaio_upgrade_ubercannon_structure"),
@@ -918,17 +937,46 @@ describe("races", () => {
     );
   });
 
+  it("withholds the shipped MLA-only tech cards from a race through their entries", () => {
+    const shipped = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"
+    ).cards;
+    for (const id of [
+      "gwaio_protocol_killswitch",
+      "gwaio_enable_planetaryradar",
+    ]) {
+      const entry = shipped.find((card) => card.id === id);
+      assert.deepEqual(entry.races, ["mla"], id);
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("fixture"), id, shipped),
+        false,
+        id
+      );
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("mla"), id, shipped),
+        true,
+        id
+      );
+    }
+  });
+
   it("raceLocksLoadout locks nothing for MLA or an unknown race without a races list", () => {
-    for (const id of helpers.MLA_ONLY.concat(["gwaio_upgrade_ant"])) {
+    for (const id of mlaOnlyLoadouts.concat(["gwaio_upgrade_ant"])) {
       assert.equal(helpers.raceLocksLoadout("mla", id), false, id);
       assert.equal(helpers.raceLocksLoadout(undefined, id), false, id);
       assert.equal(helpers.raceLocksLoadout("", id), false, id);
     }
   });
 
-  it("raceLocksLoadout locks exactly the MLA-only cards for a race", () => {
-    for (const id of helpers.MLA_ONLY) {
+  it("raceLocksLoadout locks GWO's MLA-only loadouts for a race, with or without a scene's entries", () => {
+    const sceneEntries = mlaOnlyLoadouts.map((id) => ({ id }));
+    for (const id of mlaOnlyLoadouts) {
       assert.equal(helpers.raceLocksLoadout("fixture", id), true, id);
+      assert.equal(
+        helpers.raceLocksLoadout("fixture", id, sceneEntries),
+        true,
+        id
+      );
     }
     assert.equal(
       helpers.raceLocksLoadout("fixture", "gwaio_upgrade_ant"),

@@ -557,6 +557,8 @@ describe("a war whose save never finishes", () => {
       war.errors[war.errors.length - 1],
       "Failed to generate valid war: error"
     );
+    assert.deepEqual(war.logged, []);
+    assert.equal(war.settingsSaved, 1);
   };
 
   it("waits for the save before opening the war", async (t) => {
@@ -570,6 +572,7 @@ describe("a war whose save never finishes", () => {
     assert.equal(war.generatingWar(), true);
     assert.equal(war.model.activeGameId(), undefined);
     assert.equal(war.window.location.href, GW_START);
+    assert.deepEqual(war.logged, []);
     assert.deepEqual(war.errors, []);
   });
 
@@ -640,6 +643,7 @@ describe("a war whose save never finishes", () => {
       war.errors[0],
       /^War could not be saved and opened: Error: no scene/
     );
+    assert.deepEqual(war.logged, []);
     assert.equal(war.generatingWar(), false);
     assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
     assert.equal(war.window.location.href, GW_START);
