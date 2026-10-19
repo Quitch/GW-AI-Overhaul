@@ -30,6 +30,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
       ],
       function (
         GW,
@@ -44,7 +45,8 @@
         gwoPromise,
         coopAiRoster,
         refereeCoop,
-        raceCells
+        raceCells,
+        launchHires
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -59,6 +61,10 @@
             latestHire = null;
             treeCache = null;
             firstHireClientKeys = null;
+            // Stock's own test for a co-op host's two hires.
+            launchHires.begin(
+              model.gwCampaignActive() && model.isCampaignHost() ? 2 : 1
+            );
           }
         });
 
@@ -178,7 +184,7 @@
           // hire never depends on scene-load ordering. It resolves at once
           // without GW Server Mods, and rejects if the installed races cannot
           // be read.
-          return gwoPromise
+          var hire = gwoPromise
             .steps(raceMods.installedRaces(), [
               // The co-op AI players this battle fields, and the clients that
               // number their tags and the viewer trees, fixed for the hire. A
@@ -249,6 +255,8 @@
               model.launchingFight(false);
               return $.Deferred().reject(error).promise();
             });
+          launchHires.track(hire);
+          return hire;
         };
       },
       // Stock's referee stays hired, so battles are fought without GWO's

@@ -4,7 +4,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
-], function (GW, gwoPromise) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
+], function (GW, gwoPromise, launchHires) {
   var timeLimitMs = 30000;
   var manifest = GW.manifest;
   var stockSave = manifest.saveGame;
@@ -58,7 +59,8 @@ define([
       // inputs positionally, so a rejection throws there and leaves
       // launchingFight set. Its save is the one made in the same synchronous
       // step as launchingFight turns true, however a mod defers stock fight.
-      // That save is never settled; its launch is called off instead.
+      // That save is never settled; its launch is called off instead, once
+      // the launch's hires have settled, so a new Fight cannot overlap them.
       model.launchingFight.subscribe(function (launching) {
         if (launching) {
           launches += 1;
@@ -84,9 +86,21 @@ define([
             return;
           }
           report(error);
-          if (call.launch === launches && model.launchingFight()) {
-            model.launchingFight(false);
+          var current = function () {
+            return call.launch === launches && model.launchingFight();
+          };
+          if (!current()) {
+            return;
           }
+          launchHires.settled().then(function () {
+            try {
+              if (current()) {
+                model.launchingFight(false);
+              }
+            } catch (e) {
+              report(e);
+            }
+          });
         });
       };
     },
