@@ -138,17 +138,18 @@
             deferred.resolve();
           };
 
+          var mountWithKept = function (kept) {
+            return api.file.mountMemoryFiles(
+              _.assign({}, cookedFiles, gameFilePaths.cookFiles(kept))
+            );
+          };
+          var mountBiomes = function () {
+            gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
+          };
+
           var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
-            keepUntagged.then(function (kept) {
-              api.file
-                .mountMemoryFiles(
-                  _.assign({}, cookedFiles, gameFilePaths.cookFiles(kept))
-                )
-                .then(function () {
-                  gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
-                });
-            });
+            keepUntagged.then(mountWithKept).then(mountBiomes);
           };
 
           // See architecture.md, "Battle launch, end to end".

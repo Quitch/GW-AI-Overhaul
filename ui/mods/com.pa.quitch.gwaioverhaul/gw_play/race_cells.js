@@ -49,28 +49,29 @@ define([
     });
   };
 
+  var keptUnitList = function () {
+    return readUnitList(UNTAGGED_LIST).then(
+      function (kept) {
+        if (isTagged(kept)) {
+          throw new Error(UNTAGGED_LIST + " is tagged");
+        }
+        return kept;
+      },
+      function (error) {
+        throw new Error(
+          "the unit list is tagged, and the battle kept no untagged copy (" +
+            gameFilePaths.describeError(error) +
+            ")"
+        );
+      }
+    );
+  };
+
   // From a battle on, the list is the referee's, every unit tagged, and the
   // untagged one is the copy the referee mounted beside it.
   var loadUnitList = function () {
     return readUnitList("/pa/units/unit_list.json").then(function (list) {
-      if (!isTagged(list)) {
-        return list;
-      }
-      return readUnitList(UNTAGGED_LIST).then(
-        function (kept) {
-          if (isTagged(kept)) {
-            throw new Error(UNTAGGED_LIST + " is tagged");
-          }
-          return kept;
-        },
-        function (error) {
-          throw new Error(
-            "the unit list is tagged, and the battle kept no untagged copy (" +
-              gameFilePaths.describeError(error) +
-              ")"
-          );
-        }
-      );
+      return isTagged(list) ? keptUnitList() : list;
     });
   };
 
