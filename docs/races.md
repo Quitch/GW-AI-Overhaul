@@ -238,7 +238,8 @@ compared case-blind (`ids.normalize`). The list takes the place of the
 `_upgrade_` rule for that loadout, so it can make a loadout MLA-only
 (`races: ["mla"]`), open an `_upgrade_` loadout to a race, or keep a loadout to
 one race. An empty list locks the loadout for every race. An entry without
-`races` keeps the `_upgrade_` rule. A player with no race mod is MLA to every
+`races` keeps GWO's own list for that loadout, if `shared/loadout_ids.js` has
+one, or else the `_upgrade_` rule. A player with no race mod is MLA to every
 caller (`races.raceOf`, and the pickers' `"mla"` default), so a list without
 `mla` locks the loadout for them. Only a call with no race at all locks
 nothing.

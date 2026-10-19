@@ -18,19 +18,21 @@ define([
   // gwoStartingCards and gwoNewStartCards entries), or else GWO's own in
   // loadout_ids.js, names, normalised, or undefined when no entry names any.
   var listedLoadoutRaces = function (cardId, loadoutEntries) {
-    var entries = (loadoutEntries || []).concat(gwoLoadoutIds.entries);
-    var entry = _.find(entries, function (candidate) {
+    var listsRaces = function (candidate) {
       return (
         !!candidate && candidate.id === cardId && _.isArray(candidate.races)
       );
-    });
+    };
+    var entry =
+      _.find(loadoutEntries || [], listsRaces) ||
+      _.find(gwoLoadoutIds.entries, listsRaces);
     return entry ? _.map(entry.races, ids.normalize) : undefined;
   };
 
   // Whether the loadout scenes show this loadout dimmed and unselectable for
   // `race`. No race at all locks nothing; every caller passes "mla" for a
   // player without a race mod. A loadout entry's `races` names the races
-  // outright, in place of the MLA-only rule; otherwise MLA locks nothing. See
+  // outright, in place of the `_upgrade_` rule; otherwise MLA locks nothing. See
   // races.md, "Which races a loadout reaches".
   var raceLocksLoadout = function (race, cardId, loadoutEntries) {
     if (!race) {
@@ -336,7 +338,7 @@ define([
       var entry = entryFor(cardsToUnits, cardId);
       var units = entry ? entry.units : undefined;
       // An entry's `races` names the races outright, in place of the
-      // MLA-only rule. See tech-cards.md, "Which races a card reaches".
+      // `_upgrade_` rule. See tech-cards.md, "Which races a card reaches".
       if (entry && _.isArray(entry.races)) {
         if (!_.includes(_.map(entry.races, races.normalizeId), race)) {
           return false;

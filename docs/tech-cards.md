@@ -270,7 +270,9 @@ did nothing at all for a player without the advanced factory. Only its
 
 A race player narrows this further. The deal withholds a card whose `card_units.js`
 entry names no unit that stands for a unit of the race. It also withholds every
-`_upgrade_` card but the commander's (`cards_deal_helpers.raceCanDeal`). Cards
+`_upgrade_` card but the commander's, and every card whose entry's `races` list
+leaves the race out, such as Killswitch and Planetary Radar
+(`cards_deal_helpers.raceCanDeal`). Cards
 keep naming vanilla units, and the unit's capability cell and job decide. An entry's `races` list
 takes the place of the `_upgrade_` rule for its card
 (["Which races a card reaches"](#which-races-a-card-reaches)).
