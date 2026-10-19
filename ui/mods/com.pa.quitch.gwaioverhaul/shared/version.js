@@ -3,5 +3,5 @@
 // carry the same number, and none can be derived from another at runtime - bump
 // all three together when cutting a release. See docs/releasing.md.
 define(function () {
-  return "7.7.0";
+  return "7.8.0";
 });

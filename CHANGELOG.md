@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v7.8.0 - 2026-10-19
 
 ### Added
 
