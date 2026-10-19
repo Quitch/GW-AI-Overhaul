@@ -8032,6 +8032,12 @@
           "/pa/units/land/t_bot_fac_adv/t_bot_fac_adv_build_arm.json": {
             "base_spec": "/pa/tools/factory_build_arm_adv/factory_build_arm_adv.json"
           },
+          "/pa/units/land/t_chimera/chimera_tool_torp.json": {
+            "base_spec": "/pa/tools/base_laser_turret/base_laser_turret.json",
+            "ammo_id": [
+              "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json"
+            ]
+          },
           "/pa/units/land/t_chimera/t_chimera.json": {
             "display_name": "Chimera",
             "unit_types": [
@@ -8046,14 +8052,23 @@
               "UNITTYPE_Custom6"
             ],
             "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
-            "tools": ["/pa/units/land/t_chimera/t_chimera_weapon.json"]
+            "tools": [
+              "/pa/units/land/t_chimera/t_chimera_weapon.json",
+              "/pa/units/land/t_chimera/t_chimera_weapon.json",
+              "/pa/units/land/t_chimera/t_chimera_weapon.json",
+              "/pa/units/land/t_chimera/t_chimera_weapon.json",
+              "/pa/units/land/t_chimera/chimera_tool_torp.json",
+              "/pa/units/land/t_chimera/chimera_tool_torp.json",
+              "/pa/units/land/t_chimera/chimera_tool_torp.json",
+              "/pa/units/land/t_chimera/chimera_tool_torp.json"
+            ]
           },
           "/pa/units/land/t_chimera/t_chimera_ammo.json": {
             "base_spec": "/pa/ammo/base_beam/base_beam.json"
           },
           "/pa/units/land/t_chimera/t_chimera_weapon.json": {
             "base_spec": "/pa/tools/base_laser_turret/base_laser_turret.json",
-            "ammo_id": "/pa/units/land/t_chimera/t_chimera_ammo.json"
+            "ammo_id": ["/pa/units/land/t_chimera/t_chimera_ammo.json"]
           },
           "/pa/units/land/t_metal_extractor_0/t_metal_extractor_0.json": {
             "display_name": "Basic Metal Extractor",

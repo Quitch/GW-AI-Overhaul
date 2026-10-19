@@ -33,8 +33,9 @@ define([
     model.gwoNewStartCards
   );
   // A loadout built for MLA alone is shown to a race player locked, never
-  // hidden. The race is gw_start's setting for the host and the picker's
-  // observable for a co-op viewer; neither scene has the other's. See races.md.
+  // hidden. The race is gw_start's setting for the host and the race a co-op
+  // viewer plays, its pick or the host's, for the viewer; neither scene has the
+  // other's. See races.md.
   var raceInPlay = function () {
     var settings = model.gwoDifficultySettings;
 
@@ -42,8 +43,8 @@ define([
       return settings.playerRace();
     }
 
-    return _.isFunction(model.gwoViewerRace)
-      ? model.gwoViewerRace()
+    return _.isFunction(model.gwoViewerPlayerRace)
+      ? model.gwoViewerPlayerRace()
       : undefined;
   };
 
@@ -75,7 +76,11 @@ define([
         gwoLoadoutBanks.hasStartCard(cardData)
       ) {
         var card = model.makeKnown(cardData);
-        return helpers.raceLocksLoadout(race, cardData.id)
+        return helpers.raceLocksLoadout(
+          race,
+          cardData.id,
+          helpers.loadoutEntries(model)
+        )
           ? lockForRace(card)
           : card;
       } else {

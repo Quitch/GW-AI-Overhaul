@@ -11,8 +11,7 @@ race needs something new.
    `shared/races_shipped.js`. Its fields are `id`, `name`, `serverMods` (every
    identifier that counts as the mod active, matched exactly), `unitTypeBit`
    (`Custom<N>`), `commanderTypes`, `engineKeys` (see "Conventions the code
-   relies on" below), `commanders`, `commanderArtHue`, `playerIcon`, `ai`,
-   `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
+   relies on" below), `commanders`, `commanderArtHue`, `colourFaction`, `playerIcon`, `ai`, `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
    builds with an MLA builder it fields, although a race unit shares their cell
    (Exiles' teleporter and basic metal extractor; [`races.md`](races.md),
    "Units a race builds itself").
@@ -101,10 +100,10 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
    every harvested unit is in the table, that the mod ships every path and
-   every layer entry (read from its zip or `server_mods/` build through
-   `modFiles`, and skipped without either), and the cells: a held vanilla
-   unit brings the add-on units of its cell, an orphan arrives through a
-   builder, an exclusive arrives only through its gantry.
+   every layer entry (read from its zip through `modFiles`, and skipped
+   without it), and the cells: a held vanilla unit brings the add-on units
+   of its cell, an orphan arrives through a builder, an exclusive arrives
+   only through its gantry.
 6. **Validator.** Run `npm run validate:race-trees` with the zip in
    `download/`. Its MLA pass and descriptor check cover the new layer.
 7. **Docs**: a subsection in `races.md`, a CHANGELOG line, and any upstream
@@ -173,8 +172,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   `stockOnly: true`, which a card mod sets on one change, stays on its unit
   too, but it remakes nothing: the other mods on that unit still travel.
 - **Cards never change.** GWO's own cards name vanilla units. The race's units
-  follow at launch. A card that cannot work by cell goes in
-  `cards_deal_helpers.MLA_ONLY`, with a comment that says why. Every
+  follow at launch. A card that cannot work by cell names MLA alone,
+  `races: ["mla"]`, with a comment that says why: on its `card_units.js`
+  entry, or for a loadout on its `shared/loadout_ids.js` entry. Every
   `_upgrade_` card is MLA-only except the commander's, unless its
   `card_units.js` entry names race or add-on units: such a card is written for
   that race and dealt to whoever fields one. An entry's `races` list overrides
@@ -192,6 +192,10 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
 - **Commander art hue.** `commanderArtHue` is the hue that the preview art
   ships in (MLA 210 blue, Legion 0 red). The war setup's Commander picker and
   the co-op loadout scene both rotate from there to the faction colour.
+- **Loadout card colour.** `colourFaction` is the GW faction (0-3) whose
+  colour the race's `playerIcon` takes on loadout cards. A race no faction
+  colour suits gives `raceColour: [r, g, b]` instead. See
+  [`races.md`](races.md), "Loadout card race icons".
 - **Player icon** is a 16px fill/outline pair at `coui://ui/mods/<mod>/img/…`.
   Legion and Bugs ship theirs only in their client mods, which the game mounts
   itself. Exiles ships its pair in both its client and its server mod, and GW

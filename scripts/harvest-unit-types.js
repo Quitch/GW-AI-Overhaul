@@ -3,10 +3,9 @@
 // Writes test/fixtures/unit_types.json: every unit the merged unit list names
 // with its effective unit_types and buildable_types (base_spec chain
 // resolved), from the PA install (pa_ex1 over pa) and the race and add-on
-// server mods found on disk - a folder under server_mods/ or a zip under
-// download/, later roots shadowing earlier ones as the runtime virtual
-// filesystem does. CI has none of it, so the fixture is committed - re-run
-// after a PA, race or add-on patch.
+// server mods' zips under download/, later roots shadowing earlier ones as
+// the runtime virtual filesystem does. CI has none of it, so the fixture is
+// committed - re-run after a PA, race or add-on patch.
 // See testing.md.
 
 const fs = require("node:fs");
@@ -15,6 +14,7 @@ const { mediaDir } = require("./lib/pa-install.js");
 const { folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { shippedServerMods } = require("./lib/server-mods.js");
+const { writeText } = require("./lib/write-text.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
@@ -25,20 +25,10 @@ const MEDIA = mediaDir();
 
 const SERVER_MODS = shippedServerMods();
 
-// A mod's folder build beside its zip wins (modRoots). GWO_RACE_ROOTS adds mod
-// folders, split on path.delimiter, each read through its pa/ folder after
-// every other root.
 const ROOTS = [
   folderRoot(path.join(MEDIA, "pa")),
   folderRoot(path.join(MEDIA, "pa_ex1")),
-]
-  .concat(modRoots(SERVER_MODS))
-  .concat(
-    (process.env.GWO_RACE_ROOTS || "")
-      .split(path.delimiter)
-      .filter(Boolean)
-      .map((root) => folderRoot(path.join(root, "pa")))
-  );
+].concat(modRoots(SERVER_MODS));
 
 function readJson(specPath) {
   // "/pa/units/x.json" -> "units/x.json", last root that has it wins.
@@ -105,7 +95,7 @@ function main() {
     }
   }
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  fs.writeFileSync(OUT, JSON.stringify({ units, buildable }, null, 2) + "\n");
+  writeText(OUT, JSON.stringify({ units, buildable }, null, 2) + "\n");
   console.log(
     "harvest-unit-types: " +
       Object.keys(units).length +

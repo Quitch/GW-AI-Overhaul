@@ -6,7 +6,8 @@
 // scripts/i18n/out/missing.<L>.<n>.json in --chunk sized pieces, replacing the
 // locale's earlier ones; --all writes every key instead, with PA's current
 // text as `existing`, for reviewing shipped translations; --report lists
-// entries in GWO's own files that override a PA entry. See
+// entries in GWO's own files that override a PA entry, and exits 1 if any
+// do. See
 // docs/translations.md.
 
 const fs = require("node:fs");
@@ -130,6 +131,9 @@ function reportOverrides(locale, line, pa) {
     Object.hasOwn(pa, key)
   );
   console.log(line + ", " + overrides.length + " overrides in GWO's file");
+  if (overrides.length) {
+    process.exitCode = 1;
+  }
   for (const key of overrides) {
     console.log(
       "    " +

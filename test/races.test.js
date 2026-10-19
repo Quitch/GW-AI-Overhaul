@@ -544,6 +544,104 @@ describe("commanderArtHue", () => {
   });
 });
 
+describe("raceBadge", () => {
+  const factions = [
+    { color: [[0, 176, 255]] },
+    { color: [[145, 87, 199]] },
+    { color: [[126, 226, 101]] },
+    { color: [[236, 34, 35]] },
+  ];
+
+  it("gives MLA the stock player icon in Legonis Machina blue", () => {
+    assert.deepEqual(races.raceBadge(races.byId("mla"), factions), {
+      id: "mla",
+      name: "!LOC:MLA",
+      fill: races.STOCK_PLAYER_ICON.fill,
+      outline: races.STOCK_PLAYER_ICON.outline,
+      colour: "rgb(0,176,255)",
+    });
+    assert.deepEqual(
+      races.raceBadge(undefined, factions),
+      races.raceBadge(races.byId("mla"), factions)
+    );
+  });
+
+  it("reads each shipped race's player icon and faction colour", () => {
+    const colours = {
+      legion: "rgb(236,34,35)",
+      bugs: "rgb(126,226,101)",
+      exiles: "rgb(145,87,199)",
+    };
+    assert.deepEqual(
+      shipped.map((descriptor) => descriptor.id).sort(),
+      Object.keys(colours).sort()
+    );
+    for (const descriptor of shipped) {
+      const badge = races.raceBadge(descriptor, factions);
+      assert.equal(badge.colour, colours[descriptor.id], descriptor.id);
+      assert.equal(badge.fill, descriptor.playerIcon.fill, descriptor.id);
+      assert.equal(badge.outline, descriptor.playerIcon.outline, descriptor.id);
+    }
+  });
+
+  it("falls back to raceColour, then grey, and to the stock player icon", () => {
+    const own = races.raceBadge(
+      { id: "x", name: "X", raceColour: [10.4, 20, 30] },
+      factions
+    );
+    assert.equal(own.colour, "rgb(10,20,30)");
+    assert.equal(own.fill, races.STOCK_PLAYER_ICON.fill);
+
+    const bare = races.raceBadge({ id: "x", name: "X" }, factions);
+    assert.equal(bare.colour, "rgb(160,160,160)");
+    assert.equal(bare.outline, races.STOCK_PLAYER_ICON.outline);
+  });
+
+  it("takes the stock pair whole when the race's pair is incomplete", () => {
+    for (const playerIcon of [
+      { fill: "coui://x/fill.png" },
+      { fill: "coui://x/fill.png", outline: "" },
+      { fill: 7, outline: "coui://x/outline.png" },
+      "coui://x/fill.png",
+    ]) {
+      const badge = races.raceBadge({ id: "x", playerIcon }, factions);
+      assert.equal(badge.fill, races.STOCK_PLAYER_ICON.fill);
+      assert.equal(badge.outline, races.STOCK_PLAYER_ICON.outline);
+    }
+  });
+
+  it("ignores a faction index or colour it cannot read", () => {
+    for (const raceColour of [
+      [Number.NaN, 0, 0],
+      [Infinity, 0, 0],
+      [1, 2],
+    ]) {
+      assert.equal(
+        races.raceBadge({ id: "x", raceColour }, factions).colour,
+        "rgb(160,160,160)",
+        String(raceColour)
+      );
+    }
+    for (const colourFaction of [9, -1, "1", null]) {
+      assert.equal(
+        races.raceBadge({ id: "x", colourFaction }, factions).colour,
+        "rgb(160,160,160)",
+        String(colourFaction)
+      );
+    }
+    assert.equal(
+      races.raceBadge({ id: "x", colourFaction: 0 }, [{ color: [["a"]] }])
+        .colour,
+      "rgb(160,160,160)"
+    );
+    assert.equal(
+      races.raceBadge({ id: "x", colourFaction: 0, raceColour: [1, 2, 3] })
+        .colour,
+      "rgb(1,2,3)"
+    );
+  });
+});
+
 describe("commanderFor", () => {
   it("draws one of the race's commanders, and nothing for MLA", () => {
     assert.equal(

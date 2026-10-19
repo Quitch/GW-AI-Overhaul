@@ -16,6 +16,7 @@ const {
   extractKeys,
   sortedKeys,
 } = require("../lib/loc-keys.js");
+const { writeText } = require("../lib/write-text.js");
 
 const CATALOG = path.join(TRANSLATIONS_DIR, CATALOG_LOCALE + ".json");
 
@@ -167,7 +168,7 @@ function main(argv) {
   const stale = Object.keys(existing).filter((key) => !keys.has(key));
 
   fs.mkdirSync(TRANSLATIONS_DIR, { recursive: true });
-  fs.writeFileSync(CATALOG, JSON.stringify(out, null, 2) + "\n");
+  writeText(CATALOG, JSON.stringify(out, null, 2) + "\n");
 
   console.log(
     "i18n:catalog: " +

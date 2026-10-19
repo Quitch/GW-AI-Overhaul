@@ -23,6 +23,14 @@ define([
   var VANILLA_UNIT_TYPE = "UNITTYPE_" + VANILLA_BIT;
   // The hue MLA's commander preview art ships in (blue team paint).
   var MLA_ART_HUE = 210;
+  // The base game's player-list icon, which MLA and any race without its own
+  // pair shows.
+  var STOCK_PLAYER_ICON = {
+    fill: "coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png",
+    outline:
+      "coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png",
+  };
+  var NEUTRAL_COLOUR = [160, 160, 160];
 
   var registry = {};
   var order = [];
@@ -106,6 +114,7 @@ define([
     name: "!LOC:MLA",
     serverMods: [],
     unitTypeBit: VANILLA_BIT,
+    colourFaction: 0,
     commanderTypes: {
       unitType: VANILLA_UNIT_TYPE,
       buildable: "CmdBuild & Custom58",
@@ -644,6 +653,52 @@ define([
     return _.isNumber(hue) ? hue : MLA_ART_HUE;
   };
 
+  var isRgb = function (value) {
+    return (
+      _.isArray(value) &&
+      value.length >= 3 &&
+      _.every(value.slice(0, 3), _.isFinite)
+    );
+  };
+
+  var factionColour = function (factions, index) {
+    var faction = _.isNumber(index) && factions && factions[index];
+    var colour = faction && _.isArray(faction.color) && faction.color[0];
+
+    return isRgb(colour) ? colour : undefined;
+  };
+
+  var isIconPair = function (icon) {
+    return (
+      !!icon &&
+      _.isString(icon.fill) &&
+      icon.fill.length > 0 &&
+      _.isString(icon.outline) &&
+      icon.outline.length > 0
+    );
+  };
+
+  // A loadout card's icon for the race: its player-list icon in its GW
+  // faction's colour. `factions` is shared/gw_factions. See races.md,
+  // "Loadout card race icons".
+  var raceBadge = function (race, factions) {
+    var descriptor = race || MLA;
+    var rgb =
+      factionColour(factions, descriptor.colourFaction) ||
+      (isRgb(descriptor.raceColour) ? descriptor.raceColour : NEUTRAL_COLOUR);
+    var icon = isIconPair(descriptor.playerIcon)
+      ? descriptor.playerIcon
+      : STOCK_PLAYER_ICON;
+
+    return {
+      id: descriptor.id,
+      name: descriptor.name,
+      fill: icon.fill,
+      outline: icon.outline,
+      colour: "rgb(" + _.map(rgb.slice(0, 3), Math.round).join(",") + ")",
+    };
+  };
+
   var isRaceCommander = function (raceId, commanderPath) {
     var race = byId(raceId);
 
@@ -781,6 +836,8 @@ define([
     commanderModsFor: commanderModsFor,
     isRaceCommander: isRaceCommander,
     commanderArtHue: commanderArtHue,
+    STOCK_PLAYER_ICON: STOCK_PLAYER_ICON,
+    raceBadge: raceBadge,
     commanderFor: commanderFor,
     engineKeysFor: engineKeysFor,
     stockUnitsFor: stockUnitsFor,

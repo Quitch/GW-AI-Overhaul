@@ -200,7 +200,8 @@ too. The one read it skips instead is a card's `load` file (see
 [`ai-pipeline.md`](ai-pipeline.md)). The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
-`launchingFight`, which closes the panel.
+`launchingFight`, which closes the panel. A co-op host's first hire is the
+exception: stock clears it there (see "Saving the war").
 
 The per-player tech referee, `gw_play/per_player_tech_referee.js`, is waited on the
 same way: stock calls its `apply` with no fail handler. But there stock aborts
@@ -362,19 +363,67 @@ Know the shape before you add a fix to it:
   See galaxy.md, "AI tech". There is no repair of old wars' Cluster commander
   mods.
 
-`gw_play/save.js` is the shared save wrapper that this file and the card code
-use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
-for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own. A viewer's save always resolves.
+## Saving the war
+
+`gw_play/save.js` is the shared save wrapper that the repairs above and the card
+code use. It drives `model.driveAccessInProgress` around the write, and it
+**no-ops for campaign viewers**. Only the host owns the campaign, so a viewer
+that saved would write a war it does not own. A viewer's save always resolves.
 
 Stock's `GW.manifest.saveGame` never rejects: when the write fails, its
 IndexedDB error handler calls `result.fail(event)`, which only adds a callback,
-so the save stays pending and the Saving indicator stays on. `save.js` therefore
-fails a host's save that has not landed in 30 seconds, and drops a result that
-lands later. Real saves take under a second. Only the latest save clears the
+so the save stays pending and the Saving indicator stays on.
+`gw_play/save_limit.js` therefore fails a save that has not landed in 30
+seconds, and drops a result that lands later. Real saves take under a second.
+`save.js` saves through it. In `save.js`, only the latest save clears the
 indicator, so an earlier save that settles or times out does not clear it while
-a later one is still writing. Stock's own saves in `gw_play.js` drive the same
-indicator and have no time limit.
+a later one is still writing.
+
+`gw_play/save_limit_install.js` also puts the limit on stock's own saves in
+`gw_play.js`, by replacing `GW.manifest.saveGame`, which stock reads at every
+call. The replacement returns a jQuery promise, because stock passes saves to
+`$.when`. Stock's callers handle a rejection: a move and a tech delete clear the
+indicator, and a lost war opens the exit gate to `gw_war_over`. The exception is
+the save in stock `fight`, whose `$.when(...).always` reads its inputs by
+position. A rejection there throws on the missing script text and leaves
+`launchingFight` true. Stock sets `launchingFight` in the same synchronous step
+as that save, so the save made in the step where `launchingFight` turns true is
+the launch's, however a mod defers stock `fight`, as GW Server Mods does. When
+that save times out, it is logged and never settled, and its launch is called
+off: `launchingFight` is cleared, which closes the launch panel and lets the
+player press Fight again. Every other save, such as a move's still writing
+when Fight is pressed, rejects as usual.
+
+The call-off waits for the launch's referee hires to settle, so a second Fight
+cannot hire while the first launch still does. On a co-op host, two hires'
+client-mod restriction windows would otherwise overlap, and one launch's
+restore could remount the full mod set under the other's shared referee.
+Stock's `hireRefereesForLaunch` is private to `gw_play.js`, so
+`gw_play/launch_hires.js` infers its end from the hires `referee.js` reports:
+one hire, or two on a co-op host, the same test stock uses, and no other hire
+still running. The second starts only once the first has resolved and stock
+has remounted the client mods. A failed hire ends the launch. After a co-op
+host's first hire, failed or not, stock restores the client mods, and the
+launch ends only once that remount does, so `launch_hires.js` waits for
+Community Mods' `busy2` to go false. Stock starts that remount after the
+hire's handlers have run, so `busy2` is read a task later. `busy2` starts
+true, and in `gw_play` only the end of a remount sets it false, so the wait counts only if
+stock's restriction remount had set it false by the failure. Otherwise no
+remount ran, and none follows. `busy2` goes false
+before GW Server Mods' own remount of the server mods ends, which is the one
+part of the restore a new Fight can still overlap. The call-off clears
+`launchingFight` only if its launch is still the current one. Without GWO's
+referee no launch is tracked, and the call-off is immediate.
+
+When a hire fails, `referee.js` clears `launchingFight`, except after a co-op
+host's first hire. `launch_hires.js` tells which hire that is from the hire
+count it fixed when the launch began, so a co-op connection that drops during
+the hire does not change the answer, as it does not change stock's. Stock
+clears it there itself, after its restore
+remount ("failed to hire GW referee for launch"), because the hire's failure
+resolves `hireRefereesForLaunch` with no shared referee. Clearing it at once
+would let a new Fight start while that remount runs, and stock's later clear
+would then end the new launch's `launchingFight`.
 
 `gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
 waits for the deal, the star-card refresh, and any co-op AI pass so the war is

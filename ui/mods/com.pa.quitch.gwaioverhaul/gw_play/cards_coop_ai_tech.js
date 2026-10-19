@@ -488,7 +488,13 @@ define([
             starting: startingIds,
             locked: lockedIds,
             unlocked: unlocked,
-            raceLocks: _.partial(helpers.raceLocksLoadout, race),
+            raceLocks: function (id) {
+              return helpers.raceLocksLoadout(
+                race,
+                id,
+                helpers.loadoutEntries(model)
+              );
+            },
             aiCannotUse: loadoutsAiCannotUse(),
           }),
           baseline: {

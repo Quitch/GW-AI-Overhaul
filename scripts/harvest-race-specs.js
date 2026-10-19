@@ -4,8 +4,8 @@
 // scripts/lib/race-table-inputs.js lists, the mod's unit list and every spec
 // its table is built from - the listed units the mod ships, and what their
 // base_spec, tools, ammo and death weapons reach - trimmed to the fields the
-// generator reads. Specs come from the table's server mods (a folder under
-// server_mods/ or a zip under download/, the first mod listed winning), then
+// generator reads. Specs come from the table's server mods (each one's zip
+// under download/, the first mod listed winning), then
 // the PA install (pa_ex1 over pa) for a table that falls back to it. CI has
 // none of it, so the fixture is committed - re-run after a race or add-on
 // patch, then `npm run generate:race-tables`. See testing.md.
@@ -17,6 +17,7 @@ const { mediaDir } = require("./lib/pa-install.js");
 const { folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { TABLES } = require("./lib/race-table-inputs.js");
+const { writeText } = require("./lib/write-text.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
@@ -25,17 +26,15 @@ const OUT =
 
 const MEDIA = mediaDir();
 
-// Searched first to last, so a mod's roots run against mount order: a
-// folder build ahead of its zip. The base game's carry no `mod`.
+// Searched first to last. The base game's carry no `mod`.
 function tableRoots(table) {
-  let roots = [];
-  for (const mod of table.mods) {
-    const found = modRoots([mod]).reverse();
-    if (!found.length) {
-      throw new Error(mod + " is on disk neither as a zip nor as a folder");
+  const roots = table.mods.map((mod) => {
+    const [root] = modRoots([mod]);
+    if (!root) {
+      throw new Error(mod + " has no zip under download/");
     }
-    roots = roots.concat(found);
-  }
+    return root;
+  });
   if (table.baseGame) {
     roots.push(
       folderRoot(path.join(MEDIA, "pa_ex1")),
@@ -172,7 +171,7 @@ async function main() {
     JSON.stringify({ baseUnits: baseUnits(), tables }),
     { ...(await prettier.resolveConfig(OUT)), filepath: OUT }
   );
-  fs.writeFileSync(OUT, json);
+  writeText(OUT, json);
   console.log(
     "harvest-race-specs: " +
       TABLES.map((table) => table.id).join(", ") +

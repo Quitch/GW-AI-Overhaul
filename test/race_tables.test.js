@@ -25,6 +25,7 @@ const {
 const { TABLES } = require("../scripts/lib/race-table-inputs.js");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { modRoots } = require("../scripts/lib/mod-roots.js");
+const { writeZip } = require("../scripts/lib/zip-write.js");
 const fixture = require("./fixtures/race_specs.json");
 
 const read = (file) => fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
@@ -125,18 +126,19 @@ describe("the race spec harvester", () => {
     for (const dir of ["pa", "pa_ex1"]) {
       write(path.join(media, dir, "units", "unit_list.json"), '{"units":[]}');
     }
+    const zips = {};
     for (const table of TABLES) {
       for (const mod of table.mods) {
-        const pa = path.join(userData, "server_mods", mod, "pa");
-        write(path.join(pa, "units", "unit_list.json"), '{"units":[]}');
+        zips[mod] = { "pa/units/unit_list.json": '{"units":[]}' };
       }
     }
-    const own = path.join(userData, "server_mods", TABLES[0].mods[0], "pa");
-    write(
-      path.join(own, "units", "unit_list.json"),
-      JSON.stringify({ units: [broken] })
-    );
-    write(path.join(own, broken.replace(/^\/pa\//, "")), '{"display_name": }');
+    zips[TABLES[0].mods[0]] = {
+      "pa/units/unit_list.json": JSON.stringify({ units: [broken] }),
+      [broken.slice(1)]: '{"display_name": }',
+    };
+    for (const [mod, entries] of Object.entries(zips)) {
+      writeZip(path.join(userData, "download", mod + ".zip"), entries);
+    }
 
     const run = spawnSync(
       process.execPath,

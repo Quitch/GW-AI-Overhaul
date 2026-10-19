@@ -133,7 +133,7 @@ define([
       gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable, modLoadoutIds())
     );
     ids = _.reject(ids, function (id) {
-      return helpers.raceLocksLoadout(race, id);
+      return helpers.raceLocksLoadout(race, id, helpers.loadoutEntries(model));
     });
     return _.map(ids, function (id) {
       return { id: id };

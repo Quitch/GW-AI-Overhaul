@@ -13,6 +13,7 @@ define(function () {
     // The preview art ships in the blue team paint, a touch greener than
     // MLA's.
     commanderArtHue: 200,
+    colourFaction: 1,
     commanderTypes: {
       unitType: "UNITTYPE_Custom6",
       buildable: "CmdBuild & Custom6",
@@ -157,6 +158,7 @@ define(function () {
       catalyst: "/pa/units/addon/t_control_module/t_control_module.json",
       chimera: "/pa/units/land/t_chimera/t_chimera.json",
       chimeraAmmo: "/pa/units/land/t_chimera/t_chimera_ammo.json",
+      chimeraToolTorp: "/pa/units/land/t_chimera/chimera_tool_torp.json",
       chimeraWeapon: "/pa/units/land/t_chimera/t_chimera_weapon.json",
       chirp: "/pa/units/sea/drone_aa/chirp/chirp.json",
       chirpLAirBombAirDeath:

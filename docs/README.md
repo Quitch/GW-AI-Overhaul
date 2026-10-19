@@ -38,6 +38,7 @@ Then read the doc for the subsystem you are changing.
 | [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule             | `scripts/lib/loc-keys.js`    |
 | [live-testing.md](live-testing.md)         | Checking a change in a running game: clients, logs, and console recipes         | -                            |
 | [accessibility.md](accessibility.md)       | The WCAG 2.2 AAA audit, what the engine rules out, and the rules for new markup | `shared/tooltips.js`         |
+| [releasing.md](releasing.md)               | Where the version lives, and cutting a release with `npm run release`           | `scripts/release.js`         |
 
 ## Things that surprise people
 
@@ -110,7 +111,7 @@ Every one of those is a full-repo hard gate.
 Two more gates sit beside it. `build.yml` runs `test:coverage` and SonarCloud's
 quality gate on every push to `develop` and on every pull request. `release.yml`
 also checks the tag against `modinfo.json` and `CHANGELOG.md` (see
-CONTRIBUTING.md, "Releasing"). So a clean `verify` is a clean CI, but not yet a
+[releasing.md](releasing.md)). So a clean `verify` is a clean CI, but not yet a
 clean release.
 
 `validate:docs` (part of `validate`) checks the inventories these docs carry by

@@ -75,6 +75,16 @@
             );
           });
 
+          // Every race the host's war carries, with or without the picker;
+          // MLA alone under Cluster, as in gw_start.
+          var offerLoadoutRaces = function () {
+            model.gwoLoadoutRaces(
+              host.faction === gwoAI.CLUSTER_FACTION
+                ? [races.byId(races.MLA_ID)]
+                : host.races
+            );
+          };
+
           // Nothing at all unless the host asked for it: no control, no mount,
           // and gwo_loadouts.js goes on stamping the host's race. A viewer
           // shares the host's faction, and Cluster fields Angels and Colonels,
@@ -84,6 +94,7 @@
             host.races.length < 2 ||
             host.faction === gwoAI.CLUSTER_FACTION
           ) {
+            offerLoadoutRaces();
             return;
           }
 
@@ -109,6 +120,8 @@
           // commander read before its zip is mounted fails, and its tile shows
           // the spec path until a later render reads it again.
           raceMods.mountRoot().always(function () {
+            // After the mount: an Exiles icon may come from its server zip.
+            offerLoadoutRaces();
             var stock;
             var offerRaceCommanders = function () {
               var choices = pickerOptions.commanderChoices(

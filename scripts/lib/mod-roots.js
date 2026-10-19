@@ -1,7 +1,7 @@
 "use strict";
 
 // The roots the two harvests and validate-race-trees.js read `pa/` files
-// through: a folder, a mod's store zip, or a server mod's every copy on disk.
+// through: a folder, or a server mod's store zip.
 // Each root serves paths relative to its `pa/` folder. See testing.md.
 
 const fs = require("node:fs");
@@ -43,9 +43,9 @@ function zipRoot(file) {
   };
 }
 
-// Each mod's roots as the runtime mounts them, tagged with its identifier: the
-// store zip under download/, then any local build under server_mods/
-// shadowing it. A later root shadows an earlier one.
+// Each mod's store zip under download/, tagged with its identifier. A
+// server_mods/ build is never read: it can hold changes the mod has not
+// released.
 function modRoots(identifiers) {
   const userData = userDataDir();
   const roots = [];
@@ -53,12 +53,6 @@ function modRoots(identifiers) {
     const zip = path.join(userData, "download", id + ".zip");
     if (fs.existsSync(zip)) {
       roots.push(Object.assign(zipRoot(zip), { mod: id }));
-    }
-    for (const dir of [id, id + "-dev"]) {
-      const folder = path.join(userData, "server_mods", dir, "pa");
-      if (fs.existsSync(folder)) {
-        roots.push(Object.assign(folderRoot(folder), { mod: id }));
-      }
     }
   }
   return roots;

@@ -29,6 +29,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
       ],
       function (
         GW,
@@ -42,7 +44,9 @@
         gameFilePaths,
         gwoPromise,
         coopAiRoster,
-        refereeCoop
+        refereeCoop,
+        raceCells,
+        launchHires
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -57,6 +61,10 @@
             latestHire = null;
             treeCache = null;
             firstHireClientKeys = null;
+            // Stock's own test for a co-op host's two hires.
+            launchHires.begin(
+              model.gwCampaignActive() && model.isCampaignHost() ? 2 : 1
+            );
           }
         });
 
@@ -93,6 +101,16 @@
           var self = this;
 
           var deferred = $.Deferred();
+          // A battle needs no kept list, so its read never holds the mount.
+          var keepUntagged = gwoPromise
+            .within(raceCells.untaggedListFile(), 10000, "unit list read")
+            .then(null, function (error) {
+              console.error(
+                "gwoRaces: no untagged unit list kept: " +
+                  gameFilePaths.describeError(error)
+              );
+              return {};
+            });
 
           // GWO - shallow: keys are added below and no value is changed.
           var allFiles = _.assign({}, self.files());
@@ -126,11 +144,18 @@
             deferred.resolve();
           };
 
+          var mountWithKept = function (kept) {
+            return api.file.mountMemoryFiles(
+              _.assign({}, cookedFiles, gameFilePaths.cookFiles(kept))
+            );
+          };
+          var mountBiomes = function () {
+            gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
+          };
+
           var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
-            api.file.mountMemoryFiles(cookedFiles).then(function () {
-              gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
-            });
+            keepUntagged.then(mountWithKept).then(mountBiomes);
           };
 
           // See architecture.md, "Battle launch, end to end".
@@ -150,6 +175,7 @@
 
         GWReferee.hire = function (game) {
           var ref = new gwoReferee(game);
+          var stockEndsLaunch = launchHires.restoresAfterNext();
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
           latestHire = ref;
@@ -159,7 +185,7 @@
           // hire never depends on scene-load ordering. It resolves at once
           // without GW Server Mods, and rejects if the installed races cannot
           // be read.
-          return gwoPromise
+          var hire = gwoPromise
             .steps(raceMods.installedRaces(), [
               // The co-op AI players this battle fields, and the clients that
               // number their tags and the viewer trees, fixed for the hire. A
@@ -223,13 +249,19 @@
             .then(null, function (error) {
               // Stock waits on the hire with no fail handler, so a rejected
               // one would leave launchingFight set and the Fight button dead.
+              // After a co-op host's first hire, stock clears it itself once
+              // its restore remount ends. See architecture.md.
               console.error(
                 "Galactic War Overhaul (GWO): battle preparation failed: " +
                   gameFilePaths.describeError(error)
               );
-              model.launchingFight(false);
+              if (!stockEndsLaunch) {
+                model.launchingFight(false);
+              }
               return $.Deferred().reject(error).promise();
             });
+          launchHires.track(hire);
+          return hire;
         };
       },
       // Stock's referee stays hired, so battles are fought without GWO's

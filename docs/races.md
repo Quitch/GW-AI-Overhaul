@@ -39,6 +39,8 @@ A descriptor:
   stockUnits: [paths], // optional: stock units the race builds with an MLA builder
   commanders: [{ spec: "/pa/units/commanders/l_raptor/l_raptor.json" }, …],
   commanderArtHue: 0, // the paint the preview art ships in; MLA's is 210 (blue)
+  colourFaction: 3, // the GW faction whose colour the race's loadout icons take
+  raceColour: [r, g, b], // optional, in place of colourFaction
   playerIcon: { fill: "coui://…/icon_player_fill_l.png", outline: "…" },
   ai: {
     titans: { unitMaps: [paths], sources: [{ dir, match }] },
@@ -210,10 +212,12 @@ every race part of that pass once.
 A single-unit grant brings the race units its unit stands for:
 `gwc_start_subcdr`'s Ant brings Legion's Shank and Stoke, and not the Corsair,
 the Maul, or Second Wave's Lynx. What no job can carry is a hand-picked list.
-`cards_deal_helpers.MLA_ONLY` names the cards the deal never gives a race
-player, and each entry says why. `mlaOnlyCard` adds every `_upgrade_` card but
-the commander's (`ubercannon`, `subcommander`), since those are tuned to the
-MLA unit they name. A race gets its own.
+A card built on one names MLA alone, `races: ["mla"]`, with a comment that says
+why: a tech card on its `gw_play/card_units.js` entry, and a loadout on its
+entry in `shared/loadout_ids.js` ("Which races a loadout reaches" below).
+`cards_deal_helpers.mlaOnlyCard` also withholds every `_upgrade_` card but the
+commander's (`ubercannon`, `subcommander`), since those are tuned to the MLA
+unit they name. A race gets its own.
 
 The two loadout-picking scenes (`gw_start` and the co-op per-player loadout)
 still show those loadouts, in their usual place. `shared/loadouts.js` marks
@@ -224,6 +228,62 @@ scene's `ready` refuses it. When the race changes,
 a locked card to the first usable one. `gw_play/treasure_loadouts.js` still
 excludes them from a race player's treasure pool, because they would be an
 unusable prize.
+
+### Which races a loadout reaches
+
+A mod names the races that can use one of its loadouts with `races` on the
+loadout's own entry in `model.gwoStartingCards` or `model.gwoNewStartCards`:
+`{ id: "mym_start_engineer", races: ["legion"] }`. The ids are trimmed and
+compared case-blind (`ids.normalize`). The list takes the place of the
+`_upgrade_` rule for that loadout, so it can make a loadout MLA-only
+(`races: ["mla"]`), open an `_upgrade_` loadout to a race, or keep a loadout to
+one race. An empty list locks the loadout for every race. An entry without
+`races` keeps GWO's own list for that loadout, if `shared/loadout_ids.js` has
+one, or else the `_upgrade_` rule. A player with no race mod is MLA to every
+caller (`races.raceOf`, and the pickers' `"mla"` default), so a list without
+`mla` locks the loadout for them. Only a call with no race at all locks
+nothing.
+
+`cards_deal_helpers.raceLocksLoadout(race, id, entries)` reads it, and
+`loadoutEntries(model)` gives each caller the scene's two lists. Every
+consumer passes them: the lock in both loadout scenes, the race icons, the
+treasure pool, and the co-op AI's loadout candidates. GWO's own MLA-only
+loadouts are entries in `shared/loadout_ids.js` (`entries`), which
+`raceLocksLoadout` reads after the scene's lists, so a mod's entry for the same
+loadout wins. They are not on the scene's lists because `gw_play` holds only
+what a mod pushed there, and the `lockedBase` loadouts are on neither. The key
+is on the loadout entry, not on `gwoCardsToUnits`, because a mod's `start_cards.js`
+runs in `gw_start`, the co-op loadout scene, and `gw_play`, and
+`gwoCardsToUnits` is built only in `gw_play`. `races` on a `gwoCardsToUnits`
+entry does not reach a loadout.
+
+### Loadout card race icons
+
+Each unlocked loadout card in both scenes carries one icon per race that can
+use it, from the races the scene can offer: a vanilla player sees MLA alone.
+`cards_deal_helpers.compatibleRaces` is the races `raceLocksLoadout` does not
+lock the loadout for, its entry's `races` included. `races.raceBadge` gives each one its `playerIcon`, the
+pair the race's mod shows in the `live_game` player list, in the colour of GW
+faction `colourFaction` (`shared/gw_factions`, `color[0]`). A race with no
+usable `colourFaction` takes `raceColour`, then a neutral grey, and one with
+no complete `playerIcon` (MLA among them) the base game's pair. The icon is
+drawn as the player list draws it: the fill as a `-webkit-mask-image` over the
+colour, the outline on top. The pair is 16px, so it sits in a 24px target, the
+2.5.8 size its tooltip needs (see [`accessibility.md`](accessibility.md)).
+
+`shared/loadout_race_badges.js` defines `model.gwoLoadoutRaces` and
+`model.gwoLoadoutRaceBadges` before the bindings apply, because stock fills
+`startCards` before then. `gw_start/race_picker.js` fills them with the
+races the picker offers, MLA alone under Cluster, once the race zips are
+mounted, since the Exiles icon can come from its server zip. The co-op
+`race_picker.js` fills them with the host's races, with or without Separate
+races (MLA alone in a Cluster war), after its own mount when it offers the picker. Each fill is loaded
+once, and one that fails to load, such as a race whose server mod is active
+and client mod is not, shows the base game's pair. The icons on a locked card are dimmed with it, and show no tooltip
+there, because the card takes no pointer events. An icon's tooltip is
+`position: fixed` (`shared/loadouts.css`): Bootstrap inserts it inside the
+card, which is `overflow: auto`, and below the card's bottom edge it would add
+a scrollbar.
 
 The deal gives any other card when `races.cardUsable` finds a race unit that a
 unit its `card_units.js` entry names stands for. A card with no entry passes,
@@ -238,7 +298,9 @@ One unit list read serves every race. A read taken before the mount has no race
 unit, and it is discarded. If each race took its own read, some reads would
 land either side of the mount and prime only some races. A read in which a spec
 failed is used but not kept, cells included, so the next caller reads that spec
-again.
+again. From a battle on, `/pa/units/unit_list.json` is the referee's list, in
+which every unit is tagged. The referee mounts the untagged list it read beside
+it, at `/pa/units/gwo_untagged_unit_list.json`, and the read takes that one.
 
 **Race and add-on cards.** A card whose entry names a race or add-on unit is
 written for that race or add-on. A foreign unit is any path in a registered
@@ -258,8 +320,8 @@ projectile specs never are.
 Such a card is dealt when any foreign unit it names counts for the player's
 race, or when any other unit it names passes the rule above. The gate asks what
 the race fields, not what the player holds; the card's `deal` asks that. It
-applies to MLA too, and `raceCanDeal` skips `MLA_ONLY` and the `_upgrade_` rule
-for such a card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
+applies to MLA too, and `raceCanDeal` skips the `_upgrade_` rule for such a
+card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
 to Legion players only. A card with no foreign unit is gated exactly as before.
 An entry's `races` list overrides both: the card is offered only to the races
 listed, and still needs a unit that stands for one of the race's.
@@ -466,8 +528,8 @@ Every reader of `standInsFor` follows. The army fields such a unit only when
 it holds it, so tech gating is unchanged. The deal (`cardUsable`) and the
 tooltips (`cardUnitsFor`) count it, and `expandMods` lands a mod on it only
 when the army holds its file. A part of such a unit has no race part of the
-same role, so a mod on it lands only when held too. `MLA_ONLY` and the
-`_upgrade_` rule are unchanged, so those units' upgrade cards stay withheld.
+same role, so a mod on it lands only when held too. The `_upgrade_` rule is
+unchanged, so those units' upgrade cards stay withheld.
 
 `test/unit_jobs.test.js` pins each shipped race's list:
 
@@ -770,7 +832,12 @@ In co-op the war also records `perPlayerRace`, the **Separate races** setting.
 With it off, every viewer's inventory is stamped with the host's race. With it
 on, each viewer picks their own race at the loadout screen. The choice comes
 from the races the war recorded that the host still runs, never from that
-client's own installed list.
+client's own installed list. Either way, `host_war.playerRace` gives the race.
+The inventory is stamped with it, and the loadout screen locks its loadouts
+for it through `model.gwoViewerPlayerRace`, which takes a war with no race
+recorded as MLA, as `races.raceOf` reads an inventory with no race tag. Join
+stays closed until the list has been built from the resolved banks for that
+race. Until then the list is stock's, with nothing locked.
 
 The active set is the host's, asked of `GwServerMods.hostServerMods()`. That is
 the capability API over what its connect gate captured on the way into the
@@ -795,7 +862,8 @@ The descriptor is `race/legion.js`. The server mod is
 commanders are Overwatch, Cyclopes, Cataphract, Scion, Core, and Reclaimer
 (`l_overwatch`, `l_cyclops`, `l_cataphract`, `l_raptor`, `l_quad`, and
 `l_tank`). The player icon comes from the client mod's own
-`icon_player_{fill,outline}_l.png`.
+`icon_player_{fill,outline}_l.png`. On loadout cards it takes Revenants red
+(faction 3).
 
 Under Titans its build orders are the flat `legion_*` files beside the stock
 ones, plus `unit_maps/legion.json`. Under Queller every tier already carries a
@@ -820,7 +888,8 @@ The descriptor is `race/bugs.js`. The server mod is `com.pa.ferretmaster.bugs`,
 and its companion `commander-merge` supplies the commander's base spec. The
 unit-type bit is `Custom2`. There is one commander, the Bug Alpha Commander,
 whose art ships in green paint (hue 120). The player icon comes from the client
-mod's own `bug_icon_{fill,outline}.png`.
+mod's own `bug_icon_{fill,outline}.png`. On loadout cards it takes Synchronous
+green (faction 2).
 
 Bugs is Titans only. Its build orders are the `bugs/` sub-directories under
 each build directory, plus `unit_maps/bugs.json` and
@@ -844,7 +913,8 @@ The descriptor is `race/exiles.js`. The server mod is `com.pa.nik.exiles`, with
 companions `commander-merge` and `build-bar-tabs`. The unit-type bit is
 `Custom6`. There are four commanders: Maxim, Taurus, Blueberry, and Brainiac,
 whose art is in blue paint (hue 200). The player icon comes from the server
-mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
+mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`. On
+loadout cards it takes Foundation purple (faction 1).
 
 Exiles is Titans only. Its build orders are the `exiles/` sub-directories under
 each build directory, plus `unit_maps/exiles.json`. Exiles has no orbital

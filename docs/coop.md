@@ -838,6 +838,17 @@ in `gw_play/cards_coop_reroll.js` implement it. The size of the remaining hand
 encodes the number of rerolls used, since each reroll spends one more of the
 offered cards.
 
+That count needs the size the offer was dealt at, not the size the viewer's hand
+is worth now. A viewer can delete a card while the offer is open, and a delete
+from a full hand, or of the Lucky card, makes the hand worth one card fewer.
+`rerolledHandFor` therefore never weighs the inventory. The server strips
+`cardsOffered` from the offer ("Per-player pre-dealt cards"), but an offer not
+yet rerolled is still as long as it was dealt, so the first reroll takes the
+offer's length. That reroll writes `cardsOffered` to the host's own copy of the
+record, and every later reroll reads it from there. A thin deck's short hand is
+sized by its length as well. That deals the same hands as counting each missing
+card as a reroll spent.
+
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
@@ -1279,7 +1290,8 @@ locally and submits `-1`.
 `gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
 war loadout and, under Separate races, their race. It has to build that
 loadout's starting inventory itself rather than inherit the host's. GWO loads
-four scripts in it: `shared/race_picker_view.js`,
+five scripts in it: `shared/loadout_race_badges.js`,
+`shared/race_picker_view.js`,
 `gw_coop_per_player_loadout/race_picker.js`,
 `gw_coop_per_player_loadout/gwo_loadouts.js`, and `shared/tooltips.js`.
 
