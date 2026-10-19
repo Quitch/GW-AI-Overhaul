@@ -200,7 +200,8 @@ too. The one read it skips instead is a card's `load` file (see
 [`ai-pipeline.md`](ai-pipeline.md)). The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
-`launchingFight`, which closes the panel.
+`launchingFight`, which closes the panel. A co-op host's first hire is the
+exception: stock clears it there (see "Saving the war").
 
 The per-player tech referee, `gw_play/per_player_tech_referee.js`, is waited on the
 same way: stock calls its `apply` with no fail handler. But there stock aborts
@@ -401,11 +402,28 @@ Stock's `hireRefereesForLaunch` is private to `gw_play.js`, so
 `gw_play/launch_hires.js` infers its end from the hires `referee.js` reports:
 one hire, or two on a co-op host, the same test stock uses, and no other hire
 still running. The second starts only once the first has resolved and stock
-has remounted the client mods. A
-failed hire ends the launch: `referee.js` has already cleared `launchingFight`,
-even while a co-op host's restore remount still runs. The call-off clears
-`launchingFight` only if its launch is still the current one. Without GWO's referee no launch is tracked, and the
-call-off is immediate.
+has remounted the client mods. A failed hire ends the launch. After a co-op
+host's first hire, failed or not, stock restores the client mods, and the
+launch ends only once that remount does, so `launch_hires.js` waits for
+Community Mods' `busy2` to go false. Stock starts that remount after the
+hire's handlers have run, so `busy2` is read a task later. `busy2` starts
+true, and in `gw_play` only the end of a remount sets it false, so the wait counts only if
+stock's restriction remount had set it false by the failure. Otherwise no
+remount ran, and none follows. `busy2` goes false
+before GW Server Mods' own remount of the server mods ends, which is the one
+part of the restore a new Fight can still overlap. The call-off clears
+`launchingFight` only if its launch is still the current one. Without GWO's
+referee no launch is tracked, and the call-off is immediate.
+
+When a hire fails, `referee.js` clears `launchingFight`, except after a co-op
+host's first hire. `launch_hires.js` tells which hire that is from the hire
+count it fixed when the launch began, so a co-op connection that drops during
+the hire does not change the answer, as it does not change stock's. Stock
+clears it there itself, after its restore
+remount ("failed to hire GW referee for launch"), because the hire's failure
+resolves `hireRefereesForLaunch` with no shared referee. Clearing it at once
+would let a new Fight start while that remount runs, and stock's later clear
+would then end the new launch's `launchingFight`.
 
 `gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
 waits for the deal, the star-card refresh, and any co-op AI pass so the war is

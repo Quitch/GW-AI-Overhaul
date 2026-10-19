@@ -76,7 +76,7 @@ function installScene(untaggedListFile) {
       { aiRecords: () => [] },
       { getConnectedClients: () => [] },
       { untaggedListFile: untaggedListFile },
-      { begin: () => {}, track: () => {} }
+      { begin: () => {}, track: () => {}, restoresAfterNext: () => false }
     )
   );
 

@@ -175,6 +175,7 @@
 
         GWReferee.hire = function (game) {
           var ref = new gwoReferee(game);
+          var stockEndsLaunch = launchHires.restoresAfterNext();
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
           latestHire = ref;
@@ -248,11 +249,15 @@
             .then(null, function (error) {
               // Stock waits on the hire with no fail handler, so a rejected
               // one would leave launchingFight set and the Fight button dead.
+              // After a co-op host's first hire, stock clears it itself once
+              // its restore remount ends. See architecture.md.
               console.error(
                 "Galactic War Overhaul (GWO): battle preparation failed: " +
                   gameFilePaths.describeError(error)
               );
-              model.launchingFight(false);
+              if (!stockEndsLaunch) {
+                model.launchingFight(false);
+              }
               return $.Deferred().reject(error).promise();
             });
           launchHires.track(hire);

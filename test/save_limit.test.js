@@ -50,7 +50,7 @@ afterEach(() => {
   pendingSave = undefined;
 });
 
-function setup(launching, jQueryOptions) {
+function setup(launching, jQueryOptions, hires) {
   const calls = { launching: [], errors: [] };
   installFakeJQuery(stubs, jQueryOptions);
   stubs.setGlobal(
@@ -63,10 +63,10 @@ function setup(launching, jQueryOptions) {
     onChange: (value) => calls.launching.push(value),
   });
   stubs.setGlobal("model", { launchingFight: calls.launchingFight });
-  // As gw_play/referee.js begins each launch, solo.
+  // As gw_play/referee.js begins each launch: solo, or a co-op host's two.
   calls.launchingFight.subscribe((value) => {
     if (value) {
-      launchHires.begin(1);
+      launchHires.begin(hires || 1);
     }
   });
   return calls;
@@ -271,6 +271,30 @@ describe("install", () => {
     await flush();
     assert.deepEqual(calls.launching, []);
     assert.equal(calls.launchingFight(), true);
+  });
+
+  // Issue #629: stock restores the client mods after a co-op host's failed
+  // first hire, and a timed-out save leaves the clear to the call-off.
+  it("holds a co-op host's call-off until stock's restore remount ends", async () => {
+    const calls = setup(false, undefined, 2);
+    const busy2 = makeObservable(false);
+    stubs.setGlobal("window", { CommunityModsManager: { busy2: busy2 } });
+    saveLimit.install();
+    fight(calls);
+    mock.timers.tick(30000);
+    await flush();
+
+    // Stock's restore, chained on the hire after GWO's handlers.
+    calls.hire.then(null, () => busy2(true));
+    calls.hire.reject(new Error("hire failed"));
+    await nextTask();
+    await flush();
+    assert.deepEqual(calls.launching, []);
+    assert.equal(calls.launchingFight(), true);
+
+    busy2(false);
+    await flush();
+    assert.deepEqual(calls.launching, [false]);
   });
 
   it("logs a throw from the call-off", async () => {
