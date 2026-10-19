@@ -172,8 +172,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   `stockOnly: true`, which a card mod sets on one change, stays on its unit
   too, but it remakes nothing: the other mods on that unit still travel.
 - **Cards never change.** GWO's own cards name vanilla units. The race's units
-  follow at launch. A card that cannot work by cell goes in
-  `cards_deal_helpers.MLA_ONLY`, with a comment that says why. Every
+  follow at launch. A card that cannot work by cell names MLA alone,
+  `races: ["mla"]`, with a comment that says why: on its `card_units.js`
+  entry, or for a loadout on its `shared/loadout_ids.js` entry. Every
   `_upgrade_` card is MLA-only except the commander's, unless its
   `card_units.js` entry names race or add-on units: such a card is written for
   that race and dealt to whoever fields one. An entry's `races` list overrides

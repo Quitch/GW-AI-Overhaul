@@ -286,8 +286,8 @@ that unit on the MLA file ([`tech-cards.md`](tech-cards.md), "Which races a
 card reaches"), and a descriptor that names the unit stays on MLA with it. The
 units are `unit_cells.remadeFiles` over the same inventories' spec mods.
 Defense Tech Commander's builder appends name the defences it remakes, so a
-race tree would take none of them. That is why the loadout is in
-`cards_deal_helpers.MLA_ONLY`, with the other loadouts that remake MLA units.
+race tree would take none of them. That is why its `shared/loadout_ids.js` entry
+names MLA alone, as the other loadouts that remake MLA units do.
 
 **Kept as written.** `refId` and `refValue`, which name one stock item.
 Conditions and their `string0` keys, which the army's map resolves. `platoon`
