@@ -2,7 +2,8 @@
 // at define time - see testing.md, "Coverage".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
-], function (brainTable) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
+], function (brainTable, ids) {
   // Cards a race player is not offered unless their entry names race units:
   // unit upgrades are tuned to the MLA unit they name (the commander's
   // excepted - every race has one), these
@@ -31,16 +32,49 @@ define([
     return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
   };
 
+  // The `races` a loadout's own entry in `loadoutEntries` (the
+  // gwoStartingCards and gwoNewStartCards entries) names, normalised, or
+  // undefined when no entry names any.
+  var listedLoadoutRaces = function (cardId, loadoutEntries) {
+    var entry = _.find(loadoutEntries || [], function (candidate) {
+      return (
+        !!candidate && candidate.id === cardId && _.isArray(candidate.races)
+      );
+    });
+    return entry ? _.map(entry.races, ids.normalize) : undefined;
+  };
+
   // Whether the loadout scenes show this loadout dimmed and unselectable for
-  // `race`. An MLA or unknown race locks nothing.
-  var raceLocksLoadout = function (race, cardId) {
-    return !!race && race !== "mla" && mlaOnlyCard(cardId);
+  // `race`. No race at all locks nothing; every caller passes "mla" for a
+  // player without a race mod. A loadout entry's `races` names the races
+  // outright, in place of the MLA-only rule; otherwise MLA locks nothing. See
+  // races.md, "Which races a loadout reaches".
+  var raceLocksLoadout = function (race, cardId, loadoutEntries) {
+    if (!race) {
+      return false;
+    }
+    var listed = listedLoadoutRaces(cardId, loadoutEntries);
+    if (listed) {
+      return !_.includes(listed, ids.normalize(race));
+    }
+    return race !== "mla" && mlaOnlyCard(cardId);
+  };
+
+  // The loadout entries a scene's model holds: what mods and GWO pushed onto
+  // gwoStartingCards and gwoNewStartCards.
+  var loadoutEntries = function (scene) {
+    var listOf = function (list) {
+      return _.isArray(list) ? list : [];
+    };
+    return scene
+      ? listOf(scene.gwoStartingCards).concat(listOf(scene.gwoNewStartCards))
+      : [];
   };
 
   // The races in `raceList` a loadout is not locked for.
-  var compatibleRaces = function (cardId, raceList) {
+  var compatibleRaces = function (cardId, raceList, loadoutEntries) {
     return _.filter(raceList || [], function (race) {
-      return !!race && !raceLocksLoadout(race.id, cardId);
+      return !!race && !raceLocksLoadout(race.id, cardId, loadoutEntries);
     });
   };
 
@@ -312,6 +346,7 @@ define([
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
     compatibleRaces: compatibleRaces,
+    loadoutEntries: loadoutEntries,
 
     // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {

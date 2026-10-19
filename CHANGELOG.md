@@ -6,6 +6,10 @@
 
 - Loadout cards show which races can use them
 
+### API
+
+- A mod can name the races that can use one of its loadouts with `races` on the loadout's entry, such as `model.gwoStartingCards.push({ id: "mym_start_engineer", races: ["legion"] })`. A loadout entry without `races` is unchanged
+
 ### Bugfix
 
 - In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session

@@ -45,7 +45,11 @@
       }
 
       return _.map(
-        helpers.compatibleRaces(card.id(), raceList),
+        helpers.compatibleRaces(
+          card.id(),
+          raceList,
+          helpers.loadoutEntries(model)
+        ),
         function (race) {
           var badge = races.raceBadge(race, factions);
           badge.icon = iconFor(badge);

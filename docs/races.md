@@ -227,12 +227,35 @@ a locked card to the first usable one. `gw_play/treasure_loadouts.js` still
 excludes them from a race player's treasure pool, because they would be an
 unusable prize.
 
+### Which races a loadout reaches
+
+A mod names the races that can use one of its loadouts with `races` on the
+loadout's own entry in `model.gwoStartingCards` or `model.gwoNewStartCards`:
+`{ id: "mym_start_engineer", races: ["legion"] }`. The ids are trimmed and
+compared case-blind (`ids.normalize`). The list takes the place of `MLA_ONLY`
+and the `_upgrade_` rule for that loadout, so it can make a loadout MLA-only
+(`races: ["mla"]`), open an `_upgrade_` loadout to a race, or keep a loadout to
+one race. An empty list locks the loadout for every race. An entry without
+`races` keeps the MLA-only rule. A player with no race mod is MLA to every
+caller (`races.raceOf`, and the pickers' `"mla"` default), so a list without
+`mla` locks the loadout for them. Only a call with no race at all locks
+nothing.
+
+`cards_deal_helpers.raceLocksLoadout(race, id, entries)` reads it, and
+`loadoutEntries(model)` gives each caller the scene's two lists. Every
+consumer passes them: the lock in both loadout scenes, the race icons, the
+treasure pool, and the co-op AI's loadout candidates. The key is on the
+loadout entry, not on `gwoCardsToUnits`, because a mod's `start_cards.js`
+runs in `gw_start`, the co-op loadout scene, and `gw_play`, and
+`gwoCardsToUnits` is built only in `gw_play`. `races` on a `gwoCardsToUnits`
+entry does not reach a loadout.
+
 ### Loadout card race icons
 
 Each unlocked loadout card in both scenes carries one icon per race that can
 use it, from the races the scene can offer: a vanilla player sees MLA alone.
 `cards_deal_helpers.compatibleRaces` is the races `raceLocksLoadout` does not
-lock the loadout for. `races.raceBadge` gives each one its `playerIcon`, the
+lock the loadout for, its entry's `races` included. `races.raceBadge` gives each one its `playerIcon`, the
 pair the race's mod shows in the `live_game` player list, in the colour of GW
 faction `colourFaction` (`shared/gw_factions`, `color[0]`). A race with no
 usable `colourFaction` takes `raceColour`, then a neutral grey, and one with
