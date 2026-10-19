@@ -4,7 +4,9 @@
     // and submitLoadout reads self.ready() on the same object, so the swap
     // gates both. A race-locked loadout can never be joined with.
     var stockReady = model.ready;
-    var modulesReady = ko.observable(false); // the requireGW below has resolved
+    // The requireGW below has resolved and the war has been read. Before the
+    // read the loadouts lock for no race, so Join waits for it.
+    var modulesReady = ko.observable(false);
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
       return (
@@ -43,6 +45,17 @@
         startingInventory
       ) {
         var banksResolved = false;
+        var host = ko.observable();
+
+        // Read by shared/loadouts.js for the lock. A war that records no race
+        // is an MLA one, as gw_start's default is, so a loadout whose `races`
+        // leave MLA out still locks.
+        model.gwoViewerPlayerRace = ko.computed(function () {
+          var war = host();
+          return war
+            ? hostWar.playerRace(war, model.gwoViewerRace()) || "mla"
+            : undefined;
+        });
 
         // Called again whenever the race changes, so a selection resting on
         // a newly locked loadout moves. See races.md. Peeked, not read:
@@ -72,6 +85,7 @@
           banksResolved = true;
           model.gwoRebuildStartCards();
         });
+        model.gwoViewerPlayerRace.subscribe(model.gwoRebuildStartCards);
 
         // Dealt from the list the picker offers, or a loadout another card mod
         // added is selectable and then cannot be dealt, and Join does nothing.
@@ -106,7 +120,6 @@
           hostWar
             .load()
             .then(function (host) {
-              var viewerRace = model.gwoViewerRace();
               return startingInventory.build({
                 GWInventory: GWInventory,
                 gwoDeal: gwoDeal,
@@ -115,9 +128,7 @@
                 loadoutCardId: loadoutCardId,
                 commander: commander,
                 playerFaction: host && host.faction,
-                playerRace:
-                  (host && host.perPlayerRace && viewerRace) ||
-                  (host && host.race),
+                playerRace: hostWar.playerRace(host, model.gwoViewerRace()),
                 galaxy: galaxy,
                 star: star,
               });
@@ -126,7 +137,18 @@
 
           return result.promise();
         };
-        modulesReady(true);
+        // The race picker and Join wait on the same promise, and jQuery runs
+        // no later callback on it once one throws.
+        hostWar.load().then(function (war) {
+          try {
+            host(war);
+            modulesReady(true);
+          } catch (e) {
+            console.error(
+              "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+            );
+          }
+        });
       }
     );
   } catch (e) {

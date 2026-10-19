@@ -825,7 +825,10 @@ In co-op the war also records `perPlayerRace`, the **Separate races** setting.
 With it off, every viewer's inventory is stamped with the host's race. With it
 on, each viewer picks their own race at the loadout screen. The choice comes
 from the races the war recorded that the host still runs, never from that
-client's own installed list.
+client's own installed list. Either way, `host_war.playerRace` gives the race,
+and the loadout screen locks its loadouts for that same race through
+`model.gwoViewerPlayerRace`. Join waits until the war has been read, because
+until then no race is known and nothing is locked.
 
 The active set is the host's, asked of `GwServerMods.hostServerMods()`. That is
 the capability API over what its connect gate captured on the way into the
