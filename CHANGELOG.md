@@ -9,6 +9,7 @@
 ### Bugfix
 
 - In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session
+- When the war cannot be saved, for example because the disk is full, the galaxy map recovers after 30 seconds: moving to a star or deleting a tech card no longer leaves the Saving indicator on for good, losing a war still opens the war summary, and pressing Fight closes the battle preparation screen so you can try again, where before each of these waited for good
 
 ## v7.7.0 - 2026-10-17
 

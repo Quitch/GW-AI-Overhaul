@@ -362,19 +362,39 @@ Know the shape before you add a fix to it:
   See galaxy.md, "AI tech". There is no repair of old wars' Cluster commander
   mods.
 
-`gw_play/save.js` is the shared save wrapper that this file and the card code
-use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
-for campaign viewers**. Only the host owns the campaign, so a viewer that saved
-would write a war it does not own. A viewer's save always resolves.
+## Saving the war
+
+`gw_play/save.js` is the shared save wrapper that the repairs above and the card
+code use. It drives `model.driveAccessInProgress` around the write, and it
+**no-ops for campaign viewers**. Only the host owns the campaign, so a viewer
+that saved would write a war it does not own. A viewer's save always resolves.
 
 Stock's `GW.manifest.saveGame` never rejects: when the write fails, its
 IndexedDB error handler calls `result.fail(event)`, which only adds a callback,
-so the save stays pending and the Saving indicator stays on. `save.js` therefore
-fails a host's save that has not landed in 30 seconds, and drops a result that
-lands later. Real saves take under a second. Only the latest save clears the
+so the save stays pending and the Saving indicator stays on.
+`gw_play/save_limit.js` therefore fails a save that has not landed in 30
+seconds, and drops a result that lands later. Real saves take under a second.
+`save.js` saves through it. In `save.js`, only the latest save clears the
 indicator, so an earlier save that settles or times out does not clear it while
-a later one is still writing. Stock's own saves in `gw_play.js` drive the same
-indicator and have no time limit.
+a later one is still writing.
+
+`gw_play/save_limit_install.js` also puts the limit on stock's own saves in
+`gw_play.js`, by replacing `GW.manifest.saveGame`, which stock reads at every
+call. The replacement returns a jQuery promise, because stock passes saves to
+`$.when`. Stock's callers handle a rejection: a move and a tech delete clear the
+indicator, and a lost war opens the exit gate to `gw_war_over`. The exception is
+the save in stock `fight`, whose `$.when(...).always` reads its inputs by
+position. A rejection there throws on the missing script text and leaves
+`launchingFight` true. So a stock save that times out while `launchingFight` is
+true is logged and never settled, and `launchingFight` is cleared, which closes
+the launch panel and lets the player press Fight again. Stock sets
+`launchingFight` in the same synchronous step as that save, so this holds
+however a mod defers stock `fight`, as GW Server Mods does. Fight is not gated
+on the indicator, so a launch can start while an earlier save, such as the
+move's, is still writing. If both fail, the first timeout calls the launch off
+and the second rejects into stock's `.always`, which throws. `save_limit.js`
+logs that throw; `launchingFight` is already false, so the player can still
+press Fight again.
 
 `gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
 waits for the deal, the star-card refresh, and any co-op AI pass so the war is
