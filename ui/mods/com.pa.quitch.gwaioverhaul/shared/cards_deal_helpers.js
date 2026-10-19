@@ -45,9 +45,10 @@ define([
   };
 
   // Whether the loadout scenes show this loadout dimmed and unselectable for
-  // `race`. An unknown race locks nothing. A loadout entry's `races` names the
-  // races outright, in place of the MLA-only rule; otherwise MLA locks
-  // nothing. See races.md, "Which races a loadout reaches".
+  // `race`. No race at all locks nothing; every caller passes "mla" for a
+  // player without a race mod. A loadout entry's `races` names the races
+  // outright, in place of the MLA-only rule; otherwise MLA locks nothing. See
+  // races.md, "Which races a loadout reaches".
   var raceLocksLoadout = function (race, cardId, loadoutEntries) {
     if (!race) {
       return false;

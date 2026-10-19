@@ -918,7 +918,7 @@ describe("races", () => {
     );
   });
 
-  it("raceLocksLoadout locks nothing for MLA or an unknown race", () => {
+  it("raceLocksLoadout locks nothing for MLA or an unknown race without a races list", () => {
     for (const id of helpers.MLA_ONLY.concat(["gwaio_upgrade_ant"])) {
       assert.equal(helpers.raceLocksLoadout("mla", id), false, id);
       assert.equal(helpers.raceLocksLoadout(undefined, id), false, id);
