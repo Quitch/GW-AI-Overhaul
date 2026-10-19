@@ -18,20 +18,73 @@ define([
     return units.join("|");
   };
 
+  var UNTAGGED_LIST = "/pa/units/gwo_untagged_unit_list.json";
+  // The tags the referee gives each army's units.
+  var TAGGED = /\.json\.(player|ai)\d*$/;
+
   // coui:, not spec: - spec: pins the first read of a path for the process,
   // and the merged list is a memory file that changes as mods mount.
-  var loadUnitList = function () {
+  var readUnitList = function (path) {
     return new Promise(function (resolve, reject) {
       $.ajax({
-        url: "coui://pa/units/unit_list.json",
+        url: "coui:/" + path,
         cache: false,
         success: function (data) {
-          resolve(_.isString(data) ? JSON.parse(data) : data);
+          try {
+            resolve(_.isString(data) ? JSON.parse(data) : data);
+          } catch (error) {
+            reject(error);
+          }
         },
         error: function (request, status, error) {
           reject(error);
         },
       });
+    });
+  };
+
+  var isTagged = function (list) {
+    return _.some(list.units, function (unit) {
+      return TAGGED.test(unit);
+    });
+  };
+
+  var keptUnitList = function () {
+    return readUnitList(UNTAGGED_LIST).then(
+      function (kept) {
+        if (isTagged(kept)) {
+          throw new Error(UNTAGGED_LIST + " is tagged");
+        }
+        return kept;
+      },
+      function (error) {
+        throw new Error(
+          "the unit list is tagged, and the battle kept no untagged copy (" +
+            gameFilePaths.describeError(error) +
+            ")"
+        );
+      }
+    );
+  };
+
+  // From a battle on, the list is the referee's, every unit tagged, and the
+  // untagged one is the copy the referee mounted beside it.
+  var loadUnitList = function () {
+    return readUnitList("/pa/units/unit_list.json").then(function (list) {
+      return isTagged(list) ? keptUnitList() : list;
+    });
+  };
+
+  // The untagged list for the referee to mount beside its tagged one, as a
+  // memory file map: empty if the list it reads is not untagged.
+  var untaggedListFile = function () {
+    return readUnitList("/pa/units/unit_list.json").then(function (list) {
+      if (isTagged(list)) {
+        throw new Error("the unit list is tagged");
+      }
+      var file = {};
+      file[UNTAGGED_LIST] = list;
+      return file;
     });
   };
 
@@ -225,5 +278,6 @@ define([
     buildIndex: buildIndex,
     indexFor: indexFor,
     prime: prime,
+    untaggedListFile: untaggedListFile,
   };
 });

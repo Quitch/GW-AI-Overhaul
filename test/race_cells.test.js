@@ -141,3 +141,114 @@ describe("a read in which a spec failed", () => {
     assert.equal(second, first);
   });
 });
+
+// After a battle the referee's memory file holds /pa/units/unit_list.json:
+// its armies' units, each tagged. Beside it the referee mounts the untagged
+// list it read.
+describe("the unit list read", () => {
+  const stubs = createGlobalStubs();
+  const BARE = "coui://pa/units/unit_list.json";
+  const KEPT = "coui://pa/units/gwo_untagged_unit_list.json";
+  let lists;
+  let listUrls;
+
+  beforeEach(() => {
+    specCache.clearCache();
+    listUrls = [];
+    stubs.setGlobal("$", {
+      ajax: (options) => {
+        setImmediate(() => {
+          if (options.url === BARE || options.url === KEPT) {
+            listUrls.push(options.url);
+            const list = lists[options.url];
+            if (typeof list === "string") {
+              options.success(list);
+            } else if (list) {
+              options.success(JSON.stringify({ units: list }));
+            } else {
+              options.error({}, "error", "Not Found");
+            }
+          } else {
+            options.success("{}");
+          }
+        });
+      },
+    });
+  });
+
+  afterEach(() => {
+    stubs.restoreGlobals();
+  });
+
+  it("reads the bare list alone when it is untagged", async () => {
+    lists = { [BARE]: ["/pa/units/bare_a.json"] };
+
+    const loaded = await raceCells.load();
+
+    assert.deepEqual(loaded.units, ["/pa/units/bare_a.json"]);
+    assert.deepEqual(listUrls, [BARE]);
+  });
+
+  it("reads the kept list when the bare one is tagged", async () => {
+    lists = {
+      [BARE]: ["/pa/units/b.json.player0", "/pa/units/b.json.ai0"],
+      [KEPT]: ["/pa/units/kept_b.json", "/pa/units/kept_c.json"],
+    };
+
+    const loaded = await raceCells.load();
+
+    assert.deepEqual(loaded.units, [
+      "/pa/units/kept_b.json",
+      "/pa/units/kept_c.json",
+    ]);
+    assert.deepEqual(listUrls, [BARE, KEPT]);
+  });
+
+  it("rejects when the bare list is tagged and none is kept", async () => {
+    lists = { [BARE]: ["/pa/units/d.json.player"] };
+
+    await assert.rejects(raceCells.load(), /kept no untagged copy/);
+  });
+
+  it("counts only the referee's tags as tagged", async () => {
+    lists = { [BARE]: ["/pa/units/i.JSON", "/pa/units/j.json "] };
+
+    const loaded = await raceCells.load();
+
+    assert.deepEqual(loaded.units, ["/pa/units/i.JSON", "/pa/units/j.json "]);
+    assert.deepEqual(listUrls, [BARE]);
+  });
+
+  it("rejects a list that does not parse", async () => {
+    lists = { [BARE]: "{ not json" };
+
+    await assert.rejects(raceCells.load(), SyntaxError);
+  });
+
+  it("rejects when the kept list is tagged too", async () => {
+    lists = {
+      [BARE]: ["/pa/units/e.json.player"],
+      [KEPT]: ["/pa/units/e.json.player"],
+    };
+
+    await assert.rejects(raceCells.load(), /is tagged/);
+  });
+
+  it("hands the referee the bare list to keep while it is untagged", async () => {
+    lists = { [BARE]: ["/pa/units/f.json"] };
+
+    assert.deepEqual(await raceCells.untaggedListFile(), {
+      "/pa/units/gwo_untagged_unit_list.json": { units: ["/pa/units/f.json"] },
+    });
+  });
+
+  it("hands the referee nothing to keep once the bare list is tagged", async () => {
+    lists = {
+      [BARE]: ["/pa/units/g.json.player"],
+      [KEPT]: ["/pa/units/g.json"],
+    };
+
+    await assert.rejects(raceCells.untaggedListFile(), /is tagged/);
+    assert.deepEqual(listUrls, [BARE]);
+  });
+});
