@@ -952,6 +952,31 @@ describe("races", () => {
     );
   });
 
+  const raceList = [{ id: "mla" }, { id: "legion" }, { id: "bugs" }];
+  const compatibleIds = (cardId, list) =>
+    helpers.compatibleRaces(cardId, list).map((race) => race.id);
+
+  it("compatibleRaces offers a general loadout to every race", () => {
+    for (const id of ["gwaio_start_lucky", "gwaio_upgrade_subcommander_1"]) {
+      assert.deepEqual(compatibleIds(id, raceList), ["mla", "legion", "bugs"]);
+    }
+  });
+
+  it("compatibleRaces offers an MLA-only loadout to MLA alone", () => {
+    for (const id of ["gwaio_start_paratrooper", "gwaio_upgrade_ant"]) {
+      assert.deepEqual(compatibleIds(id, raceList), ["mla"]);
+    }
+  });
+
+  it("compatibleRaces returns nothing for no races, and skips an empty entry", () => {
+    assert.deepEqual(compatibleIds("gwaio_start_lucky", []), []);
+    assert.deepEqual(compatibleIds("gwaio_start_lucky", undefined), []);
+    assert.deepEqual(
+      compatibleIds("gwaio_start_lucky", [null, { id: "mla" }]),
+      ["mla"]
+    );
+  });
+
   it("applyRaceToSubcommander gives a race Sub Commander the race and one of its commanders", () => {
     const subcommander = {
       name: "x",

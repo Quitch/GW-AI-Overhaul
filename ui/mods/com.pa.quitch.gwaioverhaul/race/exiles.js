@@ -13,6 +13,7 @@ define(function () {
     // The preview art ships in the blue team paint, a touch greener than
     // MLA's.
     commanderArtHue: 200,
+    colourFaction: 1,
     commanderTypes: {
       unitType: "UNITTYPE_Custom6",
       buildable: "CmdBuild & Custom6",

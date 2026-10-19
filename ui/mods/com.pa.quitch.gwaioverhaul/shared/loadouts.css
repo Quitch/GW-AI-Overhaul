@@ -5,3 +5,52 @@
   opacity: 0.45;
   pointer-events: none;
 }
+
+/* A line of its own under the card's text, which it would otherwise cover,
+   held to the bottom of a card stretched to its neighbours' height. The card
+   is a column flexbox. */
+#start-cards > .card > .gwo-loadout-races {
+  display: flex;
+  align-self: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+#start-cards > .card > .gwo-loadout-races:empty {
+  display: none;
+}
+
+/* A 24px target, the 2.5.8 size for the tooltip, around the 16px icon. The
+   icon files are 16px, and scaled up they blur. */
+#start-cards > .card .gwo-loadout-race {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+}
+
+/* The live_game player list's layers: the fill masked and painted in the
+   race colour, the outline over it. */
+#start-cards > .card .gwo-loadout-race-fill,
+#start-cards > .card .gwo-loadout-race-outline {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+#start-cards > .card .gwo-loadout-race-fill {
+  -webkit-mask-size: cover;
+}
+
+#start-cards > .card .gwo-loadout-race-outline {
+  background-size: cover;
+}
+
+/* Bootstrap inserts the tooltip inside the card, which is overflow: auto
+   (gwt_card.css), and below the card's bottom edge it adds a scrollbar that
+   shifts the card's contents. Fixed, it is out of the card's overflow. */
+#start-cards > .card .gwo-loadout-races .tooltip {
+  position: fixed;
+}

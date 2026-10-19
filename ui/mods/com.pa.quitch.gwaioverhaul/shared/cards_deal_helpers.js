@@ -37,6 +37,13 @@ define([
     return !!race && race !== "mla" && mlaOnlyCard(cardId);
   };
 
+  // The races in `raceList` a loadout is not locked for.
+  var compatibleRaces = function (cardId, raceList) {
+    return _.filter(raceList || [], function (race) {
+      return !!race && !raceLocksLoadout(race.id, cardId);
+    });
+  };
+
   // Every deal asks for every card's entry, so the list is indexed by
   // position, rebuilt when the list, its length or an indexed entry changes.
   var entryIndex = { list: undefined, length: -1, at: {} };
@@ -304,6 +311,7 @@ define([
     MLA_ONLY: MLA_ONLY,
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
+    compatibleRaces: compatibleRaces,
 
     // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {

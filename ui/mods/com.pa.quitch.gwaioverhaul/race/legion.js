@@ -12,6 +12,7 @@ define(function () {
     unitTypeBit: "Custom1",
     // The preview art ships in the red team paint.
     commanderArtHue: 0,
+    colourFaction: 3,
     commanderTypes: {
       unitType: "UNITTYPE_Custom1",
       buildable: "CmdBuild & Custom1",

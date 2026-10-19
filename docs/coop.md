@@ -1279,7 +1279,8 @@ locally and submits `-1`.
 `gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
 war loadout and, under Separate races, their race. It has to build that
 loadout's starting inventory itself rather than inherit the host's. GWO loads
-four scripts in it: `shared/race_picker_view.js`,
+five scripts in it: `shared/loadout_race_badges.js`,
+`shared/race_picker_view.js`,
 `gw_coop_per_player_loadout/race_picker.js`,
 `gw_coop_per_player_loadout/gwo_loadouts.js`, and `shared/tooltips.js`.
 
