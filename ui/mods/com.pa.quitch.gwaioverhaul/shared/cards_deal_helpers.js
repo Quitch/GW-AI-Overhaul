@@ -3,51 +3,36 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
-], function (brainTable, ids) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
+], function (brainTable, ids, gwoLoadoutIds) {
   // Cards a race player is not offered unless their entry names race units:
   // unit upgrades are tuned to the MLA unit they name (the commander's
-  // excepted - every race has one), these
-  // loadouts and protocols are built on hand-picked unit lists no cell reads,
-  // the Deepspace Radar is a TITANS stub only its card brings back, and a
-  // loadout that changes what an MLA unit is or builds keeps all its changes
-  // to that unit on MLA. A race gets its own. See races.md.
-  var MLA_ONLY = [
-    "gwaio_start_paratrooper", // specific to Unit Cannon and Lob
-    "gwaio_start_nomad",
-    "gwaio_protocol_killswitch", // unit scoped - cannot be automatically translated
-    "gwaio_enable_planetaryradar", // MLA only unit
-    "gwaio_start_rapid", // loads AI files specific to MLA
-    "nem_start_nuke", // pushes a build type and a description onto the MLA nuke
-    "nem_start_planetary", // its description change keeps the extractor changes on MLA
-    "nem_start_deepspace", // changes the Jig's description and model, and the orbital fabber's build list
-    "nem_start_tower_rush", // pushes build types onto MLA defences
-    "gwc_start_artillery", // pushes a build type onto MLA artillery
-  ];
+  // excepted - every race has one). A race gets its own. See races.md.
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
   var mlaOnlyCard = function (cardId) {
-    if (_.includes(MLA_ONLY, cardId)) {
-      return true;
-    }
     return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
   };
 
   // The `races` a loadout's own entry in `loadoutEntries` (the
-  // gwoStartingCards and gwoNewStartCards entries) names, normalised, or
-  // undefined when no entry names any.
+  // gwoStartingCards and gwoNewStartCards entries), or else GWO's own in
+  // loadout_ids.js, names, normalised, or undefined when no entry names any.
   var listedLoadoutRaces = function (cardId, loadoutEntries) {
-    var entry = _.find(loadoutEntries || [], function (candidate) {
+    var listsRaces = function (candidate) {
       return (
         !!candidate && candidate.id === cardId && _.isArray(candidate.races)
       );
-    });
+    };
+    var entry =
+      _.find(loadoutEntries || [], listsRaces) ||
+      _.find(gwoLoadoutIds.entries, listsRaces);
     return entry ? _.map(entry.races, ids.normalize) : undefined;
   };
 
   // Whether the loadout scenes show this loadout dimmed and unselectable for
   // `race`. No race at all locks nothing; every caller passes "mla" for a
   // player without a race mod. A loadout entry's `races` names the races
-  // outright, in place of the MLA-only rule; otherwise MLA locks nothing. See
+  // outright, in place of the `_upgrade_` rule; otherwise MLA locks nothing. See
   // races.md, "Which races a loadout reaches".
   var raceLocksLoadout = function (race, cardId, loadoutEntries) {
     if (!race) {
@@ -342,7 +327,6 @@ define([
       subcommander.penchantName = gwoAI.penchants(rng).penchantName;
     },
 
-    MLA_ONLY: MLA_ONLY,
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
     compatibleRaces: compatibleRaces,
@@ -354,7 +338,7 @@ define([
       var entry = entryFor(cardsToUnits, cardId);
       var units = entry ? entry.units : undefined;
       // An entry's `races` names the races outright, in place of the
-      // MLA-only rule. See tech-cards.md, "Which races a card reaches".
+      // `_upgrade_` rule. See tech-cards.md, "Which races a card reaches".
       if (entry && _.isArray(entry.races)) {
         if (!_.includes(_.map(entry.races, races.normalizeId), race)) {
           return false;

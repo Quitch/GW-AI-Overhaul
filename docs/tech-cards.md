@@ -270,13 +270,15 @@ did nothing at all for a player without the advanced factory. Only its
 
 A race player narrows this further. The deal withholds a card whose `card_units.js`
 entry names no unit that stands for a unit of the race. It also withholds every
-card in `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards
+`_upgrade_` card but the commander's, and every card whose entry's `races` list
+leaves the race out, such as Killswitch and Planetary Radar
+(`cards_deal_helpers.raceCanDeal`). Cards
 keep naming vanilla units, and the unit's capability cell and job decide. An entry's `races` list
-takes the place of `MLA_ONLY` and the `_upgrade_` rule for its card
+takes the place of the `_upgrade_` rule for its card
 (["Which races a card reaches"](#which-races-a-card-reaches)).
 
 A card whose entry names a race or add-on unit is written for that race:
-`MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
+the `_upgrade_` rule does not apply to it. When the entry names only
 such units, the card is dealt only to players whose race fields one, MLA players
 included. An entry that also names a stock unit is dealt through either half. The gate reads the race; whether the player holds the unit is the card's
 `deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
@@ -476,8 +478,8 @@ army.
 - **`races` on the `gwoCardsToUnits` entry.**
   `{ id: "mym_dox_health", units: [gwoUnit.dox], races: ["mla"] }` offers the
   card only to players of the races listed. The ids are trimmed and compared
-  case-blind (`races.normalizeId`). The list takes the place of `MLA_ONLY` and
-  the `_upgrade_` rule for that card, so an `_upgrade_` card that lists a race
+  case-blind (`races.normalizeId`). The list takes the place of the `_upgrade_`
+  rule for that card, so an `_upgrade_` card that lists a race
   is offered to it. A listed race still needs a unit that stands for one of
   its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. It does
   not reach a loadout: a loadout takes `races` on its own `gwoStartingCards` or
@@ -502,7 +504,8 @@ onto an MLA unit keeps its AI mods for that unit on MLA too, even where the
 race's unit already carries the tag. The Tactical Nuke, Planetary Excavation,
 Space Excavation, Defense Tech, and Artillery Commander loadouts remake the MLA
 units they change, so their changes to those units would not reach a race
-player's units. They are in `cards_deal_helpers.MLA_ONLY` for that reason.
+player's units. Their entries in `shared/loadout_ids.js` name MLA alone for that
+reason.
 
 ### Third-party decks
 

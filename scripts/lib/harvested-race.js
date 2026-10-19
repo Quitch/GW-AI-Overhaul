@@ -23,11 +23,19 @@ function withheldCards(raceId) {
     .sort();
 }
 
+// The `_upgrade_` rule's cards, and those whose entry names MLA alone.
+function mlaOnly(card) {
+  const listed = Array.isArray(card.races) ? card.races : undefined;
+  return listed
+    ? listed.length > 0 && listed.every((race) => race === "mla")
+    : helpers.mlaOnlyCard(card.id);
+}
+
 // The MLA-only cards every race is withheld, plus the race's own.
 function expectedWithheld(withheldByCells) {
   return cardUnits.cards
+    .filter((card) => mlaOnly(card) || withheldByCells.includes(card.id))
     .map((card) => card.id)
-    .filter((id) => helpers.mlaOnlyCard(id) || withheldByCells.includes(id))
     .sort();
 }
 
@@ -45,7 +53,7 @@ function unnamedCardUnits(raceId) {
     Object.prototype.hasOwnProperty.call(named, unit);
   const unnamed = [];
   for (const card of cardUnits.cards) {
-    if (helpers.mlaOnlyCard(card.id)) {
+    if (mlaOnly(card)) {
       continue;
     }
     for (const unit of cells.cardUnitsFor(

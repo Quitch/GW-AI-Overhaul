@@ -454,8 +454,10 @@ define([
         units: gwoGroup.orbitalAdvancedMobile.concat(gwoUnit.orbitalFactory),
       },
       {
+        // The Deepspace Radar is a TITANS stub only this card brings back.
         id: "gwaio_enable_planetaryradar",
         units: [gwoUnit.deepSpaceOrbitalRadar],
+        races: ["mla"],
       },
       {
         id: "gwaio_upgrade_planetaryradar",
@@ -516,8 +518,10 @@ define([
       {
         // Units already carrying a death weapon get theirs made friendly-fire
         // capable rather than replaced, so every unit is affected either way.
+        // Unit scoped, so it cannot be translated to a race's units.
         id: "gwaio_protocol_killswitch",
         units: gwoGroup.units,
+        races: ["mla"],
       },
       {
         id: "gwaio_protocol_blindness",
