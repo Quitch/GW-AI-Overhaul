@@ -29,6 +29,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
       ],
       function (
         GW,
@@ -42,7 +43,8 @@
         gameFilePaths,
         gwoPromise,
         coopAiRoster,
-        refereeCoop
+        refereeCoop,
+        raceCells
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -93,6 +95,16 @@
           var self = this;
 
           var deferred = $.Deferred();
+          // A battle needs no kept list, so its read never holds the mount.
+          var keepUntagged = gwoPromise
+            .within(raceCells.untaggedListFile(), 10000, "unit list read")
+            .then(null, function (error) {
+              console.error(
+                "gwoRaces: no untagged unit list kept: " +
+                  gameFilePaths.describeError(error)
+              );
+              return {};
+            });
 
           // GWO - shallow: keys are added below and no value is changed.
           var allFiles = _.assign({}, self.files());
@@ -126,11 +138,18 @@
             deferred.resolve();
           };
 
+          var mountWithKept = function (kept) {
+            return api.file.mountMemoryFiles(
+              _.assign({}, cookedFiles, gameFilePaths.cookFiles(kept))
+            );
+          };
+          var mountBiomes = function () {
+            gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
+          };
+
           var mountCooked = function () {
             self.stage("!LOC:Mounting game files");
-            api.file.mountMemoryFiles(cookedFiles).then(function () {
-              gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
-            });
+            keepUntagged.then(mountWithKept).then(mountBiomes);
           };
 
           // See architecture.md, "Battle launch, end to end".

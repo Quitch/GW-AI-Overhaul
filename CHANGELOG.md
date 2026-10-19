@@ -6,6 +6,10 @@
 
 - Loadout cards show which races can use them
 
+### Bugfix
+
+- In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session
+
 ## v7.7.0 - 2026-10-17
 
 ### API
