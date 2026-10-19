@@ -30,6 +30,8 @@ function installScene(options) {
     begun: [],
     tracked: [],
     chain: { id: "hire" },
+    active: options.active !== false,
+    started: 0,
   };
   const game = {
     isTutorial: () => false,
@@ -38,7 +40,7 @@ function installScene(options) {
   stubs.setGlobal("model", {
     game: () => game,
     launchingFight: makeObservable(false),
-    gwCampaignActive: () => options.active !== false,
+    gwCampaignActive: () => scene.active,
     isCampaignHost: () => !!options.host,
     gwoCoopAi: options.coopAi
       ? {
@@ -78,8 +80,16 @@ function installScene(options) {
       { getConnectedClients: () => scene.clients },
       {},
       {
-        begin: (expected) => scene.begun.push(expected),
-        track: (hire) => scene.tracked.push(hire),
+        begin: (expected) => {
+          scene.begun.push(expected);
+          scene.started = 0;
+        },
+        track: (hire) => {
+          scene.tracked.push(hire);
+          scene.started += 1;
+        },
+        restoresAfterNext: () =>
+          scene.begun[scene.begun.length - 1] === 2 && scene.started === 0,
       }
     )
   );
@@ -168,6 +178,9 @@ describe("a failed hire", () => {
     for (let i = 0; i < hires; i += 1) {
       scene.GWReferee.hire(model.game());
     }
+    if (options.dropBeforeFailure) {
+      scene.active = false;
+    }
     let failure;
     scene.fail(new Error("spec read failed")).then(null, (error) => {
       failure = error;
@@ -184,6 +197,14 @@ describe("a failed hire", () => {
     assert.deepEqual(scene.errors, [
       "Galactic War Overhaul (GWO): battle preparation failed: spec read failed",
     ]);
+  });
+
+  // Stock chose its two hires at the launch, and restores after the first
+  // whatever the connection does next.
+  it("leaves launchingFight to stock when the host's connection drops during its first hire", () => {
+    fail({ host: true, dropBeforeFailure: true }, 1);
+
+    assert.equal(model.launchingFight(), true);
   });
 
   it("clears launchingFight after a co-op host's second hire", () => {

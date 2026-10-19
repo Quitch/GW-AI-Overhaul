@@ -7,8 +7,13 @@ define(function () {
 
   // Stock starts its restore remount in the same step as the first hire's
   // failure, after the hire's own handlers, so busy2 is read a task later.
-  // busy2 starts true and only a remount's end sets it false, so a busy2
-  // still true at the failure means no remount ran, and none follows.
+  // busy2 starts true, and in gw_play only a remount's end sets it false, so
+  // a busy2 still true at the failure means no remount ran, and none follows.
+  // Fixed when the hire starts: stock's own test, made once at the launch.
+  var restoresAfterNext = function (launch) {
+    return !!launch && launch.expected === 2 && launch.started === 0;
+  };
+
   var afterRestore = function (fn) {
     var manager = window.CommunityModsManager;
     var busy = manager && manager.busy2;
@@ -41,8 +46,8 @@ define(function () {
       if (!launch) {
         return;
       }
+      var restores = restoresAfterNext(launch);
       launch.started += 1;
-      var restores = launch.expected === 2 && launch.started === 1;
       var end = function () {
         launch.done.resolve();
       };
@@ -65,6 +70,11 @@ define(function () {
           }
         }
       );
+    },
+    // Whether stock restores the client mods after the next hire, and so
+    // ends the launch itself when that hire fails.
+    restoresAfterNext: function () {
+      return restoresAfterNext(current);
     },
     // Resolves at once when no launch was begun, as without GWO's referee.
     settled: function () {

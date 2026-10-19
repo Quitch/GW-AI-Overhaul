@@ -175,6 +175,7 @@
 
         GWReferee.hire = function (game) {
           var ref = new gwoReferee(game);
+          var stockEndsLaunch = launchHires.restoresAfterNext();
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
           latestHire = ref;
@@ -254,10 +255,7 @@
                 "Galactic War Overhaul (GWO): battle preparation failed: " +
                   gameFilePaths.describeError(error)
               );
-              if (
-                ref.pass !== 1 ||
-                !(model.gwCampaignActive() && model.isCampaignHost())
-              ) {
+              if (!stockEndsLaunch) {
                 model.launchingFight(false);
               }
               return $.Deferred().reject(error).promise();

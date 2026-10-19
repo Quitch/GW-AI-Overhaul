@@ -198,6 +198,19 @@ describe("launch hires", () => {
     assert.equal(seen.state, "settled");
   });
 
+  it("names a co-op host's first hire as the one stock restores after", () => {
+    installFakeJQuery(stubs, { sync: true });
+    assert.equal(freshLaunchHires().restoresAfterNext(), false);
+
+    launchHires.begin(1);
+    assert.equal(launchHires.restoresAfterNext(), false);
+
+    launchHires.begin(2);
+    assert.equal(launchHires.restoresAfterNext(), true);
+    launchHires.track($.Deferred().promise());
+    assert.equal(launchHires.restoresAfterNext(), false);
+  });
+
   it("counts a hire against the launch it started in", () => {
     installFakeJQuery(stubs, { sync: true });
     launchHires.begin(1);
