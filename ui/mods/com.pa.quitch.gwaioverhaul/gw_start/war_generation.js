@@ -755,12 +755,12 @@ define([
     };
 
     var onGameSaved = function () {
-      console.log(
-        "War created successfully using Galactic War Overhaul v" + gwoVersion
-      );
       model.activeGameId(model.newGame().id);
       model.lastSceneUrl(
         "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+      );
+      console.log(
+        "War created successfully using Galactic War Overhaul v" + gwoVersion
       );
       window.location.href =
         "coui://ui/main/game/galactic_war/gw_play/gw_play.html";

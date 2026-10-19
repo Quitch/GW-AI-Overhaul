@@ -643,6 +643,7 @@ describe("a war whose save never finishes", () => {
       war.errors[0],
       /^War could not be saved and opened: Error: no scene/
     );
+    assert.deepEqual(war.logged, []);
     assert.equal(war.generatingWar(), false);
     assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
     assert.equal(war.window.location.href, GW_START);
