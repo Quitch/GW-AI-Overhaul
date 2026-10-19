@@ -35,10 +35,26 @@ define(function () {
     "gwaio_start_lucky",
   ];
 
+  // The loadouts above that MLA alone can use, as loadout entries. Loadouts on
+  // hand-picked unit lists no cell reads, and loadouts that change what an MLA
+  // unit is or builds, keep those changes on MLA. A race gets its own. See
+  // races.md, "Which races a loadout reaches".
+  var entries = [
+    { id: "gwaio_start_paratrooper", races: ["mla"] }, // specific to Unit Cannon and Lob
+    { id: "gwaio_start_nomad", races: ["mla"] },
+    { id: "gwaio_start_rapid", races: ["mla"] }, // loads AI files specific to MLA
+    { id: "nem_start_nuke", races: ["mla"] }, // pushes a build type and a description onto the MLA nuke
+    { id: "nem_start_planetary", races: ["mla"] }, // its description change keeps the extractor changes on MLA
+    { id: "nem_start_deepspace", races: ["mla"] }, // changes the Jig's description and model, and the orbital fabber's build list
+    { id: "nem_start_tower_rush", races: ["mla"] }, // pushes build types onto MLA defences
+    { id: "gwc_start_artillery", races: ["mla"] }, // pushes a build type onto MLA artillery
+  ];
+
   return {
     starting: starting,
     lockedBase: lockedBase,
     unlockable: unlockable,
+    entries: entries,
     all: starting.concat(lockedBase, unlockable),
   };
 });

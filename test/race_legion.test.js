@@ -21,7 +21,7 @@ const { fixtureIndex, modFiles } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
-// shares (cards_deal_helpers.MLA_ONLY and the unit upgrades): those naming
+// shares (the cards whose entry names MLA alone, and the unit upgrades): those naming
 // only units in cells Legion leaves empty. None today - Legion fills every
 // cell GWO's cards open. A change here is a balance decision.
 const WITHHELD_BY_CELLS = [];

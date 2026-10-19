@@ -358,7 +358,8 @@ function setup(overrides = {}) {
       isStartLoadoutCardId: (id) => /_start_/.test(id),
       rerollsRemain: () => true,
       raceCanDeal: (races, inventory, id) => id !== "gwc_enable_bots_t1",
-      raceLocksLoadout: (race, id) => [race, id],
+      raceLocksLoadout: (race, id, entries) => [race, id, entries],
+      loadoutEntries: () => "entries",
     },
     coopDeal: { pendingHandForRecord: () => "hand" },
     coopReroll: {
@@ -1034,6 +1035,7 @@ describe("a new co-op AI player's starting tech", () => {
     assert.deepEqual(candidates.raceLocks("gwc_start_air"), [
       "legion",
       "gwc_start_air",
+      "entries",
     ]);
     assert.deepEqual(candidates.aiCannotUse, ["gwaio_start_warp", "mod_warp"]);
     assert.deepEqual(chosen.teamDomains.teammates.teammates, [

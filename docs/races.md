@@ -212,10 +212,12 @@ every race part of that pass once.
 A single-unit grant brings the race units its unit stands for:
 `gwc_start_subcdr`'s Ant brings Legion's Shank and Stoke, and not the Corsair,
 the Maul, or Second Wave's Lynx. What no job can carry is a hand-picked list.
-`cards_deal_helpers.MLA_ONLY` names the cards the deal never gives a race
-player, and each entry says why. `mlaOnlyCard` adds every `_upgrade_` card but
-the commander's (`ubercannon`, `subcommander`), since those are tuned to the
-MLA unit they name. A race gets its own.
+A card built on one names MLA alone, `races: ["mla"]`, with a comment that says
+why: a tech card on its `gw_play/card_units.js` entry, and a loadout on its
+entry in `shared/loadout_ids.js` ("Which races a loadout reaches" below).
+`cards_deal_helpers.mlaOnlyCard` also withholds every `_upgrade_` card but the
+commander's (`ubercannon`, `subcommander`), since those are tuned to the MLA
+unit they name. A race gets its own.
 
 The two loadout-picking scenes (`gw_start` and the co-op per-player loadout)
 still show those loadouts, in their usual place. `shared/loadouts.js` marks
@@ -227,12 +229,40 @@ a locked card to the first usable one. `gw_play/treasure_loadouts.js` still
 excludes them from a race player's treasure pool, because they would be an
 unusable prize.
 
+### Which races a loadout reaches
+
+A mod names the races that can use one of its loadouts with `races` on the
+loadout's own entry in `model.gwoStartingCards` or `model.gwoNewStartCards`:
+`{ id: "mym_start_engineer", races: ["legion"] }`. The ids are trimmed and
+compared case-blind (`ids.normalize`). The list takes the place of the
+`_upgrade_` rule for that loadout, so it can make a loadout MLA-only
+(`races: ["mla"]`), open an `_upgrade_` loadout to a race, or keep a loadout to
+one race. An empty list locks the loadout for every race. An entry without
+`races` keeps GWO's own list for that loadout, if `shared/loadout_ids.js` has
+one, or else the `_upgrade_` rule. A player with no race mod is MLA to every
+caller (`races.raceOf`, and the pickers' `"mla"` default), so a list without
+`mla` locks the loadout for them. Only a call with no race at all locks
+nothing.
+
+`cards_deal_helpers.raceLocksLoadout(race, id, entries)` reads it, and
+`loadoutEntries(model)` gives each caller the scene's two lists. Every
+consumer passes them: the lock in both loadout scenes, the race icons, the
+treasure pool, and the co-op AI's loadout candidates. GWO's own MLA-only
+loadouts are entries in `shared/loadout_ids.js` (`entries`), which
+`raceLocksLoadout` reads after the scene's lists, so a mod's entry for the same
+loadout wins. They are not on the scene's lists because `gw_play` holds only
+what a mod pushed there, and the `lockedBase` loadouts are on neither. The key
+is on the loadout entry, not on `gwoCardsToUnits`, because a mod's `start_cards.js`
+runs in `gw_start`, the co-op loadout scene, and `gw_play`, and
+`gwoCardsToUnits` is built only in `gw_play`. `races` on a `gwoCardsToUnits`
+entry does not reach a loadout.
+
 ### Loadout card race icons
 
 Each unlocked loadout card in both scenes carries one icon per race that can
 use it, from the races the scene can offer: a vanilla player sees MLA alone.
 `cards_deal_helpers.compatibleRaces` is the races `raceLocksLoadout` does not
-lock the loadout for. `races.raceBadge` gives each one its `playerIcon`, the
+lock the loadout for, its entry's `races` included. `races.raceBadge` gives each one its `playerIcon`, the
 pair the race's mod shows in the `live_game` player list, in the colour of GW
 faction `colourFaction` (`shared/gw_factions`, `color[0]`). A race with no
 usable `colourFaction` takes `raceColour`, then a neutral grey, and one with
@@ -290,8 +320,8 @@ projectile specs never are.
 Such a card is dealt when any foreign unit it names counts for the player's
 race, or when any other unit it names passes the rule above. The gate asks what
 the race fields, not what the player holds; the card's `deal` asks that. It
-applies to MLA too, and `raceCanDeal` skips `MLA_ONLY` and the `_upgrade_` rule
-for such a card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
+applies to MLA too, and `raceCanDeal` skips the `_upgrade_` rule for such a
+card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
 to Legion players only. A card with no foreign unit is gated exactly as before.
 An entry's `races` list overrides both: the card is offered only to the races
 listed, and still needs a unit that stands for one of the race's.
@@ -498,8 +528,8 @@ Every reader of `standInsFor` follows. The army fields such a unit only when
 it holds it, so tech gating is unchanged. The deal (`cardUsable`) and the
 tooltips (`cardUnitsFor`) count it, and `expandMods` lands a mod on it only
 when the army holds its file. A part of such a unit has no race part of the
-same role, so a mod on it lands only when held too. `MLA_ONLY` and the
-`_upgrade_` rule are unchanged, so those units' upgrade cards stay withheld.
+same role, so a mod on it lands only when held too. The `_upgrade_` rule is
+unchanged, so those units' upgrade cards stay withheld.
 
 `test/unit_jobs.test.js` pins each shipped race's list:
 
@@ -802,7 +832,12 @@ In co-op the war also records `perPlayerRace`, the **Separate races** setting.
 With it off, every viewer's inventory is stamped with the host's race. With it
 on, each viewer picks their own race at the loadout screen. The choice comes
 from the races the war recorded that the host still runs, never from that
-client's own installed list.
+client's own installed list. Either way, `host_war.playerRace` gives the race.
+The inventory is stamped with it, and the loadout screen locks its loadouts
+for it through `model.gwoViewerPlayerRace`, which takes a war with no race
+recorded as MLA, as `races.raceOf` reads an inventory with no race tag. Join
+stays closed until the list has been built from the resolved banks for that
+race. Until then the list is stock's, with nothing locked.
 
 The active set is the host's, asked of `GwServerMods.hostServerMods()`. That is
 the capability API over what its connect gate captured on the way into the

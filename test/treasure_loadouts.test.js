@@ -123,6 +123,19 @@ describe("treasureLoadoutPool", () => {
     assert.ok(forMla.includes("gwaio_start_paratrooper"));
   });
 
+  it("offers a mod's loadout only to the races its entry names", () => {
+    const pools = withModLoadouts(
+      [{ id: "mym_start_legion", races: ["legion"] }],
+      () => ({
+        legion: treasure.treasureLoadoutPool("legion").map((c) => c.id),
+        mla: treasure.treasureLoadoutPool("mla").map((c) => c.id),
+      })
+    );
+
+    assert.ok(pools.legion.includes("mym_start_legion"));
+    assert.ok(!pools.mla.includes("mym_start_legion"));
+  });
+
   it("offers a mod's locked loadout alongside GWO's", () => {
     const ids = withModLoadouts([{ id: "mym_start_one" }], () =>
       treasure.treasureLoadoutPool().map((card) => card.id)

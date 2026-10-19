@@ -114,6 +114,13 @@ define([
     return loaded;
   };
 
+  // The race the viewer plays: its own pick under Separate races, the host's
+  // otherwise. The loadout lock and the inventory stamp both read it. See
+  // races.md.
+  var playerRace = function (host, pickedRace) {
+    return (host && host.perPlayerRace && pickedRace) || (host && host.race);
+  };
+
   // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
@@ -122,8 +129,9 @@ define([
       offeredRaces: offeredRaces,
       readGame: readGame,
       hostInstalledInfo: hostInstalledInfo,
+      playerRace: playerRace,
     };
   }
 
-  return { load: load };
+  return { load: load, playerRace: playerRace };
 });

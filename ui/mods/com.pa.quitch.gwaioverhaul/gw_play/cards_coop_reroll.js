@@ -77,7 +77,6 @@ define([
     var chooseCards = params.chooseCards;
     var helpers = params.helpers;
     var GWInventory = params.GWInventory;
-    var numCardsToOffer = params.numCardsToOffer;
     var gwoSave = params.gwoSave;
     var GW = params.GW;
     var gwoStreams = params.gwoStreams;
@@ -125,10 +124,12 @@ define([
     var rerolledHandFor = function (params) {
       var result = $.Deferred();
       var pendingTechCards = params.pendingTechCards;
-      var cardsOffered = helpers.cardsOfferedCount(
-        numCardsToOffer,
-        params.inventory
-      );
+      // Not the hand's worth now, which a delete since the deal can lower.
+      // The server strips cardsOffered, but an offer not yet rerolled is
+      // still as long as it was dealt. See coop.md, "Rerolls".
+      var cardsOffered = _.isNumber(pendingTechCards.cardsOffered)
+        ? pendingTechCards.cardsOffered
+        : pendingTechCards.cards.length;
       var rerollState = computeRerollDeal(
         cardsOffered,
         pendingTechCards.cards.length

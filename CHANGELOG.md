@@ -6,9 +6,15 @@
 
 - Loadout cards show which races can use them
 
+### API
+
+- A mod can name the races that can use one of its loadouts with `races` on the loadout's entry, such as `model.gwoStartingCards.push({ id: "mym_start_engineer", races: ["legion"] })`. A loadout entry without `races` is unchanged
+
 ### Bugfix
 
+- In co-op without Separate races, a player joining a race host's war can no longer choose a loadout that only MLA can use
 - In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session
+- In co-op with separate tech, a player who deletes a tech card while a tech offer is open still gets the full number of cards when they reroll it. Before, each reroll dealt one card too few, and the last reroll was lost
 - When the war cannot be saved, for example because the disk is full, the galaxy map recovers after 30 seconds: moving to a star or deleting a tech card no longer leaves the Saving indicator on for good, losing a war still opens the war summary, and pressing Fight closes the battle preparation screen so you can try again, where before each of these waited for good
 
 ## v7.7.0 - 2026-10-17

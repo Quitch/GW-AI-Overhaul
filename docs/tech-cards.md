@@ -270,13 +270,15 @@ did nothing at all for a player without the advanced factory. Only its
 
 A race player narrows this further. The deal withholds a card whose `card_units.js`
 entry names no unit that stands for a unit of the race. It also withholds every
-card in `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards
+`_upgrade_` card but the commander's, and every card whose entry's `races` list
+leaves the race out, such as Killswitch and Planetary Radar
+(`cards_deal_helpers.raceCanDeal`). Cards
 keep naming vanilla units, and the unit's capability cell and job decide. An entry's `races` list
-takes the place of `MLA_ONLY` and the `_upgrade_` rule for its card
+takes the place of the `_upgrade_` rule for its card
 (["Which races a card reaches"](#which-races-a-card-reaches)).
 
 A card whose entry names a race or add-on unit is written for that race:
-`MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
+the `_upgrade_` rule does not apply to it. When the entry names only
 such units, the card is dealt only to players whose race fields one, MLA players
 included. An entry that also names a stock unit is dealt through either half. The gate reads the race; whether the player holds the unit is the card's
 `deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
@@ -418,21 +420,21 @@ synchronously at scene load. It therefore always pushes before GWO's own `requir
 callbacks run. A bare assignment in place of an `_.isArray(...) ? ... : []` guard
 silently discards everything the mod registered.
 
-| Global                         | Scene                     | Read by                                                               |
-| ------------------------------ | ------------------------- | --------------------------------------------------------------------- |
-| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                      |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                             |
-| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                            |
-| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                       |
-| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                       |
-| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js` |
-| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `cards_coop_ai_tech.js`                         |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                          |
-| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                          |
-| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                             |
-| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                 |
-| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                             |
-| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                            |
+| Global                         | Scene                     | Read by                                                                                                                |
+| ------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                                                                       |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                                                                              |
+| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                                                                             |
+| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                                                                        |
+| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                                                                        |
+| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js`                        |
+| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js` (each entry's `races`) |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                                                                           |
+| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                                                                           |
+| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                                                                              |
+| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                                                                  |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                                                                              |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                                                                             |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -476,11 +478,13 @@ army.
 - **`races` on the `gwoCardsToUnits` entry.**
   `{ id: "mym_dox_health", units: [gwoUnit.dox], races: ["mla"] }` offers the
   card only to players of the races listed. The ids are trimmed and compared
-  case-blind (`races.normalizeId`). The list takes the place of `MLA_ONLY` and
-  the `_upgrade_` rule for that card, so an `_upgrade_` card that lists a race
+  case-blind (`races.normalizeId`). The list takes the place of the `_upgrade_`
+  rule for that card, so an `_upgrade_` card that lists a race
   is offered to it. A listed race still needs a unit that stands for one of
-  its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. Loadouts
-  are not affected: the loadout scenes lock a loadout by `mlaOnlyCard` alone.
+  its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. It does
+  not reach a loadout: a loadout takes `races` on its own `gwoStartingCards` or
+  `gwoNewStartCards` entry instead (see [`races.md`](races.md), "Which races a
+  loadout reaches").
 - **`stockOnly: true` on a mod.** `unit_cells.expandMods` keeps that one change
   on the file it names, and never lands it on a race or add-on unit. It is kept
   only where the army holds the file, so a race army without the Dox drops it
@@ -500,7 +504,8 @@ onto an MLA unit keeps its AI mods for that unit on MLA too, even where the
 race's unit already carries the tag. The Tactical Nuke, Planetary Excavation,
 Space Excavation, Defense Tech, and Artillery Commander loadouts remake the MLA
 units they change, so their changes to those units would not reach a race
-player's units. They are in `cards_deal_helpers.MLA_ONLY` for that reason.
+player's units. Their entries in `shared/loadout_ids.js` name MLA alone for that
+reason.
 
 ### Third-party decks
 
