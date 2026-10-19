@@ -45,15 +45,6 @@ define([
     });
   };
 
-  var onGameSaved = function () {
-    model.activeGameId(model.newGame().id);
-    model.lastSceneUrl(
-      "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
-    );
-    window.location.href =
-      "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
-  };
-
   return function (modules, scene) {
     var GW = modules.GW;
     var GWFactions = modules.GWFactions;
@@ -747,11 +738,8 @@ define([
       // gw_start is ever re-entered without a page load.
       warGenerationAttempts = 0;
 
+      // Before the save, so a player whose save fails gets these settings back.
       scene.saveDifficultySettings();
-
-      console.log(
-        "War created successfully using Galactic War Overhaul v" + gwoVersion
-      );
 
       new Promise(function (resolve) {
         resolve(
@@ -764,6 +752,18 @@ define([
       })
         .then(onGameSaved)
         .then(null, onWarNotOpened);
+    };
+
+    var onGameSaved = function () {
+      console.log(
+        "War created successfully using Galactic War Overhaul v" + gwoVersion
+      );
+      model.activeGameId(model.newGame().id);
+      model.lastSceneUrl(
+        "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+      );
+      window.location.href =
+        "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
     };
 
     var onWarNotOpened = function (err) {
