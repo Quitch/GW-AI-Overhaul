@@ -385,16 +385,18 @@ call. The replacement returns a jQuery promise, because stock passes saves to
 indicator, and a lost war opens the exit gate to `gw_war_over`. The exception is
 the save in stock `fight`, whose `$.when(...).always` reads its inputs by
 position. A rejection there throws on the missing script text and leaves
-`launchingFight` true. So a stock save that times out while `launchingFight` is
-true is logged and never settled, and `launchingFight` is cleared, which closes
-the launch panel and lets the player press Fight again. Stock sets
-`launchingFight` in the same synchronous step as that save, so this holds
-however a mod defers stock `fight`, as GW Server Mods does. Fight is not gated
-on the indicator, so a launch can start while an earlier save, such as the
-move's, is still writing. If both fail, the first timeout calls the launch off
-and the second rejects into stock's `.always`, which throws. `save_limit.js`
-logs that throw; `launchingFight` is already false, so the player can still
-press Fight again.
+`launchingFight` true. Stock sets `launchingFight` in the same synchronous step
+as that save, so the save made in the step where `launchingFight` turns true is
+the launch's, however a mod defers stock `fight`, as GW Server Mods does. When
+that save times out, it is logged and never settled, and if its launch is still
+the current one, `launchingFight` is cleared. That closes the launch panel and
+lets the player press Fight again. Every other save, such as a move's still
+writing when Fight is pressed, rejects as usual.
+
+Calling a launch off does not stop its referee hire. If the hire is still
+running when the save times out, which needs a hire of over 30 seconds, a
+second Fight can hire while the first does. On a co-op host the two hires'
+client-mod restriction windows can then overlap.
 
 `gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
 waits for the deal, the star-card refresh, and any co-op AI pass so the war is

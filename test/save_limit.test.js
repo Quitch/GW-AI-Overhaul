@@ -18,6 +18,7 @@ const {
   installFakeJQuery,
   makeDeferred,
 } = require("../scripts/lib/fake-jquery.js");
+const { makeObservable } = require("../scripts/lib/fake-knockout.js");
 
 const saves = [];
 let pendingSave;
@@ -50,7 +51,6 @@ afterEach(() => {
 
 function setup(launching, jQueryOptions) {
   const calls = { launching: [], errors: [] };
-  let launchingFight = launching;
   installFakeJQuery(stubs, jQueryOptions);
   stubs.setGlobal(
     "console",
@@ -58,17 +58,23 @@ function setup(launching, jQueryOptions) {
       error: (message) => calls.errors.push(message),
     })
   );
-  stubs.setGlobal("model", {
-    launchingFight: function (value) {
-      if (arguments.length) {
-        launchingFight = value;
-        calls.launching.push(value);
-      }
-      return launchingFight;
-    },
+  calls.launchingFight = makeObservable(launching, {
+    onChange: (value) => calls.launching.push(value),
   });
+  stubs.setGlobal("model", { launchingFight: calls.launchingFight });
   return calls;
 }
+
+// Stock fight: its save, then launchingFight, in one synchronous step.
+function fight(calls) {
+  const seen = outcome(manifest.saveGame({ id: "war" }));
+  calls.launchingFight(true);
+  calls.launching.length = 0;
+  return seen;
+}
+
+// lodash keeps the setTimeout it found at load, so mock.timers misses it.
+const nextTask = () => new Promise((resolve) => _.defer(resolve));
 
 function outcome(promise) {
   const seen = { state: "pending" };
@@ -203,9 +209,9 @@ describe("install", () => {
 
   // Stock fight's $.when would hand a rejection to an .always that throws.
   it("calls off a launch whose save has not landed, and leaves the save unsettled", async () => {
-    const calls = setup(true);
+    const calls = setup(false);
     saveLimit.install();
-    const seen = outcome(manifest.saveGame({ id: "war" }));
+    const seen = fight(calls);
 
     mock.timers.tick(30000);
     await flush();
@@ -220,15 +226,69 @@ describe("install", () => {
   });
 
   it("does not call off a launch when the save lands in time", async () => {
-    const calls = setup(true);
+    const calls = setup(false);
     saveLimit.install();
-    const seen = outcome(manifest.saveGame({ id: "war" }));
+    const seen = fight(calls);
 
     pendingSave.resolve();
     await flush();
     mock.timers.tick(30000);
     await flush();
     assert.equal(seen.state, "resolved");
+    assert.deepEqual(calls.launching, []);
+  });
+
+  // A move's save, say, still writing when Fight is pressed.
+  it("fails another save that times out during a launch, and leaves the launch alone", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    const earlier = outcome(manifest.saveGame({ id: "move" }));
+    await nextTask();
+    mock.timers.tick(5000);
+    const launch = fight(calls);
+    const launchSave = pendingSave;
+
+    mock.timers.tick(25000);
+    await flush();
+    assert.equal(earlier.state, "rejected");
+    assert.equal(earlier.reason.gwoTimedOut, true);
+    assert.deepEqual(calls.launching, []);
+    assert.equal(calls.launchingFight(), true);
+
+    launchSave.resolve();
+    await flush();
+    assert.equal(launch.state, "resolved");
+  });
+
+  it("leaves a later launch alone when an earlier launch's save times out", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    const first = fight(calls);
+    calls.launchingFight(false);
+    await nextTask();
+    mock.timers.tick(10000);
+    fight(calls);
+
+    mock.timers.tick(20000);
+    await flush();
+    assert.equal(first.state, "pending");
+    assert.deepEqual(calls.launching, []);
+    assert.equal(calls.launchingFight(), true);
+    assert.equal(calls.errors.length, 1);
+  });
+
+  // The cheat path saves and returns without launching.
+  it("fails a save that no launch followed in the same step", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    const seen = outcome(manifest.saveGame({ id: "war" }));
+    await nextTask();
+    calls.launchingFight(true);
+    calls.launching.length = 0;
+
+    mock.timers.tick(30000);
+    await flush();
+    assert.equal(seen.state, "rejected");
     assert.deepEqual(calls.launching, []);
   });
 });

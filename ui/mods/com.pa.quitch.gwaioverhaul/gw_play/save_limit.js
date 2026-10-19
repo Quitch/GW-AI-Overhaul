@@ -46,26 +46,48 @@ define([
     done.reject(error);
   };
 
-  // Stock fight hands its save to $.when, whose .always reads the other inputs
-  // positionally, so a rejection throws there and leaves launchingFight set. A
-  // save that fails while a launch waits is never settled; the launch is called
-  // off instead.
-  var rejectUnlessLaunching = function (error, done) {
-    if (model.launchingFight()) {
-      report(error);
-      model.launchingFight(false);
-      return;
-    }
-    done.reject(error);
-  };
-
   return {
     save: function (game) {
       return limited([game], reject);
     },
     install: function () {
+      var launches = 0;
+      var latest = null;
+
+      // Stock fight hands its save to $.when, whose .always reads the other
+      // inputs positionally, so a rejection throws there and leaves
+      // launchingFight set. Its save is the one made in the same synchronous
+      // step as launchingFight turns true, however a mod defers stock fight.
+      // That save is never settled; its launch is called off instead.
+      model.launchingFight.subscribe(function (launching) {
+        if (launching) {
+          launches += 1;
+          if (latest) {
+            latest.launch = launches;
+            latest = null;
+          }
+        }
+      });
+
       manifest.saveGame = function () {
-        return limited(arguments, rejectUnlessLaunching);
+        var call = { launch: 0 };
+        latest = call;
+        _.defer(function () {
+          if (latest === call) {
+            latest = null;
+          }
+        });
+
+        return limited(arguments, function (error, done) {
+          if (!call.launch) {
+            done.reject(error);
+            return;
+          }
+          report(error);
+          if (call.launch === launches && model.launchingFight()) {
+            model.launchingFight(false);
+          }
+        });
       };
     },
   };
