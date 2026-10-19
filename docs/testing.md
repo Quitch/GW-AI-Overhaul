@@ -626,7 +626,8 @@ stand-ins for the modules the script asks for. It suits what a script does
 before its `requireGW` callback, or a callback small enough to stub:
 `test/bugfixes.test.js`, `test/coop_ai_add_slot.test.js`,
 `test/coop_ai_commanders.test.js`, `test/coop_ai_race_for.test.js`,
-`test/gwo_panel.test.js`, `test/per_player_loadout_race_picker.test.js`,
+`test/gwo_panel.test.js`, `test/per_player_loadout_gwo_loadouts.test.js`,
+`test/per_player_loadout_race_picker.test.js`,
 `test/race_picker_view.test.js`, and `test/referee_hire_clients.test.js` use
 it. A callback that needs
 dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,

@@ -327,3 +327,36 @@ describe("load", () => {
     assert.match(errors[0], /^Galactic War Overhaul \(GWO\): war not read: /);
   });
 });
+
+describe("playerRace", () => {
+  it("is the viewer's pick under Separate races", () => {
+    assert.equal(
+      hostWar.playerRace({ perPlayerRace: true, race: "fixture" }, "other"),
+      "other"
+    );
+  });
+
+  it("is the host's race under Separate races before a pick", () => {
+    assert.equal(
+      hostWar.playerRace({ perPlayerRace: true, race: "fixture" }, undefined),
+      "fixture"
+    );
+  });
+
+  it("is the host's race without Separate races, whatever the picker holds", () => {
+    // The picker stays at MLA when the scene offers none, so its value would
+    // unlock MLA-only loadouts for a race host's viewer.
+    assert.equal(
+      hostWar.playerRace({ perPlayerRace: false, race: "fixture" }, "mla"),
+      "fixture"
+    );
+  });
+
+  it("is no race for a war that records none, or no war", () => {
+    assert.equal(
+      hostWar.playerRace({ perPlayerRace: false, race: undefined }, "mla"),
+      undefined
+    );
+    assert.equal(hostWar.playerRace(undefined, "mla"), undefined);
+  });
+});

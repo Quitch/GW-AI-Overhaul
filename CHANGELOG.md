@@ -12,6 +12,7 @@
 
 ### Bugfix
 
+- In co-op without Separate races, a player joining a race host's war can no longer choose a loadout that only MLA can use
 - In co-op with separate tech, AI players keep choosing tech cards after a battle. Before, they stopped choosing after the first battle of each game session
 
 ## v7.7.0 - 2026-10-17
