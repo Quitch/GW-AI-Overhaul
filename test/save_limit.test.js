@@ -33,6 +33,7 @@ const stockSave = manifest.saveGame;
 registerModuleStub("shared/gw_common", { manifest: manifest });
 
 const saveLimit = loadCouiModule(MOD_ROOT + "/gw_play/save_limit.js");
+const launchHires = loadCouiModule(MOD_ROOT + "/gw_play/launch_hires.js");
 
 const stubs = createGlobalStubs();
 const flush = () => new Promise((resolve) => setImmediate(resolve));
@@ -62,13 +63,22 @@ function setup(launching, jQueryOptions) {
     onChange: (value) => calls.launching.push(value),
   });
   stubs.setGlobal("model", { launchingFight: calls.launchingFight });
+  // As gw_play/referee.js begins each launch, solo.
+  calls.launchingFight.subscribe((value) => {
+    if (value) {
+      launchHires.begin(1);
+    }
+  });
   return calls;
 }
 
-// Stock fight: its save, then launchingFight, in one synchronous step.
+// Stock fight: its save, then launchingFight, then its hire, in one
+// synchronous step.
 function fight(calls) {
   const seen = outcome(manifest.saveGame({ id: "war" }));
   calls.launchingFight(true);
+  calls.hire = $.Deferred();
+  launchHires.track(calls.hire.promise());
   calls.launching.length = 0;
   return seen;
 }
@@ -212,6 +222,7 @@ describe("install", () => {
     const calls = setup(false);
     saveLimit.install();
     const seen = fight(calls);
+    calls.hire.resolve({});
 
     mock.timers.tick(30000);
     await flush();
@@ -223,6 +234,61 @@ describe("install", () => {
     pendingSave.resolve();
     await flush();
     assert.equal(seen.state, "pending");
+  });
+
+  // Issue #626: a second Fight would hire while the first launch's hire runs.
+  it("holds the call-off until the launch's hire has settled", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    fight(calls);
+
+    mock.timers.tick(30000);
+    await flush();
+    assert.deepEqual(calls.launching, []);
+    assert.equal(calls.launchingFight(), true);
+    assert.equal(calls.errors.length, 1);
+
+    calls.hire.resolve({});
+    await flush();
+    assert.deepEqual(calls.launching, [false]);
+  });
+
+  // GWO's referee clears launchingFight itself when a hire fails, and a new
+  // Fight may follow before the failure reaches the call-off.
+  it("leaves a launch the failed hire already ended alone", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    fight(calls);
+    const failed = calls.hire;
+    mock.timers.tick(30000);
+    await flush();
+
+    calls.launchingFight(false);
+    calls.launching.length = 0;
+    await nextTask();
+    fight(calls);
+    failed.reject(new Error("hire failed"));
+    await flush();
+    assert.deepEqual(calls.launching, []);
+    assert.equal(calls.launchingFight(), true);
+  });
+
+  it("logs a throw from the call-off", async () => {
+    const calls = setup(false);
+    saveLimit.install();
+    fight(calls);
+    calls.launchingFight.subscribe((value) => {
+      if (!value) {
+        throw new Error("subscriber bug");
+      }
+    });
+
+    mock.timers.tick(30000);
+    await flush();
+    calls.hire.resolve({});
+    await flush();
+    assert.equal(calls.errors.length, 2);
+    assert.match(calls.errors[1], /subscriber bug/);
   });
 
   it("does not call off a launch when the save lands in time", async () => {

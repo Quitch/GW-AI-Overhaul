@@ -388,15 +388,23 @@ position. A rejection there throws on the missing script text and leaves
 `launchingFight` true. Stock sets `launchingFight` in the same synchronous step
 as that save, so the save made in the step where `launchingFight` turns true is
 the launch's, however a mod defers stock `fight`, as GW Server Mods does. When
-that save times out, it is logged and never settled, and if its launch is still
-the current one, `launchingFight` is cleared. That closes the launch panel and
-lets the player press Fight again. Every other save, such as a move's still
-writing when Fight is pressed, rejects as usual.
+that save times out, it is logged and never settled, and its launch is called
+off: `launchingFight` is cleared, which closes the launch panel and lets the
+player press Fight again. Every other save, such as a move's still writing
+when Fight is pressed, rejects as usual.
 
-Calling a launch off does not stop its referee hire. If the hire is still
-running when the save times out, which needs a hire of over 30 seconds, a
-second Fight can hire while the first does. On a co-op host the two hires'
-client-mod restriction windows can then overlap.
+The call-off waits for the launch's referee hires to settle, so a second Fight
+cannot hire while the first launch still does. On a co-op host, two hires'
+client-mod restriction windows would otherwise overlap, and one launch's
+restore could remount the full mod set under the other's shared referee.
+Stock's `hireRefereesForLaunch` is private to `gw_play.js`, so
+`gw_play/launch_hires.js` infers its end from the hires `referee.js` reports:
+one hire, or two on a co-op host, the same test stock uses. The second starts
+only once the first has resolved and stock has remounted the client mods. A
+failed hire ends the launch: `referee.js` has already cleared `launchingFight`,
+even while a co-op host's restore remount still runs. The call-off clears
+`launchingFight` only if its launch is still the current one. Without GWO's referee no launch is tracked, and the
+call-off is immediate.
 
 `gw_play/save_debt.js` wraps `save.js` for the host's save after a win, which
 waits for the deal, the star-card refresh, and any co-op AI pass so the war is
