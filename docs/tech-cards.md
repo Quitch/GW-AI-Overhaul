@@ -418,21 +418,21 @@ synchronously at scene load. It therefore always pushes before GWO's own `requir
 callbacks run. A bare assignment in place of an `_.isArray(...) ? ... : []` guard
 silently discards everything the mod registered.
 
-| Global                         | Scene                     | Read by                                                               |
-| ------------------------------ | ------------------------- | --------------------------------------------------------------------- |
-| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                      |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                             |
-| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                            |
-| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                       |
-| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                       |
-| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js` |
-| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `cards_coop_ai_tech.js`                         |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                          |
-| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                          |
-| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                             |
-| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                 |
-| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                             |
-| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                            |
+| Global                         | Scene                     | Read by                                                                                                                |
+| ------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                                                                       |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                                                                              |
+| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                                                                             |
+| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                                                                        |
+| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                                                                        |
+| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js`                        |
+| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js` (each entry's `races`) |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                                                                           |
+| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                                                                           |
+| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                                                                              |
+| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                                                                  |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                                                                              |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                                                                             |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -479,8 +479,10 @@ army.
   case-blind (`races.normalizeId`). The list takes the place of `MLA_ONLY` and
   the `_upgrade_` rule for that card, so an `_upgrade_` card that lists a race
   is offered to it. A listed race still needs a unit that stands for one of
-  its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. Loadouts
-  are not affected: the loadout scenes lock a loadout by `mlaOnlyCard` alone.
+  its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. It does
+  not reach a loadout: a loadout takes `races` on its own `gwoStartingCards` or
+  `gwoNewStartCards` entry instead (see [`races.md`](races.md), "Which races a
+  loadout reaches").
 - **`stockOnly: true` on a mod.** `unit_cells.expandMods` keeps that one change
   on the file it names, and never lands it on a race or add-on unit. It is kept
   only where the army holds the file, so a race army without the Dox drops it

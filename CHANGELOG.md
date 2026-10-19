@@ -6,6 +6,10 @@
 
 - Loadout cards show which races can use them
 
+### API
+
+- A mod can name the races that can use one of its loadouts with `races` on the loadout's entry, such as `model.gwoStartingCards.push({ id: "mym_start_engineer", races: ["legion"] })`. A loadout entry without `races` is unchanged
+
 ## v7.7.0 - 2026-10-17
 
 ### API

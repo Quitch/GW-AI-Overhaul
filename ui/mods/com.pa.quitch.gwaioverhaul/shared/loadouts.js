@@ -75,7 +75,7 @@ define([
         gwoLoadoutBanks.hasStartCard(cardData)
       ) {
         var card = model.makeKnown(cardData);
-        return helpers.raceLocksLoadout(race, cardData.id)
+        return helpers.raceLocksLoadout(race, cardData.id, allCards)
           ? lockForRace(card)
           : card;
       } else {

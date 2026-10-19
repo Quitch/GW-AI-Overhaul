@@ -952,9 +952,78 @@ describe("races", () => {
     );
   });
 
+  it("raceLocksLoadout reads the races a loadout's own entry names", () => {
+    const entries = [
+      { id: "mym_start_legion", races: [" Legion "] },
+      { id: "gwaio_start_paratrooper", races: ["mla", "legion"] },
+      { id: "mym_start_nobody", races: [] },
+      { id: "mym_start_plain" },
+    ];
+    const locks = (race, id) => helpers.raceLocksLoadout(race, id, entries);
+
+    assert.equal(locks("legion", "mym_start_legion"), false);
+    assert.equal(locks("LEGION", "mym_start_legion"), false);
+    assert.equal(locks("mla", "mym_start_legion"), true);
+    assert.equal(locks("bugs", "mym_start_legion"), true);
+    assert.equal(locks("legion", "gwaio_start_paratrooper"), false);
+    assert.equal(locks("bugs", "gwaio_start_paratrooper"), true);
+    assert.equal(locks("mla", "mym_start_nobody"), true);
+    assert.equal(locks("legion", "mym_start_plain"), false);
+    assert.equal(locks("legion", "gwaio_start_nomad"), true);
+    assert.equal(locks(undefined, "mym_start_legion"), false);
+  });
+
+  it("raceLocksLoadout skips an entry without a races list", () => {
+    const entries = [
+      null,
+      { id: "mym_start_drop", races: "legion" },
+      { id: "mym_start_drop", races: ["legion"] },
+    ];
+
+    assert.equal(
+      helpers.raceLocksLoadout("bugs", "mym_start_drop", entries),
+      true
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("legion", "mym_start_drop", entries),
+      false
+    );
+  });
+
+  it("loadoutEntries joins a scene's unlocked and locked loadout lists", () => {
+    const one = { id: "a_start_one" };
+    const two = { id: "a_start_two" };
+
+    assert.deepEqual(
+      helpers.loadoutEntries({
+        gwoStartingCards: [one],
+        gwoNewStartCards: [two],
+      }),
+      [one, two]
+    );
+    assert.deepEqual(helpers.loadoutEntries({ gwoNewStartCards: [two] }), [
+      two,
+    ]);
+    assert.deepEqual(helpers.loadoutEntries({ gwoStartingCards: "x" }), []);
+    assert.deepEqual(helpers.loadoutEntries(undefined), []);
+  });
+
   const raceList = [{ id: "mla" }, { id: "legion" }, { id: "bugs" }];
-  const compatibleIds = (cardId, list) =>
-    helpers.compatibleRaces(cardId, list).map((race) => race.id);
+  const compatibleIds = (cardId, list, entries) =>
+    helpers.compatibleRaces(cardId, list, entries).map((race) => race.id);
+
+  it("compatibleRaces offers a loadout to the races its entry names", () => {
+    const entries = [{ id: "mym_start_legion", races: ["legion"] }];
+
+    assert.deepEqual(compatibleIds("mym_start_legion", raceList, entries), [
+      "legion",
+    ]);
+    assert.deepEqual(compatibleIds("mym_start_legion", raceList), [
+      "mla",
+      "legion",
+      "bugs",
+    ]);
+  });
 
   it("compatibleRaces offers a general loadout to every race", () => {
     for (const id of ["gwaio_start_lucky", "gwaio_upgrade_subcommander_1"]) {
