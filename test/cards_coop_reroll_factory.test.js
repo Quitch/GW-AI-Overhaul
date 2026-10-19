@@ -530,6 +530,49 @@ describe("host reroll handler - the reroll", () => {
     });
   });
 
+  // A full hand was offered 4, then the viewer deleted a card, so the hand as
+  // it is now is worth only 3. The server strips cardsOffered from the offer,
+  // so only the record's own field still knows it was 4. Issue #605.
+  it("sizes the reroll from the offer as dealt, not the hand as it is now", async () => {
+    const { handlers, calls } = build({
+      cardsOffered: 3,
+      records: {
+        alice: record({
+          pendingTechCards: pendingTechCards({
+            cards: [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
+          }),
+          gwaioPendingOffer: { star: 2, dealIndex: 4, cardsOffered: 4 },
+        }),
+      },
+    });
+
+    await handlers[REQUEST](operator());
+
+    assert.equal(calls.deals[0].count, 3);
+    assert.equal(calls.upserts[0].pendingTechCards.cardsOffered, 4);
+    assert.equal(calls.hostOperators[0][1].rerolls_used, 1);
+    assert.equal(calls.hostOperators[0][1].offer_rerolls, true);
+  });
+
+  it("sizes the reroll from the hand as it is now when the record names another deal", async () => {
+    const { handlers, calls } = build({
+      cardsOffered: 3,
+      records: {
+        alice: record({
+          pendingTechCards: pendingTechCards({
+            cards: [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
+          }),
+          gwaioPendingOffer: { star: 2, dealIndex: 3, cardsOffered: 4 },
+        }),
+      },
+    });
+
+    await handlers[REQUEST](operator());
+
+    assert.equal(calls.deals[0].count, 2);
+    assert.equal(calls.upserts[0].pendingTechCards.cardsOffered, 3);
+  });
+
   it("tells the viewer when the last reroll has been spent", async () => {
     const { handlers, calls } = build({
       records: {

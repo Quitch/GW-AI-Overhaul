@@ -838,6 +838,16 @@ in `gw_play/cards_coop_reroll.js` implement it. The size of the remaining hand
 encodes the number of rerolls used, since each reroll spends one more of the
 offered cards.
 
+That count needs the size the offer was dealt at, not the size the viewer's hand
+is worth now. A viewer can delete a card while the offer is open, and a delete
+from a full hand, or of the Lucky card, makes the hand worth one card fewer. The
+server strips `cardsOffered` from the offer ("Per-player pre-dealt cards"), so
+`cards_coop_deal.js` also writes the size to a top-level `gwaioPendingOffer`
+field on the record, `{star, dealIndex, cardsOffered}`, before it sends the
+deal. `rerolledHandFor` uses that size when its star and `dealIndex` match the
+open offer. Otherwise, as for an offer dealt before the field existed, it falls
+back to the size of the hand as it is now.
+
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
@@ -1115,7 +1125,8 @@ Note the asymmetry that makes this work. The server drops anything added inside
 `_.assign` over the existing one, on both the server and the client, so a novel
 top-level field survives. `cardsOffered`/`rerollsUsed` are the standing example
 of the first half: they only persist on the reroll path, which writes the record
-locally.
+locally. `gwaioPendingOffer` ("Rerolls") is the second example of the other
+half.
 
 **Only the host's own per-turn deal replaces a card a viewer already holds.**
 Only `dealCardToSelectableAI` calls `refresh({redeal: true})`. Every other

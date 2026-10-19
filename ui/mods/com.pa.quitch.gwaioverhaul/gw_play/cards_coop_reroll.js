@@ -26,6 +26,22 @@ define([
     };
   };
 
+  // The size the open offer was dealt at, or undefined when the deal did not
+  // record one. See coop.md, "Rerolls".
+  var dealtOfferSize = function (record, pendingTechCards) {
+    var offer = record && record.gwaioPendingOffer;
+    if (
+      !offer ||
+      !_.isNumber(offer.cardsOffered) ||
+      offer.star !== pendingTechCards.star ||
+      offer.dealIndex !== pendingTechCards.dealIndex
+    ) {
+      return undefined;
+    }
+
+    return offer.cardsOffered;
+  };
+
   // The reject reason, or undefined when the request is valid.
   var pendingTechRerollValidationError = function (
     payload,
@@ -125,10 +141,10 @@ define([
     var rerolledHandFor = function (params) {
       var result = $.Deferred();
       var pendingTechCards = params.pendingTechCards;
-      var cardsOffered = helpers.cardsOfferedCount(
-        numCardsToOffer,
-        params.inventory
-      );
+      var dealtSize = dealtOfferSize(params.record, pendingTechCards);
+      var cardsOffered = _.isNumber(dealtSize)
+        ? dealtSize
+        : helpers.cardsOfferedCount(numCardsToOffer, params.inventory);
       var rerollState = computeRerollDeal(
         cardsOffered,
         pendingTechCards.cards.length
@@ -428,6 +444,7 @@ define([
     // eslint-disable-next-line no-undef
     module.exports = {
       computeRerollDeal: computeRerollDeal,
+      dealtOfferSize: dealtOfferSize,
       pendingTechRerollValidationError: pendingTechRerollValidationError,
       pendingTechRerollRng: pendingTechRerollRng,
     };

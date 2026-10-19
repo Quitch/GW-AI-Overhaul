@@ -1,8 +1,9 @@
 // Host-side co-op pending-tech deal. Stock gw_play.js always deals each viewer
 // exactly 3 cards; this honours the bonus-card rules and per-player loadouts.
 define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
-], function (refereeCoop) {
+], function (coopHost, refereeCoop) {
   // What one player is dealt at a star: the treasure planet's loadout alone,
   // else their own hand with their pre-dealt card.
   var targetFor = function (params) {
@@ -188,6 +189,24 @@ define([
       return result.promise();
     };
 
+    // The server rebuilds pendingTechCards without cardsOffered, so a reroll
+    // reads the offer's size from here. See coop.md, "Rerolls".
+    var storeOfferSize = function (update) {
+      var pendingTechCards = update.pendingTechCards;
+      var record = coopHost.recordFor(game, update);
+      if (!_.isNumber(pendingTechCards.cardsOffered) || !record) {
+        return;
+      }
+
+      coopHost.upsertRecord(game, record, {
+        gwaioPendingOffer: {
+          star: pendingTechCards.star,
+          dealIndex: pendingTechCards.dealIndex,
+          cardsOffered: pendingTechCards.cardsOffered,
+        },
+      });
+    };
+
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
       var dealOptions = options || {};
@@ -259,6 +278,8 @@ define([
           result.resolve([]);
           return;
         }
+
+        _.forEach(updates, storeOfferSize);
 
         var payload = {
           players: updates,
