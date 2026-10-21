@@ -321,9 +321,10 @@ define([
 
     // The buff/dull pair every loadout shares. The first buff of each
     // applyCards pass runs the default start and `apply`; a later one only
-    // adds the slot (unless `repeatSlot` is false); a copy dealt after the
-    // start goes to `bank`. `always` runs on every buff of the start card,
-    // and its second argument is the card's saved params. See tech-cards.md.
+    // adds the slot (unless `repeatSlot` is false); a loadout that is not the
+    // inventory's first card goes to `bank`. `always` runs on every buff of
+    // the start card, and its second argument is the card's saved params. See
+    // tech-cards.md.
     loadout: function (card, options) {
       return {
         buff: function (inventory, params) {
