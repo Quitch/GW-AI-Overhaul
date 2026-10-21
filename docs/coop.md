@@ -121,6 +121,31 @@ spec read that fails takes the same path: the launch aborts with
 `per_player_tech_ready = false` and the error named in the log, rather than
 hanging on the load screen.
 
+### Host-only load files
+
+Stock builds the shared referee with only the host's `galacticWarMod: true` client
+mods and their dependencies enabled, and its config is what the server receives.
+The remount that applies this drops every other **zip** mod, which is how players
+install a card mod. Enabled folder mods in `client_mods/` stay mounted, so a test
+from a folder does not show the effect. A card mod with `galacticWarMod: false`
+that ships `pa/ai_tech/` files for a `load` would then lose them in the shared
+hire: `referee_ai.js` logs `AI file of a load mod not read, skipped:` and builds
+the Sub Commanders without them (issue #632).
+
+So `gw_play/referee.js` starts `gameFilePaths.loadAiTechFiles()` when `gw_play`
+loads, while every mod is mounted. That read keeps every file under `/pa/ai_tech/`
+by path for the page. Each hire's first step after the client list waits for it
+(at most 10 s) and seeds the launch's tree cache with the files
+(`createTreeCache().seed`), so the shared hire never reads them from disk. The
+cache also keeps a failed read, so reading the files again later in the launch
+would not help. The AI files are written into the battle config, so viewers still
+do not need the mod.
+
+`loadAiTechFiles` rejects as a whole when one file cannot be read or nothing is
+listed, and then reads again on the next call. So a single broken file in any mod
+leaves the cache unseeded: the hire logs `AI load files not read before the hire:`
+and reads each load file itself, as it did before the seed.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.

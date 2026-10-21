@@ -65,6 +65,7 @@ function installScene(untaggedListFile) {
             ])
           ),
         describeError: (error) => error.message,
+        loadAiTechFiles: () => Promise.resolve({}),
       },
       {
         within: gwoPromise.within,

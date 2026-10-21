@@ -54,6 +54,9 @@
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
         var firstHireClientKeys = null;
+        // Read while every mod is mounted, for a co-op host's shared hire.
+        // The hire logs a failure. See coop.md, "Host-only load files".
+        gameFilePaths.loadAiTechFiles().then(null, _.noop);
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
@@ -204,6 +207,26 @@
                   throw new Error("co-op AI players are not loaded");
                 }
                 ref.coopAis = [];
+              },
+              // Unseeded, a load file is read during the hire, as before.
+              function () {
+                return gwoPromise
+                  .settled(
+                    gwoPromise.within(
+                      gameFilePaths.loadAiTechFiles(),
+                      10000,
+                      "AI load file read"
+                    ),
+                    function (error) {
+                      console.error(
+                        "Galactic War Overhaul (GWO): AI load files not read before the hire: " +
+                          gameFilePaths.describeError(error)
+                      );
+                    }
+                  )
+                  .then(function (files) {
+                    ref.treeCache.seed(files);
+                  });
               },
               _.bind(gwoGenerateGameFiles, ref),
               function () {
