@@ -656,6 +656,15 @@ define([
           return _.cloneDeep(json);
         });
       },
+      // Files read before the launch, by path. A path already held keeps its
+      // entry.
+      seed: function (filesByPath) {
+        _.forEach(filesByPath, function (json, filePath) {
+          cached(files, filePath, function () {
+            return Promise.resolve(json);
+          });
+        });
+      },
     };
   };
 

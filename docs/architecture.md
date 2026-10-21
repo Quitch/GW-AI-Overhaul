@@ -146,10 +146,8 @@ hire's teardown is the latest one, and the per-player tech referee that runs
 after it mounts nothing.
 
 Everything from the click to the hand-off to `connect_to_game` sits behind
-`gw_play/launch_progress.js`. The one exception is a co-op host's read of the
-`/pa/ai_tech/` files, which can come first ([`coop.md`](coop.md), "Host-only load
-files"). That file wraps `model.fight` and shows a loading panel that
-`model.gwoLaunchProgress` drives. That object is a public surface:
+`gw_play/launch_progress.js`. That file wraps `model.fight` and shows a loading
+panel that `model.gwoLaunchProgress` drives. That object is a public surface:
 
 - `visible`, `title`, `message`, `steps` are observables. `begin()`,
   `stage(text)` and `end()` drive them. `begin()` is idempotent, and `stage()`

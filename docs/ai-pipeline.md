@@ -339,10 +339,9 @@ Two details make it correct:
 The cache lives exactly one launch. `gw_play/referee.js` creates it on the first
 hire after `launchingFight` becomes true. It passes the same cache to every hire
 of that launch through `ref.treeCache`. So a co-op host's shared and own referee
-passes read each tree file once between them. A co-op host's Fight creates the
-cache earlier, and fills it with the `/pa/ai_tech/` files before stock fight
-restricts the client mods ([`coop.md`](coop.md), "Host-only load files"). The
-next Fight starts from disk again. A run that receives no cache (tests, the
+passes read each tree file once between them. Each hire seeds it with the
+`/pa/ai_tech/` files read when the scene loaded ([`coop.md`](coop.md),
+"Host-only load files"). The next Fight reads the build trees from disk again. A run that receives no cache (tests, the
 console) creates its own.
 
 ## Test hook

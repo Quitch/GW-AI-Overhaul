@@ -31,7 +31,6 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/load_prefetch.js",
       ],
       function (
         GW,
@@ -47,24 +46,23 @@
         coopAiRoster,
         refereeCoop,
         raceCells,
-        launchHires,
-        loadPrefetch
+        launchHires
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
         // The AI tree cache lives one launch: a co-op host's two hires share
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
-        var primedTreeCache = null;
-        var priming = null;
         var firstHireClientKeys = null;
+        // Read while every mod is mounted, for a co-op host's shared hire.
+        // The hire logs a failure. See coop.md, "Host-only load files".
+        gameFilePaths.loadAiTechFiles().then(null, _.noop);
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
             latestHire = null;
-            treeCache = primedTreeCache;
-            primedTreeCache = null;
+            treeCache = null;
             firstHireClientKeys = null;
             // Stock's own test for a co-op host's two hires.
             launchHires.begin(
@@ -72,39 +70,6 @@
             );
           }
         });
-
-        // A co-op host's load files are read before stock fight restricts
-        // the client mods. See coop.md, "Host-only load files".
-        var previousFight = model.fight;
-        model.fight = function (viewModel, event, cheat) {
-          var fight = _.bind(
-            previousFight.apply,
-            previousFight,
-            this,
-            arguments
-          );
-          primedTreeCache = null;
-          if (
-            cheat === true ||
-            model.launchingFight() ||
-            !model.gwCampaignActive() ||
-            !model.isCampaignHost()
-          ) {
-            return fight();
-          }
-          if (priming) {
-            return priming;
-          }
-          var cache = gwoGenerateAI.createTreeCache();
-          priming = gwoPromise
-            .settled(loadPrefetch.prime(cache))
-            .then(function () {
-              priming = null;
-              primedTreeCache = cache;
-              return fight();
-            });
-          return priming;
-        };
 
         // A co-op host hires a clean shared referee and then its own, so each
         // pass is labelled while it runs. See architecture.md.
@@ -242,6 +207,26 @@
                   throw new Error("co-op AI players are not loaded");
                 }
                 ref.coopAis = [];
+              },
+              // Unseeded, a load file is read during the hire, as before.
+              function () {
+                return gwoPromise
+                  .settled(
+                    gwoPromise.within(
+                      gameFilePaths.loadAiTechFiles(),
+                      10000,
+                      "AI load file read"
+                    ),
+                    function (error) {
+                      console.error(
+                        "Galactic War Overhaul (GWO): AI load files not read before the hire: " +
+                          gameFilePaths.describeError(error)
+                      );
+                    }
+                  )
+                  .then(function (files) {
+                    ref.treeCache.seed(files);
+                  });
               },
               _.bind(gwoGenerateGameFiles, ref),
               function () {

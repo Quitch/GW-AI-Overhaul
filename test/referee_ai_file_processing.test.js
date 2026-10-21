@@ -177,6 +177,74 @@ describe("load files", () => {
       JSON.stringify(keys)
     );
   });
+
+  // A co-op host's shared hire runs with host-only mods unmounted, so the
+  // hire seeds its cache from the scene-load read (issue #632).
+  it("takes a seeded load file from the cache, not from disk", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "tech.json" }],
+    });
+    installModel(fixture.game, []);
+    const { getJSONCalls } = installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
+    });
+    const seeded = {
+      "/pa/ai_tech/fabber_builds/tech.json": {
+        build_list: [{ to_build: "Seeded", priority: 1 }],
+      },
+    };
+    const treeCache = refereeAi.createTreeCache();
+    treeCache.seed(seeded);
+
+    const filesObj = {};
+    await refereeAi.call({ files: () => filesObj, treeCache });
+
+    assert.deepEqual(getJSONCalls, ["coui://pa/ai/fabber_builds/x.json"]);
+    const copies = Object.keys(filesObj).filter((key) =>
+      key.endsWith("/fabber_builds/tech.json")
+    );
+    assert.ok(copies.length > 0, JSON.stringify(Object.keys(filesObj)));
+    copies.forEach((key) => {
+      assert.equal(filesObj[key].build_list[0].to_build, "Seeded");
+      assert.notEqual(
+        filesObj[key],
+        seeded["/pa/ai_tech/fabber_builds/tech.json"]
+      );
+    });
+  });
+
+  it("hands out copies of a seeded file and keeps a path it already holds", async () => {
+    installFakes({ getJSON: () => ({ read: "disk" }) });
+    const treeCache = refereeAi.createTreeCache();
+    const path = "/pa/ai_tech/fabber_builds/tech.json";
+    await treeCache.getJSON(path);
+    const seeded = { [path]: { read: "seed" } };
+    treeCache.seed(seeded);
+    treeCache.seed(undefined);
+
+    const first = await treeCache.getJSON(path);
+    first.read = "mutated";
+
+    assert.deepEqual(await treeCache.getJSON(path), { read: "disk" });
+    assert.deepEqual(seeded[path], { read: "seed" });
+  });
+
+  it("serves a seeded file as a copy without reading it", async () => {
+    const { getJSONCalls } = installFakes({ getJSON: () => ({}) });
+    const treeCache = refereeAi.createTreeCache();
+    const path = "/pa/ai_tech/fabber_builds/tech.json";
+    const seeded = { [path]: { build_list: [] } };
+    treeCache.seed(seeded);
+
+    const copy = await treeCache.getJSON(path);
+    copy.build_list.push("mutated");
+
+    assert.deepEqual(getJSONCalls, []);
+    assert.deepEqual(seeded[path], { build_list: [] });
+  });
 });
 
 describe("Guardians scoped destination", () => {
