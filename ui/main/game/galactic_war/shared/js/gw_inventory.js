@@ -8,6 +8,19 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
 ], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam, unitCells) {
   var loadingAnotherPlayersCards = false;
+  var holdCarried = false;
+
+  // A dirty pass's re-run, handed that pass's hold. If the call does not reach
+  // a new pass (another pass's stand-in only marks it dirty), the hold is
+  // released here.
+  var reapplyCards = function (inventory, done, held) {
+    holdCarried = held;
+    inventory.applyCards(done);
+    if (holdCarried) {
+      holdCarried = false;
+      gwoBank.resumeUnlocks();
+    }
+  };
 
   var isCampaignViewerSession = function () {
     try {
@@ -99,13 +112,15 @@ define([
     applyCards: function (done) {
       var self = this;
       var cards = self.cards().slice();
-      // GWO - held for the whole pass, so a card's buff() cannot bank. Consumed
-      // here: the apply GWGame.load flagged is the one immediately following.
-      var foreignCards = loadingAnotherPlayersCards;
-      loadingAnotherPlayersCards = false;
-      if (foreignCards) {
+      // GWO - held for the whole apply, re-runs included, so a card's buff()
+      // cannot bank. Consumed here: the apply GWGame.load flagged is the one
+      // immediately following.
+      var foreignCards = loadingAnotherPlayersCards || holdCarried;
+      if (foreignCards && !holdCarried) {
         gwoBank.suspendUnlocks(stockBank);
       }
+      loadingAnotherPlayersCards = false;
+      holdCarried = false;
 
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
@@ -124,12 +139,14 @@ define([
         delete self.setTag; // GWO
         delete self.applyCards;
         delete self.isApplyingCards;
-        if (foreignCards) {
-          foreignCards = false; // GWO - the dirty re-run below is not held
+        // GWO - the dirty re-run below keeps the hold; the pass that ends
+        // clean releases it.
+        if (foreignCards && !dirty) {
+          foreignCards = false;
           gwoBank.resumeUnlocks();
         }
         if (dirty) {
-          _.delay(_.bind(self.applyCards, self, done));
+          _.delay(_.partial(reapplyCards, self, done, foreignCards));
         } else if (done) {
           _.delay(done);
         }
