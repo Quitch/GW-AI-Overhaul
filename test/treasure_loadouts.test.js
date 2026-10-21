@@ -272,9 +272,42 @@ describe("bankStartCard", () => {
       added: [],
       addStartCard: (c) => stockBank.added.push(c),
     };
-    const gwoBank = { added: [], addStartCard: (c) => gwoBank.added.push(c) };
+    // The own-claim methods pass a hold on unlocks; bank.test.js pins that.
+    const gwoBank = {
+      added: [],
+      addOwnStartCard: (c) => gwoBank.added.push(c),
+      addOwnStockStartCard: (bank, c) => bank.addStartCard(c),
+    };
     return { stockBank, gwoBank };
   };
+
+  // The player's own win: nothing banks it later, so a hold must not refuse
+  // it.
+  it("banks through the methods that pass a hold on unlocks", () => {
+    const calls = [];
+    const stockBank = { addStartCard: () => calls.push("held stock bank") };
+    const gwoBank = {
+      addStartCard: () => calls.push("held GWO bank"),
+      addOwnStartCard: (c) => calls.push(["own", c.id]),
+      addOwnStockStartCard: (bank, c) => calls.push(["own stock", bank, c.id]),
+    };
+
+    treasure.bankStartCard({
+      card: { id: "gwaio_start_warp" },
+      stockBank,
+      gwoBank,
+    });
+    treasure.bankStartCard({
+      card: { id: "gwc_start_artillery" },
+      stockBank,
+      gwoBank,
+    });
+
+    assert.deepEqual(calls, [
+      ["own", "gwaio_start_warp"],
+      ["own stock", stockBank, "gwc_start_artillery"],
+    ]);
+  });
 
   it("keeps mod loadouts out of the base game's bank", () => {
     const { stockBank, gwoBank } = banks();
@@ -655,6 +688,12 @@ const bank = (ids) => ({
   addStartCard(card) {
     this.added.push(card);
     return true;
+  },
+  addOwnStartCard(card) {
+    return this.addStartCard(card);
+  },
+  addOwnStockStartCard(stockBank, card) {
+    return stockBank.addStartCard(card);
   },
 });
 
