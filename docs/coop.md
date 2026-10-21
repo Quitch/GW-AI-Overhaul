@@ -1394,6 +1394,14 @@ matters there. Judging a loadout puts it first, which pushes the AI's own
 loadout into second place, and a loadout in any place but the first banks
 itself in its `buff`. An AI never takes a loadout, so it never banks one.
 
+Every hold is the same one, `bank.suspendUnlocks`. It swaps a no-op in for the
+base game's `addStartCard`, and GWO's own bank turns cards away. A card mod's
+loadout banks into the mod's own bank, which the hold cannot swap out: on a
+viewer's first apply, `gwoLoadoutBanks` has not resolved a single bank. So
+`gwoCard.loadout` reads the hold count (`shared/unlock_hold.js`) and banks
+nothing while it is held. A third-party loadout with a `buff` of its own still
+banks.
+
 The release has one gap. An apply that is slow rather than hung runs the rest
 of its cards after the timeout, with banking back on, so a judged loadout's
 second place would bank into the host's own bank. The timeout keeps this out of

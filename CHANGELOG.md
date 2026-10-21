@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- In co-op with separate tech, a war saved before v6.8.0 no longer unlocks a card mod's loadout for a player who did not win it
+
 ## v7.8.0 - 2026-10-19
 
 ### Added

@@ -152,6 +152,21 @@ const FIXTURE_CARDS = {
   ),
 };
 
+// A loadout from a card mod, written as the New-GW-Cards template writes one,
+// with its own bank.
+const modBank = { added: [], addStartCard: (card) => modBank.added.push(card) };
+const modLoadoutCard = { id: "fixture_start_mod" };
+const modLoadout = gwoCard.loadout(modLoadoutCard, {
+  bank: modBank,
+  start: { buff: () => {} },
+});
+FIXTURE_CARDS[modLoadoutCard.id] = fixtureCard(
+  "Fixture Loadout",
+  0,
+  modLoadout.buff,
+  modLoadout.dull
+);
+
 const COMMANDER = "/pa/units/commanders/imperial_able/imperial_able.json";
 
 // A bot AI's saved inventory: the Bot Commander loadout alone.
@@ -554,6 +569,33 @@ describe("coop_ai_effects copies", () => {
 
     assert.deepEqual(makeEffects.plain(inventory.save()), expected.applied);
     assert.equal(JSON.stringify(record), before);
+  });
+
+  // A war saved before v6.8.0 can hold a viewer's won loadout after its first
+  // card. The host must not bank it into the card mod's bank.
+  it("banks nothing into a card mod's bank while it applies a viewer's record", async () => {
+    const saved = {
+      cards: [{ id: "gwc_start_bot" }, modLoadoutCard],
+      tags: BOT_AI.tags,
+    };
+    modBank.added.length = 0;
+    const inventory = await new Promise((resolve) =>
+      bank.applyRecordInventory(
+        GWInventory,
+        { inventory: saved },
+        stockBank,
+        resolve
+      )
+    );
+
+    assert.deepEqual(modBank.added, []);
+    assert.equal(inventory.maxCards(), 6);
+
+    // Unheld, the same cards bank the loadout.
+    const unheld = new GWInventory();
+    unheld.load(bank.copyForApply(saved));
+    await new Promise((resolve) => unheld.applyCards(resolve));
+    assert.deepEqual(modBank.added, [modLoadoutCard]);
   });
 
   it("loads an inventory with no cards whole", async () => {
