@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- In co-op, the host's Sub Commanders use the AI builds from tech cards in mods that only the host has installed
+
 ## v7.8.0 - 2026-10-19
 
 ### Added

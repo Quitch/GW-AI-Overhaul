@@ -66,7 +66,8 @@
         // and both teardown paths navigate to transit, taking the panel with
         // the page.
 
-        // Outermost wrapper: mods that report to this screen load before GWO.
+        // Outside every other mod's wrapper: mods that report to this screen
+        // load before GWO.
         // Stock restartFight delegates to model.fight, so one wrap covers both.
         var previousFight = model.fight;
         model.fight = function (viewModel, event, cheat) {

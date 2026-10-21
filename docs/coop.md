@@ -121,6 +121,29 @@ spec read that fails takes the same path: the launch aborts with
 `per_player_tech_ready = false` and the error named in the log, rather than
 hanging on the load screen.
 
+### Host-only load files
+
+Stock builds the shared referee with only the host's `galacticWarMod: true` client
+mods and their dependencies enabled, and its config is what the server receives.
+The remount that applies this drops every other **zip** mod, which is how players
+install a card mod. Enabled folder mods in `client_mods/` stay mounted, so a test
+from a folder does not show the effect. A card mod with `galacticWarMod: false`
+that ships `pa/ai_tech/` files for a `load` would then lose them in the shared
+hire: `referee_ai.js` logs `AI file of a load mod not read, skipped:` and builds
+the Sub Commanders without them (issue #632).
+
+So on a co-op host, GWO's `model.fight` wrapper in `gw_play/referee.js` first reads
+every file under `/pa/ai_tech/` into a new tree cache (`gw_play/load_prefetch.js`),
+while every mod is still mounted. Only then does it call stock fight. The
+`launchingFight` subscriber hands that cache to the launch, so both hires read
+the files from it. The cache also keeps a failed read, so reading the files again
+later in the launch would not help. The AI files are written into the battle
+config, so viewers still do not need the mod. The wrapper does nothing for a solo
+launch or the cheat path, and a second click while the files are read returns the
+first click's promise. GWO's two `model.fight` wrappers are installed in no fixed
+order, so the launch panel (`gw_play/launch_progress.js`) may open only once the
+files are read.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.

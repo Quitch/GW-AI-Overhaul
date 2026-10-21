@@ -31,6 +31,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/load_prefetch.js",
       ],
       function (
         GW,
@@ -46,20 +47,24 @@
         coopAiRoster,
         refereeCoop,
         raceCells,
-        launchHires
+        launchHires,
+        loadPrefetch
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
         // The AI tree cache lives one launch: a co-op host's two hires share
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
+        var primedTreeCache = null;
+        var priming = null;
         var firstHireClientKeys = null;
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
             latestHire = null;
-            treeCache = null;
+            treeCache = primedTreeCache;
+            primedTreeCache = null;
             firstHireClientKeys = null;
             // Stock's own test for a co-op host's two hires.
             launchHires.begin(
@@ -67,6 +72,39 @@
             );
           }
         });
+
+        // A co-op host's load files are read before stock fight restricts
+        // the client mods. See coop.md, "Host-only load files".
+        var previousFight = model.fight;
+        model.fight = function (viewModel, event, cheat) {
+          var fight = _.bind(
+            previousFight.apply,
+            previousFight,
+            this,
+            arguments
+          );
+          primedTreeCache = null;
+          if (
+            cheat === true ||
+            model.launchingFight() ||
+            !model.gwCampaignActive() ||
+            !model.isCampaignHost()
+          ) {
+            return fight();
+          }
+          if (priming) {
+            return priming;
+          }
+          var cache = gwoGenerateAI.createTreeCache();
+          priming = gwoPromise
+            .settled(loadPrefetch.prime(cache))
+            .then(function () {
+              priming = null;
+              primedTreeCache = cache;
+              return fight();
+            });
+          return priming;
+        };
 
         // A co-op host hires a clean shared referee and then its own, so each
         // pass is labelled while it runs. See architecture.md.
