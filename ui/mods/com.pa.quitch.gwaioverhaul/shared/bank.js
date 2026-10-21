@@ -157,12 +157,31 @@ define([
     },
 
     addStartCard: function (card) {
-      if (unlockHold.held() || self.hasStartCard(card)) {
+      if (unlockHold.held()) {
+        return false;
+      }
+      return self.addOwnStartCard(card);
+    },
+
+    // A player's own claim, such as a treasure loadout, which banks even while
+    // an apply of another inventory holds unlocks.
+    addOwnStartCard: function (card) {
+      if (self.hasStartCard(card)) {
         return false;
       }
       self.startCards.push(card);
       return true;
     },
+
+    // As addOwnStartCard, into the base game's bank.
+    addOwnStockStartCard: function (stockBank, card) {
+      var add =
+        stockBank === suspendedStockBank
+          ? stockAddStartCard
+          : stockBank.addStartCard;
+      return add.call(stockBank, card);
+    },
+
     hasStartCard: function (card) {
       return _.some(self.startCards(), function (element) {
         return card === element || (_.isObject(card) && card.id === element.id);

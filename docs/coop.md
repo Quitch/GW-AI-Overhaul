@@ -1429,12 +1429,16 @@ viewer's first apply, `gwoLoadoutBanks` has not resolved a single bank. So
 nothing while it is held. A third-party loadout with a `buff` of its own still
 banks.
 
+A player's own treasure loadout goes past the hold. Nothing banks a won loadout
+later, because it never enters the inventory, so `bankStartCard` calls the
+bank's `addOwnStartCard` and `addOwnStockStartCard`, which skip the hold. A card
+mod's own bank is not held, and takes the loadout as before.
+
 The release has one gap. An apply that is slow rather than hung runs the rest
 of its cards after the timeout, with banking back on, so a judged loadout's
 second place would bank into the host's own bank. The timeout keeps this out of
 reach rather than closing it: holding on until a late apply finished would
-refuse the host's own treasure loadout for the rest of the scene whenever one
-truly hangs. An apply in play takes a small fraction of the 10-second
+leave unlocks held for the rest of the scene whenever one truly hangs. An apply in play takes a small fraction of the 10-second
 timeout.
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
