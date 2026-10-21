@@ -287,8 +287,10 @@ describe("install", () => {
     // Stock's restore, chained on the hire after GWO's handlers.
     calls.hire.then(null, () => busy2(true));
     calls.hire.reject(new Error("hire failed"));
-    await nextTask();
+    // The flush lets GWO's failure handler queue its _.defer first, so the
+    // test's own defer cannot fire before it.
     await flush();
+    await nextTask();
     assert.deepEqual(calls.launching, []);
     assert.equal(calls.launchingFight(), true);
 
