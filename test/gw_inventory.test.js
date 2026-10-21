@@ -298,19 +298,32 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
     assert.deepEqual(bank, []);
   });
 
-  // Another pass started in the gap owns applyCards, and its stand-in only
-  // marks that pass dirty, so the carried hold has no pass to release it.
-  it("releases a carried hold that reaches no new pass", () => {
+  // As stock, the re-run is the applyCards in place when the pass finished, so
+  // a pass started in the gap cannot absorb it and strand the carried hold.
+  it("re-runs the method in place when the pass finished", () => {
     let inventory;
-    cardModules.gwc_dirty = dirtyingCard(1, () => inventory);
+    let buffs = 0;
+    const dirtying = dirtyingCard(1, () => inventory);
+    cardModules.gwc_dirty = {
+      buff: (inv) => {
+        buffs++;
+        dirtying.buff(inv);
+      },
+      dull: () => {},
+    };
     raise("viewer");
     inventory = inventoryHolding([{ id: "gwc_dirty" }]);
 
     inventory.applyCards();
     const reRun = timers.delayed.shift();
-    inventory.applyCards = () => {};
+    let standInCalls = 0;
+    inventory.applyCards = () => {
+      standInCalls++;
+    };
     reRun.fn();
 
+    assert.equal(standInCalls, 0);
+    assert.equal(buffs, 2);
     assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
   });
 
