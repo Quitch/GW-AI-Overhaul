@@ -4,6 +4,7 @@
 
 ### Bugfix
 
+- In co-op with separate tech, a war saved before v6.8.0 no longer unlocks a card mod's loadout for a player who did not win it
 - In co-op, the host's Sub Commanders use the AI builds from tech cards in mods that only the host has installed
 
 ## v7.8.0 - 2026-10-19
