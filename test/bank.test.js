@@ -387,7 +387,7 @@ describe("bank applyInventoryHeld", () => {
     assert.equal(stockBank.addStartCard({ id: "x" }), true);
   });
 
-  // A caller that gave up on a hung apply must not leave every bank shut.
+  // A caller that gave up on a hung apply must not leave the banks shut.
   it("releases the hold when abandoned, and never calls done after", () => {
     const finishers = [];
     const done = [];

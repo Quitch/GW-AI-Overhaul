@@ -616,7 +616,7 @@ describe("loadout", () => {
     ]);
   });
 
-  it("banks a copy dealt later in the war and adds its slot", () => {
+  it("banks a loadout that is not the first card and adds its slot", () => {
     const h = harness({ lookupCard: -1, buffCount: 0, maxCards: 4 });
     cards.loadout(CARD, h.options).buff(h.inventory);
     assert.deepEqual(h.calls, [

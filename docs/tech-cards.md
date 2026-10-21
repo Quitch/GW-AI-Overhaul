@@ -383,13 +383,15 @@ var loadout = gwoCard.loadout(CARD, {
 The first buff of each `applyCards` pass runs `start.buff` and then `apply`:
 `dull` clears the count the buffs keep, so the next pass starts over. A later
 buff of the start card in the same pass only adds the card slot
-(`repeatSlot: false` drops that). A loadout other than the war's start card adds
-its slot and goes to `bank`. GWO no longer puts one in the inventory, because a
-loadout won at a treasure planet is banked without entering it, but a war saved
-before v6.8.0 can hold one. `always(inventory, params)` runs on every buff of the start
-card, for work that must repeat. `params` is the card's saved params. `dull` is
-`applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the `hint` a locked
-loadout shows.
+(`repeatSlot: false` drops that). A loadout that is not the inventory's first
+card adds its slot and goes to `bank`. A loadout won at a treasure planet never
+gets there, because it is banked without entering the inventory. One does in a
+war saved before v6.8.0, after `cheats.testCards` or `cheats.giveCard` deals
+one, and when a co-op AI scores a loadout hand, which puts the candidate first
+(`gw_play/coop_ai_effects.js`). `always(inventory, params)` runs on every buff
+of the start card, for work that must repeat. `params` is the card's saved
+params. `dull` is `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is
+the `hint` a locked loadout shows.
 
 Retiring a loadout is one edit to `loadout_ids.js`: dropping the id removes it from
 the picker, the treasure pool and the deck at once. A `gwc_` shadow is then deleted,
