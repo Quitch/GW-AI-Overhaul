@@ -8,6 +8,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
 ], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam, unitCells) {
   var loadingAnotherPlayersCards = false;
+  var holdCarried = false;
 
   var isCampaignViewerSession = function () {
     try {
@@ -99,13 +100,15 @@ define([
     applyCards: function (done) {
       var self = this;
       var cards = self.cards().slice();
-      // GWO - held for the whole pass, so a card's buff() cannot bank. Consumed
-      // here: the apply GWGame.load flagged is the one immediately following.
-      var foreignCards = loadingAnotherPlayersCards;
-      loadingAnotherPlayersCards = false;
-      if (foreignCards) {
+      // GWO - held for the whole apply, re-runs included, so a card's buff()
+      // cannot bank. Consumed here: the apply GWGame.load flagged is the one
+      // immediately following.
+      if (loadingAnotherPlayersCards && !holdCarried) {
         gwoBank.suspendUnlocks(stockBank);
       }
+      var foreignCards = loadingAnotherPlayersCards || holdCarried;
+      loadingAnotherPlayersCards = false;
+      holdCarried = false;
 
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
@@ -124,14 +127,21 @@ define([
         delete self.setTag; // GWO
         delete self.applyCards;
         delete self.isApplyingCards;
-        if (foreignCards) {
-          foreignCards = false; // GWO - the dirty re-run below is not held
-          gwoBank.resumeUnlocks();
-        }
         if (dirty) {
-          _.delay(_.bind(self.applyCards, self, done));
-        } else if (done) {
-          _.delay(done);
+          // GWO - the re-run keeps this pass's hold; the pass that ends clean
+          // releases it. The flag is set just before the call reads it.
+          var reapply = self.applyCards;
+          _.delay(function () {
+            holdCarried = foreignCards;
+            reapply.call(self, done);
+          });
+        } else {
+          if (foreignCards) {
+            gwoBank.resumeUnlocks();
+          }
+          if (done) {
+            _.delay(done);
+          }
         }
       };
       // Replaces applyCards for the pass, so a card calling it from its own

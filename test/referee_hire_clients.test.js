@@ -64,7 +64,10 @@ function installScene(options) {
       () => {},
       {},
       { installedRaces: () => ({}) },
-      { describeError: (error) => error.message },
+      {
+        describeError: (error) => error.message,
+        loadAiTechFiles: () => Promise.resolve({}),
+      },
       {
         steps: (first, steps) => {
           scene.steps = steps;

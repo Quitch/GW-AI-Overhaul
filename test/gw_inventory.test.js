@@ -237,27 +237,93 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
   });
 
   // A card calling applyCards from its own buff only marks the pass dirty;
-  // finishApplyCards re-runs the real one on a delay. That re-run is a fresh
-  // pass, and the flag is already spent, so it must not suspend a second time.
-  it("does not hold again for the re-run a dirty pass schedules", () => {
-    let dirtied = false;
-    let inventory;
-    cardModules.gwc_start_orbital = {
+  // finishApplyCards re-runs the real one on a delay. The re-run applies the
+  // same host cards, so it keeps the one hold until a pass ends clean.
+  const dirtyingCard = (times, inventoryOf) => {
+    let left = times;
+    return {
       buff: () => {
-        if (!dirtied) {
-          dirtied = true;
-          inventory.applyCards();
+        if (left) {
+          left--;
+          inventoryOf().applyCards();
         }
       },
       dull: () => {},
     };
+  };
+
+  it("keeps the hold through the re-run a dirty pass schedules", () => {
+    let inventory;
+    cardModules.gwc_dirty = dirtyingCard(1, () => inventory);
     raise("viewer");
-    inventory = inventoryHolding([{ id: "gwc_start_orbital" }]);
+    inventory = inventoryHolding([{ id: "gwc_dirty" }]);
 
     inventory.applyCards();
     assert.equal(timers.delayed.length, 1, "the dirty re-run was scheduled");
+    assert.deepEqual(bank, [["suspend", stockBank]]);
     timers.delayed.shift().fn();
 
+    assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
+  });
+
+  it("keeps the hold until the last of chained re-runs", () => {
+    let inventory;
+    cardModules.gwc_dirty = dirtyingCard(2, () => inventory);
+    raise("viewer");
+    let done = 0;
+    inventory = inventoryHolding([{ id: "gwc_dirty" }]);
+
+    inventory.applyCards(() => {
+      done++;
+    });
+    timers.delayed.shift().fn();
+    assert.deepEqual(bank, [["suspend", stockBank]]);
+    timers.delayed.shift().fn();
+    assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
+    timers.delayed.shift().fn();
+
+    assert.equal(done, 1);
+    assert.equal(timers.delayed.length, 0);
+  });
+
+  it("does not hold a dirty re-run that nothing flagged", () => {
+    let inventory;
+    cardModules.gwc_dirty = dirtyingCard(1, () => inventory);
+    raise("host");
+    inventory = inventoryHolding([{ id: "gwc_dirty" }]);
+
+    inventory.applyCards();
+    timers.delayed.shift().fn();
+
+    assert.deepEqual(bank, []);
+  });
+
+  // As stock, the re-run is the applyCards in place when the pass finished, so
+  // a pass started in the gap cannot absorb it and strand the carried hold.
+  it("re-runs the method in place when the pass finished", () => {
+    let inventory;
+    let buffs = 0;
+    const dirtying = dirtyingCard(1, () => inventory);
+    cardModules.gwc_dirty = {
+      buff: (inv) => {
+        buffs++;
+        dirtying.buff(inv);
+      },
+      dull: () => {},
+    };
+    raise("viewer");
+    inventory = inventoryHolding([{ id: "gwc_dirty" }]);
+
+    inventory.applyCards();
+    const reRun = timers.delayed.shift();
+    let standInCalls = 0;
+    inventory.applyCards = () => {
+      standInCalls++;
+    };
+    reRun.fn();
+
+    assert.equal(standInCalls, 0);
+    assert.equal(buffs, 2);
     assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
   });
 

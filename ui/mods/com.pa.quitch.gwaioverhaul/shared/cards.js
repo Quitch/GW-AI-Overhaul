@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (races, unitCells, gwoUnit, gwoGroup) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unlock_hold.js",
+], function (races, unitCells, gwoUnit, gwoGroup, unlockHold) {
   // Mirrors gwoAI.CLUSTER_FACTION; this module imports only pure modules.
   var CLUSTER_FACTION = 4;
 
@@ -321,9 +322,11 @@ define([
 
     // The buff/dull pair every loadout shares. The first buff of each
     // applyCards pass runs the default start and `apply`; a later one only
-    // adds the slot (unless `repeatSlot` is false); a copy dealt after the
-    // start goes to `bank`. `always` runs on every buff of the start card,
-    // and its second argument is the card's saved params. See tech-cards.md.
+    // adds the slot (unless `repeatSlot` is false); a loadout that is not the
+    // inventory's first card goes to `bank`, unless bank.js holds unlocks for
+    // an apply of another player's cards. `always` runs on every buff of
+    // the start card, and its second argument is the card's saved params. See
+    // tech-cards.md.
     loadout: function (card, options) {
       return {
         buff: function (inventory, params) {
@@ -344,7 +347,9 @@ define([
             inventory.setTag("", "buffCount", buffCount);
           } else {
             inventory.maxCards(inventory.maxCards() + 1);
-            options.bank.addStartCard(card);
+            if (!unlockHold.held()) {
+              options.bank.addStartCard(card);
+            }
           }
         },
         dull: function (inventory) {

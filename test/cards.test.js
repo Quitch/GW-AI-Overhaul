@@ -11,6 +11,9 @@ const { NUMBER_OF_SYSTEMS } = require("../scripts/lib/card-probe.js");
 const cards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
+const unlockHold = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unlock_hold.js"
+);
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(() => {
@@ -616,13 +619,27 @@ describe("loadout", () => {
     ]);
   });
 
-  it("banks a copy dealt later in the war and adds its slot", () => {
+  it("banks a loadout that is not the first card and adds its slot", () => {
     const h = harness({ lookupCard: -1, buffCount: 0, maxCards: 4 });
     cards.loadout(CARD, h.options).buff(h.inventory);
     assert.deepEqual(h.calls, [
       ["maxCards", 5],
       ["bank", "mym_start_one"],
     ]);
+  });
+
+  // A co-op host applying a viewer's inventory holds unlocks through bank.js,
+  // which can only swap out the banks it knows. A third-party loadout banks
+  // into its own mod's bank.
+  it("adds the slot but banks nothing while unlocks are held", () => {
+    const h = harness({ lookupCard: -1, buffCount: 0, maxCards: 4 });
+    unlockHold.hold();
+    try {
+      cards.loadout(CARD, h.options).buff(h.inventory);
+    } finally {
+      unlockHold.release();
+    }
+    assert.deepEqual(h.calls, [["maxCards", 5]]);
   });
 
   it("works without an apply body", () => {

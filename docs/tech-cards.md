@@ -345,8 +345,8 @@ roughly consistent share of stars at every size (short ~45%, moderate ~30%, far
 `farForSize` is exported for cards that need a bespoke table, but no card needs one
 today. Prefer the wrappers, which keep the tables private. `numberOfSystems` is
 passed in rather than imported so that this module imports only pure modules
-(`shared/races.js`, `shared/unit_cells.js`, `shared/units.js`, and
-`shared/unit_groups.js`). Every card transitively depends on
+(`shared/races.js`, `shared/unit_cells.js`, `shared/units.js`,
+`shared/unit_groups.js`, and `shared/unlock_hold.js`). Every card transitively depends on
 `shared/cards.js`. An import of `shared/gw_common` here would make the whole card
 set unloadable under the test harness.
 
@@ -383,11 +383,15 @@ var loadout = gwoCard.loadout(CARD, {
 The first buff of each `applyCards` pass runs `start.buff` and then `apply`:
 `dull` clears the count the buffs keep, so the next pass starts over. A later
 buff of the start card in the same pass only adds the card slot
-(`repeatSlot: false` drops that). A copy dealt later in the war adds its slot
-and goes to `bank`. `always(inventory, params)` runs on every buff of the start
-card, for work that must repeat. `params` is the card's saved params. `dull` is
-`applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the `hint` a locked
-loadout shows.
+(`repeatSlot: false` drops that). A loadout that is not the inventory's first
+card adds its slot and goes to `bank`. A loadout won at a treasure planet never
+gets there, because it is banked without entering the inventory. One does in a
+war saved before v6.8.0, after `cheats.testCards` or `cheats.giveCard` deals
+one, and when a co-op AI scores a loadout hand, which puts the candidate first
+(`gw_play/coop_ai_effects.js`). `always(inventory, params)` runs on every buff
+of the start card, for work that must repeat. `params` is the card's saved
+params. `dull` is `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is
+the `hint` a locked loadout shows.
 
 Retiring a loadout is one edit to `loadout_ids.js`: dropping the id removes it from
 the picker, the treasure pool and the deck at once. A `gwc_` shadow is then deleted,
@@ -588,11 +592,11 @@ judged.
 scratch inventory from the AI's saved one with the card added: a loadout first,
 as the war's start card is, and anything else last. It runs the real
 `GWInventory.applyCards` over that, so every card's `buff()` and `dull()` run in
-their usual order, with GWO's and the base game's banks held shut
-(`bank.applyInventoryHeld`). The inventory with the card is then compared with
-the inventory without it. A held card is valued the other way round, for a
-swap, with the hand's best card already in: the inventory with the best card
-and without the held one, against the inventory with both.
+their usual order, with loadout unlocks held off (`bank.applyInventoryHeld`).
+The inventory with the card is then compared with the inventory without it. A
+held card is valued the other way round, for a swap, with the hand's best card
+already in: the inventory with the best card and without the held one, against
+the inventory with both.
 
 Four rules keep this affordable and safe:
 
@@ -889,10 +893,11 @@ not the host's. So a card must:
 - **Be fast.** Each apply has 10 seconds, and each deal 20. A deal that fails or
   runs out falls back to a quick pick, and an AI whose deals run out twice
   stops choosing until `gw_play` next loads.
-- **Touch only the inventory it is passed.** GWO's and the base game's banks
-  are held shut during the apply, and nothing else is. Anything else a `buff()`
-  writes, such as `model.game().inventory()`, `localStorage`, or a mod's own
-  state, is written on the host whenever an AI considers the card.
+- **Touch only the inventory it is passed.** GWO's and the base game's banks,
+  and the bank a `gwoCard.loadout` card is given, are held shut during the
+  apply, and nothing else is. Anything else a `buff()` writes, such as
+  `model.game().inventory()`, `localStorage`, or a mod's own state, is written
+  on the host whenever an AI considers the card.
 - **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
   and finishes the apply. A card that throws before it changes anything shows
   no effect, and so earns at most its floor.

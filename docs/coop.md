@@ -121,6 +121,31 @@ spec read that fails takes the same path: the launch aborts with
 `per_player_tech_ready = false` and the error named in the log, rather than
 hanging on the load screen.
 
+### Host-only load files
+
+Stock builds the shared referee with only the host's `galacticWarMod: true` client
+mods and their dependencies enabled, and its config is what the server receives.
+The remount that applies this drops every other **zip** mod, which is how players
+install a card mod. Enabled folder mods in `client_mods/` stay mounted, so a test
+from a folder does not show the effect. A card mod with `galacticWarMod: false`
+that ships `pa/ai_tech/` files for a `load` would then lose them in the shared
+hire: `referee_ai.js` logs `AI file of a load mod not read, skipped:` and builds
+the Sub Commanders without them (issue #632).
+
+So `gw_play/referee.js` starts `gameFilePaths.loadAiTechFiles()` when `gw_play`
+loads, while every mod is mounted. That read keeps every file under `/pa/ai_tech/`
+by path for the page. Each hire's first step after the client list waits for it
+(at most 10 s) and seeds the launch's tree cache with the files
+(`createTreeCache().seed`), so the shared hire never reads them from disk. The
+cache also keeps a failed read, so reading the files again later in the launch
+would not help. The AI files are written into the battle config, so viewers still
+do not need the mod.
+
+`loadAiTechFiles` rejects as a whole when one file cannot be read or nothing is
+listed, and then reads again on the next call. So a single broken file in any mod
+leaves the cache unseeded: the hire logs `AI load files not read before the hire:`
+and reads each load file itself, as it did before the seed.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.
@@ -1366,7 +1391,9 @@ Two signals _are_ available at that point: `sessionStorage.gw_campaign_role`,
 and the game passed to `GWGamePatches.patch`. `GWGame.load` calls `patch`
 immediately before `applyCards`, after setting `perPlayerTechCards`.
 `gw_inventory.js` therefore hijacks `patch` to raise a flag that the next
-`applyCards` consumes and suspends on. The same hijack installs GWO's
+`applyCards` consumes and suspends on. A card whose `buff` or `dull` calls
+`applyCards` makes that apply re-run itself, and the re-run keeps the hold: only
+the pass that ends without a re-run releases it. The same hijack installs GWO's
 `defeatTeam` ([`architecture.md`](architecture.md), "Returning from a battle").
 
 Hijacking rather than shadowing `gw_game.js` keeps a 459-line save-format file
@@ -1394,12 +1421,24 @@ matters there. Judging a loadout puts it first, which pushes the AI's own
 loadout into second place, and a loadout in any place but the first banks
 itself in its `buff`. An AI never takes a loadout, so it never banks one.
 
+Every hold is the same one, `bank.suspendUnlocks`. It swaps a no-op in for the
+base game's `addStartCard`, and GWO's own bank turns cards away. A card mod's
+loadout banks into the mod's own bank, which the hold cannot swap out: on a
+viewer's first apply, `gwoLoadoutBanks` has not resolved a single bank. So
+`gwoCard.loadout` reads the hold count (`shared/unlock_hold.js`) and banks
+nothing while it is held. A third-party loadout with a `buff` of its own still
+banks.
+
+A player's own treasure loadout goes past the hold. Nothing banks a won loadout
+later, because it never enters the inventory, so `bankStartCard` calls the
+bank's `addOwnStartCard` and `addOwnStockStartCard`, which skip the hold. A card
+mod's own bank is not held, and takes the loadout as before.
+
 The release has one gap. An apply that is slow rather than hung runs the rest
 of its cards after the timeout, with banking back on, so a judged loadout's
 second place would bank into the host's own bank. The timeout keeps this out of
 reach rather than closing it: holding on until a late apply finished would
-refuse the host's own treasure loadout for the rest of the scene whenever one
-truly hangs. An apply in play takes a small fraction of the 10-second
+leave unlocks held for the rest of the scene whenever one truly hangs. An apply in play takes a small fraction of the 10-second
 timeout.
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the

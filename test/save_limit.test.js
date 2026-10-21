@@ -276,7 +276,7 @@ describe("install", () => {
   // Issue #629: stock restores the client mods after a co-op host's failed
   // first hire, and a timed-out save leaves the clear to the call-off.
   it("holds a co-op host's call-off until stock's restore remount ends", async () => {
-    const calls = setup(false, undefined, 2);
+    const calls = setup(false, { sync: true }, 2);
     const busy2 = makeObservable(false);
     stubs.setGlobal("window", { CommunityModsManager: { busy2: busy2 } });
     saveLimit.install();
