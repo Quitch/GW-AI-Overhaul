@@ -592,11 +592,11 @@ judged.
 scratch inventory from the AI's saved one with the card added: a loadout first,
 as the war's start card is, and anything else last. It runs the real
 `GWInventory.applyCards` over that, so every card's `buff()` and `dull()` run in
-their usual order, with GWO's and the base game's banks held shut
-(`bank.applyInventoryHeld`). The inventory with the card is then compared with
-the inventory without it. A held card is valued the other way round, for a
-swap, with the hand's best card already in: the inventory with the best card
-and without the held one, against the inventory with both.
+their usual order, with loadout unlocks held off (`bank.applyInventoryHeld`).
+The inventory with the card is then compared with the inventory without it. A
+held card is valued the other way round, for a swap, with the hand's best card
+already in: the inventory with the best card and without the held one, against
+the inventory with both.
 
 Four rules keep this affordable and safe:
 
@@ -893,10 +893,11 @@ not the host's. So a card must:
 - **Be fast.** Each apply has 10 seconds, and each deal 20. A deal that fails or
   runs out falls back to a quick pick, and an AI whose deals run out twice
   stops choosing until `gw_play` next loads.
-- **Touch only the inventory it is passed.** GWO's and the base game's banks
-  are held shut during the apply, and nothing else is. Anything else a `buff()`
-  writes, such as `model.game().inventory()`, `localStorage`, or a mod's own
-  state, is written on the host whenever an AI considers the card.
+- **Touch only the inventory it is passed.** GWO's and the base game's banks,
+  and the bank a `gwoCard.loadout` card is given, are held shut during the
+  apply, and nothing else is. Anything else a `buff()` writes, such as
+  `model.game().inventory()`, `localStorage`, or a mod's own state, is written
+  on the host whenever an AI considers the card.
 - **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
   and finishes the apply. A card that throws before it changes anything shows
   no effect, and so earns at most its floor.

@@ -1,13 +1,14 @@
 /* We want to write our start cards to a different localStorage key so that if
    the mod is uninstalled the gw_start loadout list isn't messed up by 404s */
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unlock_hold.js",
+], function (unlockHold) {
   var LS_KEY = "gwaio_bank";
 
   var self;
 
   var loading = false;
 
-  var suspended = 0;
   var suspendedStockBank;
   var stockAddStartCard;
 
@@ -71,11 +72,11 @@ define(function () {
 
     // A co-op host applies its viewers' inventories to weight their deals, which
     // runs their loadout cards' buff(). Each card banks into whichever bank owns
-    // it, so the base game's is held off alongside this one. Counted, because
-    // those applications overlap. See gw_play/cards_coop_deal.js.
+    // it, so the base game's is held off alongside this one, and a
+    // gwoCard.loadout card skips its own bank. Counted, because those
+    // applications overlap. See gw_play/cards_coop_deal.js.
     suspendUnlocks: function (stockBank) {
-      suspended++;
-      if (suspended > 1) {
+      if (!unlockHold.hold()) {
         return;
       }
       suspendedStockBank = stockBank;
@@ -86,11 +87,7 @@ define(function () {
     },
 
     resumeUnlocks: function () {
-      if (!suspended) {
-        return;
-      }
-      suspended--;
-      if (suspended) {
+      if (!unlockHold.release()) {
         return;
       }
       // Restores by value rather than deleting the override, so a bank another
@@ -120,7 +117,7 @@ define(function () {
     },
 
     // Loads a saved inventory into a fresh GWInventory and applies its cards
-    // with this bank and the base game's held off, then hands it to done.
+    // with loadout unlocks held off, then hands it to done.
     // Abandonable: the hold is released only when the apply finishes, so a
     // caller that stops waiting for a hung one calls abandon() to release it,
     // and done never runs.
@@ -160,7 +157,7 @@ define(function () {
     },
 
     addStartCard: function (card) {
-      if (suspended || self.hasStartCard(card)) {
+      if (unlockHold.held() || self.hasStartCard(card)) {
         return false;
       }
       self.startCards.push(card);
