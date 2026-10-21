@@ -345,8 +345,8 @@ roughly consistent share of stars at every size (short ~45%, moderate ~30%, far
 `farForSize` is exported for cards that need a bespoke table, but no card needs one
 today. Prefer the wrappers, which keep the tables private. `numberOfSystems` is
 passed in rather than imported so that this module imports only pure modules
-(`shared/races.js`, `shared/unit_cells.js`, `shared/units.js`, and
-`shared/unit_groups.js`). Every card transitively depends on
+(`shared/races.js`, `shared/unit_cells.js`, `shared/units.js`,
+`shared/unit_groups.js`, and `shared/unlock_hold.js`). Every card transitively depends on
 `shared/cards.js`. An import of `shared/gw_common` here would make the whole card
 set unloadable under the test harness.
 
