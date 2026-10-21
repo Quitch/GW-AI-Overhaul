@@ -90,7 +90,8 @@ define([
   // never runs and the bank has to be written directly. Mod ids are kept out of
   // the base game's bank - see shared/bank.js. A third-party mod that registered
   // its own bank gets its own unlocks back, so uninstalling it takes its records
-  // with it rather than leaving them in gwaio_bank.
+  // with it rather than leaving them in gwaio_bank. It is the player's own win,
+  // so it banks past a hold on unlocks.
   var bankStartCard = function (params) {
     var id = cardId(params.card);
     if (!helpers.isStartLoadoutCardId(id)) {
@@ -100,12 +101,14 @@ define([
     // Tested before the registry: the base game reads its own bank directly, so
     // a mod registering the gwc_start prefix must not capture those ids.
     if (isBaseLoadoutCardId(id)) {
-      return params.stockBank.addStartCard({ id: id });
+      return params.gwoBank.addOwnStockStartCard(params.stockBank, { id: id });
     }
 
     var modBank = gwoLoadoutBanks.bankFor(id);
     try {
-      return (modBank || params.gwoBank).addStartCard({ id: id });
+      return modBank
+        ? modBank.addStartCard({ id: id })
+        : params.gwoBank.addOwnStartCard({ id: id });
     } catch (e) {
       console.error(
         "Loadout bank addStartCard() threw: " +

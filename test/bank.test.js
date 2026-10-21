@@ -280,6 +280,114 @@ describe("bank suspendUnlocks", () => {
   });
 });
 
+// A player's own treasure loadout, taken while the host applies another
+// player's inventory, must still bank: nothing banks it later.
+describe("bank addOwnStartCard", () => {
+  const stock = () => {
+    const stockBank = {
+      added: [],
+      addStartCard(card) {
+        stockBank.added.push(card);
+        return true;
+      },
+    };
+    return stockBank;
+  };
+
+  it("banks while unlocks are suspended", () => {
+    const stockBank = stock();
+
+    bank.suspendUnlocks(stockBank);
+    try {
+      assert.equal(bank.addOwnStartCard({ id: "gwaio_start_warp" }), true);
+      assert.equal(bank.addStartCard({ id: "gwaio_start_ceo" }), false);
+      assert.deepEqual(ids(), ["gwaio_start_warp"]);
+    } finally {
+      bank.resumeUnlocks();
+    }
+  });
+
+  it("refuses a loadout already banked", () => {
+    bank.addOwnStartCard({ id: "gwaio_start_warp" });
+
+    assert.equal(bank.addOwnStartCard({ id: "gwaio_start_warp" }), false);
+    assert.deepEqual(ids(), ["gwaio_start_warp"]);
+  });
+});
+
+describe("bank addOwnStockStartCard", () => {
+  const stock = () => {
+    const stockBank = {
+      added: [],
+      addStartCard(card) {
+        this.added.push(card);
+        return true;
+      },
+    };
+    return stockBank;
+  };
+
+  it("reaches the base game's bank while unlocks are suspended", () => {
+    const stockBank = stock();
+
+    bank.suspendUnlocks(stockBank);
+    try {
+      assert.equal(
+        bank.addOwnStockStartCard(stockBank, { id: "gwc_start_artillery" }),
+        true
+      );
+      assert.equal(stockBank.addStartCard({ id: "gwc_start_bot" }), false);
+      assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
+    } finally {
+      bank.resumeUnlocks();
+    }
+  });
+
+  it("calls the function another mod had patched in before the hold", () => {
+    const stockBank = stock();
+    const calls = [];
+    stockBank.addStartCard = function (card) {
+      calls.push([this, card]);
+      return "another mod";
+    };
+
+    bank.suspendUnlocks(stockBank);
+    try {
+      assert.equal(
+        bank.addOwnStockStartCard(stockBank, { id: "gwc_start_artillery" }),
+        "another mod"
+      );
+    } finally {
+      bank.resumeUnlocks();
+    }
+    assert.deepEqual(calls, [[stockBank, { id: "gwc_start_artillery" }]]);
+  });
+
+  it("calls the bank's own function when nothing holds it", () => {
+    const stockBank = stock();
+
+    assert.equal(
+      bank.addOwnStockStartCard(stockBank, { id: "gwc_start_artillery" }),
+      true
+    );
+    assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
+  });
+
+  it("leaves a bank other than the suspended one to its own function", () => {
+    const suspended = stock();
+    const other = stock();
+
+    bank.suspendUnlocks(suspended);
+    try {
+      bank.addOwnStockStartCard(other, { id: "gwc_start_artillery" });
+    } finally {
+      bank.resumeUnlocks();
+    }
+    assert.deepEqual(other.added, [{ id: "gwc_start_artillery" }]);
+    assert.deepEqual(suspended.added, []);
+  });
+});
+
 // applyCards empties everything else before the first buff(), so only these
 // reach an applied inventory. test/coop_ai_effects.test.js compares whole
 // applies against a whole copy's.
