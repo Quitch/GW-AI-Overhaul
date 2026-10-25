@@ -154,17 +154,7 @@ Changes are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the convention
 
 ## FAQ
 
-**Q. Why am I not seeing the latest changes in my war?**
-
-Many changes will only apply to new wars.
-
-**Q. Why am I seeing multiple Commanders for a single enemy army?**
-
-Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. It allows them to connect multiple planets very quickly.
-
-**Q. Why aren't awarded bounties showing on the player list?**
-
-Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+See [the wiki](https://github.com/Quitch/GW-AI-Overhaul/wiki/FAQ).
 
 ## Translations
 
