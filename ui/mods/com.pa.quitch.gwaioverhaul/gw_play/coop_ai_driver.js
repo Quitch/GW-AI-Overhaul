@@ -5,8 +5,8 @@
 // the AI's record in one patch. An AI with no basic land factory is assigned
 // a T1 factory card in place of a hand. Only settled results are written, so
 // a reload mid-decision reruns to the same result. While The Guardians are
-// the last boss, an AI also deletes the held cards that help them more than
-// they help it. See coop.md, "AI players' tech".
+// the last boss, an AI also deletes the held cards worth little to it that
+// help them. See coop.md, "AI players' tech".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
@@ -66,6 +66,12 @@ define([
 
   // Whether a swap's bank holds its cards: the deleted card must have freed
   // a slot, before any slot the incoming card adds.
+  var fullnessOf = function (applied) {
+    return applied.maxCards
+      ? (applied.cards || []).length / applied.maxCards
+      : 1;
+  };
+
   var holdsCards = function (swapped, incomingSlots) {
     return (
       (swapped.cards || []).length <= (swapped.maxCards || 0) - incomingSlots
@@ -407,9 +413,7 @@ define([
               ? 1
               : 0,
             rerollsUsed: rerollsUsed,
-            fullness: applied.maxCards
-              ? (applied.cards || []).length / applied.maxCards
-              : 1,
+            fullness: fullnessOf(applied),
             roomFor: roomFor,
             held: held,
             rng: params.decisionRng(record, entry.dealIndex, rerollsUsed),
@@ -671,12 +675,6 @@ define([
       return next();
     };
 
-    var fullnessOf = function (applied) {
-      return applied.maxCards
-        ? (applied.cards || []).length / applied.maxCards
-        : 1;
-    };
-
     // Why a deletion cannot stand: it costs the bank a slot, or opens a gap
     // the AI lacks now. undefined when it can.
     var deletionRefusal = function (applied, next, gapNow) {
@@ -687,19 +685,12 @@ define([
       return gap && gap !== gapNow ? gap : undefined;
     };
 
-    var withoutIndices = function (saved, indices) {
-      return _.assign({}, saved, {
-        cards: _.filter(saved.cards || [], function (card, at) {
-          return !_.includes(indices, at);
-        }),
-      });
-    };
-
     // The held cards the AI deletes before The Guardians: each worth less to
     // it than a reroll's threshold and more than nothing to the Guardians,
     // judged against the inventory as it stands, then deleted one at a time,
-    // most help to the Guardians first, while each deletion still holds.
-    // Resolves the outcome to write.
+    // most help to the Guardians first, while each deletion still holds and
+    // the card is still worth less than the threshold once those before it
+    // are gone. Resolves the outcome to write.
     var decidePrune = function (record, lookup, progress) {
       var saved = record.inventory;
       var applied;
@@ -724,7 +715,8 @@ define([
           .apply(coopAiEffects.removeCard(saved, index))
           .then(function (without) {
             live();
-            if ((without.maxCards || 0) < (applied.maxCards || 0)) {
+            var why = deletionRefusal(applied, without, gapNow);
+            if (why === "slots") {
               return undefined;
             }
             var judged = {
@@ -734,10 +726,7 @@ define([
               gain: coopAiGuardians.gain(guardians, without, applied, lookup),
             };
             judged.candidate = judged.worth < threshold && judged.gain > 0;
-            var why = judged.candidate
-              ? deletionRefusal(applied, without, gapNow)
-              : undefined;
-            if (why) {
+            if (judged.candidate && why) {
               judged.candidate = false;
               refused.push({ id: card.id, why: why });
             }
@@ -747,7 +736,7 @@ define([
 
       var deleteGreedily = function (candidates) {
         var deleted = [];
-        var current;
+        var current = applied;
         return _.reduce(
           candidates,
           function (chain, candidate) {
@@ -755,10 +744,17 @@ define([
               live();
               var indices = _.pluck(deleted, "index").concat(candidate.index);
               return params.effects
-                .apply(withoutIndices(saved, indices))
+                .apply(coopAiEffects.removeCard(saved, indices))
                 .then(function (next) {
                   live();
-                  var why = deletionRefusal(applied, next, gapNow);
+                  var worth = coopAiCards.scoreCard(
+                    next,
+                    current,
+                    context
+                  ).total;
+                  var why =
+                    deletionRefusal(applied, next, gapNow) ||
+                    (worth < threshold ? undefined : "worth " + worth);
                   if (why) {
                     refused.push({ id: candidate.id, why: why });
                     return;

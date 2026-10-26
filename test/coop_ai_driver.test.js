@@ -177,6 +177,28 @@ const EFFECTS = {
     units: ["/u/extractor"],
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
   },
+  air_armour: {
+    units: ["/u/air_factory"],
+    mods: [
+      {
+        file: "/u/air_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 1.5,
+      },
+    ],
+  },
+  air_armour2: {
+    units: ["/u/air_factory"],
+    mods: [
+      {
+        file: "/u/air_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 1.4,
+      },
+    ],
+  },
   extractor_armour2: {
     units: ["/u/extractor"],
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.4 }],
@@ -1614,6 +1636,21 @@ describe("coop_ai_driver Guardians prune", () => {
     assert.match(
       pruneLine(),
       /-> deleted extractor_armour kept extractor_armour2 \(extractor\)$/
+    );
+  });
+
+  it("keeps a later candidate that the deletions before it made worth its slot", async () => {
+    const run = pruneSetup(["gwc_start_bot", "air_armour2", "air_armour"]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "air_armour2",
+    ]);
+    assert.match(
+      pruneLine(),
+      /-> deleted air_armour kept air_armour2 \(worth [\d.]+\)$/
     );
   });
 

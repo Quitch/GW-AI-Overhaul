@@ -717,7 +717,10 @@ reads every star's AI. The prune:
 3. **Deletes greedily**, most worth to the Guardians first, then least worth
    to the AI, then by index. Each deletion is applied with those before it,
    from the saved cards by their first index, and stands only if the bank keeps
-   its slots and no gap opens. The others are kept, and the log says why.
+   its slots, no gap opens, and the card is still worth less than the
+   threshold to the AI once those before it are gone. Two cards that each
+   cover the other, such as two that grant the same factory, are therefore
+   not both deleted. The others are kept, and the log says why.
 4. **Writes one patch** in the campaign state queue: `gwaioAi` with
    `guardiansPrunedAt` set to the deal count it judged at, and after a deletion
    the applied inventory. `upsertRecord`'s merge is shallow, so the patch

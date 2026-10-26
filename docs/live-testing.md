@@ -395,7 +395,9 @@ when it judges its held cards ([coop.md](coop.md), "Before The Guardians"):
 A card is deleted when `worth` is under `threshold` and `gain` is above 0. The
 first card, loadouts, hidden cards, and cards that brought a slot are not
 listed, and `held: none` means none was left to judge. A trailing `kept` lists
-each candidate kept, with why: `slots`, `extractor`, or `landFactory`.
+each candidate kept, with why: `slots`, `extractor`, `landFactory`, or
+`worth <w>` (the deletions before it raised its worth to the threshold or
+above).
 
 **Make The Guardians the last boss** on the host, from the console, by
 defeating every faction:
