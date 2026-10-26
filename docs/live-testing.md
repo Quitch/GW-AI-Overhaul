@@ -356,6 +356,15 @@ dealt: <error>`.
 - `<name> deal=<n> not written: <result>`: `gone` (the AI was kicked), `stale`
   (its cards kept changing under the decision), `refused`, `failed`, or
   `stalled` (the campaign queue did not run the write within 60 seconds).
+- `<name> prune fell back: <error> -> kept all`: judging the held cards
+  before The Guardians timed out or failed, so the AI kept them all and was
+  stamped.
+- `<name> prune -> kept all (timed out 2 times this session)`.
+- `<name> prune not written: <result>`: as for a deal.
+- `the Guardians judged on vanilla units: <error>`: the host race's view
+  failed, so the Guardians' view fields every obtainable unit as vanilla.
+- `<card id> visible() threw: <error>`: the card counts as hidden, so no AI
+  deletes it.
 - `<name> loadout <id> not built: <error>`: that candidate was skipped.
 - `add failed: Error: AI build timed out after 60000ms`: the new AI's build did
   not settle within 60 seconds, so the add failed and the slot was given back.
@@ -374,6 +383,39 @@ dealt: <error>`.
 gw_play.html`: stock's markup has changed. A missing slot row or slot class
   leaves the AI rows without their marker or buttons, and a missing Explore
   binding leaves Explore looking live while an AI decides.
+
+Once The Guardians are the last boss, each AI that owes a prune logs one line
+when it judges its held cards ([coop.md](coop.md), "Before The Guardians"):
+
+```text
+[GW COOP AI] <name> prune deal=<n> via=specs threshold=<t> held: <id>=<worth> (guardians <gain>), ... -> deleted <ids> | kept all [kept <id> (<why>), ...]
+```
+
+`worth` is the card's worth to the AI and `gain` its worth to the Guardians.
+A card is deleted when `worth` is under `threshold` and `gain` is above 0. The
+first card, loadouts, hidden cards, and cards that brought a slot are not
+listed, and `held: none` means none was left to judge. A trailing `kept` lists
+each candidate kept, with why: `slots`, `extractor`, or `landFactory`.
+
+**Make The Guardians the last boss** on the host, from the console, by
+defeating every faction:
+
+```js
+var teams = _.uniq(
+  _.filter(
+    _.map(model.game().galaxy().stars(), function (star) {
+      return star.ai() && star.ai().team;
+    }),
+    _.isNumber
+  )
+);
+_.forEach(teams, function (team) {
+  model.game().defeatTeam(team);
+});
+```
+
+The Guardians have no team, so they stay. The prune's pass starts as the last
+boss falls.
 
 **Check a per-player AI** in a war with per-player tech:
 
