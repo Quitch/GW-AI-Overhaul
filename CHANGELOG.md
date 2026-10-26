@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- In co-op with separate tech, once The Guardians are the last boss, AI players delete weak tech that would help The Guardians
+
 ## v7.8.1 - 2026-10-21
 
 ### Bugfix

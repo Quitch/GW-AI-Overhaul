@@ -440,6 +440,13 @@ describe("coop_ai_effects", () => {
       makeEffects.removeCard({ cards: [{ id: "a" }, { id: "b" }] }, 0).cards,
       [{ id: "b" }]
     );
+    assert.deepEqual(
+      makeEffects.removeCard(
+        { cards: [{ id: "a" }, { id: "b" }, { id: "c" }] },
+        [2, 0]
+      ).cards,
+      [{ id: "b" }]
+    );
   });
 });
 

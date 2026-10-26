@@ -23,10 +23,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     });
   };
 
+  // index: one card's, or a list of them.
   var removeCard = function (saved, index) {
+    var indices = [].concat(index);
     return _.assign({}, saved, {
       cards: _.filter(saved.cards || [], function (card, at) {
-        return at !== index;
+        return !_.includes(indices, at);
       }),
     });
   };

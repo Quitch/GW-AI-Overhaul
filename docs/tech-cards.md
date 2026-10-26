@@ -769,6 +769,25 @@ factory, a combat unit, a fabber, or a titan there.
    gives it a land factory.
 7. Otherwise the hand is declined, the bank being full.
 
+Before The Guardians, an AI also deletes the held cards that help them more
+than they help it ([`coop.md`](coop.md), "Before The Guardians"). A held card's
+worth to the AI is scored as in a swap, with no deal chance. Its worth to the
+Guardians is `shared/coop_ai_guardians.js`'s `gain`: the scorer run on a
+fielded view of the Guardians. That view fields every unit a card could grant,
+all of them reached, through the host race's view where it has one, since the
+Guardians mirror the host's race. It holds no Sub Commanders, slots, or cards,
+so a card's unlock, later, minion, slot, and floor parts come to 0, and its
+worth to them is its mods on those units and on the Unicorn, plus its AI mods.
+A card that only grants units is worth nothing to them. The view is an
+approximation in three ways:
+
+- It leaves out the other players' mods. The Guardians hold them too, but they
+  only scale the held-tech boost, between 0.5 and 1.5, and that never turns a
+  card that only helps or only hurts to the other side.
+- It aims the AI mods with the host race's co-op tree, the one an AI player's
+  view uses, where the Guardians fight on the enemy brain.
+- It leaves out the Guardians' own faction tech, which no card changes.
+
 The numbers here are `WEIGHTS` in `shared/coop_ai_cards.js`. They are tuning,
 set from the debug lines, so `test/coop_ai_cards.test.js` pins orderings and
 policies rather than values. Change a weight there, and this section with it.
