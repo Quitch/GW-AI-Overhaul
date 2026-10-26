@@ -737,32 +737,30 @@ define([
       var deleteGreedily = function (candidates) {
         var deleted = [];
         var current = applied;
+        var accept = function (candidate, next) {
+          live();
+          var worth = coopAiCards.scoreCard(next, current, context).total;
+          var why =
+            deletionRefusal(applied, next, gapNow) ||
+            (worth < threshold ? undefined : "worth " + worth);
+          if (why) {
+            refused.push({ id: candidate.id, why: why });
+            return;
+          }
+          deleted.push(candidate);
+          current = next;
+        };
+        var tryDeleting = function (candidate) {
+          live();
+          var indices = _.pluck(deleted, "index").concat(candidate.index);
+          return params.effects
+            .apply(coopAiEffects.removeCard(saved, indices))
+            .then(_.partial(accept, candidate));
+        };
         return _.reduce(
           candidates,
           function (chain, candidate) {
-            return chain.then(function () {
-              live();
-              var indices = _.pluck(deleted, "index").concat(candidate.index);
-              return params.effects
-                .apply(coopAiEffects.removeCard(saved, indices))
-                .then(function (next) {
-                  live();
-                  var worth = coopAiCards.scoreCard(
-                    next,
-                    current,
-                    context
-                  ).total;
-                  var why =
-                    deletionRefusal(applied, next, gapNow) ||
-                    (worth < threshold ? undefined : "worth " + worth);
-                  if (why) {
-                    refused.push({ id: candidate.id, why: why });
-                    return;
-                  }
-                  deleted.push(candidate);
-                  current = next;
-                });
-            });
+            return chain.then(_.partial(tryDeleting, candidate));
           },
           Promise.resolve()
         ).then(function () {
@@ -926,17 +924,16 @@ define([
       var lookup = params.lookup();
       var wroteAny = false;
       var releaseSave = holdSave();
+      var noteWrote = function (wrote) {
+        wroteAny = wroteAny || wrote;
+      };
       var serveEach = function (serve) {
         return _.reduce(
           owing,
           function (chain, playerId) {
             return chain
-              .then(function () {
-                return serve(playerId, lookup);
-              })
-              .then(function (wrote) {
-                wroteAny = wroteAny || wrote;
-              });
+              .then(_.partial(serve, playerId, lookup))
+              .then(noteWrote);
           },
           Promise.resolve()
         );
