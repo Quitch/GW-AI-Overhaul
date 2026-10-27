@@ -13,7 +13,8 @@ define([
   var MAX_CHAIN = 16;
   var COMMANDERS = "/pa/units/commanders/";
   var BUILD_PATH = /^(unit_types|buildable_types)(\.|$)/;
-  // Build lists remade by mods, kept for reuse; older ones are dropped.
+  // Build lists remade by mods, and the reach they give, kept for reuse;
+  // older ones are dropped.
   var MAX_CACHED = 64;
 
   var parseCell = function (key) {
@@ -23,6 +24,22 @@ define([
 
   var directoryOf = function (path) {
     return path.slice(0, path.lastIndexOf("/") + 1);
+  };
+
+  var bounded = function () {
+    var store = {};
+    // Keys in the order they were cached, oldest first.
+    var order = [];
+    return function (cacheKey, make) {
+      if (!Object.prototype.hasOwnProperty.call(store, cacheKey)) {
+        store[cacheKey] = make();
+        order.push(cacheKey);
+        if (order.length > MAX_CACHED) {
+          delete store[order.shift()];
+        }
+      }
+      return store[cacheKey];
+    };
   };
 
   var memoise = function (ownersOf) {
@@ -46,18 +63,14 @@ define([
   // Every held unit the commander can build, directly or through what it
   // builds, until nothing more is reachable. A commander the lookup does not
   // know reaches everything: an unknown builder is no reason to value a unit
-  // at a quarter.
-  var reachFrom = function (held, commander, buildableOf, tagsOf) {
+  // at a quarter. reachOf(candidates) is buildTypes.reach from the
+  // commander.
+  var reachFrom = function (held, commander, buildableOf, reachOf) {
     if (!buildableOf(commander)) {
       return held.slice();
     }
 
-    var reached = buildTypes.reach(
-      [commander],
-      _.without(held, commander),
-      buildableOf,
-      tagsOf
-    );
+    var reached = reachOf(_.without(held, commander));
     return _.filter(_.uniq(held), function (unit) {
       return unit === commander || !!reached[unit];
     });
@@ -208,20 +221,8 @@ define([
       return remade;
     };
 
-    var remadeCache = {};
-    // Keys in the order they were cached, oldest first.
-    var remadeOrder = [];
-    var remadeFor = function (buildMods) {
-      var cacheKey = JSON.stringify(buildMods);
-      if (!Object.prototype.hasOwnProperty.call(remadeCache, cacheKey)) {
-        remadeCache[cacheKey] = remake(buildMods);
-        remadeOrder.push(cacheKey);
-        if (remadeOrder.length > MAX_CACHED) {
-          delete remadeCache[remadeOrder.shift()];
-        }
-      }
-      return remadeCache[cacheKey];
-    };
+    var remadeCache = bounded();
+    var reachedCache = bounded();
 
     // mods: the inventory's, whose unit_types and buildable_types mods
     // change what builds what. fielded: held is what the army fields
@@ -231,24 +232,36 @@ define([
       var from =
         !fielded && isRaceUnit(commander) ? gwoUnit.commander : commander;
       var buildMods = buildModsOf(mods);
+      var modsKey = JSON.stringify(buildMods);
       var remade = buildMods.length
-        ? remadeFor(buildMods)
+        ? remadeCache(modsKey, _.partial(remake, buildMods))
         : { tagsOf: {}, buildableOf: {} };
       var read = function (field, unit) {
         return _.has(remade[field], unit)
           ? remade[field][unit]
           : index[field][unit];
       };
-      return reachFrom(
-        held,
-        commander,
-        function (unit) {
-          return read("buildableOf", unit === commander ? from : unit);
-        },
-        function (unit) {
-          return read("tagsOf", unit);
-        }
-      );
+      var buildableOf = function (unit) {
+        return read("buildableOf", unit === commander ? from : unit);
+      };
+      var tagsOf = function (unit) {
+        return read("tagsOf", unit);
+      };
+      // The reach is the same set whatever order the candidates come in.
+      var reachOf = function (candidates) {
+        return reachedCache(
+          JSON.stringify([from, commander, modsKey, _.uniq(candidates).sort()]),
+          function () {
+            return buildTypes.reach(
+              [commander],
+              candidates,
+              buildableOf,
+              tagsOf
+            );
+          }
+        );
+      };
+      return reachFrom(held, commander, buildableOf, reachOf);
     };
 
     var healthOf = function (path) {

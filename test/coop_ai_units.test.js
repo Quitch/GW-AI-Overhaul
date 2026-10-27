@@ -364,6 +364,33 @@ describe("fromSpecs reach under build-type mods", () => {
     counted.reachable([LOB], IMPERIAL, [cmdBuild]);
     assert.equal(calls, 66);
   });
+
+  it("reuses a reach whatever order the units come in, and keeps their order", () => {
+    const air = mod(BOT_FACTORY, "buildable_types", "add", " | Air & Mobile");
+    const fresh = withMods(gwoSpecs.mod);
+    assert.deepEqual(
+      fresh.reachable([BUMBLEBEE, DOX, BOT_FACTORY], IMPERIAL, [air]),
+      [BUMBLEBEE, DOX, BOT_FACTORY]
+    );
+    assert.deepEqual(
+      fresh.reachable([BOT_FACTORY, DOX, BUMBLEBEE, DOX], IMPERIAL, [air]),
+      [BOT_FACTORY, DOX, BUMBLEBEE]
+    );
+    // The same units under other mods, or from another commander, reach anew.
+    assert.deepEqual(fresh.reachable([BUMBLEBEE, DOX, BOT_FACTORY], IMPERIAL), [
+      DOX,
+      BOT_FACTORY,
+    ]);
+    assert.deepEqual(
+      fresh.reachable(
+        [BUMBLEBEE, DOX, BOT_FACTORY],
+        RACE_COMMANDER,
+        [air],
+        true
+      ),
+      []
+    );
+  });
 });
 
 describe("fromGroups", () => {
