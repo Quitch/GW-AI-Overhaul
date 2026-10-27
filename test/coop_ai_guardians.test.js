@@ -155,6 +155,184 @@ describe("coop_ai_guardians.gain", () => {
   });
 });
 
+describe("coop_ai_guardians.held", () => {
+  const mod = (op, value) => ({
+    file: "/u/bot",
+    path: "max_health",
+    op,
+    value: value === undefined ? 2 : value,
+  });
+
+  it("drops a copy the humans give already of each op that does not stack", () => {
+    guardians.NON_STACKING.forEach((op) => {
+      assert.deepEqual(
+        guardians.held([mod(op)], [mod(op)], guardians.NON_STACKING),
+        [],
+        op
+      );
+    });
+  });
+
+  it("keeps a copy of each op that stacks, or that may not be idempotent", () => {
+    ["multiply", "add", "push", "prepend", "multiplyOrCreate", "wipe", "eval"]
+      .map((op) => [mod(op)])
+      .forEach((mods) => {
+        assert.equal(
+          guardians.held(mods, mods.slice(), guardians.NON_STACKING),
+          mods
+        );
+      });
+  });
+
+  it("keeps a mod the humans give only with another value, file or path", () => {
+    const mods = [mod("replace", 3)];
+
+    assert.equal(
+      guardians.held(
+        mods,
+        [
+          mod("replace"),
+          Object.assign(mod("replace", 3), { file: "/u/tank" }),
+          Object.assign(mod("replace", 3), { path: "max_speed" }),
+        ],
+        guardians.NON_STACKING
+      ),
+      mods
+    );
+  });
+
+  it("drops every copy of a held mod, and keeps the rest in order", () => {
+    const kept = mod("multiply");
+
+    assert.deepEqual(
+      guardians.held(
+        [mod("replace"), kept, mod("replace")],
+        [mod("replace")],
+        guardians.NON_STACKING
+      ),
+      [kept]
+    );
+  });
+
+  it("drops a held AI mod whose op is idempotent, and keeps one that duplicates", () => {
+    const aiMod = (op) => ({ type: "factory", op, toBuild: "Bot", value: 1 });
+
+    guardians.NON_STACKING_AI.forEach((op) => {
+      assert.deepEqual(
+        guardians.held([aiMod(op)], [aiMod(op)], guardians.NON_STACKING_AI),
+        [],
+        op
+      );
+    });
+    ["append", "prepend", "new", "squad"].forEach((op) => {
+      assert.equal(
+        guardians.held([aiMod(op)], [aiMod(op)], guardians.NON_STACKING_AI)
+          .length,
+        1,
+        op
+      );
+    });
+  });
+
+  it("reads missing lists as empty", () => {
+    assert.equal(guardians.held(undefined, undefined, []), undefined);
+    assert.deepEqual(guardians.held([undefined], [], ["replace"]), [undefined]);
+  });
+});
+
+describe("coop_ai_guardians.view with the humans' mods", () => {
+  const reshape = {
+    file: "/u/bot",
+    path: "max_health",
+    op: "replace",
+    value: 500,
+  };
+  const armour = { file: "/u/bot", path: "max_health", op: "multiply" };
+  const human = {
+    mods: [reshape, Object.assign({ value: 1.5 }, armour)],
+    aiMods: [{ op: "replace", toBuild: "Bot" }],
+  };
+  const view = guardians.view(LOOKUP.obtainable, undefined, human);
+
+  it("gives the Guardians nothing for a copy the humans give already", () => {
+    assert.equal(gainOf([reshape], {}, view), 0);
+    assert.equal(
+      gainOf([], { aiMods: [{ op: "replace", toBuild: "Bot" }] }, view),
+      0
+    );
+  });
+
+  it("still counts a copy that stacks on the humans'", () => {
+    assert.ok(gainOf([Object.assign({ value: 1.5 }, armour)], {}, view) > 0);
+    assert.ok(gainOf([], { aiMods: [{ op: "append" }] }, view) > 0);
+  });
+
+  it("still counts every copy in everyCopy, which is the view itself without humans", () => {
+    assert.ok(gainOf([reshape], {}, view.everyCopy) > 0);
+    assert.equal(view.everyCopy.everyCopy, view.everyCopy);
+    assert.equal(VIEW.everyCopy, VIEW);
+  });
+
+  it("compares the mods before the host race lands them, and lands each copy once", () => {
+    const seen = [];
+    const raceView = {
+      inventory: (saved) => {
+        seen.push(saved);
+        return {
+          mods: saved.mods.map((mod) =>
+            Object.assign({}, mod, { file: "/race" + mod.file })
+          ),
+          aiMods: saved.aiMods,
+        };
+      },
+    };
+    const raced = guardians.view(["/u/tank"], raceView, human);
+    const applied = inventory([reshape, Object.assign({ value: 2 }, armour)], {
+      aiMods: [{ op: "replace", toBuild: "Bot" }, { op: "append" }],
+    });
+
+    const first = raced.inventory(applied);
+    const again = raced.inventory(applied);
+
+    assert.deepEqual(first.mods, [
+      Object.assign({ value: 2 }, armour, { file: "/race/u/bot" }),
+    ]);
+    assert.deepEqual(first.aiMods, [{ op: "append" }]);
+    assert.deepEqual(again, first);
+    assert.equal(seen[0], applied);
+    assert.deepEqual(seen[1].mods, [Object.assign({ value: 2 }, armour)]);
+    assert.equal(seen[3], seen[1]);
+  });
+
+  it("keeps no more than 16 inventories' copies", () => {
+    const landed = [];
+    const raced = guardians.view(
+      [],
+      {
+        inventory: (saved) => {
+          landed.push(saved);
+          return saved;
+        },
+      },
+      human
+    );
+    const first = inventory([reshape]);
+    const copyOf = (saved) => {
+      raced.inventory(saved);
+      return landed[landed.length - 1];
+    };
+
+    const copy = copyOf(first);
+    for (let i = 0; i < 15; i += 1) {
+      copyOf(inventory([reshape]));
+    }
+    assert.equal(copyOf(first), copy);
+    copyOf(inventory([reshape]));
+
+    assert.notEqual(copyOf(first), copy);
+  });
+});
+
 describe("coop_ai_guardians.describePrune", () => {
   const base = {
     name: "Sorian",
@@ -191,6 +369,20 @@ describe("coop_ai_guardians.describePrune", () => {
       "[GW COOP AI] Sorian prune deal=4 via=fielded threshold=7 held: " +
         "bot_armour=2.5 (guardians 3), air=12 (guardians 0) -> kept all " +
         "kept bot_armour (landFactory)"
+    );
+  });
+
+  it("logs a card the humans' copies leave worth nothing to the Guardians", () => {
+    assert.equal(
+      guardians.describePrune(
+        Object.assign({}, base, {
+          judged: [{ id: "bot_reshape", worth: 1.5, gain: 0, humanHeld: true }],
+          deleted: [],
+          refused: [],
+        })
+      ),
+      "[GW COOP AI] Sorian prune deal=4 via=fielded threshold=7 held: " +
+        "bot_reshape=1.5 (guardians 0, human-held) -> kept all"
     );
   });
 
