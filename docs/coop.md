@@ -738,8 +738,10 @@ reads every star's AI. The prune:
 A new deal after that moves the count past the stamp, so the AI judges its
 cards again once that deal is settled. The bounds are a deal's: a prune not
 settled within 20 seconds, or one that throws, keeps every card and is still
-stamped. Only a timeout counts against the AI, and an AI whose decisions have
-timed out twice this session stamps without judging. Each of these is logged
+stamped. The one exception is a timeout once step 3 has accepted a deletion:
+the prune then writes the deletions accepted so far, as step 4 does. Only a
+timeout counts against the AI, and an AI whose decisions have timed out twice
+this session stamps without judging. Each of these is logged
 ([`live-testing.md`](live-testing.md), "AI players").
 
 **A human's copy.** The Guardians take each copy of a mod, with no dedupe, so

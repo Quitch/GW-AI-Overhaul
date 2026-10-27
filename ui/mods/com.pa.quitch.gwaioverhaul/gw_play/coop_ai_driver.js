@@ -694,7 +694,9 @@ define([
     // judged against the inventory as it stands, then deleted one at a time,
     // most help to the Guardians first, while each deletion still holds and
     // the card is still worth less than the threshold once those before it
-    // are gone. Resolves the outcome to write.
+    // are gone. Resolves the outcome to write. For a timeout, progress.result
+    // holds the deletions accepted so far, and progress.line(deleted) the
+    // prune's log line.
     var decidePrune = function (record, lookup, progress) {
       var saved = record.inventory;
       var applied;
@@ -761,6 +763,7 @@ define([
           }
           deleted.push(candidate);
           current = next;
+          progress.result = { deleted: deleted, inventory: current };
         };
         var tryDeleting = function (candidate) {
           live();
@@ -812,22 +815,29 @@ define([
             ["gain", "worth", "index"],
             [false, true, true]
           );
-          return deleteGreedily(candidates).then(function (result) {
-            live();
-            console.log(
-              coopAiGuardians.describePrune({
-                name: record.gwaioAi.name,
-                deal: params.dealCount(record),
-                via: viaOf(context),
-                threshold: threshold,
-                judged: judged,
-                deleted: _.pluck(result.deleted, "id"),
-                refused: refused,
-              })
-            );
-            return result.deleted.length ? { inventory: result.inventory } : {};
-          });
+          progress.line = function (deleted) {
+            return coopAiGuardians.describePrune({
+              name: record.gwaioAi.name,
+              deal: params.dealCount(record),
+              via: viaOf(context),
+              threshold: threshold,
+              judged: judged,
+              deleted: _.pluck(deleted, "id"),
+              refused: refused,
+            });
+          };
+          return deleteGreedily(candidates);
+        })
+        .then(function (result) {
+          live();
+          console.log(progress.line(result.deleted));
+          return pruneOutcome(result);
         });
+    };
+
+    // What a prune writes: the inventory its deletions leave, if any.
+    var pruneOutcome = function (result) {
+      return result.deleted.length ? { inventory: result.inventory } : {};
     };
 
     var settlePrune = function (record, lookup) {
@@ -855,6 +865,19 @@ define([
         progress.abandoned = true;
         if (timedOut(error)) {
           timeouts[record.playerId] = (timeouts[record.playerId] || 0) + 1;
+          if (progress.result) {
+            console.log(progress.line(progress.result.deleted));
+            console.error(
+              LOG +
+                name +
+                " " +
+                describe(error) +
+                " -> deleted " +
+                _.pluck(progress.result.deleted, "id").join(", ") +
+                " (greedy pass unfinished)"
+            );
+            return pruneOutcome(progress.result);
+          }
         }
         console.error(
           LOG + name + " prune fell back: " + describe(error) + " -> kept all"
