@@ -1653,12 +1653,36 @@ describe("coop_ai_driver Guardians prune", () => {
 
     await run.driver.run();
 
-    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), [
       "gwc_start_bot",
       "air",
       "naval",
       "orbital",
     ]);
+    assert.equal(record.inventory.maxCards, 3);
+    assert.match(pruneLine(), /-> deleted bot_armour$/);
+  });
+
+  it("keeps a later card whose deletion with those before it would leave cards without a slot", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "double_slot_armour",
+      "double_slot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.equal(cardIds(record).length, 5);
+    assert.equal(record.inventory.maxCards, 5);
+    assert.match(
+      pruneLine(),
+      /-> deleted double_slot_armour kept double_slot_armour \(slots\)$/
+    );
   });
 
   it("keeps a card whose deletion would open a gap it lacks now", async () => {

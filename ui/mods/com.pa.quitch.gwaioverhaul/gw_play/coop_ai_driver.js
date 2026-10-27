@@ -78,6 +78,10 @@ define([
     );
   };
 
+  var overflowOf = function (applied) {
+    return Math.max(0, (applied.cards || []).length - (applied.maxCards || 0));
+  };
+
   // The scored loadouts a draw takes from. used: under Unique AI loadouts,
   // the loadouts in use, left out unless that leaves none above 0.
   var loadoutPool = function (scored, used) {
@@ -673,13 +677,6 @@ define([
         });
       };
       return next();
-    };
-
-    var overflowOf = function (applied) {
-      return Math.max(
-        0,
-        (applied.cards || []).length - (applied.maxCards || 0)
-      );
     };
 
     // Why a deletion cannot stand: it leaves more cards without a slot than
