@@ -6,7 +6,8 @@
 // a T1 factory card in place of a hand. Only settled results are written, so
 // a reload mid-decision reruns to the same result. While The Guardians are
 // the last boss, an AI also deletes the held cards worth little to it that
-// help them. See coop.md, "AI players' tech".
+// help them, and takes no such card in a deal. See coop.md, "AI players'
+// tech".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
@@ -180,7 +181,35 @@ define([
       });
     };
 
-    var scoreHand = function (record, hand, context, star) {
+    // While The Guardians are last: the card's worth to them, and whether the
+    // prune after this deal would delete it once taken, by the prune's test
+    // on the inventory with it. A swap's prune runs one held card lighter, so
+    // for a swap the test is an approximation.
+    var markForGuardians = function (scored, pair, context, guardians) {
+      var without = pair[0];
+      var withCard = pair[1];
+      var worth = coopAiCards.scoreCard(
+        without,
+        withCard,
+        _.assign({}, context, { namesUnits: false, chance: 0 })
+      ).total;
+      scored.guardians = coopAiGuardians.gain(
+        guardians,
+        without,
+        withCard,
+        context.lookup
+      );
+      scored.wouldPrune =
+        !scored.loadout &&
+        canDelete(scored.card) &&
+        worth < coopAiCards.rerollThreshold(fullnessOf(withCard), 0) &&
+        scored.guardians > 0 &&
+        !deletionRefusal(withCard, without, params.armyGap(withCard.units));
+      return scored;
+    };
+
+    // guardians: their view while they are last, else undefined.
+    var scoreHand = function (record, hand, context, star, guardians) {
       var saved = record.inventory;
       return Promise.all(
         _.map(hand.cards, function (card, index) {
@@ -188,7 +217,7 @@ define([
           return params.effects
             .withCard(saved, card, loadout)
             .then(function (pair) {
-              return _.assign(
+              var scored = _.assign(
                 { index: index, id: card.id, card: card, loadout: loadout },
                 coopAiCards.scoreCard(
                   pair[0],
@@ -196,9 +225,35 @@ define([
                   cardContext(context, card, pair[0], star)
                 )
               );
+              return guardians
+                ? markForGuardians(scored, pair, context, guardians)
+                : scored;
             });
         })
       );
+    };
+
+    // The Guardians' view for a deal while they are last, else undefined. A
+    // view that fails leaves the hand judged as at any other time.
+    var dealGuardians = function (record, entry, lookup) {
+      if (!guardiansLast()) {
+        return Promise.resolve(undefined);
+      }
+      return Promise.resolve()
+        .then(function () {
+          return guardianView(lookup);
+        })
+        .then(null, function (error) {
+          console.error(
+            LOG +
+              record.gwaioAi.name +
+              " deal=" +
+              entry.dealIndex +
+              " judged without the Guardians: " +
+              describe(error)
+          );
+          return undefined;
+        });
     };
 
     // One held card's worth for a swap: what deleting it loses once the
@@ -355,6 +410,7 @@ define([
       var client = clientOf(record);
       var context;
       var applied;
+      var guardians;
 
       // A decision that timed out stops at its next step, so it queues no
       // apply or reroll ahead of the next deal's, and logs no choice that is
@@ -424,34 +480,40 @@ define([
           });
         };
 
-        return scoreHand(record, hand, context, star).then(function (scored) {
-          live();
-          var first = decide(scored, []);
-          var decided =
-            first.action === "decline" && first.reason === "bank full"
-              ? scoreHeld(
-                  record,
-                  context,
-                  star,
-                  _.find(scored, { index: first.index }).card,
-                  applied
-                ).then(_.partial(decide, scored))
-              : Promise.resolve(first);
+        return scoreHand(record, hand, context, star, guardians).then(
+          function (scored) {
+            live();
+            var first = decide(scored, []);
+            var decided =
+              first.action === "decline" && first.reason === "bank full"
+                ? scoreHeld(
+                    record,
+                    context,
+                    star,
+                    _.find(scored, { index: first.index }).card,
+                    applied
+                  ).then(_.partial(decide, scored))
+                : Promise.resolve(first);
 
-          return decided.then(_.partial(act, hand, scored));
-        });
+            return decided.then(_.partial(act, hand, scored));
+          }
+        );
       };
 
       var dealAndJudge = function () {
-        return Promise.resolve(
-          params.dealHand({
-            client: client,
-            record: record,
-            dealIndex: entry.dealIndex,
-            starIndex: entry.star,
-            star: star,
+        return dealGuardians(record, entry, lookup)
+          .then(function (view) {
+            live();
+            guardians = view;
+            return params.dealHand({
+              client: client,
+              record: record,
+              dealIndex: entry.dealIndex,
+              starIndex: entry.star,
+              star: star,
+            });
           })
-        ).then(judge);
+          .then(judge);
       };
 
       return params.effects

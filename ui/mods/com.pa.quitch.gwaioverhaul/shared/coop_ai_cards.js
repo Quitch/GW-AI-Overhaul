@@ -691,6 +691,10 @@ define([
     return rounded(parts);
   };
 
+  // Why a hand whose every card the prune would delete is rerolled or
+  // declined.
+  var PRUNED = "would be pruned";
+
   var rerollThreshold = function (fullness, rerollsUsed) {
     return round(
       WEIGHTS.rerollBase +
@@ -725,10 +729,11 @@ define([
     return _.isUndefined(index) ? undefined : scored[index];
   };
 
-  // What to do with a hand. params: scored ({ index, id, total, loadout }),
-  // rerollsLeft, rerollsUsed, fullness, roomFor(card) (whether the bank takes
-  // it without a deletion), held ({ index, id, total }, removable cards only),
-  // rng. Returns { action, index, deleteIndex, best, threshold, reason }; a
+  // What to do with a hand. params: scored ({ index, id, total, loadout,
+  // wouldPrune }), rerollsLeft, rerollsUsed, fullness, roomFor(card) (whether
+  // the bank takes it without a deletion), held ({ index, id, total },
+  // removable cards only), rng. A card that wouldPrune is never chosen.
+  // Returns { action, index, deleteIndex, best, threshold, reason }; a
   // decline for a full bank carries the best card's index, to judge the held
   // cards against.
   var decide = function (params) {
@@ -742,8 +747,16 @@ define([
       return { action: "decline", reason: "loadout" };
     }
 
-    var choice = best(scored, params.rng);
     var threshold = rerollThreshold(params.fullness, params.rerollsUsed);
+    var choosable = _.reject(scored, "wouldPrune");
+
+    if (!choosable.length) {
+      return params.rerollsLeft > 0
+        ? { action: "reroll", threshold: threshold, reason: PRUNED }
+        : { action: "decline", reason: PRUNED };
+    }
+
+    var choice = best(choosable, params.rng);
 
     if (params.rerollsLeft > 0 && choice.total < threshold) {
       return {
@@ -800,6 +813,9 @@ define([
     var chosen = _.find(scored, { index: decision.index });
     switch (decision.action) {
       case "reroll":
+        if (decision.reason) {
+          return "reroll (" + decision.reason + ")";
+        }
         return (
           "reroll (best " +
           decision.best +
@@ -814,6 +830,16 @@ define([
       default:
         return "declined (" + decision.reason + ")";
     }
+  };
+
+  // A card's worth to The Guardians, where the deal judged it.
+  var formatGuardians = function (card) {
+    if (!_.isNumber(card.guardians)) {
+      return "";
+    }
+    return (
+      ", guardians " + card.guardians + (card.wouldPrune ? ", would prune" : "")
+    );
   };
 
   // One log line per hand offered, for tuning the weights: everything the AI
@@ -832,7 +858,15 @@ define([
       params.via +
       " offered: " +
       _.map(params.scored, function (card) {
-        return card.id + "=" + card.total + " (" + formatParts(card) + ")";
+        return (
+          card.id +
+          "=" +
+          card.total +
+          " (" +
+          formatParts(card) +
+          formatGuardians(card) +
+          ")"
+        );
       }).join(", ") +
       " -> " +
       formatAction(params.decision, params.scored)

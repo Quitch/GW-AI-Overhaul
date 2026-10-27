@@ -1078,6 +1078,91 @@ describe("decide", () => {
       reason: "no cards",
     });
   });
+
+  describe("with a card the prune would delete", () => {
+    const pruned = (index, total) => card(index, total, { wouldPrune: true });
+
+    it("takes the best card the prune would keep", () => {
+      const decision = coopAiCards.decide({
+        scored: [card(0, 2), pruned(1, 3)],
+        rerollsLeft: 0,
+        rerollsUsed: 2,
+        fullness: 0,
+        roomFor: roomy,
+      });
+      assert.deepEqual(decision, { action: "take", index: 0, best: 2 });
+    });
+
+    it("judges a reroll on the cards the prune would keep", () => {
+      const decision = coopAiCards.decide({
+        scored: [card(0, 0.5), pruned(1, 3)],
+        rerollsLeft: 1,
+        rerollsUsed: 1,
+        fullness: 0,
+        roomFor: roomy,
+      });
+      assert.equal(coopAiCards.rerollThreshold(0, 1), 1);
+      assert.deepEqual(decision, {
+        action: "reroll",
+        best: 0.5,
+        threshold: 1,
+      });
+    });
+
+    it("rerolls a hand the prune would empty while a reroll remains, else declines it", () => {
+      const scored = [pruned(0, 3), pruned(1, 2)];
+      const rerolled = coopAiCards.decide({
+        scored: scored,
+        rerollsLeft: 1,
+        rerollsUsed: 1,
+        fullness: 0,
+        roomFor: roomy,
+      });
+      assert.deepEqual(rerolled, {
+        action: "reroll",
+        threshold: 1,
+        reason: "would be pruned",
+      });
+
+      const declined = coopAiCards.decide({
+        scored: scored,
+        rerollsLeft: 0,
+        rerollsUsed: 2,
+        fullness: 0,
+        roomFor: roomy,
+      });
+      assert.deepEqual(declined, {
+        action: "decline",
+        reason: "would be pruned",
+      });
+    });
+
+    it("never swaps one in, however weak the held cards", () => {
+      const decision = coopAiCards.decide({
+        scored: [pruned(0, 3)],
+        rerollsLeft: 0,
+        rerollsUsed: 2,
+        fullness: 1,
+        roomFor: full,
+        held: [card(1, -5)],
+      });
+      assert.deepEqual(decision, {
+        action: "decline",
+        reason: "would be pruned",
+      });
+    });
+
+    it("still declines a hand holding a loadout as a loadout", () => {
+      const decision = coopAiCards.decide({
+        scored: [pruned(0, 3), card(1, 50, { loadout: true })],
+        rerollsLeft: 1,
+        rerollsUsed: 0,
+        fullness: 0,
+        roomFor: roomy,
+      });
+      assert.deepEqual(decision, { action: "decline", reason: "loadout" });
+    });
+  });
 });
 
 describe("describeHand / describeLoadouts", () => {
@@ -1137,6 +1222,30 @@ describe("describeHand / describeLoadouts", () => {
     assert.equal(
       action({ action: "decline", reason: "bank full" }),
       "declined (bank full)"
+    );
+    assert.equal(
+      action({ action: "reroll", threshold: 1, reason: "would be pruned" }),
+      "reroll (would be pruned)"
+    );
+  });
+
+  it("gives each card's worth to The Guardians where the deal judged it", () => {
+    const line = coopAiCards.describeHand({
+      name: "Sorian",
+      deal: 3,
+      star: 7,
+      via: "specs",
+      scored: [
+        Object.assign({}, scored[0], { guardians: 0, wouldPrune: false }),
+        Object.assign({}, scored[1], { guardians: 1.5, wouldPrune: true }),
+      ],
+      decision: { action: "take", index: 0 },
+    });
+    assert.equal(
+      line,
+      "[GW COOP AI] Sorian deal=3 star=7 hand=2 via=specs offered: " +
+        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0, guardians 0), " +
+        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0, guardians 1.5, would prune) -> took gwc_a"
     );
   });
 
