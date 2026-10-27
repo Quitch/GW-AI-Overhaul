@@ -321,14 +321,18 @@ counts the cards offered. Each card shows its score and then the parts it came
 from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). `mods` is
 what the card's stat mods are worth on the units the AI fields and on its
 commanders, and `later` what they are worth on units it could field later. A
-stat card for a domain the AI has not opened scores in `later` alone. The
-action is one of:
+stat card for a domain the AI has not opened scores in `later` alone. While
+The Guardians are the last boss, each card's parts end `, guardians <gain>`,
+its worth to the Guardians, and a card that the AI's next prune would delete
+once taken, or once swapped in, adds `, would prune` ([coop.md](coop.md), "Before The Guardians").
+The AI never chooses such a card. The action is one of:
 
 - `took <id>`.
-- `reroll (best <b> < threshold <t>)`.
+- `reroll (best <b> < threshold <t>)`, or `reroll (would be pruned)` when the
+  prune would delete every card of the hand.
 - `deleted <held id> took <id>`: a swap, made with a full bank.
-- `declined (<reason>)`: `loadout`, `nothing worth a slot`, `bank full`, or
-  `no cards`.
+- `declined (<reason>)`: `loadout`, `nothing worth a slot`, `bank full`,
+  `would be pruned`, or `no cards`.
 
 `via` names the unit lookup, and should read `specs`, or `fielded` for a race
 AI, or an MLA AI with add-ons active, judged on what its army fields
@@ -367,6 +371,9 @@ dealt: <error>`.
 - `<name> prune not written: <result>`: as for a deal.
 - `the Guardians judged on vanilla units: <error>`: the host race's view
   failed, so the Guardians' view fields every obtainable unit as vanilla.
+- `<name> deal=<n> judged without the Guardians: <error>`: the Guardians' view
+  failed while they are the last boss, so the AI judged that deal's hand as at
+  any other time, and may take a card that its next prune deletes.
 - `<card id> visible() threw: <error>`: the card counts as hidden, so no AI
   deletes it.
 - `<name> loadout <id> not built: <error>`: that candidate was skipped.

@@ -67,6 +67,7 @@ const CELLS = {
   "/u/bot_factory": ["Bot", "Basic", "Factory"],
   "/u/bot": ["Bot", "Basic", "Combat"],
   "/u/bot_adv": ["Bot", "Advanced", "Combat"],
+  "/u/bot_wall": ["Bot", "Basic", "Defense"],
   "/u/air_factory": ["Air", "Basic", "Factory"],
   "/u/vehicle_factory": ["Vehicle", "Basic", "Factory"],
   "/u/naval_factory": ["Naval", "Basic", "Factory"],
@@ -212,6 +213,20 @@ const EFFECTS = {
     mods: [
       { file: "/u/bot", path: "max_health", op: "replace", value: 500 },
       { file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 },
+    ],
+  },
+  bot_plating: {
+    mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 2 }],
+  },
+  bot_wall: { units: ["/u/bot_wall"] },
+  factory_overclock: {
+    mods: [
+      {
+        file: "/u/bot_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 3,
+      },
     ],
   },
   extractor_armour2: {
@@ -2029,5 +2044,192 @@ describe("coop_ai_driver Guardians prune", () => {
     await run.driver.run();
 
     assert.match(pruneLine(), /bot_armour=-?[\d.]+ \(guardians 0\)/);
+  });
+});
+
+describe("coop_ai_driver deals before The Guardians", () => {
+  const guardianView = () =>
+    Promise.resolve(coopAiGuardians.view(Object.keys(CELLS)));
+
+  const dealSetup = (cards, hands, overrides) =>
+    setup(
+      Object.assign(
+        {
+          records: [aiRecord(1, hand(cards))],
+          history: history(1),
+          hands: { 1: [hand(hands[0])] },
+          rerolled: _.map(hands.slice(1), hand),
+          guardiansLast: () => true,
+          guardianView,
+        },
+        overrides
+      )
+    );
+
+  const handLines = () => _.filter(lines, (line) => / hand=/.test(line));
+
+  // bot_plating is the best of the hand, but worth less to the AI than the
+  // prune's threshold, and it helps The Guardians.
+  const PLATING = ["bot_plating", "bot_wall", "junk"];
+
+  it("takes the next best card over one the prune would delete", async () => {
+    const run = dealSetup(["gwc_start_bot"], [PLATING, PLATING, PLATING]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "bot_wall"]);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 1);
+    assert.equal(run.calls.rerolls.length, 2);
+    assert.match(
+      handLines()[0],
+      / offered: bot_plating=[\d.]+ \([^)]*, guardians [\d.]+, would prune\), bot_wall=[\d.]+ \([^)]*, guardians 0\), /
+    );
+    assert.match(_.last(handLines()), /-> took bot_wall$/);
+  });
+
+  it("takes the same card when The Guardians are not last, without judging it for them", async () => {
+    let views = 0;
+    const run = dealSetup(["gwc_start_bot"], [PLATING, PLATING, PLATING], {
+      guardiansLast: () => false,
+      guardianView: () => {
+        views += 1;
+        return guardianView();
+      },
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_plating",
+    ]);
+    assert.equal(views, 0);
+    assert.ok(handLines().every((line) => !/guardians/.test(line)));
+  });
+
+  it("rerolls a hand the prune would empty, then declines it", async () => {
+    const armour = ["bot_armour", "bot_plating"];
+    const run = dealSetup(["gwc_start_bot"], [armour, armour, armour]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+    assert.deepEqual(
+      _.map(handLines(), (line) => line.split(" -> ")[1]),
+      [
+        "reroll (would be pruned)",
+        "reroll (would be pruned)",
+        "declined (would be pruned)",
+      ]
+    );
+  });
+
+  it("marks no card whose deletion would open a gap the AI has now", async () => {
+    const extractor = ["extractor_armour", "junk", "junk2"];
+    const run = dealSetup(
+      ["gwc_start_bare"],
+      [extractor, extractor, extractor]
+    );
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bare",
+      "extractor_armour",
+    ]);
+    assert.doesNotMatch(handLines()[0], /would prune/);
+    assert.match(
+      _.find(lines, (line) => / prune /.test(line)),
+      /kept extractor_armour \(extractor\)$/
+    );
+  });
+
+  it("marks no card the AI cannot see", async () => {
+    const run = dealSetup(["gwc_start_bot"], [PLATING, PLATING, PLATING], {
+      canDelete: (card) => card.id !== "bot_plating",
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_plating",
+    ]);
+  });
+
+  it("judges a swap's incoming card on the bank the swap leaves, and passes over one the prune would delete", async () => {
+    const run = dealSetup(
+      ["gwc_start_bot", "junk", "air"],
+      [PLATING, PLATING, PLATING]
+    );
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "junk",
+      "air",
+    ]);
+    assert.doesNotMatch(handLines()[0], /would prune/);
+    assert.match(
+      _.last(handLines()),
+      /bot_plating=-?[\d.]+ \([^)]*, would prune\).* -> declined \(nothing worth a slot\)$/
+    );
+  });
+
+  it("swaps in a card the prune would keep on the bank the swap leaves", async () => {
+    const overclock = ["factory_overclock", "junk2", "junk3"];
+    const run = dealSetup(
+      ["gwc_start_bot", "junk", "air"],
+      [overclock, overclock, overclock]
+    );
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "air",
+      "factory_overclock",
+    ]);
+    assert.match(
+      _.last(handLines()),
+      /-> deleted junk took factory_overclock$/
+    );
+  });
+
+  it("falls back to a card the prune would keep", async () => {
+    const run = dealSetup(["gwc_start_bot"], [PLATING], {
+      hangReroll: true,
+      decisionTimeoutMs: 50,
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_wall",
+    ]);
+    assert.ok(
+      lines.some((line) => /-> took bot_wall \(fallback\)$/.test(line))
+    );
+  });
+
+  it("judges the hand as at any other time when The Guardians' view fails, and says so", async () => {
+    const run = dealSetup(["gwc_start_bot"], [PLATING, PLATING, PLATING], {
+      guardianView: () => Promise.reject(new Error("no view")),
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_plating",
+    ]);
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 deal=1 judged without the Guardians: no view"
+      )
+    );
   });
 });

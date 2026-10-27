@@ -589,7 +589,9 @@ host's history, yielding between them. For each deal it:
    the cheapest for a best card clearly better. It never deletes the loadout in
    first place, nor a card whose loss would leave the AI without a basic land
    factory or an extractor it has now ([`tech-cards.md`](tech-cards.md),
-   "Deciding"). Otherwise it declines.
+   "Deciding"). Otherwise it declines. While The Guardians are the last boss,
+   it never chooses a card that its next prune would delete ("Before The
+   Guardians").
 4. **Writes one patch.** The patch is the new `techCardDealCount`, plus the
    applied inventory after a take or a swap. A decline still writes the count,
    so the AI moves on.
@@ -743,6 +745,27 @@ the prune then writes the deletions accepted so far, as step 4 does. Only a
 timeout counts against the AI, and an AI whose decisions have timed out twice
 this session stamps without judging. Each of these is logged
 ([`live-testing.md`](live-testing.md), "AI players").
+
+**A deal while The Guardians are last.** The host can still explore the
+systems the defeated factions held, and each explore deals every AI a new
+offer. The AI then marks each card that its next prune would pick for deletion,
+by the prune's test (steps 1 and 2) on the bank the decision would leave: its
+worth to the AI with no deal chance is under the threshold at no rerolls spent,
+its worth to the Guardians is above 0, the AI can delete it, and the deletion
+would hold. A card the bank has room for is judged as taken, when the hand is
+scored. A card that needs a swap is judged once `decide` has chosen the swap,
+on the bank without the held card it deletes. If the prune would pick it there,
+it is marked and the hand is decided again. `decide` never chooses a marked
+card: the AI takes, or swaps in, the best of the others, rerolls while they are
+poor, and rerolls or declines a hand of marked cards alone. A deal's fallback
+also passes over a marked card. Without this, the AI would take the card and
+its next prune would delete it. That costs a reroll it stopped making, the
+second-best card it passed over, or, after a swap, the held card it deleted.
+
+The mark leaves out the greedy pass (step 3), so a card the pass would keep
+once other deletions raise its worth is still marked. The Guardians' view is
+resolved once per deal, and only while they are last. If it fails, the deal
+judges the hand as at any other time, and the log says so.
 
 **A human's copy.** The Guardians take each copy of a mod, with no dedupe, so
 deleting the AI's copy of a mod that stacks still takes something from them

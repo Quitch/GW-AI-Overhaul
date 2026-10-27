@@ -756,14 +756,18 @@ factory, a combat unit, a fabber, or a titan there.
 1. A hand that holds a loadout is declined whole. A loadout is banked, never
    held, and an AI never banks.
 2. The best card is chosen, and a tie goes to the AI's decision stream.
-3. While a reroll remains and the best card scores under the threshold, the AI
+3. While The Guardians are the last boss, a card that the next prune would
+   delete is never chosen ([`coop.md`](coop.md), "Before The Guardians"). The
+   best of the other cards is chosen in its place. If every card is one, the
+   AI rerolls while a reroll remains, and otherwise declines.
+4. While a reroll remains and the best card scores under the threshold, the AI
    rerolls. The threshold is 4, plus 6 times the share of slots in use, less 3
    for each reroll already spent. The rerolls spent are counted from the hand's
    length, as a viewer's reroll counts them, so a thin deck's short hand has
    fewer left.
-4. A best card worth 0 or less is declined, since nothing is worth a slot.
-5. A best card that the bank has room for is taken.
-6. With a full bank, each held card that can go is judged with the best card
+5. A best card worth 0 or less is declined, since nothing is worth a slot.
+6. A best card that the bank has room for is taken.
+7. With a full bank, each held card that can go is judged with the best card
    already in: by what the bank after the swap would lose without it. The
    weakest is deleted for the best card when the best card beats it by more
    than 3, so the test measures the swap itself. A held card the best card makes
@@ -775,7 +779,7 @@ factory, a combat unit, a fabber, or a titan there.
    or an extractor that it has now. So an AI keeps the T1 factory card it was
    assigned ([`coop.md`](coop.md), "Settling deals") only until another card
    gives it a land factory.
-7. Otherwise the hand is declined, the bank being full.
+8. Otherwise the hand is declined, the bank being full.
 
 Before The Guardians, an AI also deletes the held cards that help them more
 than they help it ([`coop.md`](coop.md), "Before The Guardians"). A held card's
