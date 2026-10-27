@@ -13,7 +13,15 @@
 // The flag is module-private and node --test gives one process per file, not
 // per test, so every test either consumes it or clears it in afterEach.
 
-const { describe, it, before, after, afterEach, mock } = require("node:test");
+const {
+  describe,
+  it,
+  before,
+  after,
+  beforeEach,
+  afterEach,
+  mock,
+} = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -422,6 +430,119 @@ describe("gw_inventory - a card that fails to load", () => {
     }
 
     assert.deepEqual(order, ["buff", "dull", "done"]);
+  });
+});
+
+// bank.applyInventoryHeld sets gwoFinish on the inventories it applies. A pass
+// whose card modules are all loaded then runs them in the call, in the
+// loader's order, and hands done to gwoFinish rather than _.delay.
+describe("gw_inventory - an apply with gwoFinish", () => {
+  let loads;
+  let requireCards;
+
+  beforeEach(() => {
+    loads = [];
+    requireCards = global.requireGW;
+    const loader = (ids, onLoad, onError) => {
+      if (typeof ids === "string") {
+        return cardModules[ids.replace("cards/", "")];
+      }
+      loads.push(() => requireCards(ids, onLoad, onError));
+      return undefined;
+    };
+    loader.defined = (id) =>
+      Object.hasOwn(cardModules, id.replace("cards/", ""));
+    global.requireGW = loader;
+  });
+
+  afterEach(() => {
+    global.requireGW = requireCards;
+  });
+
+  const recordingCards = (order, ids) => {
+    for (const id of ids) {
+      cardModules[id] = {
+        buff: () => order.push(id + " buff"),
+        dull: () => order.push(id + " dull"),
+      };
+    }
+  };
+
+  const finishing = (cards, finished) => {
+    const inventory = inventoryHolding(cards);
+    inventory.gwoFinish = (done) => finished.push(done);
+    return inventory;
+  };
+
+  it("runs loaded cards in the call and hands done to gwoFinish", () => {
+    const order = [];
+    const finished = [];
+    recordingCards(order, ["gwc_a", "gwc_b"]);
+    const done = () => {};
+
+    finishing(["gwc_a", { id: "gwc_b" }], finished).applyCards(done);
+
+    assert.deepEqual(order, [
+      "gwc_a buff",
+      "gwc_b buff",
+      "gwc_a dull",
+      "gwc_b dull",
+    ]);
+    assert.deepEqual(finished, [done]);
+    assert.deepEqual(loads, []);
+    assert.deepEqual(timers.delayed, []);
+  });
+
+  it("goes through the loader when a card is not loaded yet", () => {
+    mock.method(console, "error", () => {});
+    const order = [];
+    const finished = [];
+    recordingCards(order, ["gwc_a"]);
+
+    finishing([{ id: "gwc_a" }, { id: "gwc_missing" }], finished).applyCards(
+      () => order.push("done")
+    );
+    assert.deepEqual(order, []);
+    while (loads.length) {
+      loads.shift()();
+    }
+    timers.delayed.shift().fn();
+
+    assert.deepEqual(order, ["gwc_a buff", "gwc_a dull", "done"]);
+    assert.deepEqual(finished, []);
+  });
+
+  it("goes through the loader without gwoFinish", () => {
+    const order = [];
+    recordingCards(order, ["gwc_a"]);
+
+    inventoryHolding([{ id: "gwc_a" }]).applyCards(() => order.push("done"));
+    assert.deepEqual(order, []);
+    while (loads.length) {
+      loads.shift()();
+    }
+    timers.delayed.shift().fn();
+
+    assert.deepEqual(order, ["gwc_a buff", "gwc_a dull", "done"]);
+  });
+
+  it("still finishes when a loaded card throws", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const finished = [];
+    cardModules.gwc_thrower = {
+      buff: () => {
+        throw new Error("buff exploded");
+      },
+      dull: () => {},
+    };
+
+    finishing([{ id: "gwc_thrower" }], finished).applyCards(() => {});
+
+    assert.equal(finished.length, 1);
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments),
+      [["GWO card gwc_thrower threw in buff: Error: buff exploded"]]
+    );
   });
 });
 

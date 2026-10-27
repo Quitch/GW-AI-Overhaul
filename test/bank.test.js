@@ -24,6 +24,9 @@ const {
   installGlobals,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 const { makeObservableArray } = require("../scripts/lib/fake-knockout.js");
 
 const LS_KEY = "gwaio_bank";
@@ -528,5 +531,89 @@ describe("bank applyInventoryHeld", () => {
       /card threw/
     );
     assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+
+  it("gives the inventory gwoFinish, which no copy carries", () => {
+    const held = bank.applyInventoryHeld(
+      inventoryClass([]),
+      { cards: [{ id: "gwc_start_air" }] },
+      stock(),
+      () => {}
+    );
+
+    assert.equal(typeof held.inventory.gwoFinish, "function");
+    assert.equal(Object.keys(held.inventory).includes("gwoFinish"), false);
+  });
+});
+
+// gwoFinish continues a run of held applies in a microtask, and yields one task
+// to the UI once the run has gone 16 ms since the last yield.
+describe("bank finishing a held apply", () => {
+  let clock = Date.now();
+  let timers;
+  let finish;
+
+  beforeEach(() => {
+    clock += 1000;
+    timers = installFakeLodashTimers({ now: () => clock });
+    finish = bank.applyInventoryHeld(
+      function GWInventory() {
+        this.load = () => {};
+        this.cards = () => [];
+      },
+      { cards: [] },
+      {},
+      () => {}
+    ).inventory.gwoFinish;
+    // Starts each test on a fresh slice.
+    finish(() => {});
+    timers.delayed.shift().fn();
+  });
+
+  afterEach(() => timers.restore());
+
+  it("continues within the slice without a timer", async () => {
+    const done = [];
+    clock += 15;
+
+    finish(() => done.push("a"));
+    assert.deepEqual(done, []);
+    await settle();
+
+    assert.deepEqual(done, ["a"]);
+    assert.deepEqual(timers.delayed, []);
+  });
+
+  it("yields once the slice is spent, and starts a new one", async () => {
+    const done = [];
+    clock += 16;
+
+    finish(() => done.push("a"));
+    await settle();
+    assert.deepEqual(done, []);
+    assert.equal(timers.delayed.length, 1);
+    timers.delayed.shift().fn();
+    assert.deepEqual(done, ["a"]);
+
+    clock += 15;
+    finish(() => done.push("b"));
+    await settle();
+    assert.deepEqual(done, ["a", "b"]);
+    assert.deepEqual(timers.delayed, []);
+  });
+
+  it("logs a throw from done", async () => {
+    const errorMock = mock.method(console, "error", () => {});
+
+    finish(() => {
+      throw "boom";
+    });
+    await settle();
+    await settle();
+
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments),
+      [["GWO held apply: boom"]]
+    );
   });
 });
