@@ -598,9 +598,17 @@ held card is valued the other way round, for a swap, with the hand's best card
 already in: the inventory with the best card and without the held one, against
 the inventory with both.
 
-Four rules keep this affordable and safe:
+Five rules keep this affordable and safe:
 
 - **One apply runs at a time.** The bank hold and the card modules are shared.
+- **Applies run back to back.** `bank.applyInventoryHeld` gives each inventory
+  it applies a `gwoFinish`. GWO's `applyCards` then calls the card modules in
+  the call when all of them are loaded, not through the loader's 4 ms timer,
+  and hands `done` to `gwoFinish`, not to `_.delay`. `gwoFinish` runs `done` in
+  a microtask, and yields one task to the UI once 16 ms have passed since its
+  last yield. Stock's three timers per apply left an AI catching up on its
+  deals idle half the time. A card not loaded yet goes through the loader as
+  before, and `done` never runs inside the `applyCards` call.
 - **Each apply has a timeout**, 10 seconds, set in
   `gw_play/cards_coop_ai_tech.js`. An apply that never finishes is abandoned,
   and its hold is released.

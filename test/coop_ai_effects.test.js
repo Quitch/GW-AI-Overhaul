@@ -63,20 +63,30 @@ stubs.setGlobal("localStorage", { setItem: () => {} });
 
 // Card ids that never answer, as a card mod whose file hangs would.
 const hanging = new Set();
-stubs.setGlobal("requireGW", (ids, onLoad, onError) => {
+// As RequireJS: a card is defined once it has loaded, and the string form
+// returns a defined card.
+const loaded = new Map();
+const requireCards = (ids, onLoad, onError) => {
+  if (typeof ids === "string") {
+    return loaded.get(ids);
+  }
   const id = String(ids[0]).replace("cards/", "");
   if (hanging.has(id)) {
-    return;
+    return undefined;
   }
   let card;
   try {
     card = FIXTURE_CARDS[id] || loadCouiModule("cards/" + id);
   } catch (error) {
     onError(error);
-    return;
+    return undefined;
   }
+  loaded.set("cards/" + id, card);
   onLoad(card);
-});
+  return undefined;
+};
+requireCards.defined = (id) => loaded.has(id);
+stubs.setGlobal("requireGW", requireCards);
 after(() => stubs.restoreGlobals());
 
 const GWInventory = loadCouiModule("shared/gw_inventory");
