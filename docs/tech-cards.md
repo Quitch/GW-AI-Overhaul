@@ -779,11 +779,19 @@ Guardians mirror the host's race. It holds no Sub Commanders, slots, or cards,
 so a card's unlock, later, minion, slot, and floor parts come to 0, and its
 worth to them is its mods on those units and on the Unicorn, plus its AI mods.
 A card that only grants units is worth nothing to them. The view is an
-approximation in three ways:
+approximation in four ways:
 
-- It leaves out the other players' mods. The Guardians hold them too, but they
-  only scale the held-tech boost, between 0.5 and 1.5, and that never turns a
-  card that only helps or only hurts to the other side.
+- It leaves out the other players' mods, except to drop the card's copies of
+  the humans' mods whose op does not stack ([`coop.md`](coop.md), "Before The
+  Guardians"). The Guardians hold the rest too, but they only scale the
+  held-tech boost, between 0.5 and 1.5, and that never turns a card that only
+  helps or only hurts to the other side.
+- That drop does not model op order. `clone` and `replace` run before every
+  op that stacks (`gw_play/specs.js` `orderOfOperations`), but `merge`, `tag`,
+  and `pull` run in list order beside `push`, `prepend`, `wipe`, and `eval`. A
+  `push` that lands between a human's `pull` and the AI's identical one is
+  pulled again by the AI's copy, so deleting that copy would let it stand,
+  which the view does not see.
 - It aims the AI mods with the host race's co-op tree, the one an AI player's
   view uses, where the Guardians fight on the enemy brain.
 - It leaves out the Guardians' own faction tech, which no card changes.

@@ -392,7 +392,9 @@ when it judges its held cards ([coop.md](coop.md), "Before The Guardians"):
 ```
 
 `worth` is the card's worth to the AI and `gain` its worth to the Guardians.
-A card is deleted when `worth` is under `threshold` and `gain` is above 0. The
+A card is deleted when `worth` is under `threshold` and `gain` is above 0. A
+card under the threshold whose `gain` is 0 or less only because the host or a
+connected viewer holds the same mods reads `(guardians <gain>, human-held)`. The
 first card, loadouts, hidden cards, and cards that brought a slot are not
 listed, and `held: none` means none was left to judge. A trailing `kept` lists
 each candidate kept, with why: `slots`, `extractor`, `landFactory`, or

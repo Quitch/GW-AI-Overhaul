@@ -707,7 +707,8 @@ reads every star's AI. The prune:
    not show in an inventory, and any card whose deletion would cost the bank a
    slot. A card's worth to the AI is what the inventory loses without it, scored
    as a swap scores a held card. Its worth to the Guardians is the same, on
-   their view of the card ([`tech-cards.md`](tech-cards.md), "Deciding").
+   their view of the card ([`tech-cards.md`](tech-cards.md), "Deciding"),
+   less what a human gives them already (below).
 2. **Picks the candidates.** A card is one when its worth to the AI is under
    the reroll threshold at no rerolls spent (`rerollThreshold(fullness, 0)`),
    and its worth to the Guardians is above 0. The two scores are never
@@ -735,6 +736,34 @@ settled within 20 seconds, or one that throws, keeps every card and is still
 stamped. Only a timeout counts against the AI, and an AI whose decisions have
 timed out twice this session stamps without judging. Each of these is logged
 ([`live-testing.md`](live-testing.md), "AI players").
+
+**A human's copy.** The Guardians take each copy of a mod, with no dedupe, so
+deleting the AI's copy of a mod that stacks still takes something from them
+even when a human holds the same mod: two Commander Armors double their
+commander's health twice. A second copy of a mod whose op does not stack adds
+nothing, so deleting it would cost the AI a card and take nothing from the
+Guardians. The Guardians' view (`shared/coop_ai_guardians.js` `view`, given
+`humanMods()` by `gw_play/cards_coop_ai_tech.js`) therefore leaves out each of
+the card's mods that the host or a connected viewer holds identically, by
+`JSON.stringify`, with an op that does not stack:
+
+- Spec ops (`gw_play/specs.js`): `replace`, `merge`, `tag`, `pull`, and
+  `clone`. `wipe` and `eval` are left in, since they are not reliably
+  idempotent, as are `multiply`, `add`, `push`, `prepend`, and
+  `multiplyOrCreate`, which stack.
+- AI-mod ops (`gw_play/referee_ai.js` `aiModOps`): `replace`, `unset`,
+  `remove`, and `silence`, and `load`, whose file is written once however
+  often it is loaded. `append`, `prepend`, `new`, and `squad` push a second
+  copy, so they are left in.
+
+Other AIs' copies count in full, since each AI judges its own. A card left
+worth nothing to the Guardians only because of the humans' copies is kept, and
+the log tags it `human-held`.
+
+The humans' mods are read when the prune runs. If a human later deletes their
+copy, or a viewer holding it disconnects before Fight, the AI's kept copy helps
+the Guardians again, and it is not judged again until the AI's next deal. This
+is the same staleness the prune accepts for a viewer who connects later.
 
 ### Holding the war
 
