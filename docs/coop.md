@@ -703,25 +703,30 @@ pass that a defeated boss starts is the trigger, because the glue's computed
 reads every star's AI. The prune:
 
 1. **Judges each held card against the inventory as it stands**, before any
-   deletion. It skips the card in first place, any loadout, any card that does
-   not show in an inventory, and any card whose deletion would cost the bank a
-   slot. A card's worth to the AI is what the inventory loses without it, scored
-   as a swap scores a held card. Its worth to the Guardians is the same, on
-   their view of the card ([`tech-cards.md`](tech-cards.md), "Deciding"),
-   less what a human gives them already (below).
+   deletion. It skips the card in first place, any loadout, and any card that
+   does not show in an inventory. A card that brought a slot, such as an
+   upgrade card, is judged: deleting it also takes its slot. A card that
+   brought one slot frees none, so its slot adds nothing to its worth; only
+   the slots a card brought beyond its own count. A card's worth to the AI is
+   what the inventory loses without it, scored as a swap scores a held card.
+   Its worth to the Guardians is the same, on their view of the card
+   ([`tech-cards.md`](tech-cards.md), "Deciding"), less what a human gives
+   them already (below).
 2. **Picks the candidates.** A card is one when its worth to the AI is under
    the reroll threshold at no rerolls spent (`rerollThreshold(fullness, 0)`),
    and its worth to the Guardians is above 0. The two scores are never
    compared, so they need not be on the same scale. A candidate whose deletion
+   would leave more cards without a slot than the bank has now, such as a card
+   that brought two slots in a full bank, is kept. So is one whose deletion
    would leave the AI without a basic land factory or an extractor that it has
-   now is kept.
+   now.
 3. **Deletes greedily**, most worth to the Guardians first, then least worth
    to the AI, then by index. Each deletion is applied with those before it,
-   from the saved cards by their first index, and stands only if the bank keeps
-   its slots, no gap opens, and the card is still worth less than the
-   threshold to the AI once those before it are gone. Two cards that each
-   cover the other, such as two that grant the same factory, are therefore
-   not both deleted. The others are kept, and the log says why.
+   from the saved cards by their first index, and stands only if no more cards
+   are left without a slot, no gap opens, and the card is still worth less
+   than the threshold to the AI once those before it are gone. Two cards that
+   each cover the other, such as two that grant the same factory, are
+   therefore not both deleted. The others are kept, and the log says why.
 4. **Writes one patch** in the campaign state queue: `gwaioAi` with
    `guardiansPrunedAt` set to the deal count it judged at, and after a deletion
    the applied inventory. `upsertRecord`'s merge is shallow, so the patch

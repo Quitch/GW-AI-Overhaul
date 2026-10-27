@@ -395,9 +395,12 @@ when it judges its held cards ([coop.md](coop.md), "Before The Guardians"):
 A card is deleted when `worth` is under `threshold` and `gain` is above 0. A
 card under the threshold whose `gain` is 0 or less only because the host or a
 connected viewer holds the same mods reads `(guardians <gain>, human-held)`. The
-first card, loadouts, hidden cards, and cards that brought a slot are not
-listed, and `held: none` means none was left to judge. A trailing `kept` lists
-each candidate kept, with why: `slots`, `extractor`, `landFactory`, or
+first card, loadouts, and hidden cards are not listed, and `held: none` means
+none was left to judge. Cards that brought a slot, such as the
+`gwaio_upgrade_*` cards, are listed, and deleting one also takes its slot. A
+trailing `kept` lists each candidate kept, with why: `slots` (the deletion
+would leave more cards without a slot than the bank has now, such as a card
+that brought two slots in a full bank), `extractor`, `landFactory`, or
 `worth <w>` (the deletions before it raised its worth to the threshold or
 above).
 
