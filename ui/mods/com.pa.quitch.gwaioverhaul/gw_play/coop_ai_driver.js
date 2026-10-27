@@ -523,43 +523,48 @@ define([
           });
         };
 
-        // While The Guardians are last, a swap whose incoming card the prune
-        // would delete marks that card, and the hand is decided again.
-        var settleOn = function (scored) {
-          live();
-          var first = decide(scored, []);
-          var decided =
-            first.action === "decline" && first.reason === "bank full"
-              ? scoreHeld(
-                  record,
-                  context,
-                  star,
-                  _.find(scored, { index: first.index }).card,
-                  applied
-                ).then(_.partial(decide, scored))
-              : Promise.resolve(first);
-
-          return decided.then(function (decision) {
-            if (!guardians || decision.action !== "swap") {
-              return decision;
-            }
-            var chosen = _.find(scored, { index: decision.index });
-            return judgeSwap(record, decision, chosen, context, guardians).then(
-              function (pruned) {
-                if (!pruned) {
-                  return decision;
-                }
-                chosen.wouldPrune = true;
-                return settleOn(scored);
-              }
-            );
-          });
-        };
-
         return scoreHand(record, hand, context, star, guardians).then(
           function (scored) {
             progress.scored = scored;
-            return settleOn(scored).then(_.partial(act, hand, scored));
+            return settleOn(scored, decide).then(_.partial(act, hand, scored));
+          }
+        );
+      };
+
+      // The decision on a scored hand. decide(scored, held) is the hand's.
+      var settleOn = function (scored, decide) {
+        live();
+        var first = decide(scored, []);
+        var decided =
+          first.action === "decline" && first.reason === "bank full"
+            ? scoreHeld(
+                record,
+                context,
+                star,
+                _.find(scored, { index: first.index }).card,
+                applied
+              ).then(_.partial(decide, scored))
+            : Promise.resolve(first);
+
+        return decided.then(function (decision) {
+          return settleSwap(decision, scored, decide);
+        });
+      };
+
+      // While The Guardians are last, a swap whose incoming card the prune
+      // would delete marks that card, and the hand is decided again.
+      var settleSwap = function (decision, scored, decide) {
+        if (!guardians || decision.action !== "swap") {
+          return decision;
+        }
+        var chosen = _.find(scored, { index: decision.index });
+        return judgeSwap(record, decision, chosen, context, guardians).then(
+          function (pruned) {
+            if (!pruned) {
+              return decision;
+            }
+            chosen.wouldPrune = true;
+            return settleOn(scored, decide);
           }
         );
       };
