@@ -359,9 +359,10 @@ dealt: <error>`.
 - `<name> prune fell back: <error> -> kept all`: judging the held cards
   before The Guardians timed out or failed, so the AI kept them all and was
   stamped.
-- `<name> prune timed out after <ms>ms -> deleted <ids> (greedy pass
-unfinished)`: the prune timed out while deleting, so the AI deleted the
-  cards it had already accepted, kept the rest, and was stamped.
+- `<name> prune timed out after <ms>ms -> deleted <ids> (greedy pass unfinished)`:
+  the prune timed out partway through the greedy pass, so the AI deleted the
+  cards it had already accepted, kept the rest, and was stamped. The prune
+  line before it shows how each card was judged, and lists those deletions.
 - `<name> prune -> kept all (timed out 2 times this session)`.
 - `<name> prune not written: <result>`: as for a deal.
 - `the Guardians judged on vanilla units: <error>`: the host race's view
