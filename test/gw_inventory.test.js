@@ -526,6 +526,41 @@ describe("gw_inventory - an apply with gwoFinish", () => {
     assert.deepEqual(order, ["gwc_a buff", "gwc_a dull", "done"]);
   });
 
+  // A card mod's buff may call applyCards: the re-run waits on _.delay as
+  // before, runs at once again, keeps the viewer hold, and hands done over
+  // once.
+  it("re-runs a pass a card marks dirty, and hands done over once", () => {
+    const order = [];
+    const finished = [];
+    let reapplied = false;
+    let inventory;
+    cardModules.gwc_dirty = {
+      buff: () => {
+        order.push("buff");
+        if (!reapplied) {
+          reapplied = true;
+          inventory.applyCards();
+        }
+      },
+      dull: () => order.push("dull"),
+    };
+    raise("viewer");
+    const done = () => {};
+    inventory = finishing([{ id: "gwc_dirty" }], finished);
+
+    inventory.applyCards(done);
+    assert.deepEqual(order, ["buff", "dull"]);
+    assert.deepEqual(finished, []);
+    assert.deepEqual(bank, [["suspend", stockBank]]);
+    timers.delayed.shift().fn();
+
+    assert.deepEqual(order, ["buff", "dull", "buff", "dull"]);
+    assert.deepEqual(finished, [done]);
+    assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
+    assert.deepEqual(timers.delayed, []);
+    assert.deepEqual(loads, []);
+  });
+
   it("still finishes when a loaded card throws", () => {
     const errorMock = mock.method(console, "error", () => {});
     const finished = [];
