@@ -36,10 +36,12 @@ const specMod = function () {
   // Stands in for gw_play/specs.js's op engine; only its identity matters.
 };
 
+const OWES_PRUNE = () => "owes prune";
 registerModuleStub(MOD + "/gw_play/coop_ai_driver.js", function (params) {
   seen.driverParams = params;
   return {
     run: () => seen.runs.push(true),
+    owesPrune: OWES_PRUNE,
     chooseStartingLoadout: (options) => {
       seen.chosen = options;
       return Promise.resolve("start");
@@ -73,6 +75,9 @@ registerModuleStub(MOD + "/gw_play/race_cells.js", {
   load: () => answers.specs,
   prime: (race, units) => {
     seen.primes.push([race, units]);
+    if (seen.primeError) {
+      return Promise.reject(seen.primeError);
+    }
     return Promise.resolve(answers.cells[race]);
   },
 });
@@ -105,7 +110,12 @@ registerModuleStub(MOD + "/gw_play/referee_coop.js", {
     ),
   getConnectedViewerInventories: (game) => {
     seen.viewerGames.push(game);
-    return [{ client: { id: "c_v1" }, inventory: { owner: "viewer" } }];
+    return [
+      {
+        client: { id: "c_v1" },
+        inventory: seen.viewerInventory || { owner: "viewer" },
+      },
+    ];
   },
 });
 registerModuleStub(MOD + "/shared/starting_inventory.js", {
@@ -128,7 +138,7 @@ registerModuleStub(MOD + "/gw_play/specs.js", { mod: specMod });
 registerModuleStub(MOD + "/shared/coop_ai_fielded.js", {
   view: (options) => {
     seen.views.push(options);
-    return { fielded: options.race };
+    return seen.viewOverride || { fielded: options.race };
   },
 });
 registerModuleStub(MOD + "/gw_play/cards_coop_ai_pings.js", (params) => {
@@ -206,6 +216,7 @@ function setup(overrides = {}) {
       newStartCards: undefined,
       aiCannotUse: undefined,
       cardsLoaded: true,
+      starAis: [],
     },
     overrides
   );
@@ -225,6 +236,10 @@ function setup(overrides = {}) {
     decks: [],
     saves: [],
     events: [],
+    aiReads: 0,
+    viewOverride: undefined,
+    primeError: undefined,
+    viewerInventory: undefined,
   });
   answers.specs = options.specs || pending();
   answers.cells = options.cells || {};
@@ -275,7 +290,13 @@ function setup(overrides = {}) {
   };
   stubs.setGlobal("model", model);
 
-  const stars = [{ index: 0 }, { index: 1 }, { index: 2 }];
+  const stars = [0, 1, 2].map((index) => ({
+    index,
+    ai: () => {
+      seen.aiReads += 1;
+      return options.starAis[index];
+    },
+  }));
   const game = {
     currentStar: () => 1,
     hostTechCardDealCount: () => 5,
@@ -325,6 +346,10 @@ function setup(overrides = {}) {
       originSettings: () => ({ uniqueAiLoadouts: options.uniqueAiLoadouts }),
       aiInUse: (type, race) => "brain:" + type + ":" + race,
       getAIPathSource: (type, race) => "/source/" + type + "/" + race + "/",
+      getInventoryAiMods: (saved) =>
+        typeof saved.aiMods === "function"
+          ? saved.aiMods()
+          : saved.aiMods || [],
     },
     gwoDeal: {
       dealCard: (request, loaded, cards) => ({ request, loaded, cards }),
@@ -958,6 +983,148 @@ describe("the co-op AI driver's wiring", () => {
     assert.deepEqual(run.loadedInventories[0].data, { units: ["u"] });
     assert.equal(dealt.loaded, run.params.loaded);
     assert.equal(dealt.cards, run.params.cards);
+  });
+  it("knows The Guardians are the last boss from every star's AI", () => {
+    const guardians = { boss: true, mirrorMode: true };
+    const faction = { boss: true, team: 1 };
+
+    assert.equal(
+      build({
+        starAis: [guardians, undefined, faction],
+      }).driver.guardiansLast(),
+      false
+    );
+    release();
+    assert.equal(
+      build({
+        starAis: [guardians, undefined, { team: 1 }],
+      }).driver.guardiansLast(),
+      true
+    );
+  });
+
+  it("starts a pass when a star's AI changes", () => {
+    const run = build();
+    const driverComputed = run.computeds[1];
+    seen.aiReads = 0;
+
+    driverComputed();
+
+    assert.equal(seen.aiReads, run.stars.length);
+  });
+
+  it("judges The Guardians on the host race's view", async () => {
+    const specs = pending();
+    const cells = { legion: { race: { units: ["legion_unit"] } } };
+    const run = build({ specs, cells });
+    run.hostInventory.race = "legion";
+    specs.resolve({ units: ["spec_unit"] });
+    await settle();
+    const legionView = {
+      obtainable: ["legion_unit"],
+      inventory: () => ({ mods: ["landed"], aiMods: ["aimed"] }),
+    };
+    seen.viewOverride = legionView;
+
+    const view = await run.driver.guardianView(run.lookup());
+
+    assert.deepEqual(seen.primes, [["legion", ["spec_unit"]]]);
+    assert.deepEqual(view.inventory({ mods: ["saved"] }), {
+      units: ["legion_unit"],
+      mods: ["landed"],
+      aiMods: ["aimed"],
+      minions: [],
+      cards: [],
+      maxCards: 0,
+      strippedUnits: [],
+      removedUnits: [],
+    });
+  });
+
+  it("judges The Guardians without the mods the host and the connected viewers give them already", async () => {
+    const run = build();
+    const reshape = (owner) => ({ file: owner, op: "replace", value: 1 });
+    const aimed = (owner) => ({ op: "replace", toBuild: owner });
+    HOST_SAVED.mods.push(reshape("host"));
+    run.hostInventory.aiMods = () => [aimed("host")];
+    seen.viewerInventory = {
+      owner: "viewer",
+      mods: [reshape("viewer")],
+      aiMods: [aimed("viewer")],
+    };
+    const owners = ["host", "viewer", "disconnected", "ai_2", "ai_1"];
+
+    try {
+      const view = await run.driver.guardianView({ obtainable: [] });
+      const judged = view.inventory({
+        mods: owners.map(reshape),
+        aiMods: owners.map(aimed),
+      });
+
+      assert.deepEqual(judged.mods, owners.slice(2).map(reshape));
+      assert.deepEqual(judged.aiMods, owners.slice(2).map(aimed));
+    } finally {
+      HOST_SAVED.mods.pop();
+    }
+  });
+
+  it("judges The Guardians on every obtainable unit where the host's race has no view", async () => {
+    const run = build();
+    const groups = { via: "groups", obtainable: ["vanilla_unit"] };
+
+    const view = await run.driver.guardianView(groups);
+
+    assert.deepEqual(view.inventory({ mods: ["saved"] }).units, [
+      "vanilla_unit",
+    ]);
+    assert.deepEqual(view.inventory({ mods: ["saved"] }).mods, ["saved"]);
+  });
+
+  it("judges The Guardians on vanilla units, and says so, where the host race's view fails", async () => {
+    const specs = pending();
+    const run = build({ specs, cells: { legion: undefined } });
+    run.hostInventory.race = "legion";
+    specs.resolve({ units: ["spec_unit"] });
+    await settle();
+    seen.primeError = new Error("no cells");
+    const lookup = Object.assign({}, run.lookup(), { obtainable: ["u"] });
+
+    const view = await run.driver.guardianView(lookup);
+
+    assert.deepEqual(view.inventory({}).units, ["u"]);
+    assert.deepEqual(run.logs.slice(-1), [
+      ["error", "[GW COOP AI] the Guardians judged on vanilla units: no cells"],
+    ]);
+  });
+
+  it("deletes only a card the inventory shows, as cards.js decides it", () => {
+    const shown = { id: "shown", visible: true };
+    const byParams = { id: "by_params", visible: (card) => card.show };
+    const thrower = {
+      id: "thrower",
+      visible: () => {
+        throw new Error("bad card");
+      },
+    };
+    const hidden = { id: "hidden" };
+    const run = build({ cards: [undefined, shown, byParams, thrower, hidden] });
+    const canDelete = run.driver.canDelete;
+
+    assert.equal(canDelete({ id: "shown" }), true);
+    assert.equal(canDelete({ id: "by_params", show: 1 }), true);
+    assert.equal(canDelete({ id: "by_params" }), false);
+    assert.equal(canDelete({ id: "hidden" }), false);
+    assert.equal(canDelete({ id: "not_loaded" }), false);
+    assert.equal(canDelete({ id: "thrower" }), false);
+    assert.deepEqual(run.logs, [
+      ["error", "[GW COOP AI] thrower visible() threw: bad card"],
+    ]);
+  });
+
+  it("tells coop_ai.js whether an AI owes a prune", () => {
+    const run = build();
+
+    assert.equal(run.model.gwoCoopAi.tech().owesPrune, OWES_PRUNE);
   });
 });
 

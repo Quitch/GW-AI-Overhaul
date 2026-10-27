@@ -56,6 +56,9 @@ const gwoRng = loadCouiModule(
 const gwoStreams = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
 );
+const coopAiGuardians = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_guardians.js"
+);
 
 const COMMANDER = "/u/commander";
 
@@ -154,6 +157,67 @@ const EFFECTS = {
   titan_air: { units: ["/u/orbital_titan", "/u/air_factory"] },
   gwc_enable_bots_all: { units: ["/u/bot_factory", "/u/bot", "/u/bot_adv"] },
   slot_card: { maxCards: 1 },
+  gwc_start_bare: {
+    units: ["/u/commander", "/u/bot_factory", "/u/bot"],
+    maxCards: 3,
+  },
+  bot_overclock: {
+    mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 3 }],
+  },
+  bot_tax: {
+    mods: [
+      { file: "/u/bot", path: "build_metal_cost", op: "multiply", value: 1.5 },
+    ],
+  },
+  slot_armour: {
+    maxCards: 1,
+    mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
+  },
+  double_slot_armour: {
+    maxCards: 2,
+    mods: [
+      { file: "/u/bot_adv", path: "max_health", op: "multiply", value: 1.5 },
+    ],
+  },
+  extractor_armour: {
+    units: ["/u/extractor"],
+    mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
+  },
+  air_armour: {
+    units: ["/u/air_factory"],
+    mods: [
+      {
+        file: "/u/air_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 1.5,
+      },
+    ],
+  },
+  air_armour2: {
+    units: ["/u/air_factory"],
+    mods: [
+      {
+        file: "/u/air_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 1.4,
+      },
+    ],
+  },
+  bot_reshape: {
+    mods: [{ file: "/u/bot", path: "max_health", op: "replace", value: 500 }],
+  },
+  bot_reshape_armour: {
+    mods: [
+      { file: "/u/bot", path: "max_health", op: "replace", value: 500 },
+      { file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 },
+    ],
+  },
+  extractor_armour2: {
+    units: ["/u/extractor"],
+    mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.4 }],
+  },
 };
 
 const applyFake = (saved) => {
@@ -182,7 +246,7 @@ const applyFake = (saved) => {
 
 const fakeEffects = (options) => {
   const apply = (saved) => {
-    if (options.hangApply) {
+    if (options.hangApply && options.hangApply(saved)) {
       return new Promise(() => {});
     }
     if (options.failApply && options.failApply(saved)) {
@@ -380,6 +444,9 @@ function setup(overrides) {
     defer: options.defer || ((fn) => setImmediate(fn)),
     decisionTimeoutMs: options.decisionTimeoutMs,
     writeTimeoutMs: options.writeTimeoutMs,
+    guardiansLast: options.guardiansLast,
+    guardianView: options.guardianView,
+    canDelete: options.canDelete,
   });
 
   return { driver, store, calls, options };
@@ -1460,5 +1527,507 @@ describe("coop_ai_driver swap judgement", () => {
       ["gwc_start_bot", "air", "naval", "slot_card"]
     );
     assert.ok(lines.some((line) => /declined \(bank full\)/.test(line)));
+  });
+});
+
+describe("coop_ai_driver Guardians prune", () => {
+  // Every unit of the table, as the Guardians field them.
+  const guardianView = () =>
+    Promise.resolve(coopAiGuardians.view(Object.keys(CELLS)));
+
+  const pruneSetup = (cards, overrides) =>
+    setup(
+      Object.assign(
+        {
+          records: [aiRecord(1, hand(cards))],
+          history: [],
+          guardiansLast: () => true,
+          guardianView,
+        },
+        overrides
+      )
+    );
+
+  const pruneLine = () => _.find(lines, (line) => / prune /.test(line));
+
+  it("judges nothing unless The Guardians are the last boss", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      guardiansLast: () => false,
+    });
+
+    assert.equal(run.driver.owesPrune(run.store.find("gwo_ai_1")), false);
+    assert.equal(await run.driver.run(), false);
+    assert.deepEqual(run.calls.writes, []);
+  });
+
+  it("deletes a poor card that helps the Guardians, in one write with its stamp", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour", "air"]);
+
+    assert.equal(await run.driver.run(), true);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "air"]);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 0);
+    assert.equal(record.gwaioAi.serial, 1);
+    assert.equal(record.inventory.mods.length, 0);
+    assert.deepEqual(run.calls.queued, ["gwo_coop_ai_prune"]);
+    assert.equal(run.calls.writes.length, 1);
+    assert.equal(run.calls.afterPass, 1);
+    assert.match(
+      pruneLine(),
+      /^\[GW COOP AI\] AI1 prune deal=0 via=specs threshold=10 held: bot_armour=-?[\d.]+ \(guardians [\d.]+\), air=[\d.]+ \(guardians 0\) -> deleted bot_armour$/
+    );
+  });
+
+  it("keeps a card worth the AI's while, whatever it gives the Guardians", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_overclock"]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_overclock",
+    ]);
+    assert.match(pruneLine(), /-> kept all$/);
+  });
+
+  describe("with the humans' copies", () => {
+    const reshape = EFFECTS.bot_reshape.mods[0];
+    const humansHold = (mods) => ({
+      guardianView: () =>
+        Promise.resolve(
+          coopAiGuardians.view(Object.keys(CELLS), undefined, {
+            mods,
+            aiMods: [],
+          })
+        ),
+    });
+
+    it("keeps a card whose only help to the Guardians a human gives already, and says so", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_reshape"],
+        humansHold([reshape])
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+        "gwc_start_bot",
+        "bot_reshape",
+      ]);
+      assert.match(
+        pruneLine(),
+        / held: bot_reshape=-?[\d.]+ \(guardians 0, human-held\) -> kept all$/
+      );
+    });
+
+    it("still deletes a card whose help stacks on a human's copy", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_armour"],
+        humansHold(EFFECTS.bot_armour.mods)
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+      assert.doesNotMatch(pruneLine(), /human-held/);
+    });
+
+    it("still deletes a card with a stacking part beside a human-held one", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_reshape_armour"],
+        humansHold([reshape])
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+    });
+
+    it("tags no card worth the AI's while", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_overclock"],
+        humansHold(EFFECTS.bot_overclock.mods.concat(reshape))
+      );
+
+      await run.driver.run();
+
+      assert.doesNotMatch(pruneLine(), /human-held/);
+    });
+  });
+
+  it("keeps a poor card that gives the Guardians nothing", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_tax", "slot_card"]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_tax",
+      "slot_card",
+    ]);
+    assert.match(
+      pruneLine(),
+      /slot_card=-?[\d.]+ \(guardians 0\) -> kept all$/
+    );
+  });
+
+  it("never deletes its first card, a loadout, or a card it cannot see", async () => {
+    const run = pruneSetup(["gwc_start_bot", "gwc_start_air", "bot_armour"], {
+      canDelete: (card) => card.id !== "bot_armour",
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "gwc_start_air",
+      "bot_armour",
+    ]);
+    assert.match(pruneLine(), /held: none -> kept all$/);
+  });
+
+  it("deletes a poor card that brought a slot, and the bank loses the slot", async () => {
+    const run = pruneSetup(["gwc_start_bot", "slot_armour"]);
+
+    assert.equal(await run.driver.run(), true);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot"]);
+    assert.equal(record.inventory.maxCards, 3);
+    assert.match(pruneLine(), /-> deleted slot_armour$/);
+  });
+
+  it("keeps a card whose deletion would leave other cards without a slot", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "double_slot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    assert.equal(cardIds(run.store.find("gwo_ai_1")).length, 5);
+    assert.match(
+      pruneLine(),
+      /double_slot_armour=-?[\d.]+ \(guardians [\d.]+\).* -> kept all kept double_slot_armour \(slots\)$/
+    );
+  });
+
+  it("deletes from a bank already over its slots while no more cards lose one", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "bot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), [
+      "gwc_start_bot",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+    assert.equal(record.inventory.maxCards, 3);
+    assert.match(pruneLine(), /-> deleted bot_armour$/);
+  });
+
+  it("keeps a later card whose deletion with those before it would leave cards without a slot", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "double_slot_armour",
+      "double_slot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.equal(cardIds(record).length, 5);
+    assert.equal(record.inventory.maxCards, 5);
+    assert.match(
+      pruneLine(),
+      /-> deleted double_slot_armour kept double_slot_armour \(slots\)$/
+    );
+  });
+
+  it("keeps a card whose deletion would open a gap it lacks now", async () => {
+    const run = pruneSetup(["gwc_start_bare", "extractor_armour"]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bare",
+      "extractor_armour",
+    ]);
+    assert.match(
+      pruneLine(),
+      /-> kept all kept extractor_armour \(extractor\)$/
+    );
+  });
+
+  it("deletes the card that helps the Guardians most first, and keeps one whose deletion after it would open a gap", async () => {
+    const run = pruneSetup([
+      "gwc_start_bare",
+      "extractor_armour2",
+      "extractor_armour",
+    ]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bare",
+      "extractor_armour2",
+    ]);
+    assert.match(
+      pruneLine(),
+      /-> deleted extractor_armour kept extractor_armour2 \(extractor\)$/
+    );
+  });
+
+  it("keeps a later candidate that the deletions before it made worth its slot", async () => {
+    const run = pruneSetup(["gwc_start_bot", "air_armour2", "air_armour"]);
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "air_armour2",
+    ]);
+    assert.match(
+      pruneLine(),
+      /-> deleted air_armour kept air_armour2 \(worth [\d.]+\)$/
+    );
+  });
+
+  it("stamps the deal count alone when it deletes nothing, and still saves and publishes", async () => {
+    const run = pruneSetup(["gwc_start_bot", "air"]);
+
+    assert.equal(await run.driver.run(), true);
+
+    assert.deepEqual(run.calls.writes, [
+      {
+        id: "gwo_ai_1",
+        patch: { gwaioAi: { serial: 1, name: "AI1", guardiansPrunedAt: 0 } },
+      },
+    ]);
+    assert.equal(run.calls.afterPass, 1);
+  });
+
+  it("skips an AI stamped at its deal count, and owes again after a new deal", async () => {
+    const record = aiRecord(1, hand(["gwc_start_bot", "bot_armour"]), {
+      techCardDealCount: 1,
+      gwaioAi: { serial: 1, name: "AI1", guardiansPrunedAt: 1 },
+    });
+    const run = pruneSetup([], { records: [record], history: history(1) });
+
+    assert.equal(await run.driver.run(), false);
+    assert.deepEqual(run.calls.writes, []);
+    const owing = pruneSetup([], { records: [record], history: history(2) });
+    assert.equal(
+      owing.driver.owesPrune(owing.store.find("gwo_ai_1")),
+      false,
+      "a deal owed comes first"
+    );
+    const moved = pruneSetup([], {
+      records: [Object.assign({}, record, { techCardDealCount: 2 })],
+      history: history(2),
+    });
+    assert.equal(moved.driver.owesPrune(moved.store.find("gwo_ai_1")), true);
+  });
+
+  it("settles an owed deal before it prunes, and judges the cards the deal left", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      history: history(1),
+      hands: { 1: [hand(["air", "junk", "junk2"])] },
+    });
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(run.calls.queued, [
+      "gwo_coop_ai_deal",
+      "gwo_coop_ai_prune",
+    ]);
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "air"]);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 1);
+    assert.match(pruneLine(), / prune deal=1 /);
+  });
+
+  it("redoes a prune whose cards changed before it was written", async () => {
+    let run;
+    let changed = false;
+    run = pruneSetup(["gwc_start_bot", "air"], {
+      failApply: () => {
+        if (!changed) {
+          changed = true;
+          const fresh = run.store.find("gwo_ai_1");
+          run.store.write(fresh, {
+            inventory: applyFake({
+              cards: hand(["gwc_start_bot", "bot_armour"]),
+            }),
+          });
+        }
+        return false;
+      },
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+    assert.equal(run.calls.queued.length, 2);
+    assert.equal(run.calls.writes.length, 1);
+  });
+
+  it("writes nothing for a prune stamped meanwhile", async () => {
+    let run;
+    run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      failApply: () => {
+        const fresh = run.store.find("gwo_ai_1");
+        if (fresh.gwaioAi.guardiansPrunedAt === undefined) {
+          run.store.write(fresh, {
+            gwaioAi: Object.assign({}, fresh.gwaioAi, { guardiansPrunedAt: 0 }),
+          });
+        }
+        return false;
+      },
+    });
+
+    assert.equal(await run.driver.run(), true);
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_armour",
+    ]);
+    assert.deepEqual(run.calls.writes, []);
+  });
+
+  it("writes nothing for an AI kicked while it judged, and says so", async () => {
+    let run;
+    run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      failApply: () => {
+        run.store.remove("gwo_ai_1");
+        return false;
+      },
+    });
+
+    assert.equal(await run.driver.run(), false);
+
+    assert.deepEqual(run.calls.writes, []);
+    assert.ok(lines.includes("[GW COOP AI] AI1 prune not written: gone"));
+  });
+
+  it("keeps every card, and stamps, when judging them times out", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      hangApply: () => true,
+      decisionTimeoutMs: 20,
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_armour",
+    ]);
+    assert.equal(run.store.find("gwo_ai_1").gwaioAi.guardiansPrunedAt, 0);
+    assert.ok(
+      lines.some((line) =>
+        /^\[GW COOP AI\] AI1 prune fell back: .*timed out.* -> kept all$/.test(
+          line
+        )
+      ),
+      lines.join("\n")
+    );
+  });
+
+  it("keeps the deletions it had accepted, and stamps, when the greedy pass times out", async () => {
+    // The pass's second apply is the only one with a single card left.
+    const run = pruneSetup(["gwc_start_bot", "bot_armour", "slot_armour"], {
+      hangApply: (saved) => saved.cards.length === 1,
+      decisionTimeoutMs: 20,
+    });
+
+    assert.equal(await run.driver.run(), true);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "slot_armour"]);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 0);
+    assert.equal(run.calls.writes.length, 1);
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 prune timed out after 20ms -> deleted bot_armour (greedy pass unfinished)"
+      ),
+      lines.join("\n")
+    );
+    assert.match(
+      pruneLine(),
+      /^\[GW COOP AI\] AI1 prune deal=0 .* -> deleted bot_armour$/
+    );
+
+    // The timeout counts: one more makes two, and the next prune is skipped.
+    const restamp = () =>
+      run.store.write(run.store.find("gwo_ai_1"), {
+        gwaioAi: { serial: 1, name: "AI1" },
+      });
+    restamp();
+    await run.driver.run();
+    restamp();
+    await run.driver.run();
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 prune -> kept all (timed out 2 times this session)"
+      )
+    );
+  });
+
+  it("keeps every card, and stamps, when judging them fails", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      guardianView: () => Promise.reject(new Error("no view")),
+    });
+
+    await run.driver.run();
+
+    assert.equal(run.store.find("gwo_ai_1").gwaioAi.guardiansPrunedAt, 0);
+    assert.ok(
+      lines.includes("[GW COOP AI] AI1 prune fell back: no view -> kept all")
+    );
+  });
+
+  it("keeps every card without judging them once its decisions have timed out twice", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      history: history(2),
+      hands: {},
+      decisionTimeoutMs: 20,
+    });
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.equal(record.techCardDealCount, 2);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 2);
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "bot_armour"]);
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 prune -> kept all (timed out 2 times this session)"
+      )
+    );
+  });
+
+  it("judges The Guardians on the lookup's obtainable units with no view given", async () => {
+    const run = pruneSetup(["gwc_start_bot", "bot_armour"], {
+      guardianView: undefined,
+    });
+
+    await run.driver.run();
+
+    assert.match(pruneLine(), /bot_armour=-?[\d.]+ \(guardians 0\)/);
   });
 });

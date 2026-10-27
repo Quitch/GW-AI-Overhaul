@@ -23,6 +23,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_guardians.js",
 ], function (
   coopAiDriver,
   coopAiEffects,
@@ -43,7 +44,8 @@ define([
   raceAiMods,
   unitCells,
   coopPublish,
-  saveDebt
+  saveDebt,
+  coopAiGuardians
 ) {
   return function (params) {
     var game = params.game;
@@ -311,6 +313,78 @@ define([
       return;
     }
 
+    var guardiansLast = function () {
+      return coopAiGuardians.last(
+        _.map(galaxy.stars(), function (star) {
+          return star.ai();
+        })
+      );
+    };
+
+    // What the host and the connected viewers give The Guardians, as
+    // gw_play/referee_game_files.js guardianMods and gw_play/referee_ai.js
+    // raceTreeJobs read them.
+    var humanMods = function () {
+      var humans = [inventory].concat(
+        _.pluck(refereeCoop.getConnectedViewerInventories(game), "inventory")
+      );
+      // The host's are methods, a viewer's plain arrays.
+      return {
+        mods: _.flatten(
+          _.map(humans, function (human) {
+            return _.result(human, "mods") || [];
+          })
+        ),
+        aiMods: _.flatten(_.map(humans, params.gwoAI.getInventoryAiMods)),
+      };
+    };
+
+    // The Guardians mirror the host's race, so its view lands their mods.
+    var guardianView = function (current) {
+      return Promise.resolve()
+        .then(function () {
+          return fielded({ race: params.races.raceOf(inventory) }, current);
+        })
+        .then(null, function (error) {
+          console.error(
+            "[GW COOP AI] the Guardians judged on vanilla units: " +
+              ((error && error.message) || error)
+          );
+        })
+        .then(function (raceView) {
+          return coopAiGuardians.view(
+            raceView ? raceView.obtainable : current.obtainable || [],
+            raceView,
+            humanMods()
+          );
+        });
+    };
+
+    // A card the inventory shows, which is a card a player can delete, as
+    // cards.js's CardViewModel decides it. Third-party code, so guarded.
+    var canDelete = function (card) {
+      var module = _.find(params.cards, function (candidate) {
+        return !!candidate && candidate.id === card.id;
+      });
+      if (!module) {
+        return false;
+      }
+      try {
+        return (
+          module.visible === true ||
+          !!(_.isFunction(module.visible) && module.visible(card))
+        );
+      } catch (e) {
+        console.error(
+          "[GW COOP AI] " +
+            card.id +
+            " visible() threw: " +
+            ((e && e.message) || e)
+        );
+        return false;
+      }
+    };
+
     // The deck and card_units.js are in: factoryCards reads model.gwoCardsToUnits.
     var cardsLoaded = ko.observable(false);
     params.loaded.then(function () {
@@ -375,6 +449,9 @@ define([
       },
       running: model.gwoCoopAi.driving,
       holdSave: saveDebt.hold,
+      guardiansLast: guardiansLast,
+      guardianView: guardianView,
+      canDelete: canDelete,
       afterPass: function () {
         model.refreshGwCampaignInventoryModal();
         saveDebt.owe(game, false);
@@ -382,10 +459,11 @@ define([
       },
     });
 
-    // Every deal the host records, and every AI added or returning,
-    // starts a pass; one with nothing owed does nothing.
+    // Every deal the host records, every AI added or returning, and every
+    // boss defeated starts a pass; one with nothing owed does nothing.
     ko.computed(function () {
       hosting();
+      guardiansLast();
       game.hostTechCardDealCount();
       game.coopPlayerInventoryData();
       model.gwoCoopAi.records();
@@ -521,6 +599,7 @@ define([
         return !!lookup();
       },
       startingTech: startingTech,
+      owesPrune: driver.owesPrune,
     });
   };
 });

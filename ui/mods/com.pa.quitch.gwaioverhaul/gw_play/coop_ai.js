@@ -88,8 +88,8 @@
     };
 
     // Fight, explore and the star-card refresh wait while an AI is settling
-    // its deals, or owes one it has yet to start. See coop.md, "AI players'
-    // tech".
+    // its deals, or owes one or a prune it has yet to start. See coop.md,
+    // "AI players' tech".
     model.gwoCoopAiDeciding = ko.computed(function () {
       if (driving()) {
         return true;
@@ -98,10 +98,12 @@
         return false;
       }
       var hostCount = game.hostTechCardDealCount();
+      var loaded = tech();
       return _.some(records(), function (record) {
         return (
-          !!record.inventory &&
-          model.getCoopPlayerTechCardDealCount(record) < hostCount
+          (!!record.inventory &&
+            model.getCoopPlayerTechCardDealCount(record) < hostCount) ||
+          (!!loaded && !!loaded.owesPrune && loaded.owesPrune(record))
         );
       });
     });

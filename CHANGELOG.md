@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v7.9.0 - 2026-10-27
+
+### Changed
+
+- In co-op with separate tech, once The Guardians are the last boss, AI players delete weak tech that would help The Guardians
+- In co-op with separate tech, AI players choose their tech cards faster, so an AI player added to a war already under way catches up sooner
+
 ## v7.8.1 - 2026-10-21
 
 ### Bugfix

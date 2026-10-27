@@ -4,13 +4,15 @@
 // does, then rerolled, taken, swapped or declined, and the result written to
 // the AI's record in one patch. An AI with no basic land factory is assigned
 // a T1 factory card in place of a hand. Only settled results are written, so
-// a reload mid-decision reruns to the same result. See coop.md, "AI players'
-// tech".
+// a reload mid-decision reruns to the same result. While The Guardians are
+// the last boss, an AI also deletes the held cards worth little to it that
+// help them. See coop.md, "AI players' tech".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
-], function (coopAiCards, coopAiEffects, gwoPromise) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_guardians.js",
+], function (coopAiCards, coopAiEffects, gwoPromise, coopAiGuardians) {
   var LOG = "[GW COOP AI] ";
   // A deal not settled in this long falls back to a quick pick.
   var DECISION_TIMEOUT_MS = 20000;
@@ -64,10 +66,20 @@ define([
 
   // Whether a swap's bank holds its cards: the deleted card must have freed
   // a slot, before any slot the incoming card adds.
+  var fullnessOf = function (applied) {
+    return applied.maxCards
+      ? (applied.cards || []).length / applied.maxCards
+      : 1;
+  };
+
   var holdsCards = function (swapped, incomingSlots) {
     return (
       (swapped.cards || []).length <= (swapped.maxCards || 0) - incomingSlots
     );
+  };
+
+  var overflowOf = function (applied) {
+    return Math.max(0, (applied.cards || []).length - (applied.maxCards || 0));
   };
 
   // The scored loadouts a draw takes from. used: under Unique AI loadouts,
@@ -93,6 +105,13 @@ define([
     var fieldedFor = params.fielded || _.constant(Promise.resolve());
     var writeTimeoutMs = params.writeTimeoutMs || WRITE_TIMEOUT_MS;
     var holdSave = params.holdSave || _.constant(_.noop);
+    var guardiansLast = params.guardiansLast || _.constant(false);
+    var guardianView =
+      params.guardianView ||
+      function (lookup) {
+        return Promise.resolve(coopAiGuardians.view(lookup.obtainable || []));
+      };
+    var canDelete = params.canDelete || _.constant(true);
     var timeouts = {};
     var running;
     var again = false;
@@ -111,6 +130,22 @@ define([
         !!record &&
         !!record.inventory &&
         params.dealCount(record) < params.hostDealCount()
+      );
+    };
+
+    var prunedAt = function (record) {
+      return _.get(record, "gwaioAi.guardiansPrunedAt");
+    };
+
+    // Whether the AI has yet to judge its held cards against The Guardians
+    // at its deal count.
+    var owesPrune = function (record) {
+      return (
+        !!record &&
+        !!record.inventory &&
+        !owes(record) &&
+        prunedAt(record) !== params.dealCount(record) &&
+        guardiansLast()
       );
     };
 
@@ -382,9 +417,7 @@ define([
               ? 1
               : 0,
             rerollsUsed: rerollsUsed,
-            fullness: applied.maxCards
-              ? (applied.cards || []).length / applied.maxCards
-              : 1,
+            fullness: fullnessOf(applied),
             roomFor: roomFor,
             held: held,
             rng: params.decisionRng(record, entry.dealIndex, rerollsUsed),
@@ -524,32 +557,26 @@ define([
     };
 
     // Runs in the campaign state queue, where every host record write runs.
-    // Resolves "written", or why not: the AI is gone, the deal was settled
-    // meanwhile, or its cards changed under the decision ("stale").
-    var commit = function (record, dealIndex, outcome) {
+    // Resolves "written", or why not: the AI is gone, or refusal(fresh)'s
+    // reason, such as "settled" when the write was made meanwhile, or
+    // "stale" when the record changed under the decision.
+    var commitPatch = function (record, label, refusal, patchOf) {
       var queued = new Promise(function (resolve) {
-        params.enqueue("gwo_coop_ai_deal", function () {
+        params.enqueue(label, function () {
           try {
             var fresh = params.find(record.playerId);
             if (!fresh) {
               resolve("gone");
               return;
             }
-            var count = params.dealCount(fresh);
-            if (count >= dealIndex) {
-              resolve("settled");
+            var refused = refusal(fresh);
+            if (refused) {
+              resolve(refused);
               return;
             }
-            if (!_.isEqual(cardsOf(fresh), cardsOf(record))) {
-              resolve("stale");
-              return;
-            }
-
-            var patch = { techCardDealCount: dealIndex };
-            if (outcome.inventory) {
-              patch.inventory = storedInventory(outcome.inventory);
-            }
-            resolve(params.write(fresh, patch) ? "written" : "refused");
+            resolve(
+              params.write(fresh, patchOf(fresh)) ? "written" : "refused"
+            );
           } catch (error) {
             console.error(LOG + "write failed: " + describe(error));
             resolve("failed");
@@ -561,6 +588,28 @@ define([
         null,
         function () {
           return "stalled";
+        }
+      );
+    };
+
+    var commit = function (record, dealIndex, outcome) {
+      return commitPatch(
+        record,
+        "gwo_coop_ai_deal",
+        function (fresh) {
+          if (params.dealCount(fresh) >= dealIndex) {
+            return "settled";
+          }
+          return _.isEqual(cardsOf(fresh), cardsOf(record))
+            ? undefined
+            : "stale";
+        },
+        function () {
+          var patch = { techCardDealCount: dealIndex };
+          if (outcome.inventory) {
+            patch.inventory = storedInventory(outcome.inventory);
+          }
+          return patch;
         }
       );
     };
@@ -630,6 +679,264 @@ define([
       return next();
     };
 
+    // Why a deletion cannot stand: it leaves more cards without a slot than
+    // the bank has now, or opens a gap the AI lacks now. undefined when it can.
+    var deletionRefusal = function (applied, next, gapNow) {
+      if (overflowOf(next) > overflowOf(applied)) {
+        return "slots";
+      }
+      var gap = params.armyGap(next.units);
+      return gap && gap !== gapNow ? gap : undefined;
+    };
+
+    // The held cards the AI deletes before The Guardians: each worth less to
+    // it than a reroll's threshold and more than nothing to the Guardians,
+    // judged against the inventory as it stands, then deleted one at a time,
+    // most help to the Guardians first, while each deletion still holds and
+    // the card is still worth less than the threshold once those before it
+    // are gone. Resolves the outcome to write. For a timeout, progress.result
+    // holds the deletions accepted so far, and progress.line(deleted) the
+    // prune's log line.
+    var decidePrune = function (record, lookup, progress) {
+      var saved = record.inventory;
+      var applied;
+      var context;
+      var guardians;
+      var threshold;
+      var gapNow;
+      var refused = [];
+
+      var live = function () {
+        if (progress.abandoned) {
+          throw new Error("prune abandoned");
+        }
+      };
+
+      var deletable = function (card, index) {
+        return index > 0 && !params.isLoadout(card.id) && canDelete(card);
+      };
+
+      var judgeHeld = function (card, index) {
+        return params.effects
+          .apply(coopAiEffects.removeCard(saved, index))
+          .then(function (without) {
+            live();
+            var why = deletionRefusal(applied, without, gapNow);
+            var judged = {
+              index: index,
+              id: card.id,
+              worth: coopAiCards.scoreCard(without, applied, context).total,
+              gain: coopAiGuardians.gain(guardians, without, applied, lookup),
+            };
+            judged.candidate = judged.worth < threshold && judged.gain > 0;
+            judged.humanHeld =
+              judged.worth < threshold &&
+              judged.gain <= 0 &&
+              !!guardians.everyCopy &&
+              guardians.everyCopy !== guardians &&
+              coopAiGuardians.gain(
+                guardians.everyCopy,
+                without,
+                applied,
+                lookup
+              ) > 0;
+            if (judged.candidate && why) {
+              judged.candidate = false;
+              refused.push({ id: card.id, why: why });
+            }
+            return judged;
+          });
+      };
+
+      var deleteGreedily = function (candidates) {
+        var deleted = [];
+        var current = applied;
+        var accept = function (candidate, next) {
+          live();
+          var worth = coopAiCards.scoreCard(next, current, context).total;
+          var why =
+            deletionRefusal(applied, next, gapNow) ||
+            (worth < threshold ? undefined : "worth " + worth);
+          if (why) {
+            refused.push({ id: candidate.id, why: why });
+            return;
+          }
+          deleted.push(candidate);
+          current = next;
+          progress.result = { deleted: deleted, inventory: current };
+        };
+        var tryDeleting = function (candidate) {
+          live();
+          var indices = _.pluck(deleted, "index").concat(candidate.index);
+          return params.effects
+            .apply(coopAiEffects.removeCard(saved, indices))
+            .then(_.partial(accept, candidate));
+        };
+        return _.reduce(
+          candidates,
+          function (chain, candidate) {
+            return chain.then(_.partial(tryDeleting, candidate));
+          },
+          Promise.resolve()
+        ).then(function () {
+          return { deleted: deleted, inventory: current };
+        });
+      };
+
+      return params.effects
+        .apply(saved)
+        .then(function (inventory) {
+          live();
+          applied = inventory;
+          threshold = coopAiCards.rerollThreshold(fullnessOf(applied), 0);
+          gapNow = params.armyGap(applied.units);
+          return Promise.all([
+            contextFor(record, lookup),
+            guardianView(lookup),
+          ]);
+        })
+        .then(function (built) {
+          live();
+          context = _.assign({}, built[0], { namesUnits: false, chance: 0 });
+          guardians = built[1];
+          return Promise.all(
+            _.map(cardsOf(record), function (card, index) {
+              return deletable(card, index)
+                ? judgeHeld(card, index)
+                : undefined;
+            })
+          );
+        })
+        .then(function (results) {
+          live();
+          var judged = _.compact(results);
+          var candidates = _.sortByOrder(
+            _.filter(judged, "candidate"),
+            ["gain", "worth", "index"],
+            [false, true, true]
+          );
+          progress.line = function (deleted) {
+            return coopAiGuardians.describePrune({
+              name: record.gwaioAi.name,
+              deal: params.dealCount(record),
+              via: viaOf(context),
+              threshold: threshold,
+              judged: judged,
+              deleted: _.pluck(deleted, "id"),
+              refused: refused,
+            });
+          };
+          return deleteGreedily(candidates);
+        })
+        .then(function (result) {
+          live();
+          console.log(progress.line(result.deleted));
+          return pruneOutcome(result);
+        });
+    };
+
+    // What a prune writes: the inventory its deletions leave, if any.
+    var pruneOutcome = function (result) {
+      return result.deleted.length ? { inventory: result.inventory } : {};
+    };
+
+    var settlePrune = function (record, lookup) {
+      var name = record.gwaioAi.name;
+      var progress = {};
+
+      if ((timeouts[record.playerId] || 0) >= DEGRADED_AFTER) {
+        console.log(
+          LOG +
+            name +
+            " prune -> kept all (timed out " +
+            DEGRADED_AFTER +
+            " times this session)"
+        );
+        return Promise.resolve({});
+      }
+
+      return withTimeout(
+        Promise.resolve().then(function () {
+          return decidePrune(record, lookup, progress);
+        }),
+        decisionTimeoutMs,
+        "prune"
+      ).then(null, function (error) {
+        progress.abandoned = true;
+        if (timedOut(error)) {
+          timeouts[record.playerId] = (timeouts[record.playerId] || 0) + 1;
+          if (progress.result) {
+            console.log(progress.line(progress.result.deleted));
+            console.error(
+              LOG +
+                name +
+                " " +
+                describe(error) +
+                " -> deleted " +
+                _.pluck(progress.result.deleted, "id").join(", ") +
+                " (greedy pass unfinished)"
+            );
+            return pruneOutcome(progress.result);
+          }
+        }
+        console.error(
+          LOG + name + " prune fell back: " + describe(error) + " -> kept all"
+        );
+        return {};
+      });
+    };
+
+    // An owed prune, decided and written with the deal count it was judged
+    // at. Resolves whether the AI moved on, redoing a decision whose record
+    // changed under it.
+    var prune = function (playerId, lookup, redos) {
+      var record = params.find(playerId);
+      if (!owesPrune(record)) {
+        return Promise.resolve(false);
+      }
+      var count = params.dealCount(record);
+
+      return settlePrune(record, lookup)
+        .then(function (outcome) {
+          return commitPatch(
+            record,
+            "gwo_coop_ai_prune",
+            function (fresh) {
+              if (prunedAt(fresh) === params.dealCount(fresh)) {
+                return "settled";
+              }
+              return params.dealCount(fresh) === count &&
+                _.isEqual(cardsOf(fresh), cardsOf(record))
+                ? undefined
+                : "stale";
+            },
+            function (fresh) {
+              var patch = {
+                gwaioAi: _.assign({}, fresh.gwaioAi, {
+                  guardiansPrunedAt: count,
+                }),
+              };
+              if (outcome.inventory) {
+                patch.inventory = storedInventory(outcome.inventory);
+              }
+              return patch;
+            }
+          );
+        })
+        .then(function (result) {
+          if (result === "written" || result === "settled") {
+            return true;
+          }
+          if (result === "stale" && redos < MAX_REDOS) {
+            return prune(playerId, lookup, redos + 1);
+          }
+          console.error(
+            LOG + record.gwaioAi.name + " prune not written: " + result
+          );
+          return false;
+        });
+    };
+
     var run = function () {
       if (running) {
         again = true;
@@ -639,7 +946,12 @@ define([
         return Promise.resolve(false);
       }
 
-      var owing = _.pluck(_.filter(params.records(), owes), "playerId");
+      var owing = _.pluck(
+        _.filter(params.records(), function (record) {
+          return owes(record) || owesPrune(record);
+        }),
+        "playerId"
+      );
       if (!owing.length) {
         return Promise.resolve(false);
       }
@@ -647,20 +959,30 @@ define([
       var lookup = params.lookup();
       var wroteAny = false;
       var releaseSave = holdSave();
+      var noteWrote = function (wrote) {
+        wroteAny = wroteAny || wrote;
+      };
+      var serveEach = function (serve) {
+        return _.reduce(
+          owing,
+          function (chain, playerId) {
+            return chain
+              .then(_.partial(serve, playerId, lookup))
+              .then(noteWrote);
+          },
+          Promise.resolve()
+        );
+      };
+      var pruneAi = function (playerId) {
+        return later(function () {
+          return prune(playerId, lookup, 0);
+        });
+      };
       params.running(true);
-      running = _.reduce(
-        owing,
-        function (chain, playerId) {
-          return chain
-            .then(function () {
-              return serveAi(playerId, lookup);
-            })
-            .then(function (wrote) {
-              wroteAny = wroteAny || wrote;
-            });
-        },
-        Promise.resolve()
-      )
+      running = serveEach(serveAi)
+        .then(function () {
+          return serveEach(pruneAi);
+        })
         .then(function () {
           return wroteAny ? params.afterPass() : undefined;
         })
@@ -785,6 +1107,7 @@ define([
     return {
       run: run,
       owes: owes,
+      owesPrune: owesPrune,
       chooseStartingLoadout: chooseStartingLoadout,
     };
   };

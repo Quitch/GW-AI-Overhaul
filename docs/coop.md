@@ -505,6 +505,9 @@ has, it holds:
   host has recorded.
 - `gwaioAi.race`: its race. The same race is stamped on the inventory as the
   `playerRace` global tag, which is where `races.raceOf` reads it.
+- `gwaioAi.guardiansPrunedAt`, once The Guardians are the last boss: the
+  `techCardDealCount` at which the AI last judged its held cards against them
+  ("Before The Guardians").
 
 Under Separate races the AI picks its race from those the war offers, which is
 the offer a viewer's picker gets, and prefers one that no player fields yet. The
@@ -673,13 +676,109 @@ it:
   `running`, an observable a pass holds true; `afterPass()`, which owes the
   save and publishes; and `holdSave()`, `save_debt.js`'s `hold`, which a pass
   holds until it has set `running` false.
+- For the prune ("Before The Guardians"): `guardiansLast()`, whether The
+  Guardians are the last boss; `guardianView(lookup)`, which resolves the
+  Guardians' view of a card; and `canDelete(card)`, whether the card shows in
+  an inventory, which is what lets a player delete it. Without them the
+  Guardians are never last, and every card shows.
 
 Tests also pass `defer`, `decisionTimeoutMs`, and `writeTimeoutMs`.
+
+### Before The Guardians
+
+The Guardians fight with every player's tech: `guardianMods`
+(`gw_play/referee_game_files.js`) gives them the stat mods of the host, of each
+connected viewer, and of each AI, and they take every player's AI mods too. So
+an AI's held card can help the Guardians more than it helps the AI. Once The
+Guardians are the last boss in the galaxy, every other AI star has been cleared
+(`shared/defeat_team.js`), so their battle is the only one left and a deletion
+costs the AI nothing later. The AI then deletes those cards, as a player could
+with Delete Tech. `shared/coop_ai_guardians.js`'s `last` decides that they are
+last: some star holds them, and no star holds a boss that is not them.
+
+An AI **owes a prune** while The Guardians are last, it owes no deal, and its
+`gwaioAi.guardiansPrunedAt` is not its `techCardDealCount`. A pass settles
+every owed deal first, then serves each owing AI's prune in slot order. The
+pass that a defeated boss starts is the trigger, because the glue's computed
+reads every star's AI. The prune:
+
+1. **Judges each held card against the inventory as it stands**, before any
+   deletion. It skips the card in first place, any loadout, and any card that
+   does not show in an inventory. A card that brought a slot, such as an
+   upgrade card, is judged: deleting it also takes its slot. A card that
+   brought one slot frees none, so its slot adds nothing to its worth; only
+   the slots a card brought beyond its own count. A card's worth to the AI is
+   what the inventory loses without it, scored as a swap scores a held card.
+   Its worth to the Guardians is the same, on their view of the card
+   ([`tech-cards.md`](tech-cards.md), "Deciding"), less what a human gives
+   them already (below).
+2. **Picks the candidates.** A card is one when its worth to the AI is under
+   the reroll threshold at no rerolls spent (`rerollThreshold(fullness, 0)`),
+   and its worth to the Guardians is above 0. The two scores are never
+   compared, so they need not be on the same scale. A candidate whose deletion
+   would leave more cards without a slot than the bank has now, such as a card
+   that brought two slots in a full bank, is kept. So is one whose deletion
+   would leave the AI without a basic land factory or an extractor that it has
+   now.
+3. **Deletes greedily**, most worth to the Guardians first, then least worth
+   to the AI, then by index. Each deletion is applied with those before it,
+   from the saved cards by their first index, and stands only if no more cards
+   are left without a slot, no gap opens, and the card is still worth less
+   than the threshold to the AI once those before it are gone. Two cards that
+   each cover the other, such as two that grant the same factory, are
+   therefore not both deleted. The others are kept, and the log says why.
+4. **Writes one patch** in the campaign state queue: `gwaioAi` with
+   `guardiansPrunedAt` set to the deal count it judged at, and after a deletion
+   the applied inventory. `upsertRecord`'s merge is shallow, so the patch
+   carries the whole `gwaioAi`. The write refuses as a deal's does: the AI has
+   gone, the stamp was written meanwhile, or the deal count or the cards
+   changed, which redoes the prune up to three times. A write that only stamps
+   still owes the save and the snapshot, so a reload does not prune again.
+
+A new deal after that moves the count past the stamp, so the AI judges its
+cards again once that deal is settled. The bounds are a deal's: a prune not
+settled within 20 seconds, or one that throws, keeps every card and is still
+stamped. The one exception is a timeout once step 3 has accepted a deletion:
+the prune then writes the deletions accepted so far, as step 4 does. Only a
+timeout counts against the AI, and an AI whose decisions have timed out twice
+this session stamps without judging. Each of these is logged
+([`live-testing.md`](live-testing.md), "AI players").
+
+**A human's copy.** The Guardians take each copy of a mod, with no dedupe, so
+deleting the AI's copy of a mod that stacks still takes something from them
+even when a human holds the same mod: two Commander Armors double their
+commander's health twice. A second copy of a mod whose op does not stack adds
+nothing, so deleting it would cost the AI a card and take nothing from the
+Guardians. The Guardians' view (`shared/coop_ai_guardians.js` `view`, given
+`humanMods()` by `gw_play/cards_coop_ai_tech.js`) therefore leaves out each of
+the card's mods that the host or a connected viewer holds identically, by
+`JSON.stringify`, with an op that does not stack:
+
+- Spec ops (`gw_play/specs.js`): `replace`, `merge`, `tag`, `pull`, and
+  `clone`. `wipe` and `eval` are left in, since they are not reliably
+  idempotent, as are `multiply`, `add`, `push`, `prepend`, and
+  `multiplyOrCreate`, which stack.
+- AI-mod ops (`gw_play/referee_ai.js` `aiModOps`): `replace`, `unset`,
+  `remove`, and `silence`, and `load`, whose file is written once however
+  often it is loaded. `append`, `prepend`, `new`, and `squad` push a second
+  copy, so they are left in.
+
+Other AIs' copies count in full, since each AI judges its own. A card left
+worth nothing to the Guardians only because of the humans' copies is kept, and
+the log tags it `human-held`.
+
+The humans' mods are read when the prune runs. If a human later deletes their
+copy, or a viewer holding it disconnects before Fight, the AI's kept copy helps
+the Guardians again, and it is not judged again until the AI's next deal. This
+is the same staleness the prune accepts for a viewer who connects later.
 
 ### Holding the war
 
 `model.gwoCoopAiDeciding` is true on the host while a pass runs, or while any AI
-owes a deal it has yet to start. It holds what a viewer choosing tech holds.
+owes a deal it has yet to start. Once the AI tech modules have loaded, it is also
+true while any AI owes a prune ("Before The Guardians"). A failed load of those
+modules therefore never holds the war on a prune. It holds what a viewer
+choosing tech holds.
 Fight is blocked, with the tooltip "Waiting for players", and `fight` and
 `restartFight` refuse. `model.explore` refuses too, unless it is a replayed host
 action or a forced host reroll, and the Explore button greys as it does while a

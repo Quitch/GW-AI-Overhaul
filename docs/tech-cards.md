@@ -598,9 +598,17 @@ held card is valued the other way round, for a swap, with the hand's best card
 already in: the inventory with the best card and without the held one, against
 the inventory with both.
 
-Four rules keep this affordable and safe:
+Five rules keep this affordable and safe:
 
 - **One apply runs at a time.** The bank hold and the card modules are shared.
+- **Applies run back to back.** `bank.applyInventoryHeld` gives each inventory
+  it applies a `gwoFinish`. GWO's `applyCards` then calls the card modules in
+  the call when all of them are loaded, not through the loader's 4 ms timer,
+  and hands `done` to `gwoFinish`, not to `_.delay`. `gwoFinish` runs `done` in
+  a microtask, and yields one task to the UI once 16 ms have passed since its
+  last yield. Stock's three timers per apply left an AI catching up on its
+  deals idle half the time. A card not loaded yet goes through the loader as
+  before, and `done` never runs inside the `applyCards` call.
 - **Each apply has a timeout**, 10 seconds, set in
   `gw_play/cards_coop_ai_tech.js`. An apply that never finishes is abandoned,
   and its hold is released.
@@ -768,6 +776,33 @@ factory, a combat unit, a fabber, or a titan there.
    assigned ([`coop.md`](coop.md), "Settling deals") only until another card
    gives it a land factory.
 7. Otherwise the hand is declined, the bank being full.
+
+Before The Guardians, an AI also deletes the held cards that help them more
+than they help it ([`coop.md`](coop.md), "Before The Guardians"). A held card's
+worth to the AI is scored as in a swap, with no deal chance. Its worth to the
+Guardians is `shared/coop_ai_guardians.js`'s `gain`: the scorer run on a
+fielded view of the Guardians. That view fields every unit a card could grant,
+all of them reached, through the host race's view where it has one, since the
+Guardians mirror the host's race. It holds no Sub Commanders, slots, or cards,
+so a card's unlock, later, minion, slot, and floor parts come to 0, and its
+worth to them is its mods on those units and on the Unicorn, plus its AI mods.
+A card that only grants units is worth nothing to them. The view is an
+approximation in four ways:
+
+- It leaves out the other players' mods, except to drop the card's copies of
+  the humans' mods whose op does not stack ([`coop.md`](coop.md), "Before The
+  Guardians"). The Guardians hold the rest too, but they only scale the
+  held-tech boost, between 0.5 and 1.5, and that never turns a card that only
+  helps or only hurts to the other side.
+- That drop does not model op order. `clone` and `replace` run before every
+  op that stacks (`gw_play/specs.js` `orderOfOperations`), but `merge`, `tag`,
+  and `pull` run in list order beside `push`, `prepend`, `wipe`, and `eval`. A
+  `push` that lands between a human's `pull` and the AI's identical one is
+  pulled again by the AI's copy, so deleting that copy would let it stand,
+  which the view does not see.
+- It aims the AI mods with the host race's co-op tree, the one an AI player's
+  view uses, where the Guardians fight on the enemy brain.
+- It leaves out the Guardians' own faction tech, which no card changes.
 
 The numbers here are `WEIGHTS` in `shared/coop_ai_cards.js`. They are tuning,
 set from the debug lines, so `test/coop_ai_cards.test.js` pins orderings and

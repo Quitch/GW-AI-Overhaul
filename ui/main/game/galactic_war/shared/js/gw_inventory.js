@@ -109,6 +109,16 @@ define([
       var foreignCards = loadingAnotherPlayersCards || holdCarried;
       loadingAnotherPlayersCards = false;
       holdCarried = false;
+      // GWO - an inventory with gwoFinish runs a pass whose card modules are
+      // all loaded at once, and hands done to gwoFinish. See tech-cards.md,
+      // "Applying the card".
+      var atOnce =
+        _.isFunction(self.gwoFinish) &&
+        _.every(cards, function (card) {
+          return requireGW.defined(
+            "cards/" + (_.isString(card) ? card : card.id)
+          );
+        });
 
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
@@ -139,7 +149,9 @@ define([
           if (foreignCards) {
             gwoBank.resumeUnlocks();
           }
-          if (done) {
+          if (done && atOnce) {
+            self.gwoFinish(done); // GWO
+          } else if (done) {
             _.delay(done);
           }
         }
@@ -180,26 +192,26 @@ define([
         }
         // GWO - once per card: the loader can run a failed card's errback twice
         var finishThisCard = _.once(finishCard);
-        requireGW(
-          ["cards/" + cardId],
-          function (card) {
-            curCard = cardId;
-            // GWO - a card that throws still finishes, or done and the unlock
-            // resume never run. The loader does not catch a throw here.
-            try {
-              card[op](self, cardParams);
-            } catch (e) {
-              console.error(
-                "GWO card " + cardId + " threw in " + op + ": " + e
-              );
-            }
-            finishThisCard();
-          },
-          function (error) {
-            console.error("Failed loading card " + cardId + " : " + error);
-            finishThisCard();
+        var runCard = function (card) {
+          curCard = cardId;
+          // GWO - a card that throws still finishes, or done and the unlock
+          // resume never run. The loader does not catch a throw here.
+          try {
+            card[op](self, cardParams);
+          } catch (e) {
+            console.error("GWO card " + cardId + " threw in " + op + ": " + e);
           }
-        );
+          finishThisCard();
+        };
+        // GWO
+        if (atOnce) {
+          runCard(requireGW("cards/" + cardId));
+          return;
+        }
+        requireGW(["cards/" + cardId], runCard, function (error) {
+          console.error("Failed loading card " + cardId + " : " + error);
+          finishThisCard();
+        });
       };
       var resetCardCount = function () {
         cardCount = cards.length;

@@ -356,6 +356,19 @@ dealt: <error>`.
 - `<name> deal=<n> not written: <result>`: `gone` (the AI was kicked), `stale`
   (its cards kept changing under the decision), `refused`, `failed`, or
   `stalled` (the campaign queue did not run the write within 60 seconds).
+- `<name> prune fell back: <error> -> kept all`: judging the held cards
+  before The Guardians timed out or failed, so the AI kept them all and was
+  stamped.
+- `<name> prune timed out after <ms>ms -> deleted <ids> (greedy pass unfinished)`:
+  the prune timed out partway through the greedy pass, so the AI deleted the
+  cards it had already accepted, kept the rest, and was stamped. The prune
+  line before it shows how each card was judged, and lists those deletions.
+- `<name> prune -> kept all (timed out 2 times this session)`.
+- `<name> prune not written: <result>`: as for a deal.
+- `the Guardians judged on vanilla units: <error>`: the host race's view
+  failed, so the Guardians' view fields every obtainable unit as vanilla.
+- `<card id> visible() threw: <error>`: the card counts as hidden, so no AI
+  deletes it.
 - `<name> loadout <id> not built: <error>`: that candidate was skipped.
 - `add failed: Error: AI build timed out after 60000ms`: the new AI's build did
   not settle within 60 seconds, so the add failed and the slot was given back.
@@ -374,6 +387,46 @@ dealt: <error>`.
 gw_play.html`: stock's markup has changed. A missing slot row or slot class
   leaves the AI rows without their marker or buttons, and a missing Explore
   binding leaves Explore looking live while an AI decides.
+
+Once The Guardians are the last boss, each AI that owes a prune logs one line
+when it judges its held cards ([coop.md](coop.md), "Before The Guardians"):
+
+```text
+[GW COOP AI] <name> prune deal=<n> via=specs threshold=<t> held: <id>=<worth> (guardians <gain>), ... -> deleted <ids> | kept all [kept <id> (<why>), ...]
+```
+
+`worth` is the card's worth to the AI and `gain` its worth to the Guardians.
+A card is deleted when `worth` is under `threshold` and `gain` is above 0. A
+card under the threshold whose `gain` is 0 or less only because the host or a
+connected viewer holds the same mods reads `(guardians <gain>, human-held)`. The
+first card, loadouts, and hidden cards are not listed, and `held: none` means
+none was left to judge. Cards that brought a slot, such as the
+`gwaio_upgrade_*` cards, are listed, and deleting one also takes its slot. A
+trailing `kept` lists each candidate kept, with why: `slots` (the deletion
+would leave more cards without a slot than the bank has now, such as a card
+that brought two slots in a full bank), `extractor`, `landFactory`, or
+`worth <w>` (the deletions before it raised its worth to the threshold or
+above).
+
+**Make The Guardians the last boss** on the host, from the console, by
+defeating every faction:
+
+```js
+var teams = _.uniq(
+  _.filter(
+    _.map(model.game().galaxy().stars(), function (star) {
+      return star.ai() && star.ai().team;
+    }),
+    _.isNumber
+  )
+);
+_.forEach(teams, function (team) {
+  model.game().defeatTeam(team);
+});
+```
+
+The Guardians have no team, so they stay. The prune's pass starts as the last
+boss falls.
 
 **Check a per-player AI** in a war with per-player tech:
 

@@ -12,6 +12,27 @@ define([
   var suspendedStockBank;
   var stockAddStartCard;
 
+  // How long held applies run back to back before one yields to the UI. See
+  // tech-cards.md, "Applying the card".
+  var SLICE_MS = 16;
+  var sliceStart = _.now();
+
+  var finishHeld = function (done) {
+    if (_.now() - sliceStart < SLICE_MS) {
+      // Logged, as a throw from a timer is: a promise would swallow it.
+      Promise.resolve()
+        .then(done)
+        .then(null, function (error) {
+          console.error("GWO held apply: " + ((error && error.stack) || error));
+        });
+      return;
+    }
+    _.delay(function () {
+      sliceStart = _.now();
+      done();
+    });
+  };
+
   var gwoBank = function () {
     self = this;
 
@@ -134,6 +155,7 @@ define([
       };
 
       inventory.load(self.copyForApply(saved));
+      Object.defineProperty(inventory, "gwoFinish", { value: finishHeld });
       if (!inventory.cards().length) {
         done(inventory);
         return { inventory: inventory, abandon: release };
