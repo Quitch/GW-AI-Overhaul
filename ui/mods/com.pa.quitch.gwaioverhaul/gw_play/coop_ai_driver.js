@@ -826,11 +826,12 @@ define([
               refused: refused,
             });
           };
-          return deleteGreedily(candidates).then(function (result) {
-            live();
-            console.log(progress.line(result.deleted));
-            return pruneOutcome(result);
-          });
+          return deleteGreedily(candidates);
+        })
+        .then(function (result) {
+          live();
+          console.log(progress.line(result.deleted));
+          return pruneOutcome(result);
         });
     };
 
