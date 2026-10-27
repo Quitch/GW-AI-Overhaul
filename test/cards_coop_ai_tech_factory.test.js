@@ -110,7 +110,12 @@ registerModuleStub(MOD + "/gw_play/referee_coop.js", {
     ),
   getConnectedViewerInventories: (game) => {
     seen.viewerGames.push(game);
-    return [{ client: { id: "c_v1" }, inventory: { owner: "viewer" } }];
+    return [
+      {
+        client: { id: "c_v1" },
+        inventory: seen.viewerInventory || { owner: "viewer" },
+      },
+    ];
   },
 });
 registerModuleStub(MOD + "/shared/starting_inventory.js", {
@@ -234,6 +239,7 @@ function setup(overrides = {}) {
     aiReads: 0,
     viewOverride: undefined,
     primeError: undefined,
+    viewerInventory: undefined,
   });
   answers.specs = options.specs || pending();
   answers.cells = options.cells || {};
@@ -340,6 +346,10 @@ function setup(overrides = {}) {
       originSettings: () => ({ uniqueAiLoadouts: options.uniqueAiLoadouts }),
       aiInUse: (type, race) => "brain:" + type + ":" + race,
       getAIPathSource: (type, race) => "/source/" + type + "/" + race + "/",
+      getInventoryAiMods: (saved) =>
+        typeof saved.aiMods === "function"
+          ? saved.aiMods()
+          : saved.aiMods || [],
     },
     gwoDeal: {
       dealCard: (request, loaded, cards) => ({ request, loaded, cards }),
@@ -1029,6 +1039,33 @@ describe("the co-op AI driver's wiring", () => {
       strippedUnits: [],
       removedUnits: [],
     });
+  });
+
+  it("judges The Guardians without the mods the host and the connected viewers give them already", async () => {
+    const run = build();
+    const reshape = (owner) => ({ file: owner, op: "replace", value: 1 });
+    const aimed = (owner) => ({ op: "replace", toBuild: owner });
+    HOST_SAVED.mods.push(reshape("host"));
+    run.hostInventory.aiMods = () => [aimed("host")];
+    seen.viewerInventory = {
+      owner: "viewer",
+      mods: [reshape("viewer")],
+      aiMods: [aimed("viewer")],
+    };
+    const owners = ["host", "viewer", "disconnected", "ai_2", "ai_1"];
+
+    try {
+      const view = await run.driver.guardianView({ obtainable: [] });
+      const judged = view.inventory({
+        mods: owners.map(reshape),
+        aiMods: owners.map(aimed),
+      });
+
+      assert.deepEqual(judged.mods, owners.slice(2).map(reshape));
+      assert.deepEqual(judged.aiMods, owners.slice(2).map(aimed));
+    } finally {
+      HOST_SAVED.mods.pop();
+    }
   });
 
   it("judges The Guardians on every obtainable unit where the host's race has no view", async () => {

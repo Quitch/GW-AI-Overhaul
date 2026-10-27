@@ -321,6 +321,24 @@ define([
       );
     };
 
+    // What the host and the connected viewers give The Guardians, as
+    // gw_play/referee_game_files.js guardianMods and gw_play/referee_ai.js
+    // raceTreeJobs read them.
+    var humanMods = function () {
+      var humans = [inventory].concat(
+        _.pluck(refereeCoop.getConnectedViewerInventories(game), "inventory")
+      );
+      // The host's are methods, a viewer's plain arrays.
+      return {
+        mods: _.flatten(
+          _.map(humans, function (human) {
+            return _.result(human, "mods") || [];
+          })
+        ),
+        aiMods: _.flatten(_.map(humans, params.gwoAI.getInventoryAiMods)),
+      };
+    };
+
     // The Guardians mirror the host's race, so its view lands their mods.
     var guardianView = function (current) {
       return Promise.resolve()
@@ -336,7 +354,8 @@ define([
         .then(function (raceView) {
           return coopAiGuardians.view(
             raceView ? raceView.obtainable : current.obtainable || [],
-            raceView
+            raceView,
+            humanMods()
           );
         });
     };

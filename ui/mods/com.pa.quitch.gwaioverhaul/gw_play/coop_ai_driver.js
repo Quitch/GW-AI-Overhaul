@@ -726,6 +726,17 @@ define([
               gain: coopAiGuardians.gain(guardians, without, applied, lookup),
             };
             judged.candidate = judged.worth < threshold && judged.gain > 0;
+            judged.humanHeld =
+              judged.worth < threshold &&
+              judged.gain <= 0 &&
+              !!guardians.everyCopy &&
+              guardians.everyCopy !== guardians &&
+              coopAiGuardians.gain(
+                guardians.everyCopy,
+                without,
+                applied,
+                lookup
+              ) > 0;
             if (judged.candidate && why) {
               judged.candidate = false;
               refused.push({ id: card.id, why: why });

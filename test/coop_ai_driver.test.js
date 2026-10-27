@@ -199,6 +199,15 @@ const EFFECTS = {
       },
     ],
   },
+  bot_reshape: {
+    mods: [{ file: "/u/bot", path: "max_health", op: "replace", value: 500 }],
+  },
+  bot_reshape_armour: {
+    mods: [
+      { file: "/u/bot", path: "max_health", op: "replace", value: 500 },
+      { file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 },
+    ],
+  },
   extractor_armour2: {
     units: ["/u/extractor"],
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.4 }],
@@ -1574,6 +1583,71 @@ describe("coop_ai_driver Guardians prune", () => {
       "bot_overclock",
     ]);
     assert.match(pruneLine(), /-> kept all$/);
+  });
+
+  describe("with the humans' copies", () => {
+    const reshape = EFFECTS.bot_reshape.mods[0];
+    const humansHold = (mods) => ({
+      guardianView: () =>
+        Promise.resolve(
+          coopAiGuardians.view(Object.keys(CELLS), undefined, {
+            mods,
+            aiMods: [],
+          })
+        ),
+    });
+
+    it("keeps a card whose only help to the Guardians a human gives already, and says so", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_reshape"],
+        humansHold([reshape])
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+        "gwc_start_bot",
+        "bot_reshape",
+      ]);
+      assert.match(
+        pruneLine(),
+        / held: bot_reshape=-?[\d.]+ \(guardians 0, human-held\) -> kept all$/
+      );
+    });
+
+    it("still deletes a card whose help stacks on a human's copy", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_armour"],
+        humansHold(EFFECTS.bot_armour.mods)
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+      assert.doesNotMatch(pruneLine(), /human-held/);
+    });
+
+    it("still deletes a card with a stacking part beside a human-held one", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_reshape_armour"],
+        humansHold([reshape])
+      );
+
+      await run.driver.run();
+
+      assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), ["gwc_start_bot"]);
+    });
+
+    it("tags no card worth the AI's while", async () => {
+      const run = pruneSetup(
+        ["gwc_start_bot", "bot_overclock"],
+        humansHold(EFFECTS.bot_overclock.mods.concat(reshape))
+      );
+
+      await run.driver.run();
+
+      assert.doesNotMatch(pruneLine(), /human-held/);
+    });
   });
 
   it("keeps a poor card that gives the Guardians nothing", async () => {
