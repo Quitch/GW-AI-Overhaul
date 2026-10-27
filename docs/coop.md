@@ -589,7 +589,9 @@ host's history, yielding between them. For each deal it:
    the cheapest for a best card clearly better. It never deletes the loadout in
    first place, nor a card whose loss would leave the AI without a basic land
    factory or an extractor it has now ([`tech-cards.md`](tech-cards.md),
-   "Deciding"). Otherwise it declines.
+   "Deciding"). Otherwise it declines. While The Guardians are the last boss,
+   it never chooses a card that its next prune would delete ("Before The
+   Guardians").
 4. **Writes one patch.** The patch is the new `techCardDealCount`, plus the
    applied inventory after a take or a swap. A decline still writes the count,
    so the AI moves on.
@@ -736,7 +738,26 @@ reads every star's AI. The prune:
    still owes the save and the snapshot, so a reload does not prune again.
 
 A new deal after that moves the count past the stamp, so the AI judges its
-cards again once that deal is settled. The bounds are a deal's: a prune not
+cards again once that deal is settled. The host can still explore the systems
+the defeated factions held, and each explore deals every AI a new offer.
+
+**A deal while The Guardians are last.** The AI judges each card of the hand
+with the prune's test, as if it had taken the card: its worth to the AI with no
+deal chance, under the threshold at no rerolls spent for the bank with the card
+in, and its worth to the Guardians above 0. A card the AI cannot delete is
+never marked, nor is one the prune would keep because deleting it would leave
+more cards without a slot or open a gap that the card closes.
+`decide` never chooses a marked card: the AI takes, or swaps in, the best of the
+others, rerolls while they are poor, and rerolls or declines a hand of marked
+cards alone. Without this, the AI would take the card and its next prune would
+delete it, which costs a reroll it stopped making, the second-best card it
+passed over, or, after a swap, the held card it deleted. The test judges a take.
+A swap's prune runs on a bank one held card lighter, so for a swap it is an
+approximation. The Guardians' view is resolved once per deal, and only while
+they are last. If it fails, the deal judges the hand as at any other time, and
+the log says so.
+
+The bounds are a deal's: a prune not
 settled within 20 seconds, or one that throws, keeps every card and is still
 stamped. The one exception is a timeout once step 3 has accepted a deletion:
 the prune then writes the deletions accepted so far, as step 4 does. Only a
