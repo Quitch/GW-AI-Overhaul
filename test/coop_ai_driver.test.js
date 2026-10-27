@@ -219,6 +219,16 @@ const EFFECTS = {
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 2 }],
   },
   bot_wall: { units: ["/u/bot_wall"] },
+  factory_overclock: {
+    mods: [
+      {
+        file: "/u/bot_factory",
+        path: "max_health",
+        op: "multiply",
+        value: 3,
+      },
+    ],
+  },
   extractor_armour2: {
     units: ["/u/extractor"],
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.4 }],
@@ -2146,6 +2156,63 @@ describe("coop_ai_driver deals before The Guardians", () => {
       "gwc_start_bot",
       "bot_plating",
     ]);
+  });
+
+  it("judges a swap's incoming card on the bank the swap leaves, and passes over one the prune would delete", async () => {
+    const run = dealSetup(
+      ["gwc_start_bot", "junk", "air"],
+      [PLATING, PLATING, PLATING]
+    );
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "junk",
+      "air",
+    ]);
+    assert.doesNotMatch(handLines()[0], /would prune/);
+    assert.match(
+      _.last(handLines()),
+      /bot_plating=-?[\d.]+ \([^)]*, would prune\).* -> declined \(nothing worth a slot\)$/
+    );
+  });
+
+  it("swaps in a card the prune would keep on the bank the swap leaves", async () => {
+    const overclock = ["factory_overclock", "junk2", "junk3"];
+    const run = dealSetup(
+      ["gwc_start_bot", "junk", "air"],
+      [overclock, overclock, overclock]
+    );
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "air",
+      "factory_overclock",
+    ]);
+    assert.match(
+      _.last(handLines()),
+      /-> deleted junk took factory_overclock$/
+    );
+  });
+
+  it("falls back to a card the prune would keep", async () => {
+    const run = dealSetup(["gwc_start_bot"], [PLATING], {
+      hangReroll: true,
+      decisionTimeoutMs: 50,
+    });
+
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "bot_wall",
+    ]);
+    assert.ok(
+      lines.some((line) => /-> took bot_wall \(fallback\)$/.test(line))
+    );
   });
 
   it("judges the hand as at any other time when The Guardians' view fails, and says so", async () => {
