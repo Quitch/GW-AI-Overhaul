@@ -705,8 +705,9 @@ reads every star's AI. The prune:
 1. **Judges each held card against the inventory as it stands**, before any
    deletion. It skips the card in first place, any loadout, and any card that
    does not show in an inventory. A card that brought a slot, such as an
-   upgrade card, is judged: deleting it also takes its slot, and the slot's
-   worth counts in what the deletion costs the AI. A card's worth to the AI is
+   upgrade card, is judged: deleting it also takes its slot. A card that
+   brought one slot frees none, so its slot adds nothing to its worth; only
+   the slots a card brought beyond its own count. A card's worth to the AI is
    what the inventory loses without it, scored as a swap scores a held card.
    Its worth to the Guardians is the same, on their view of the card
    ([`tech-cards.md`](tech-cards.md), "Deciding").
