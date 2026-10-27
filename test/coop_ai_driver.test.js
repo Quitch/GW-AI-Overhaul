@@ -173,6 +173,12 @@ const EFFECTS = {
     maxCards: 1,
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
   },
+  double_slot_armour: {
+    maxCards: 2,
+    mods: [
+      { file: "/u/bot_adv", path: "max_health", op: "multiply", value: 1.5 },
+    ],
+  },
   extractor_armour: {
     units: ["/u/extractor"],
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
@@ -1586,13 +1592,16 @@ describe("coop_ai_driver Guardians prune", () => {
       "bot_tax",
       "slot_card",
     ]);
+    assert.match(
+      pruneLine(),
+      /slot_card=-?[\d.]+ \(guardians 0\) -> kept all$/
+    );
   });
 
-  it("never deletes its first card, a loadout, a card it cannot see, or one that brought a slot", async () => {
-    const run = pruneSetup(
-      ["gwc_start_bot", "gwc_start_air", "bot_armour", "slot_armour"],
-      { canDelete: (card) => card.id !== "bot_armour" }
-    );
+  it("never deletes its first card, a loadout, or a card it cannot see", async () => {
+    const run = pruneSetup(["gwc_start_bot", "gwc_start_air", "bot_armour"], {
+      canDelete: (card) => card.id !== "bot_armour",
+    });
 
     await run.driver.run();
 
@@ -1600,9 +1609,80 @@ describe("coop_ai_driver Guardians prune", () => {
       "gwc_start_bot",
       "gwc_start_air",
       "bot_armour",
-      "slot_armour",
     ]);
     assert.match(pruneLine(), /held: none -> kept all$/);
+  });
+
+  it("deletes a poor card that brought a slot, and the bank loses the slot", async () => {
+    const run = pruneSetup(["gwc_start_bot", "slot_armour"]);
+
+    assert.equal(await run.driver.run(), true);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot"]);
+    assert.equal(record.inventory.maxCards, 3);
+    assert.match(pruneLine(), /-> deleted slot_armour$/);
+  });
+
+  it("keeps a card whose deletion would leave other cards without a slot", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "double_slot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    assert.equal(cardIds(run.store.find("gwo_ai_1")).length, 5);
+    assert.match(
+      pruneLine(),
+      /double_slot_armour=-?[\d.]+ \(guardians [\d.]+\).* -> kept all kept double_slot_armour \(slots\)$/
+    );
+  });
+
+  it("deletes from a bank already over its slots while no more cards lose one", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "bot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), [
+      "gwc_start_bot",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+    assert.equal(record.inventory.maxCards, 3);
+    assert.match(pruneLine(), /-> deleted bot_armour$/);
+  });
+
+  it("keeps a later card whose deletion with those before it would leave cards without a slot", async () => {
+    const run = pruneSetup([
+      "gwc_start_bot",
+      "double_slot_armour",
+      "double_slot_armour",
+      "air",
+      "naval",
+      "orbital",
+    ]);
+
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.equal(cardIds(record).length, 5);
+    assert.equal(record.inventory.maxCards, 5);
+    assert.match(
+      pruneLine(),
+      /-> deleted double_slot_armour kept double_slot_armour \(slots\)$/
+    );
   });
 
   it("keeps a card whose deletion would open a gap it lacks now", async () => {

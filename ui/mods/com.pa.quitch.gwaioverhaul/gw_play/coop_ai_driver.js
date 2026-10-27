@@ -78,6 +78,10 @@ define([
     );
   };
 
+  var overflowOf = function (applied) {
+    return Math.max(0, (applied.cards || []).length - (applied.maxCards || 0));
+  };
+
   // The scored loadouts a draw takes from. used: under Unique AI loadouts,
   // the loadouts in use, left out unless that leaves none above 0.
   var loadoutPool = function (scored, used) {
@@ -675,10 +679,10 @@ define([
       return next();
     };
 
-    // Why a deletion cannot stand: it costs the bank a slot, or opens a gap
-    // the AI lacks now. undefined when it can.
+    // Why a deletion cannot stand: it leaves more cards without a slot than
+    // the bank has now, or opens a gap the AI lacks now. undefined when it can.
     var deletionRefusal = function (applied, next, gapNow) {
-      if ((next.maxCards || 0) < (applied.maxCards || 0)) {
+      if (overflowOf(next) > overflowOf(applied)) {
         return "slots";
       }
       var gap = params.armyGap(next.units);
@@ -716,9 +720,6 @@ define([
           .then(function (without) {
             live();
             var why = deletionRefusal(applied, without, gapNow);
-            if (why === "slots") {
-              return undefined;
-            }
             var judged = {
               index: index,
               id: card.id,
