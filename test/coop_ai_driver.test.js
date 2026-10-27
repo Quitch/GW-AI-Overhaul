@@ -246,7 +246,10 @@ const applyFake = (saved) => {
 
 const fakeEffects = (options) => {
   const apply = (saved) => {
-    if (options.hangApply) {
+    if (
+      options.hangApply === true ||
+      (options.hangApply && options.hangApply(saved))
+    ) {
       return new Promise(() => {});
     }
     if (options.failApply && options.failApply(saved)) {
@@ -1946,6 +1949,28 @@ describe("coop_ai_driver Guardians prune", () => {
       ),
       lines.join("\n")
     );
+  });
+
+  it("keeps the deletions it had accepted, and stamps, when the greedy pass times out", async () => {
+    // The pass's second apply is the only one with a single card left.
+    const run = pruneSetup(["gwc_start_bot", "bot_armour", "slot_armour"], {
+      hangApply: (saved) => saved.cards.length === 1,
+      decisionTimeoutMs: 20,
+    });
+
+    assert.equal(await run.driver.run(), true);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "slot_armour"]);
+    assert.equal(record.gwaioAi.guardiansPrunedAt, 0);
+    assert.equal(run.calls.writes.length, 1);
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 prune timed out after 20ms -> deleted bot_armour (greedy pass unfinished)"
+      ),
+      lines.join("\n")
+    );
+    assert.ok(!lines.some((line) => / prune deal=/.test(line)));
   });
 
   it("keeps every card, and stamps, when judging them fails", async () => {

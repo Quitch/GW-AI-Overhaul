@@ -694,7 +694,8 @@ define([
     // judged against the inventory as it stands, then deleted one at a time,
     // most help to the Guardians first, while each deletion still holds and
     // the card is still worth less than the threshold once those before it
-    // are gone. Resolves the outcome to write.
+    // are gone. Resolves the outcome to write. progress.deleted and
+    // progress.inventory track the deletions accepted so far, for a timeout.
     var decidePrune = function (record, lookup, progress) {
       var saved = record.inventory;
       var applied;
@@ -761,6 +762,8 @@ define([
           }
           deleted.push(candidate);
           current = next;
+          progress.deleted = deleted;
+          progress.inventory = current;
         };
         var tryDeleting = function (candidate) {
           live();
@@ -855,6 +858,18 @@ define([
         progress.abandoned = true;
         if (timedOut(error)) {
           timeouts[record.playerId] = (timeouts[record.playerId] || 0) + 1;
+          if (progress.deleted) {
+            console.error(
+              LOG +
+                name +
+                " " +
+                describe(error) +
+                " -> deleted " +
+                _.pluck(progress.deleted, "id").join(", ") +
+                " (greedy pass unfinished)"
+            );
+            return { inventory: progress.inventory };
+          }
         }
         console.error(
           LOG + name + " prune fell back: " + describe(error) + " -> kept all"
