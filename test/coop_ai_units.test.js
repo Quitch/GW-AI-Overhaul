@@ -365,6 +365,26 @@ describe("fromSpecs reach under build-type mods", () => {
     assert.equal(calls, 66);
   });
 
+  it("keeps a mod list's build lists while it is in use, dropping the least used", () => {
+    let calls = 0;
+    const counted = withMods((specs, mods, tag) => {
+      calls += 1;
+      gwoSpecs.mod(specs, mods, tag);
+    });
+    const listFor = (index) => [
+      mod(LOB, "unit_types", "push", "UNITTYPE_Custom" + index),
+    ];
+
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    for (let index = 0; index < 70; index++) {
+      counted.reachable([LOB], IMPERIAL, listFor(index));
+      counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    }
+    assert.equal(calls, 71);
+    counted.reachable([LOB], IMPERIAL, listFor(0));
+    assert.equal(calls, 72);
+  });
+
   it("reuses a reach whatever order the units come in, and keeps their order", () => {
     const air = mod(BOT_FACTORY, "buildable_types", "add", " | Air & Mobile");
     const fresh = withMods(gwoSpecs.mod);

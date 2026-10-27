@@ -177,8 +177,9 @@ describe("coop_ai_guardians.gain", () => {
         commander: UNICORN,
         teamDomains: [],
         memo: {},
-        fielded: view,
-        fixedUnits,
+        fielded: fixedUnits
+          ? view
+          : Object.assign({}, view, { fixedUnits: false }),
         namesUnits: true,
         chance: 0,
       });
@@ -189,6 +190,18 @@ describe("coop_ai_guardians.gain", () => {
       );
       assert.equal(guardians.gain(view, without, withCard, LOOKUP), full.total);
     }
+  });
+
+  it("keeps one memo for every card it judges, and another for every copy", () => {
+    const view = guardians.view(["/u/bot"], undefined, { mods: [] });
+    const buff = { file: "/u/bot", path: "max_health", op: "multiply" };
+    const withCard = inventory([Object.assign({ value: 1.5 }, buff)]);
+    guardians.gain(view, inventory(), withCard, LOOKUP);
+    guardians.gain(view, inventory(), withCard, LOOKUP);
+
+    assert.equal(view.fixedUnits, true);
+    assert.ok(view.memo.keyed.length > 0);
+    assert.notEqual(view.everyCopy.memo, view.memo);
   });
 
   it("reaches every unit it is handed", () => {

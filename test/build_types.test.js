@@ -65,6 +65,8 @@ const CASES = [
   ["()", ["Bot"], false],
   ["constructor", ["Bot"], false],
   ["hasOwnProperty | Bot", ["Bot"], true],
+  ["__proto__", ["__proto__"], true],
+  ["__proto__ & Bot", ["Bot"], false],
 ];
 
 describe("build_types.matches", () => {
