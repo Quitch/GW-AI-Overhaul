@@ -324,7 +324,7 @@ commanders, and `later` what they are worth on units it could field later. A
 stat card for a domain the AI has not opened scores in `later` alone. While
 The Guardians are the last boss, each card's parts end `, guardians <gain>`,
 its worth to the Guardians, and a card that the AI's next prune would delete
-once taken adds `, would prune` ([coop.md](coop.md), "Before The Guardians").
+once taken, or once swapped in, adds `, would prune` ([coop.md](coop.md), "Before The Guardians").
 The AI never chooses such a card. The action is one of:
 
 - `took <id>`.

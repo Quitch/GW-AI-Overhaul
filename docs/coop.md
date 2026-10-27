@@ -738,32 +738,34 @@ reads every star's AI. The prune:
    still owes the save and the snapshot, so a reload does not prune again.
 
 A new deal after that moves the count past the stamp, so the AI judges its
-cards again once that deal is settled. The host can still explore the systems
-the defeated factions held, and each explore deals every AI a new offer.
-
-**A deal while The Guardians are last.** The AI judges each card of the hand
-with the prune's test, as if it had taken the card: its worth to the AI with no
-deal chance, under the threshold at no rerolls spent for the bank with the card
-in, and its worth to the Guardians above 0. A card the AI cannot delete is
-never marked, nor is one the prune would keep because deleting it would leave
-more cards without a slot or open a gap that the card closes.
-`decide` never chooses a marked card: the AI takes, or swaps in, the best of the
-others, rerolls while they are poor, and rerolls or declines a hand of marked
-cards alone. Without this, the AI would take the card and its next prune would
-delete it, which costs a reroll it stopped making, the second-best card it
-passed over, or, after a swap, the held card it deleted. The test judges a take.
-A swap's prune runs on a bank one held card lighter, so for a swap it is an
-approximation. The Guardians' view is resolved once per deal, and only while
-they are last. If it fails, the deal judges the hand as at any other time, and
-the log says so.
-
-The bounds are a deal's: a prune not
+cards again once that deal is settled. The bounds are a deal's: a prune not
 settled within 20 seconds, or one that throws, keeps every card and is still
 stamped. The one exception is a timeout once step 3 has accepted a deletion:
 the prune then writes the deletions accepted so far, as step 4 does. Only a
 timeout counts against the AI, and an AI whose decisions have timed out twice
 this session stamps without judging. Each of these is logged
 ([`live-testing.md`](live-testing.md), "AI players").
+
+**A deal while The Guardians are last.** The host can still explore the
+systems the defeated factions held, and each explore deals every AI a new
+offer. The AI then marks each card that its next prune would pick for deletion,
+by the prune's test (steps 1 and 2) on the bank the decision would leave: its
+worth to the AI with no deal chance is under the threshold at no rerolls spent,
+its worth to the Guardians is above 0, the AI can delete it, and the deletion
+would hold. A card the bank has room for is judged as taken, when the hand is
+scored. A card that needs a swap is judged once `decide` has chosen the swap,
+on the bank without the held card it deletes. If the prune would pick it there,
+it is marked and the hand is decided again. `decide` never chooses a marked
+card: the AI takes, or swaps in, the best of the others, rerolls while they are
+poor, and rerolls or declines a hand of marked cards alone. A deal's fallback
+also passes over a marked card. Without this, the AI would take the card and
+its next prune would delete it. That costs a reroll it stopped making, the
+second-best card it passed over, or, after a swap, the held card it deleted.
+
+The mark leaves out the greedy pass (step 3), so a card the pass would keep
+once other deletions raise its worth is still marked. The Guardians' view is
+resolved once per deal, and only while they are last. If it fails, the deal
+judges the hand as at any other time, and the log says so.
 
 **A human's copy.** The Guardians take each copy of a mod, with no dedupe, so
 deleting the AI's copy of a mod that stacks still takes something from them
