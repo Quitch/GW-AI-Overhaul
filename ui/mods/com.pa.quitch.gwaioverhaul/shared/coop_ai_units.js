@@ -14,7 +14,7 @@ define([
   var COMMANDERS = "/pa/units/commanders/";
   var BUILD_PATH = /^(unit_types|buildable_types)(\.|$)/;
   // Build lists remade by mods, and the reach they give, kept for reuse;
-  // older ones are dropped.
+  // the least recently used are dropped.
   var MAX_CACHED = 64;
 
   var parseCell = function (key) {
@@ -28,16 +28,18 @@ define([
 
   var bounded = function () {
     var store = {};
-    // Keys in the order they were cached, oldest first.
+    // Keys in the order they were last used, least recent first.
     var order = [];
     return function (cacheKey, make) {
-      if (!Object.prototype.hasOwnProperty.call(store, cacheKey)) {
+      if (Object.prototype.hasOwnProperty.call(store, cacheKey)) {
+        order.splice(_.indexOf(order, cacheKey), 1);
+      } else {
         store[cacheKey] = make();
-        order.push(cacheKey);
-        if (order.length > MAX_CACHED) {
+        if (order.length === MAX_CACHED) {
           delete store[order.shift()];
         }
       }
+      order.push(cacheKey);
       return store[cacheKey];
     };
   };

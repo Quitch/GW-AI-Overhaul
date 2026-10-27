@@ -77,7 +77,8 @@ define(function () {
     return tokens.length ? parseOr() : never;
   };
 
-  var compiled = {};
+  // Without a prototype, so a "__proto__" expression or tag is a plain key.
+  var compiled = Object.create(null);
   // Keys in the order they were compiled, oldest first.
   var compiledOrder = [];
   var predicateOf = function (expression) {
@@ -93,7 +94,7 @@ define(function () {
   };
 
   var tagSet = function (tags) {
-    var set = {};
+    var set = Object.create(null);
     _.forEach(tags || [], function (name) {
       set[name] = true;
     });
@@ -112,7 +113,7 @@ define(function () {
   var reach = function (builders, candidates, buildableOf, tagsOf) {
     var reached = {};
     var evaluated = {};
-    var sets = {};
+    var sets = Object.create(null);
     var setOf = function (unit) {
       if (!Object.prototype.hasOwnProperty.call(sets, unit)) {
         sets[unit] = tagSet(tagsOf(unit));

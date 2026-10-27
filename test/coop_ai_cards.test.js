@@ -176,18 +176,31 @@ describe("effectOf", () => {
     assert.equal(effect.addedAiMods, 1);
   });
 
-  it("leaves no trace on the lists it compares, and sees a list that grew", () => {
+  it("keys each list once on a memo, and leaves the lists untouched", () => {
+    const mod = { file: "dox", path: "damage", op: "multiply", value: 1.5 };
+    const before = { mods: [mod] };
+    const after = { mods: [mod, Object.assign({}, mod, { value: 2 })] };
+    const memo = {};
+
+    coopAiCards.effectOf(before, after, memo);
+    assert.deepEqual(coopAiCards.effectOf(before, after, memo).addedMods, [
+      after.mods[1],
+    ]);
+    assert.equal(memo.keyed.length, 2);
+    assert.deepEqual(Object.keys(after.mods), ["0", "1"]);
+  });
+
+  it("sees a list changed in place between calls without a memo", () => {
     const mod = { file: "dox", path: "damage", op: "multiply", value: 1.5 };
     const before = { mods: [mod] };
     const after = { mods: [mod] };
 
     assert.deepEqual(coopAiCards.effectOf(before, after).addedMods, []);
-    assert.deepEqual(Object.keys(after.mods), ["0"]);
-    assert.equal(JSON.stringify(after), JSON.stringify({ mods: [mod] }));
-
     const extra = Object.assign({}, mod, { value: 2 });
-    after.mods.push(extra);
-    assert.deepEqual(coopAiCards.effectOf(before, after).addedMods, [extra]);
+    after.mods[0] = extra;
+    const effect = coopAiCards.effectOf(before, after);
+    assert.deepEqual(effect.addedMods, [extra]);
+    assert.deepEqual(effect.removedMods, [mod]);
   });
 });
 

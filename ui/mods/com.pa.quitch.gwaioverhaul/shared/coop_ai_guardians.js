@@ -113,6 +113,9 @@ define([
       },
       obtainable: [],
       reachable: _.identity,
+      fixedUnits: true,
+      // Shared by every card judged on the view, as a hand's cards share one.
+      memo: {},
     };
     guardians.everyCopy = human ? view(units, raceView) : guardians;
     return guardians;
@@ -125,9 +128,8 @@ define([
       lookup: lookup,
       commander: COMMANDER,
       teamDomains: [],
-      memo: {},
+      memo: guardians.memo || {},
       fielded: guardians,
-      fixedUnits: true,
       namesUnits: true,
       chance: 0,
     }).total;
