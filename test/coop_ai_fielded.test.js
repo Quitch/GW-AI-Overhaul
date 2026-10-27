@@ -160,6 +160,20 @@ describe("coop_ai_fielded inventory", () => {
     assert.notEqual(again, first);
     assert.deepEqual(again, first);
   });
+
+  it("keeps the inventory it was last asked for, dropping the least used", () => {
+    const legion = viewOf("legion", LEGION);
+    const shared = { units: [LEGION_COMMANDER], mods: [] };
+    const once = { units: [gwoUnit.ant], mods: [] };
+    const first = legion.inventory(shared);
+    const dropped = legion.inventory(once);
+
+    for (let i = 0; i < 15; i++) {
+      legion.inventory({ units: [], mods: [] });
+      assert.equal(legion.inventory(shared), first);
+    }
+    assert.notEqual(legion.inventory(once), dropped);
+  });
 });
 
 describe("coop_ai_fielded reach and obtainable", () => {

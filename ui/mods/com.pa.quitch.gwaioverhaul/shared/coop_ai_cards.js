@@ -87,32 +87,58 @@ define([
     return JSON.stringify(value);
   };
 
+  // A list's keys, and how often each occurs. Kept on memo by instance, as
+  // heldTechFor keeps its own, so a list a hand compares often is keyed once.
+  var keyedOf = function (list, memo) {
+    if (!list) {
+      return { keys: [], counts: {} };
+    }
+    var cached =
+      memo &&
+      _.find(
+        memo.keyed,
+        // By instance, not by the deep equality the shorthand would use.
+        // eslint-disable-next-line lodash/matches-prop-shorthand
+        function (entry) {
+          return entry.list === list;
+        }
+      );
+    if (cached) {
+      return cached.keyed;
+    }
+    var keyed = { keys: _.map(list, key), counts: {} };
+    _.forEach(keyed.keys, function (k) {
+      keyed.counts[k] = (keyed.counts[k] || 0) + 1;
+    });
+    if (memo) {
+      memo.keyed = memo.keyed || [];
+      memo.keyed.push({ list: list, keyed: keyed });
+    }
+    return keyed;
+  };
+
   // `list` less `other`, one for one: a card adding a second copy of a mod the
   // inventory holds adds one.
-  var minus = function (list, other) {
-    var counts = {};
-    _.forEach(other || [], function (item) {
-      var k = key(item);
-      counts[k] = (counts[k] || 0) + 1;
-    });
-    return _.filter(list || [], function (item) {
-      var k = key(item);
-      if (counts[k]) {
-        counts[k] -= 1;
-        return false;
-      }
-      return true;
+  var minus = function (list, other, memo) {
+    var keys = keyedOf(list, memo).keys;
+    var counts = keyedOf(other, memo).counts;
+    var seen = {};
+    return _.filter(list || [], function (item, index) {
+      var k = keys[index];
+      seen[k] = (seen[k] || 0) + 1;
+      return seen[k] > (counts[k] || 0);
     });
   };
 
-  // What applying a card changed. before and after are saved inventories.
-  var effectOf = function (before, after) {
+  // What applying a card changed. before and after are saved inventories;
+  // memo, if given, a hand's context.memo.
+  var effectOf = function (before, after, memo) {
     return {
       addedUnits: _.difference(_.uniq(after.units || []), before.units || []),
       removedUnits: _.difference(_.uniq(before.units || []), after.units || []),
-      addedMods: minus(after.mods, before.mods),
-      removedMods: minus(before.mods, after.mods),
-      addedAiMods: minus(after.aiMods, before.aiMods).length,
+      addedMods: minus(after.mods, before.mods, memo),
+      removedMods: minus(before.mods, after.mods, memo),
+      addedAiMods: minus(after.aiMods, before.aiMods, memo).length,
       addedMinions: Math.max(
         0,
         (after.minions || []).length - (before.minions || []).length
@@ -135,6 +161,12 @@ define([
   // its race's view (shared/coop_ai_fielded.js); as saved otherwise.
   var fieldedOf = function (inventory, context) {
     return context.fielded ? context.fielded.inventory(inventory) : inventory;
+  };
+
+  // Whether the view fields the same units, all reached, either side of
+  // every card, so a card unlocks nothing.
+  var fixedUnits = function (context) {
+    return !!context.fielded && context.fielded.fixedUnits === true;
   };
 
   // The units a card could grant.
@@ -161,7 +193,10 @@ define([
   var setValue = function (inventory, context, boost) {
     var lookup = context.lookup;
     var units = inventory.units || [];
-    var reached = reachedOf(inventory, context);
+    var reached = {};
+    _.forEach(reachedOf(inventory, context), function (unit) {
+      reached[unit] = true;
+    });
     var cells = {};
     var domains = {};
     var total = 0;
@@ -180,11 +215,11 @@ define([
         ? 1
         : WEIGHTS.teamDomain;
       var ordered = _.sortBy(entry.units, function (unit) {
-        return _.includes(reached, unit) ? 0 : 1;
+        return reached[unit] === true ? 0 : 1;
       });
 
       _.forEach(ordered, function (unit, index) {
-        var live = _.includes(reached, unit);
+        var live = reached[unit] === true;
         total +=
           worth *
           Math.pow(WEIGHTS.decay, index) *
@@ -523,7 +558,7 @@ define([
 
   // A card's value by part, unrounded. See scoreCard.
   var partsOf = function (before, after, context) {
-    var effect = effectOf(before, after);
+    var effect = effectOf(before, after, context.memo);
     var fullness = before.maxCards ? before.cards.length / before.maxCards : 1;
     var heldTech = heldTechFor(before, context);
     var modsOn = function (mods, inventory) {
@@ -535,9 +570,10 @@ define([
     var removed = modsOn(effect.removedMods, before);
     var held = before.minions || [];
     var parts = {
-      unlock:
-        setValue(after, context, heldTech.unit) -
-        setValue(before, context, heldTech.unit),
+      unlock: fixedUnits(context)
+        ? 0
+        : setValue(after, context, heldTech.unit) -
+          setValue(before, context, heldTech.unit),
       mods: added.now - removed.now,
       later: added.later - removed.later,
       minions: 0,
@@ -639,7 +675,7 @@ define([
     var after = fieldedOf(next, context);
     var parts = partsOf(before, after, context);
     var boost = heldTechFor(before, context).unit;
-    var effect = effectOf(before, after);
+    var effect = effectOf(before, after, context.memo);
     var grantable = _.intersection(effect.addedUnits, obtainableOf(context));
     var held = before.units || [];
     var replaceable =

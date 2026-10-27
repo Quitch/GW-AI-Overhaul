@@ -53,6 +53,20 @@ const CASES = [
   ["NoSuchTag", ["Bot"], false],
   ["", ["Bot"], false],
   [undefined, ["Bot"], false],
+  // Malformed: a missing operand is false, an unclosed bracket closes at the
+  // end, and what follows a complete expression is ignored.
+  ["Bot &", ["Bot"], false],
+  ["Bot -", ["Bot"], true],
+  ["Bot |", ["Bot"], true],
+  ["& Bot", ["Bot"], false],
+  ["(Bot | Air", ["Air"], true],
+  ["Bot ) | Air", ["Air"], false],
+  ["Bot Air", ["Bot"], true],
+  ["()", ["Bot"], false],
+  ["constructor", ["Bot"], false],
+  ["hasOwnProperty | Bot", ["Bot"], true],
+  ["__proto__", ["__proto__"], true],
+  ["__proto__ & Bot", ["Bot"], false],
 ];
 
 describe("build_types.matches", () => {
@@ -64,6 +78,12 @@ describe("build_types.matches", () => {
         expression + " over " + tags.join(",")
       );
     }
+  });
+
+  it("evaluates the same expression afresh for other tags", () => {
+    assert.equal(buildTypes.matches("Bot & Basic", ["Bot", "Basic"]), true);
+    assert.equal(buildTypes.matches("Bot & Basic", ["Bot"]), false);
+    assert.equal(buildTypes.matches("Bot & Basic", undefined), false);
   });
 
   it("agrees with the Node twin on every case", () => {
@@ -123,7 +143,7 @@ describe("build_types.reach", () => {
     assert.deepEqual(reached(["dox"], Object.keys(TAGS)), []);
   });
 
-  it("evaluates each distinct build list once", () => {
+  it("evaluates each distinct build list once, reading each candidate's tags once", () => {
     const asked = [];
     buildTypes.reach(
       ["factory", "factory", "commander"],
@@ -134,8 +154,8 @@ describe("build_types.reach", () => {
         return TAGS[unit];
       }
     );
-    // The factory's list asks after both, once; the commander's only after
-    // the Slammer, which is not reached yet.
-    assert.deepEqual(asked, ["dox", "slammer", "slammer"]);
+    // The factory's list asks after both; the commander's list, after the
+    // Slammer only, which is not reached yet, reuses its tags.
+    assert.deepEqual(asked, ["dox", "slammer"]);
   });
 });
