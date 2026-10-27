@@ -18,6 +18,9 @@ installGlobals();
 const guardians = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_guardians.js"
 );
+const coopAiCards = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js"
+);
 
 const UNICORN = guardians.COMMANDER;
 const BASE_COMMANDER =
@@ -147,6 +150,45 @@ describe("coop_ai_guardians.gain", () => {
     assert.ok(gainOf([Object.assign({ value: 0.5 }, nerf)], {}, view) > 0);
     assert.equal(seen.length, 2);
     assert.deepEqual(view.inventory(inventory()).units, ["/u/tank"]);
+  });
+
+  // Their units are the same, all reached, either side of a card.
+  it("scores as the full scorer does, without its unit sums", () => {
+    const view = guardians.view(["/u/bot", "/u/bot_factory", "/u/tank"]);
+    const mod = (file, value) => ({
+      file,
+      path: "max_health",
+      op: "multiply",
+      value,
+    });
+    const cases = [
+      [[mod("/u/bot", 1.5)], {}],
+      [[mod("/u/tank", 0.5), mod(BASE_COMMANDER, 1.2)], {}],
+      [[], { aiMods: [{ op: "append" }], units: ["/u/tank"] }],
+    ];
+    for (const [mods, extra] of cases) {
+      const without = inventory();
+      const withCard = inventory(
+        mods,
+        Object.assign({ cards: [{}, { id: "card" }] }, extra)
+      );
+      const context = (fixedUnits) => ({
+        lookup: LOOKUP,
+        commander: UNICORN,
+        teamDomains: [],
+        memo: {},
+        fielded: view,
+        fixedUnits,
+        namesUnits: true,
+        chance: 0,
+      });
+      const full = coopAiCards.scoreCard(without, withCard, context(false));
+      assert.deepEqual(
+        coopAiCards.scoreCard(without, withCard, context(true)),
+        full
+      );
+      assert.equal(guardians.gain(view, without, withCard, LOOKUP), full.total);
+    }
   });
 
   it("reaches every unit it is handed", () => {

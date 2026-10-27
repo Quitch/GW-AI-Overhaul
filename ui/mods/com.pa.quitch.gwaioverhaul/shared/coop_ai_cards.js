@@ -87,21 +87,37 @@ define([
     return JSON.stringify(value);
   };
 
+  // A list's keys, and how often each occurs. Kept on the list, so a list
+  // compared often is keyed once, and non-enumerable, so no copy or save of
+  // it carries them.
+  var keyedOf = function (list) {
+    if (!list) {
+      return { keys: [], counts: {} };
+    }
+    var keyed = list.gwoKeyed;
+    if (!keyed || keyed.keys.length !== list.length) {
+      keyed = { keys: _.map(list, key), counts: {} };
+      _.forEach(keyed.keys, function (k) {
+        keyed.counts[k] = (keyed.counts[k] || 0) + 1;
+      });
+      Object.defineProperty(list, "gwoKeyed", {
+        value: keyed,
+        configurable: true,
+      });
+    }
+    return keyed;
+  };
+
   // `list` less `other`, one for one: a card adding a second copy of a mod the
   // inventory holds adds one.
   var minus = function (list, other) {
-    var counts = {};
-    _.forEach(other || [], function (item) {
-      var k = key(item);
-      counts[k] = (counts[k] || 0) + 1;
-    });
-    return _.filter(list || [], function (item) {
-      var k = key(item);
-      if (counts[k]) {
-        counts[k] -= 1;
-        return false;
-      }
-      return true;
+    var keys = keyedOf(list).keys;
+    var counts = keyedOf(other).counts;
+    var seen = {};
+    return _.filter(list || [], function (item, index) {
+      var k = keys[index];
+      seen[k] = (seen[k] || 0) + 1;
+      return seen[k] > (counts[k] || 0);
     });
   };
 
@@ -161,7 +177,10 @@ define([
   var setValue = function (inventory, context, boost) {
     var lookup = context.lookup;
     var units = inventory.units || [];
-    var reached = reachedOf(inventory, context);
+    var reached = {};
+    _.forEach(reachedOf(inventory, context), function (unit) {
+      reached[unit] = true;
+    });
     var cells = {};
     var domains = {};
     var total = 0;
@@ -180,11 +199,11 @@ define([
         ? 1
         : WEIGHTS.teamDomain;
       var ordered = _.sortBy(entry.units, function (unit) {
-        return _.includes(reached, unit) ? 0 : 1;
+        return reached[unit] === true ? 0 : 1;
       });
 
       _.forEach(ordered, function (unit, index) {
-        var live = _.includes(reached, unit);
+        var live = reached[unit] === true;
         total +=
           worth *
           Math.pow(WEIGHTS.decay, index) *
@@ -535,9 +554,10 @@ define([
     var removed = modsOn(effect.removedMods, before);
     var held = before.minions || [];
     var parts = {
-      unlock:
-        setValue(after, context, heldTech.unit) -
-        setValue(before, context, heldTech.unit),
+      unlock: context.fixedUnits
+        ? 0
+        : setValue(after, context, heldTech.unit) -
+          setValue(before, context, heldTech.unit),
       mods: added.now - removed.now,
       later: added.later - removed.later,
       minions: 0,
@@ -595,9 +615,11 @@ define([
   // A card's value, by part. before and after are the saved inventories either
   // side of the card; context: lookup, commander, teamDomains, memo (shared
   // by the cards of a hand), fielded (a shared/coop_ai_fielded.js view, for
-  // an AI whose race or add-ons field other units than those saved), and for
-  // a card with no effect to see, namesUnits (it registers units in
-  // gwoCardsToUnits) and chance (its own deal() weight for this inventory).
+  // an AI whose race or add-ons field other units than those saved),
+  // fixedUnits (the view fields the same units, all reached, either side, so
+  // unlock is 0), and for a card with no effect to see, namesUnits (it
+  // registers units in gwoCardsToUnits) and chance (its own deal() weight
+  // for this inventory).
   // The held-tech boost is before's on both sides.
   var scoreCard = function (before, after, context) {
     return rounded(

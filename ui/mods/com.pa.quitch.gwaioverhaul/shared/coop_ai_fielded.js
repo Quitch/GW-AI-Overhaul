@@ -8,7 +8,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
 ], function (raceAiMods, unitCells) {
-  // Views kept for reuse: a hand's cards share the inventory before them.
+  // Views kept for reuse, the least recently used dropped: a hand's cards
+  // share the inventory before them, and a prune's the one after.
   var MAX_CACHED = 16;
 
   // params: race, cells (shared/races.js cellsOf), races (shared/races.js),
@@ -63,7 +64,7 @@ define([
     // Of the saved inventory: units, mods and strippedUnits as fielded, every
     // other field as saved.
     var inventory = function (saved) {
-      var hit = _.find(
+      var at = _.findIndex(
         cache,
         // By instance, not by the deep equality the shorthand would use.
         // eslint-disable-next-line lodash/matches-prop-shorthand
@@ -71,7 +72,9 @@ define([
           return entry.saved === saved;
         }
       );
-      if (hit) {
+      if (at !== -1) {
+        var hit = cache.splice(at, 1)[0];
+        cache.push(hit);
         return hit.fielded;
       }
 

@@ -127,6 +127,7 @@ define([
       teamDomains: [],
       memo: {},
       fielded: guardians,
+      fixedUnits: true,
       namesUnits: true,
       chance: 0,
     }).total;
