@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v7.9.1 - 2026-10-28
+
+### Changed
+
+- In co-op with separate tech, once The Guardians are the last boss, AI players no longer take tech in a deal that they would then delete for helping The Guardians, and choose other tech instead
+
 ## v7.9.0 - 2026-10-27
 
 ### Changed

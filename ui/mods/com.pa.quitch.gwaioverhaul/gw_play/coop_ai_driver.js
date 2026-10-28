@@ -6,7 +6,8 @@
 // a T1 factory card in place of a hand. Only settled results are written, so
 // a reload mid-decision reruns to the same result. While The Guardians are
 // the last boss, an AI also deletes the held cards worth little to it that
-// help them. See coop.md, "AI players' tech".
+// help them, and takes no such card in a deal. See coop.md, "AI players'
+// tech".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
@@ -180,7 +181,77 @@ define([
       });
     };
 
-    var scoreHand = function (record, hand, context, star) {
+    // A card's worth to the AI as the prune scores it: no deal chance.
+    var pruneContext = function (context) {
+      return _.assign({}, context, { namesUnits: false, chance: 0 });
+    };
+
+    var deletable = function (card, index) {
+      return index > 0 && !params.isLoadout(card.id) && canDelete(card);
+    };
+
+    // Whether the prune would pick the card, last in withCard, as one to
+    // delete: deletable, worth less than the threshold to the AI, more than
+    // nothing to the Guardians (gain), and a deletion that holds. The greedy
+    // pass may still keep it.
+    var pruneWouldPick = function (card, without, withCard, context, gain) {
+      return (
+        gain > 0 &&
+        deletable(card, (withCard.cards || []).length - 1) &&
+        !deletionRefusal(withCard, without, params.armyGap(withCard.units)) &&
+        coopAiCards.scoreCard(without, withCard, pruneContext(context)).total <
+          coopAiCards.rerollThreshold(fullnessOf(withCard), 0)
+      );
+    };
+
+    // While The Guardians are last: the card's worth to them, and, for a card
+    // the bank has room for, whether the prune would delete it once taken.
+    // A card that needs a swap is judged once the swap is chosen
+    // (judgeSwap).
+    var markForGuardians = function (scored, pair, context, guardians) {
+      var without = pair[0];
+      var withCard = pair[1];
+      scored.guardians = coopAiGuardians.gain(
+        guardians,
+        without,
+        withCard,
+        context.lookup
+      );
+      scored.wouldPrune =
+        fits(without, scored.card) &&
+        pruneWouldPick(
+          scored.card,
+          without,
+          withCard,
+          context,
+          scored.guardians
+        );
+      return scored;
+    };
+
+    // Whether the prune would delete a swap's incoming card from the bank
+    // the swap leaves.
+    var judgeSwap = function (record, decision, chosen, context, guardians) {
+      var removed = coopAiEffects.removeCard(
+        record.inventory,
+        decision.deleteIndex
+      );
+      return Promise.all([
+        params.effects.apply(removed),
+        params.effects.apply(coopAiEffects.addCard(removed, chosen.card)),
+      ]).then(function (pair) {
+        return pruneWouldPick(
+          chosen.card,
+          pair[0],
+          pair[1],
+          context,
+          coopAiGuardians.gain(guardians, pair[0], pair[1], context.lookup)
+        );
+      });
+    };
+
+    // guardians: their view while they are last, else undefined.
+    var scoreHand = function (record, hand, context, star, guardians) {
       var saved = record.inventory;
       return Promise.all(
         _.map(hand.cards, function (card, index) {
@@ -188,7 +259,7 @@ define([
           return params.effects
             .withCard(saved, card, loadout)
             .then(function (pair) {
-              return _.assign(
+              var scored = _.assign(
                 { index: index, id: card.id, card: card, loadout: loadout },
                 coopAiCards.scoreCard(
                   pair[0],
@@ -196,9 +267,35 @@ define([
                   cardContext(context, card, pair[0], star)
                 )
               );
+              return guardians
+                ? markForGuardians(scored, pair, context, guardians)
+                : scored;
             });
         })
       );
+    };
+
+    // The Guardians' view for a deal while they are last, else undefined. A
+    // view that fails leaves the hand judged as at any other time.
+    var dealGuardians = function (record, entry, lookup) {
+      if (!guardiansLast()) {
+        return Promise.resolve(undefined);
+      }
+      return Promise.resolve()
+        .then(function () {
+          return guardianView(lookup);
+        })
+        .then(null, function (error) {
+          console.error(
+            LOG +
+              record.gwaioAi.name +
+              " deal=" +
+              entry.dealIndex +
+              " judged without the Guardians: " +
+              describe(error)
+          );
+          return undefined;
+        });
     };
 
     // One held card's worth for a swap: what deleting it loses once the
@@ -355,6 +452,7 @@ define([
       var client = clientOf(record);
       var context;
       var applied;
+      var guardians;
 
       // A decision that timed out stops at its next step, so it queues no
       // apply or reroll ahead of the next deal's, and logs no choice that is
@@ -401,6 +499,7 @@ define([
       var judge = function (hand) {
         live();
         progress.hand = hand;
+        progress.scored = undefined;
         // A thin deck deals a short hand, and each card it lacks counts as a
         // reroll spent.
         var rerollsUsed = Math.max(
@@ -424,34 +523,66 @@ define([
           });
         };
 
-        return scoreHand(record, hand, context, star).then(function (scored) {
-          live();
-          var first = decide(scored, []);
-          var decided =
-            first.action === "decline" && first.reason === "bank full"
-              ? scoreHeld(
-                  record,
-                  context,
-                  star,
-                  _.find(scored, { index: first.index }).card,
-                  applied
-                ).then(_.partial(decide, scored))
-              : Promise.resolve(first);
+        return scoreHand(record, hand, context, star, guardians).then(
+          function (scored) {
+            progress.scored = scored;
+            return settleOn(scored, decide).then(_.partial(act, hand, scored));
+          }
+        );
+      };
 
-          return decided.then(_.partial(act, hand, scored));
+      // The decision on a scored hand. decide(scored, held) is the hand's.
+      var settleOn = function (scored, decide) {
+        live();
+        var first = decide(scored, []);
+        var decided =
+          first.action === "decline" && first.reason === "bank full"
+            ? scoreHeld(
+                record,
+                context,
+                star,
+                _.find(scored, { index: first.index }).card,
+                applied
+              ).then(_.partial(decide, scored))
+            : Promise.resolve(first);
+
+        return decided.then(function (decision) {
+          return settleSwap(decision, scored, decide);
         });
       };
 
+      // While The Guardians are last, a swap whose incoming card the prune
+      // would delete marks that card, and the hand is decided again.
+      var settleSwap = function (decision, scored, decide) {
+        if (!guardians || decision.action !== "swap") {
+          return decision;
+        }
+        var chosen = _.find(scored, { index: decision.index });
+        return judgeSwap(record, decision, chosen, context, guardians).then(
+          function (pruned) {
+            if (!pruned) {
+              return decision;
+            }
+            chosen.wouldPrune = true;
+            return settleOn(scored, decide);
+          }
+        );
+      };
+
       var dealAndJudge = function () {
-        return Promise.resolve(
-          params.dealHand({
-            client: client,
-            record: record,
-            dealIndex: entry.dealIndex,
-            starIndex: entry.star,
-            star: star,
+        return dealGuardians(record, entry, lookup)
+          .then(function (view) {
+            live();
+            guardians = view;
+            return params.dealHand({
+              client: client,
+              record: record,
+              dealIndex: entry.dealIndex,
+              starIndex: entry.star,
+              star: star,
+            });
           })
-        ).then(judge);
+          .then(judge);
       };
 
       return params.effects
@@ -478,11 +609,15 @@ define([
     };
 
     // After a timeout or an error: the first card that fits, if its apply
-    // lands, else nothing but the deal counted.
-    var fallback = function (record, entry, hand) {
-      var cards = (hand && hand.cards) || [];
-      var pick = _.find(cards, function (card) {
-        return !params.isLoadout(card.id);
+    // lands, else nothing but the deal counted. A card the prune would
+    // delete, where the hand got that far, is passed over.
+    var fallback = function (record, entry, progress) {
+      var cards = (progress.hand && progress.hand.cards) || [];
+      var pick = _.find(cards, function (card, index) {
+        return (
+          !params.isLoadout(card.id) &&
+          !_.some(progress.scored, { index: index, wouldPrune: true })
+        );
       });
       if (!pick) {
         return Promise.resolve({ summary: "declined (fallback, no card)" });
@@ -540,7 +675,7 @@ define([
         if (timedOut(error)) {
           timeouts[record.playerId] = (timeouts[record.playerId] || 0) + 1;
         }
-        return fallback(record, entry, progress.hand).then(function (outcome) {
+        return fallback(record, entry, progress).then(function (outcome) {
           console.error(
             LOG +
               name +
@@ -712,10 +847,6 @@ define([
         }
       };
 
-      var deletable = function (card, index) {
-        return index > 0 && !params.isLoadout(card.id) && canDelete(card);
-      };
-
       var judgeHeld = function (card, index) {
         return params.effects
           .apply(coopAiEffects.removeCard(saved, index))
@@ -797,7 +928,7 @@ define([
         })
         .then(function (built) {
           live();
-          context = _.assign({}, built[0], { namesUnits: false, chance: 0 });
+          context = pruneContext(built[0]);
           guardians = built[1];
           return Promise.all(
             _.map(cardsOf(record), function (card, index) {
