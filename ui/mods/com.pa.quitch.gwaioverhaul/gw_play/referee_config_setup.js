@@ -186,7 +186,11 @@ define([
     ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
       slots: slotsArray,
-      color: gwoColour.pick(ai.faction, ai.color, index),
+      // Alliance 1 is the player's side; every other alliance is an enemy.
+      color:
+        alliance === 1
+          ? gwoColour.pickAlly(ai.faction, ai.color, index)
+          : gwoColour.pickEnemy(ai.faction, ai.color, index),
       econ_rate: _.isNumber(econRateOverride)
         ? econRateOverride
         : gwoAI.aiEconRateWithFloor(ai.econ_rate),

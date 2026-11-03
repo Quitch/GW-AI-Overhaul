@@ -139,10 +139,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return subcommanders;
   };
 
-  // Index 0 is reserved for the player, whose army takes the faction's own
-  // colour pair rather than a palette entry.
+  // The player-side list holds no player colour, so nothing is reserved:
+  // the first Sub Commander takes its first entry.
   var alliedColourIndex = function (position) {
-    return position + 1;
+    return position;
   };
 
   // The order gw_lobby.js's startGame() hands out the split armies: host first,

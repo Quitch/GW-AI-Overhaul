@@ -185,30 +185,57 @@ of the palette. Before PA 124670 the palette was private to
 own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
-Every colour in a faction's Sub Commander palette, and its spent-palette
-colour (below), is at least 30 from every player's colour, measured as
-straight-line RGB distance, √(Δr² + Δg² + Δb²). A closer colour looks the same
-in battle, so in the five shipped factions no Sub Commander ever gets, or looks
-like it has, a player's colour. That covers every `coopPlayerColors` entry, the
-faction colour included, the lobby's dimmed form of each, and the lobby colours
-players 7 to 12 take once the array runs out (a war seats up to 12).
-`test/faction_coop_colours.test.js` enforces this. Legonis Machina and
-Revenants each replace the one stock entry that broke this rule. Synchronous
-takes greens of GWO's own in place of stock's oranges, since its faction colour
-is GWO's green.
+Every other army colour is GWO's own, in `gw_play/army_colours.js`. Each
+faction has two lists and one fallback colour:
 
-The same 30 holds across factions. An enemy AI draws its colours from its own
-faction's palette, and it can fight another faction's players and Sub
-Commanders. So every palette entry and spent-palette colour is also at least 30
-from every army colour of every other faction: its players (players 7 to 12
-included), its palette, and its spent-palette colour.
+- **`allies`**, the player side: Sub Commanders, a star's ally, and co-op AI
+  players. It holds no player colour, as the faction's players are in the
+  battle.
+- **`enemies`**, the faction as the enemy: its `allies`, plus each of its own
+  player colours that keeps the rules below. An AI faction is never the
+  players' faction, so none of its players is ever in the battle.
+- **`spent`**, the one colour every army past its list shares.
 
-Subcommander colours are a separate system and still GWO's own. See
-`gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
+`scripts/generate-army-colours.js` (`npm run generate:army-colours`) writes
+that file. Do not edit it by hand. The rules are in
+`scripts/lib/army-colours.js`:
+
+- **Contrast.** A strategic icon draws its symbol in black over the army
+  colour. Every list colour therefore has a WCAG contrast ratio of at least
+  3:1 against black, the threshold WCAG AA sets for graphical objects.
+- **Distance.** Every list colour is at least ΔE00 10 from every army colour
+  it can meet. ΔE00 is CIEDE2000, which measures how different two colours
+  look. The colours it can meet are every faction's players 1 to 12, every
+  faction's lists and spent colour, and The Guardians' white. Players 2 to 6
+  count as the lobby dims them, and players 7 to 12 take the lobby's own
+  colours (a war seats up to 12). An enemy colour need only keep this from
+  other factions' colours.
+- **Colour space.** Each player-side colour sits in its faction's region of
+  CIELCh. Legonis Machina takes hues 175° to 300°, Foundation 300° to 10°,
+  Synchronous 110° to 175°, and Revenants 10° to 110°, each above chroma 20.
+  Cluster takes any hue at chroma 20 or below.
+- **Own nearest.** A player-side colour's nearest army colour is one of its
+  own faction's.
+
+The generator fills all five factions at once. The faction with the fewest
+colours picks next. It always takes the colour nearest its faction colour that
+keeps every rule, and that makes no other faction's colour nearer to it than
+that colour's own. Each faction's last pick, the one furthest from its faction
+colour, becomes its `spent` colour. Each list starts with its colour nearest
+the faction colour. `test/faction_coop_colours.test.js` enforces every rule.
+A change to a faction file or to the rules therefore fails the suite until the
+file is regenerated.
+
+Player colours are the base game's, and keep only a looser bar: no player may
+show a black symbol worse than the lobby's worst colour does, Indigo
+`[75, 0, 130]` (1.62:1). The test checks against the PA install that Indigo is
+still the lobby's worst.
+
+`gw_play/referee_coop.js` provides the ordering for the player side:
 
 - `getOrderedSubcommanders(inventory, game, connectedClients, aiInventories)`
   returns every allied AI commander that draws from the player faction's
-  palette. The list is **in the order the battle config numbers their
+  `allies`. The list is **in the order the battle config numbers their
   colours**: the host's subcommanders first, then each connected viewer's,
   then, under per-player tech, each AI player's in slot order. Order in equals
   order out. Callers that care which colour lands where must therefore pass
@@ -219,9 +246,8 @@ Subcommander colours are a separate system and still GWO's own. See
   fields. The referee's AI files and the Guardians' mods read the same list.
   The war panel and the intelligence panel run without a hire, and leave it
   out, so the AI players' records are read.
-- `alliedColourIndex(position)` returns `position + 1`. Index 0 is reserved for
-  the player, whose army takes the faction's own colour pair rather than a
-  palette entry.
+- `alliedColourIndex(position)` returns `position`. The player-side list holds
+  no player colour, so no entry is reserved.
 
 A star's `ai.ally` is **deliberately absent** from that list. It is numbered
 last, after every subcommander, so that a per-star commander never shifts the
@@ -231,29 +257,23 @@ colour of anything the war panel already shows. Its index is
 Duplicated subcommanders share one colour. That matches how the host's
 duplication tech produces a single army with several commander slots.
 
-`gw_play/commander_colour.js` decides which palette entry lands where. It is
-shared rather than per-caller for a reason: `referee_config_setup.js`, the
-per-player-tech referee, `gwo_panel_view.js` and the intel panel must
-all agree. Otherwise the panel promises a colour the battle does not deliver. It
-orders a palette by `contrastScore`, which is squared RGB distance plus a
-luminance term weighted 16×. The commanders most likely to be confused are
+`gw_play/commander_colour.js` decides which entry lands where, through
+`pickAlly` and `pickEnemy`. It is shared rather than per-caller for a reason:
+`referee_config_setup.js`, the per-player-tech referee, `gwo_panel_view.js`
+and the intel panel must all agree. Otherwise the panel promises a colour the
+battle does not deliver. `setupAIArmy` picks by alliance: alliance 1 is the
+player side, and every other alliance is an enemy. An enemy's primary AI and
+every FFA foe take entry 0, its minions the entries after. Each list keeps its
+first colour, then follows `contrastScore`, which is squared RGB distance plus
+a luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
 
-A strategic icon draws its symbol in black over the army colour, so no palette
-entry, spent-palette colour, or `coopPlayerColors` entry may be darker than
-the base game's lobby allows. The bar is the WCAG contrast ratio against black
-of the lobby colour that shows the symbol worst, Indigo `[75, 0, 130]` (1.62:1).
-`test/faction_coop_colours.test.js` enforces it, and checks against the PA
-install that Indigo is still the lobby's worst.
-
-The palette can run out, and the battle still goes ahead. `pick()` then
-gives the faction's own spent-palette colour, which is not in its palette and is
-at least 30 from every player's colour. It does not use the caller's colour,
-the minion's own:
-every faction's minions carry the faction colour, which is the host's army
-colour. Every Sub Commander past the palette shares that one colour. The
-Guardians keep the caller's colour. So does a faction with no palette, such as
-one a faction mod adds, so its Sub Commanders all take the host's colour.
+A list can run out, and the battle still goes ahead. `pickAlly` and
+`pickEnemy` then give the faction's `spent` colour. They do not use the
+caller's colour, the minion's own: every faction's minions carry the faction
+colour, which is the host's army colour. The Guardians keep the caller's
+colour. So does a faction with no lists, such as one a faction mod adds, so its
+Sub Commanders all take the host's colour.
 
 ## Resolving viewers
 
