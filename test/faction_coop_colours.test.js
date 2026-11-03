@@ -23,6 +23,22 @@ FACTIONS.push(
 );
 const SYNCHRONOUS = 2;
 const MIN_DISTANCE = 30;
+// The base game's lobby Indigo, the colour its picker offers that shows a
+// strategic icon's black symbol worst.
+const DARKEST_LOBBY_COLOUR = [75, 0, 130];
+
+// WCAG contrast ratio against black, the colour of a strategic icon's symbol.
+function contrastWithBlack(colour) {
+  const linear = colour.map((channel) => {
+    const value = channel / 255;
+    return value <= 0.03928
+      ? value / 12.92
+      : Math.pow((value + 0.055) / 1.055, 2.4);
+  });
+  const luminance =
+    0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  return (luminance + 0.05) / 0.05;
+}
 
 const commanderColour = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"
@@ -38,6 +54,13 @@ function subCommanderPalette(faction) {
     palette.push(commanderColour.pick(faction, minion, count)[0]);
   }
   return palette;
+}
+
+// The palette, and the colour every Sub Commander past it shares.
+function withSpentColour(index, faction) {
+  return subCommanderPalette(index).concat([
+    commanderColour.pick(index, faction.minions[0].color, 99)[0],
+  ]);
 }
 
 // The base game's brightness rule for a lobby colour, which the co-op
@@ -142,9 +165,7 @@ describe("shipped faction co-op palettes", () => {
 
       // Euclidean RGB distance: a near-match looks the same in battle.
       it("keeps every Sub Commander colour well away from every player's", () => {
-        const subCommanders = subCommanderPalette(index).concat([
-          commanderColour.pick(index, faction.minions[0].color, 99)[0],
-        ]);
+        const subCommanders = withSpentColour(index, faction);
         const players = faction.coopPlayerColors
           .concat(faction.coopPlayerColors.map(adjusted))
           .concat(LOBBY_PLAYERS[index]);
@@ -161,15 +182,57 @@ describe("shipped faction co-op palettes", () => {
         });
       });
 
+      it("shows black icon symbols on every army at least as well as the lobby does", () => {
+        const floor = contrastWithBlack(DARKEST_LOBBY_COLOUR);
+        withSpentColour(index, faction)
+          .concat(faction.coopPlayerColors.map(adjusted))
+          .forEach((colour) => {
+            assert.ok(
+              contrastWithBlack(colour) >= floor,
+              JSON.stringify(colour)
+            );
+          });
+      });
+
       it("gives no Sub Commander the colour of players 7 to 12", () => {
-        const subCommanders = subCommanderPalette(index).concat([
-          commanderColour.pick(index, faction.minions[0].color, 99)[0],
-        ]);
+        const subCommanders = withSpentColour(index, faction);
         LOBBY_PLAYERS[index].forEach((player) => {
           assert.ok(
             !subCommanders.some((entry) => lodash.isEqual(entry, player)),
             JSON.stringify(player)
           );
+        });
+      });
+    });
+  });
+
+  // An enemy AI of one faction fights the players and Sub Commanders of another.
+  it("keeps every AI colour well away from every other faction's armies", () => {
+    FACTIONS.forEach((faction, index) => {
+      FACTIONS.forEach((other, otherIndex) => {
+        if (otherIndex === index) {
+          return;
+        }
+        const armies = other.coopPlayerColors
+          .concat(other.coopPlayerColors.map(adjusted))
+          .concat(LOBBY_PLAYERS[otherIndex])
+          .concat(withSpentColour(otherIndex, other));
+        withSpentColour(index, faction).forEach((entry) => {
+          armies.forEach((army) => {
+            const [red, green, blue] = entry.map(
+              (channel, i) => channel - army[i]
+            );
+            assert.ok(
+              Math.hypot(red, green, blue) >= MIN_DISTANCE,
+              faction.name +
+                " " +
+                JSON.stringify(entry) +
+                " near " +
+                other.name +
+                " " +
+                JSON.stringify(army)
+            );
+          });
         });
       });
     });
@@ -237,5 +300,23 @@ describe("shipped faction co-op palettes", () => {
         faction.name
       );
     });
+  });
+
+  it("measures icon contrast against the lobby's darkest colour", (t) => {
+    const source = stockFile("server-script/lobby/color_table.js");
+    if (!source) {
+      t.skip("no PA install");
+      return;
+    }
+
+    const exports = {};
+    new Function("require", "exports", source)(
+      (name) => (name === "thirdparty/lodash" ? lodash : console),
+      exports
+    );
+    const [darkest] = exports.data
+      .map((entry) => entry.primary)
+      .sort((a, b) => contrastWithBlack(a) - contrastWithBlack(b));
+    assert.deepEqual(darkest, DARKEST_LOBBY_COLOUR);
   });
 });
