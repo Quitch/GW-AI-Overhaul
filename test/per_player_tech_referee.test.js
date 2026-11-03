@@ -92,7 +92,7 @@ registerModuleStub(MOD + "/gw_play/spec_cache.js", {
   genUnitSpecs: (specs, tag) => io.unitSpecs(specs, tag),
 });
 registerModuleStub(MOD + "/gw_play/commander_colour.js", {
-  pick: () => io.pick(),
+  pickAlly: () => io.pick(),
 });
 registerModuleStub(MOD + "/gw_play/referee_game_file_paths.js", {
   describeError: (error) => String((error && error.message) || error),

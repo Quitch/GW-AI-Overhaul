@@ -63,9 +63,9 @@ function names(subcommanders) {
 const installModel = useModel();
 
 describe("referee_coop.alliedColourIndex", () => {
-  it("reserves palette index 0 for the player", () => {
-    assert.equal(refereeCoop.alliedColourIndex(0), 1);
-    assert.equal(refereeCoop.alliedColourIndex(3), 4);
+  it("gives the first Sub Commander the first player-side colour", () => {
+    assert.equal(refereeCoop.alliedColourIndex(0), 0);
+    assert.equal(refereeCoop.alliedColourIndex(3), 3);
   });
 });
 
@@ -208,9 +208,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     );
   });
 
-  // The star ally is numbered after this list, so in a solo war it still lands on
-  // the palette entry it has always had: one past the player's own subcommanders.
-  it("leaves the solo ally colour index unchanged", () => {
+  // The star ally is numbered after this list, so in a solo war it takes the
+  // player-side colour after the player's own subcommanders.
+  it("numbers the solo ally after the player's Sub Commanders", () => {
     const game = makeGame({ perPlayerTechCards: false });
     const ordered = refereeCoop.getOrderedSubcommanders(hostInventory, game, [
       HOST,
@@ -218,7 +218,7 @@ describe("referee_coop.getOrderedSubcommanders", () => {
 
     assert.equal(
       refereeCoop.alliedColourIndex(ordered.length),
-      hostInventory.minions().length + 1
+      hostInventory.minions().length
     );
   });
 });
