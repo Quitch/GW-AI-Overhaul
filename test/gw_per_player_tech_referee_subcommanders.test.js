@@ -269,7 +269,7 @@ describe("buildViewerSubcommanderArmies", () => {
     );
     assert.deepEqual(
       result.armies[0].color,
-      gwoColour.pick(1, PLAYER_COLOR, refereeCoop.alliedColourIndex(0))
+      gwoColour.pickAlly(1, PLAYER_COLOR, refereeCoop.alliedColourIndex(0))
     );
   });
 });

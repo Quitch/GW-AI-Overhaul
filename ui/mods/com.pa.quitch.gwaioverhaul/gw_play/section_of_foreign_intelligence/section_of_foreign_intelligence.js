@@ -274,7 +274,17 @@
           return {
             name: name,
             color: gwoColour.rgb(
-              gwoColour.pick(factionIndex, commander.color, adjustedIndex)
+              isStarAlly
+                ? gwoColour.pickAlly(
+                    factionIndex,
+                    commander.color,
+                    adjustedIndex
+                  )
+                : gwoColour.pickEnemy(
+                    factionIndex,
+                    commander.color,
+                    adjustedIndex
+                  )
             ),
             character: getCommanderCharacter(commander),
             eco: eco,

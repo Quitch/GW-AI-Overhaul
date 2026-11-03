@@ -98,9 +98,9 @@ define(function () {
 
       // Duplicated subcommanders share one colour, the same way the host's
       // duplication tech produces a single army with several commander slots.
-      var minionColour = params.gwoColour.pick(
+      var minionColour = params.gwoColour.pickAlly(
         params.playerFaction,
-        // pick() falls back to this and reads it to spot The Guardians, so
+        // pickAlly() falls back to this and reads it to spot The Guardians, so
         // even a colourless minion needs a pair.
         minion.color || params.playerColor,
         params.refereeCoop.alliedColourIndex(colourPosition)

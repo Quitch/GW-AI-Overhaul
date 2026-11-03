@@ -108,7 +108,7 @@ describe("setupCoopAiSubcommanders", () => {
     );
     assert.deepEqual(
       army.color,
-      gwoColour.pick(0, PLAYER_COLOUR, refereeCoop.alliedColourIndex(3))
+      gwoColour.pickAlly(0, PLAYER_COLOUR, refereeCoop.alliedColourIndex(3))
     );
   });
 
@@ -129,7 +129,7 @@ describe("setupCoopAiSubcommanders", () => {
     assert.deepEqual(
       armies.map((army) => army.color),
       [2, 3, 4].map((position) =>
-        gwoColour.pick(
+        gwoColour.pickAlly(
           0,
           PLAYER_COLOUR,
           refereeCoop.alliedColourIndex(position)
@@ -349,7 +349,7 @@ describe("referee_config.js with co-op AI players", () => {
 
     assert.deepEqual(
       colourOf("Alpha"),
-      gwoColour.pick(
+      gwoColour.pickAlly(
         DEFAULT_FACTION,
         playerColor,
         refereeCoop.alliedColourIndex(0)
@@ -357,7 +357,7 @@ describe("referee_config.js with co-op AI players", () => {
     );
     assert.deepEqual(
       colourOf("Ally"),
-      gwoColour.pick(
+      gwoColour.pickAlly(
         DEFAULT_FACTION,
         playerColor,
         refereeCoop.alliedColourIndex(1)

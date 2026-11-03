@@ -179,7 +179,7 @@ define([
       return {
         name: subcommanderName,
         color: gwoColour.rgb(
-          gwoColour.pick(
+          gwoColour.pickAlly(
             factionIndex,
             subcommander.color,
             gwoRefereeCoop.alliedColourIndex(index)

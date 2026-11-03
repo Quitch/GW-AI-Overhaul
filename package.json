@@ -23,6 +23,7 @@
     "validate:queller-maps": "node scripts/validate-queller-maps.js",
     "harvest:race-specs": "node scripts/harvest-race-specs.js",
     "generate:race-tables": "node scripts/generate-race-tables.js",
+    "generate:army-colours": "node scripts/generate-army-colours.js",
     "harvest:unit-types": "node scripts/harvest-unit-types.js",
     "minify:json": "node scripts/minify-json.js",
     "release": "node scripts/release.js",

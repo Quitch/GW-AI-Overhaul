@@ -481,7 +481,10 @@ describe("commanderList", () => {
     const [, first, second] = scene.list("Human");
 
     assert.equal(first.name, "Sub");
-    assert.equal(first.color, gwoColour.rgb(gwoColour.pick(4, sub.color, 1)));
+    assert.equal(
+      first.color,
+      gwoColour.rgb(gwoColour.pickAlly(4, sub.color, 0))
+    );
     assert.equal(first.character, "!LOC:Tactician");
     assert.equal(first.iconFill, icon("legion").fill);
     assert.equal(second.color, "rgb(255,255,255)");
@@ -519,7 +522,7 @@ describe("commanderList", () => {
     assert.deepEqual(_.pluck(subs, "name"), ["Host Sub", "Viewer Sub"]);
     assert.equal(
       subs[1].color,
-      gwoColour.rgb(gwoColour.pick(0, HOST_COLOUR, 2))
+      gwoColour.rgb(gwoColour.pickAlly(0, HOST_COLOUR, 1))
     );
   });
 });
