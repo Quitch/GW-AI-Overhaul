@@ -222,9 +222,11 @@ colours picks next. It always takes the colour nearest its faction colour that
 keeps every rule, and that makes no other faction's colour nearer to it than
 that colour's own. Each faction's last pick, the one furthest from its faction
 colour, becomes its `spent` colour. Each list starts with its colour nearest
-the faction colour. `test/faction_coop_colours.test.js` enforces every rule.
-A change to a faction file or to the rules therefore fails the suite until the
-file is regenerated.
+the faction colour. `test/faction_coop_colours.test.js` checks the committed
+file against every rule, so a faction-file change that breaks one fails the
+suite. It does not rerun the generator. After changing a faction file or the
+rules, run `npm run generate:army-colours`, then
+`node scripts/generate-army-colours.js --check` to confirm the file is current.
 
 Player colours are the base game's, and keep only a looser bar: no player may
 show a black symbol worse than the lobby's worst colour does, Indigo

@@ -1,7 +1,7 @@
 "use strict";
 
-// Colour maths and fixed inputs for the army palettes in
-// gw_play/commander_colour.js, shared by test/faction_coop_colours.test.js and
+// Colour maths and fixed inputs for the army colour lists in
+// gw_play/army_colours.js, shared by test/faction_coop_colours.test.js and
 // scripts/generate-army-colours.js. See coop.md, "Colour allocation".
 
 const { loadCouiModule } = require("./amd-loader.js");

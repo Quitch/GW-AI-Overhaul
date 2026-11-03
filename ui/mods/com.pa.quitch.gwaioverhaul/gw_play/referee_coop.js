@@ -140,7 +140,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   // The player-side list holds no player colour, so nothing is reserved:
-  // the first Sub Commander takes its first entry.
+  // the first Sub Commander takes its first entry. Kept as the one place that
+  // maps a position to an entry, so the battle and the panels cannot drift.
   var alliedColourIndex = function (position) {
     return position;
   };

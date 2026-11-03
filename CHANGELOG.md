@@ -9,7 +9,7 @@
 
 ### Changed
 
-- An enemy faction's AI commanders take that faction's own player colours first, so its main commander usually takes the faction colour
+- An enemy faction's AI commanders can take that faction's own player colours, and its main commander usually takes the faction colour
 - Each faction's Sub Commanders and AI commanders take colours from that faction's own range
 
 ## v7.9.1 - 2026-10-28

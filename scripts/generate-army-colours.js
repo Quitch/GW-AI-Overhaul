@@ -2,13 +2,14 @@
 
 // Rewrites gw_play/army_colours.js, every faction's Sub Commander, enemy, and
 // spent-palette colours, from the faction files and the rules in
-// scripts/lib/army-colours.js. Takes about a minute. `--check` writes nothing
+// scripts/lib/army-colours.js. Takes about 20 seconds. `--check` writes nothing
 // and exits 1 when the file would change. See coop.md, "Colour allocation".
 
 const fs = require("node:fs");
 const path = require("node:path");
 const prettier = require("prettier");
 const colours = require("./lib/army-colours.js");
+const { writeText } = require("./lib/write-text.js");
 
 const OUTPUT = path.join(
   __dirname,
@@ -136,21 +137,34 @@ for (;;) {
 }
 
 // A faction's own player colours an enemy AI of it can take: each that keeps
-// the palette's rules against every other faction's colours.
+// the palette's rules against every other faction's colours, the player
+// colours earlier factions' enemies took included.
+const enemyExtras = [];
 function enemyPlayerColours(faction, index) {
-  return [faction.color[0]]
+  const kept = [faction.color[0]]
     .concat(faction.coopPlayerColors.slice(1))
     .filter((colour) => {
       if (colours.contrastWithBlack(colour) < colours.MIN_CONTRAST) {
         return false;
       }
       const lab = colours.lab(colour);
-      return placed.every(
-        (entry) =>
-          (entry.faction === index && !entry.pick) ||
-          colours.deltaE00(lab, entry.lab) >= colours.MIN_DELTA_E
-      );
+      return placed
+        .concat(enemyExtras)
+        .every(
+          (entry) =>
+            (entry.faction === index && !entry.pick) ||
+            colours.deltaE00(lab, entry.lab) >= colours.MIN_DELTA_E
+        );
     });
+  kept.forEach((colour) => {
+    enemyExtras.push({
+      colour,
+      lab: colours.lab(colour),
+      faction: index,
+      pick: true,
+    });
+  });
+  return kept;
 }
 
 function nearestToFactionFirst(list, index) {
@@ -165,6 +179,14 @@ function nearestToFactionFirst(list, index) {
 }
 
 const data = factions.map((faction, index) => {
+  if (picks[index].length < 2) {
+    throw new Error(
+      faction.name +
+        " has " +
+        picks[index].length +
+        " colours: too few for a list and a spent colour. Loosen the rules."
+    );
+  }
   // The last pick, the one furthest from the faction colour, is the colour
   // every army past the palette shares.
   const allies = picks[index].slice(0, -1);
@@ -206,8 +228,11 @@ async function main() {
     ...options,
     filepath: OUTPUT,
   });
-  const current = fs.existsSync(OUTPUT) ? fs.readFileSync(OUTPUT, "utf8") : "";
-  const changed = formatted !== current;
+  const lf = (text) => text.replace(/\r\n/g, "\n");
+  const current = fs.existsSync(OUTPUT)
+    ? lf(fs.readFileSync(OUTPUT, "utf8"))
+    : "";
+  const changed = lf(formatted) !== current;
   if (process.argv.includes("--check")) {
     console.log(
       "generate-army-colours: " + (changed ? "out of date" : "up to date")
@@ -216,7 +241,7 @@ async function main() {
     return;
   }
   if (changed) {
-    fs.writeFileSync(OUTPUT, formatted);
+    writeText(OUTPUT, formatted);
   }
   data.forEach((entry) => {
     console.log(

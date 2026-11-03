@@ -97,8 +97,9 @@ define([
       return pickFrom("allies", faction, minionColour, count);
     },
 
-    // An enemy faction's armies, which lead with its own player colours: no
-    // player of an AI faction is ever in the battle.
+    // An enemy faction's armies, which may also take its own player colours,
+    // as no player of an AI faction is ever in the battle. Entry 0 is the
+    // colour nearest the faction colour, usually the faction colour itself.
     enemySize: function (faction) {
       return sizeOf("enemies", faction);
     },

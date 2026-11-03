@@ -83,10 +83,10 @@ define([
   return {
     name: factionName,
     color: factionColour,
-    // Human co-op armies. Neither these nor the lobby colours players 7 to 12
-    // take share an entry with the Cluster palette or its spent-palette colour
-    // in gw_play/commander_colour.js, so a player is never the colour of one of
-    // their own Sub Commanders. See coop.md.
+    // Human co-op armies. No player-side colour or spent colour in
+    // gw_play/army_colours.js comes near these or the lobby colours players 7
+    // to 12 take, so a player never looks like one of their own Sub
+    // Commanders. See coop.md.
     coopPlayerColors: [
       factionColour[0],
       [215, 215, 215],
