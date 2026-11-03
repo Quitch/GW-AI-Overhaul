@@ -56,6 +56,13 @@ function subCommanderPalette(faction) {
   return palette;
 }
 
+// The palette, and the colour every Sub Commander past it shares.
+function withSpentColour(index, faction) {
+  return subCommanderPalette(index).concat([
+    commanderColour.pick(index, faction.minions[0].color, 99)[0],
+  ]);
+}
+
 // The base game's brightness rule for a lobby colour, which the co-op
 // resolver applies to every palette entry.
 function adjusted(colour) {
@@ -158,9 +165,7 @@ describe("shipped faction co-op palettes", () => {
 
       // Euclidean RGB distance: a near-match looks the same in battle.
       it("keeps every Sub Commander colour well away from every player's", () => {
-        const subCommanders = subCommanderPalette(index).concat([
-          commanderColour.pick(index, faction.minions[0].color, 99)[0],
-        ]);
+        const subCommanders = withSpentColour(index, faction);
         const players = faction.coopPlayerColors
           .concat(faction.coopPlayerColors.map(adjusted))
           .concat(LOBBY_PLAYERS[index]);
@@ -179,10 +184,7 @@ describe("shipped faction co-op palettes", () => {
 
       it("shows black icon symbols on every army at least as well as the lobby does", () => {
         const floor = contrastWithBlack(DARKEST_LOBBY_COLOUR);
-        subCommanderPalette(index)
-          .concat([
-            commanderColour.pick(index, faction.minions[0].color, 99)[0],
-          ])
+        withSpentColour(index, faction)
           .concat(faction.coopPlayerColors.map(adjusted))
           .forEach((colour) => {
             assert.ok(
@@ -193,9 +195,7 @@ describe("shipped faction co-op palettes", () => {
       });
 
       it("gives no Sub Commander the colour of players 7 to 12", () => {
-        const subCommanders = subCommanderPalette(index).concat([
-          commanderColour.pick(index, faction.minions[0].color, 99)[0],
-        ]);
+        const subCommanders = withSpentColour(index, faction);
         LOBBY_PLAYERS[index].forEach((player) => {
           assert.ok(
             !subCommanders.some((entry) => lodash.isEqual(entry, player)),
