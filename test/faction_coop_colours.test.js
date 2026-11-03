@@ -23,6 +23,22 @@ FACTIONS.push(
 );
 const SYNCHRONOUS = 2;
 const MIN_DISTANCE = 30;
+// The base game's lobby Indigo, the colour its picker offers that shows a
+// strategic icon's black symbol worst.
+const DARKEST_LOBBY_COLOUR = [75, 0, 130];
+
+// WCAG contrast ratio against black, the colour of a strategic icon's symbol.
+function contrastWithBlack(colour) {
+  const linear = colour.map((channel) => {
+    const value = channel / 255;
+    return value <= 0.03928
+      ? value / 12.92
+      : Math.pow((value + 0.055) / 1.055, 2.4);
+  });
+  const luminance =
+    0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  return (luminance + 0.05) / 0.05;
+}
 
 const commanderColour = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"
@@ -161,6 +177,21 @@ describe("shipped faction co-op palettes", () => {
         });
       });
 
+      it("shows black icon symbols on every army at least as well as the lobby does", () => {
+        const floor = contrastWithBlack(DARKEST_LOBBY_COLOUR);
+        subCommanderPalette(index)
+          .concat([
+            commanderColour.pick(index, faction.minions[0].color, 99)[0],
+          ])
+          .concat(faction.coopPlayerColors.map(adjusted))
+          .forEach((colour) => {
+            assert.ok(
+              contrastWithBlack(colour) >= floor,
+              JSON.stringify(colour)
+            );
+          });
+      });
+
       it("gives no Sub Commander the colour of players 7 to 12", () => {
         const subCommanders = subCommanderPalette(index).concat([
           commanderColour.pick(index, faction.minions[0].color, 99)[0],
@@ -237,5 +268,23 @@ describe("shipped faction co-op palettes", () => {
         faction.name
       );
     });
+  });
+
+  it("measures icon contrast against the lobby's darkest colour", (t) => {
+    const source = stockFile("server-script/lobby/color_table.js");
+    if (!source) {
+      t.skip("no PA install");
+      return;
+    }
+
+    const exports = {};
+    new Function("require", "exports", source)(
+      (name) => (name === "thirdparty/lodash" ? lodash : console),
+      exports
+    );
+    const [darkest] = exports.data
+      .map((entry) => entry.primary)
+      .sort((a, b) => contrastWithBlack(a) - contrastWithBlack(b));
+    assert.deepEqual(darkest, DARKEST_LOBBY_COLOUR);
   });
 });

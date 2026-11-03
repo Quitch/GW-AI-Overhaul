@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Cluster Sub Commanders and Cluster AI commanders no longer take colours too dark to see the symbols on their strategic icons
+
 ## v7.9.1 - 2026-10-28
 
 ### Changed

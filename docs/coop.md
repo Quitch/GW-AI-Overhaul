@@ -233,6 +233,13 @@ orders a palette by `contrastScore`, which is squared RGB distance plus a
 luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
 
+A strategic icon draws its symbol in black over the army colour, so no palette
+entry, spent-palette colour, or `coopPlayerColors` entry may be darker than
+the base game's lobby allows. The bar is the WCAG contrast ratio against black
+of the lobby colour that shows the symbol worst, Indigo `[75, 0, 130]` (1.62:1).
+`test/faction_coop_colours.test.js` enforces it, and checks against the PA
+install that Indigo is still the lobby's worst.
+
 The palette can run out, and the battle still goes ahead. `pick()` then
 gives the faction's own spent-palette colour, which is not in its palette and is
 at least 30 from every player's colour. It does not use the caller's colour,
