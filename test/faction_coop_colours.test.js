@@ -206,6 +206,38 @@ describe("shipped faction co-op palettes", () => {
     });
   });
 
+  // An enemy AI of one faction fights the players and Sub Commanders of another.
+  it("keeps every AI colour well away from every other faction's armies", () => {
+    FACTIONS.forEach((faction, index) => {
+      FACTIONS.forEach((other, otherIndex) => {
+        if (otherIndex === index) {
+          return;
+        }
+        const armies = other.coopPlayerColors
+          .concat(other.coopPlayerColors.map(adjusted))
+          .concat(LOBBY_PLAYERS[otherIndex])
+          .concat(withSpentColour(otherIndex, other));
+        withSpentColour(index, faction).forEach((entry) => {
+          armies.forEach((army) => {
+            const [red, green, blue] = entry.map(
+              (channel, i) => channel - army[i]
+            );
+            assert.ok(
+              Math.hypot(red, green, blue) >= MIN_DISTANCE,
+              faction.name +
+                " " +
+                JSON.stringify(entry) +
+                " near " +
+                other.name +
+                " " +
+                JSON.stringify(army)
+            );
+          });
+        });
+      });
+    });
+  });
+
   it("gives Synchronous players greens, as its faction colour is", () => {
     FACTIONS[SYNCHRONOUS].coopPlayerColors.forEach((colour) => {
       const [red, green, blue] = colour;

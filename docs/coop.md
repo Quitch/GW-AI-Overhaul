@@ -197,6 +197,12 @@ Revenants each replace the one stock entry that broke this rule. Synchronous
 takes greens of GWO's own in place of stock's oranges, since its faction colour
 is GWO's green.
 
+The same 30 holds across factions. An enemy AI draws its colours from its own
+faction's palette, and it can fight another faction's players and Sub
+Commanders. So every palette entry and spent-palette colour is also at least 30
+from every army colour of every other faction: its players (players 7 to 12
+included), its palette, and its spent-palette colour.
+
 Subcommander colours are a separate system and still GWO's own. See
 `gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 

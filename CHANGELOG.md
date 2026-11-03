@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Cluster Sub Commanders and Cluster AI commanders no longer take colours whose contrast with the black symbols on their strategic icons is worse than any colour the stock game offers
+- Sub Commanders and AI commanders no longer take a colour that looks like one an army of another faction can have
 
 ## v7.9.1 - 2026-10-28
 
