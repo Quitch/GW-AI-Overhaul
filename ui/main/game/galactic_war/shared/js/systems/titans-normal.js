@@ -1,4 +1,5 @@
-// GWO - change the Players arrays and add classic systems.
+// GWO - change the Players arrays, add classic systems, and add a flat system
+// to each group.
 // template-loader.js takes the first group whose range holds the army count, so
 // these must not overlap and their order is load-bearing.
 define([
@@ -31,6 +32,9 @@ define([
         },
         {
           Planets: [gwoPlanets.planet8],
+        },
+        {
+          Planets: [gwoPlanets.planet55],
         },
       ],
     },
@@ -70,6 +74,9 @@ define([
         },
         {
           Planets: [gwoPlanets.planet18, gwoPlanets.planet12],
+        },
+        {
+          Planets: [gwoPlanets.planet56],
         },
       ],
     },
@@ -122,6 +129,9 @@ define([
             gwoPlanets.planet41,
           ],
         },
+        {
+          Planets: [gwoPlanets.planet57],
+        },
       ],
     },
     {
@@ -171,6 +181,9 @@ define([
             gwoPlanets.planet37,
             gwoPlanets.planet38,
           ],
+        },
+        {
+          Planets: [gwoPlanets.planet58],
         },
       ],
     },

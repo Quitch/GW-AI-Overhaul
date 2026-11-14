@@ -638,3 +638,35 @@ describe("bracketsFrom - pool order independence", () => {
     );
   });
 });
+
+describe("bracketsFrom - flat planets", () => {
+  function flat(name) {
+    const system = sys(name, { zoneCount: 2 });
+    system.planets.push({
+      generator: { biome: "earth", shape: "flat", width: 2000, length: 1500 },
+    });
+    return system;
+  }
+
+  it("drops a system with a flat planet without the flag, naming it", () => {
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom([sys("keep", { zoneCount: 2 }), flat("slab-map")])
+    );
+    assert.equal(run.warnings.length, 1);
+    assert.match(run.warnings[0], /slab-map/);
+    assert.match(run.warnings[0], /--flat-maps/);
+    assert.deepEqual(names(run.result[0].systems), ["keep"]);
+  });
+
+  it("keeps it with the flag", () => {
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom(
+        [sys("keep", { zoneCount: 2 }), flat("slab-map")],
+        {},
+        true
+      )
+    );
+    assert.deepEqual(run.warnings, []);
+    assert.deepEqual(names(run.result[0].systems), ["keep", "slab-map"]);
+  });
+});

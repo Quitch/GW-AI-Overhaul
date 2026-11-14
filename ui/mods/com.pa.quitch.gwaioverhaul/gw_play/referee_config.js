@@ -7,7 +7,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
-], function (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams, gwoBiomes) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
+], function (
+  gwoAI,
+  gwoCards,
+  refereeCoop,
+  configSetup,
+  gwoStreams,
+  gwoBiomes,
+  gwoFlatPlanets
+) {
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
@@ -40,6 +49,22 @@ define([
     return planets;
   };
 
+  // A war made with --flat-maps, fought without it. See galaxy.md, "Flat
+  // planets".
+  var spherePlanets = function (planets, systemName) {
+    _.forEach(planets, function (planet) {
+      if (gwoFlatPlanets.planetIsFlat(planet)) {
+        console.warn(
+          "gwoRefereeConfig: '" +
+            systemName +
+            "' has a flat planet, which needs the game launched with --flat-maps; fighting it as a sphere of the same area instead"
+        );
+        gwoFlatPlanets.toSphere(planet);
+      }
+    });
+    return planets;
+  };
+
   var glassPlanets = function (planets) {
     var unglassableBiome = ["moon", "asteroid", "gas", "metal"];
     _.forEach(planets, function (planet) {
@@ -61,7 +86,14 @@ define([
     return planets;
   };
 
-  var modifyPlanets = function (inventory, planets, game, systemName, served) {
+  var modifyPlanets = function (
+    inventory,
+    planets,
+    game,
+    systemName,
+    served,
+    flatMaps
+  ) {
     var canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
@@ -72,6 +104,9 @@ define([
       gwoCards.anyPlayerHasCard(inventory, "gwaio_start_naval", game);
 
     planets = loadablePlanets(planets, systemName, served);
+    if (!flatMaps) {
+      planets = spherePlanets(planets, systemName);
+    }
     if (canGlassPlanets) {
       planets = glassPlanets(planets);
     }
@@ -162,7 +197,8 @@ define([
       battleSystem.planets,
       game,
       battleSystem.name,
-      self.biomeServed
+      self.biomeServed,
+      self.flatMaps
     );
 
     var config = {

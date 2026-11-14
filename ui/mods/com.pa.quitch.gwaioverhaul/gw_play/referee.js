@@ -31,6 +31,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
       ],
       function (
         GW,
@@ -46,7 +47,8 @@
         coopAiRoster,
         refereeCoop,
         raceCells,
-        launchHires
+        launchHires,
+        gwoFlatPlanets
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
@@ -234,6 +236,13 @@
               },
               _.bind(gwoGenerateAI, ref),
               _.bind(gwoGenerateBiomes, ref),
+              // Without the flag, the server refuses a flat planet. See
+              // galaxy.md, "Flat planets".
+              function () {
+                return gwoFlatPlanets.enabled().then(function (flatMaps) {
+                  ref.flatMaps = flatMaps;
+                });
+              },
               function () {
                 ref.stage("!LOC:Processing game config");
               },
