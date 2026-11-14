@@ -23,11 +23,18 @@ define([
     return !!generator && generator.shape === "flat";
   };
 
-  var planetIsFlat = function (planet) {
+  // What gw_start/gwo_system_templates.js makes a slab.
+  var templateIsFlat = function (planet) {
     return (
       !!planet &&
-      (planet.Shape === "flat" || isFlat(gwoBiomes.generatorOf(planet)))
+      planet.Shape === "flat" &&
+      _.isArray(planet.Width) &&
+      _.isArray(planet.Length)
     );
+  };
+
+  var planetIsFlat = function (planet) {
+    return templateIsFlat(planet) || isFlat(gwoBiomes.generatorOf(planet));
   };
 
   var systemHasFlat = function (system) {
@@ -122,6 +129,7 @@ define([
 
   return {
     isFlat: isFlat,
+    templateIsFlat: templateIsFlat,
     planetIsFlat: planetIsFlat,
     systemHasFlat: systemHasFlat,
     footprint: footprint,

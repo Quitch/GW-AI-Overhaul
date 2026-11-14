@@ -52,10 +52,24 @@ describe("isFlat", () => {
   });
 });
 
+describe("templateIsFlat", () => {
+  it("needs a Shape of flat and both side ranges, as the converter does", () => {
+    const slab = { Shape: "flat", Width: [1, 2], Length: [3, 4] };
+    assert.equal(flatPlanets.templateIsFlat(slab), true);
+    assert.equal(
+      flatPlanets.templateIsFlat({ Shape: "flat", Width: [1, 2] }),
+      false
+    );
+    assert.equal(flatPlanets.templateIsFlat({ Radius: [400, 500] }), false);
+    assert.equal(flatPlanets.templateIsFlat(undefined), false);
+  });
+});
+
 describe("planetIsFlat", () => {
-  it("reads a template planet's Shape", () => {
-    assert.equal(flatPlanets.planetIsFlat({ Shape: "flat" }), true);
-    assert.equal(flatPlanets.planetIsFlat({ Radius: [400, 500] }), false);
+  it("reads a template planet", () => {
+    const slab = { Shape: "flat", Width: [1, 2], Length: [3, 4] };
+    assert.equal(flatPlanets.planetIsFlat(slab), true);
+    assert.equal(flatPlanets.planetIsFlat({ Shape: "flat" }), false);
   });
 
   it("reads a planet's generator", () => {
@@ -90,7 +104,10 @@ describe("systemHasFlat", () => {
   it("finds a flat planet in a template system", () => {
     assert.equal(
       flatPlanets.systemHasFlat({
-        Planets: [{ Radius: [1, 2] }, { Shape: "flat" }],
+        Planets: [
+          { Radius: [1, 2] },
+          { Shape: "flat", Width: [1, 2], Length: [3, 4] },
+        ],
       }),
       true
     );

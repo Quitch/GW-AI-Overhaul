@@ -201,10 +201,11 @@ define([
 
         // GWO - a server without --flat-maps refuses a flat planet. Filtered
         // before the draw, and _.reject keeps order, so flag-off picks hold.
+        // A group of only flat systems keeps them, drawn as spheres below.
         var systems = config.gwoFlatMaps
           ? starSystemTempl.Systems
           : _.reject(starSystemTempl.Systems, gwoFlatPlanets.systemHasFlat);
-        if (!systems.length) return $.when(null); // GWO
+        if (!systems.length) systems = starSystemTempl.Systems; // GWO
 
         // we have found a star system group for this number of players. Choose a random system template
         var idx = getRandomInt(0, systems.length - 1); // GWO - was starSystemTempl.Systems
@@ -443,12 +444,7 @@ define([
           bp.starting_planet = plnt.starting_planet;
           // GWO - a slab. The last draws on this planet's stream, so no
           // sphere's values move.
-          if (
-            config.gwoFlatMaps &&
-            plnt.Shape === "flat" &&
-            _.isArray(plnt.Width) &&
-            _.isArray(plnt.Length)
-          ) {
+          if (config.gwoFlatMaps && gwoFlatPlanets.templateIsFlat(plnt)) {
             bp.generator.shape = "flat";
             bp.generator.width = planetRng.int(plnt.Width[0], plnt.Width[1]);
             bp.generator.length = planetRng.int(plnt.Length[0], plnt.Length[1]);

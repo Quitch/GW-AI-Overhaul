@@ -734,8 +734,10 @@ describe("gwo_system_templates flat planets", () => {
     assert.equal(forwards.planets[0].generator.shape, "flat");
   });
 
-  it("gives no system from a group of only flat systems without the flag", async () => {
-    assert.equal(await generate(loader(), { players: 33, seed: "f1" }), null);
+  it("draws a group of only flat systems as spheres without the flag", async () => {
+    const sphere = await generate(loader(), { players: 33, seed: "f1" });
+    assert.equal(sphere.planets.length, 1);
+    assert.deepEqual(flatOf(sphere), []);
     const system = await generate(loader(), {
       players: 33,
       seed: "f1",

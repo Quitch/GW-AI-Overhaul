@@ -592,7 +592,7 @@ or slow one (5 s), or any value but `true` reads as off.
 **Filtered before the draw.** With the flag off, `generate()` drops the flat
 systems from the group before it draws the system index. `_.reject` keeps order,
 so a war made without the flag is the one it was before flat planets existed. A
-group that holds only flat systems gives no system, as stock does for no template.
+group that holds only flat systems keeps them, and they are drawn as spheres.
 
 **Shared Systems for Galactic War.** With the flag off, `bracketsFrom` drops a
 system with a flat planet from the pool and warns. If that empties the pool,
