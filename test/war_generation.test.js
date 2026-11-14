@@ -205,8 +205,8 @@ function makeModules(war) {
     },
     gwoVersion: "9.9.9",
     gwoSystemBrackets: {
-      bracketsFrom: (systems, providers) => {
-        war.pools.push({ systems, providers });
+      bracketsFrom: (systems, providers, flatMaps) => {
+        war.pools.push({ systems, providers, flatMaps });
         const kept = systems.filter((system) => !system.unusable);
         return kept.length ? [{ min: 0, max: 32, systems: kept }] : [];
       },
@@ -228,6 +228,7 @@ function makeModules(war) {
     },
     gwoPromise: gwoPromise,
     generationFailure: generationFailure,
+    gwoFlatPlanets: { enabled: () => war.flatMaps() },
   };
 }
 
@@ -347,6 +348,7 @@ function makeWar() {
   // Stamped with its id, as setup.js stamps each loaded card.
   war.cards = { [START_CARD]: { id: START_CARD, ...dealingCard(war) } };
   war.loadOptions = () => war.$.Deferred().resolve(war.options).promise();
+  war.flatMaps = () => war.$.Deferred().resolve(false).promise();
   war.options = [
     { name: "Uber", load: () => war.$.Deferred().resolve([usable]).promise() },
   ];
@@ -1899,5 +1901,62 @@ describe("the star systems", () => {
       /^System sources failed to load: Error: no list/
     );
     failsWithSourcesMessage(war);
+  });
+});
+
+describe("the --flat-maps flag", () => {
+  const withSharedSystems = () => {
+    const war = makeWar();
+    war.sharedSystems = true;
+    return war;
+  };
+
+  it("is off for the build and the brackets when the engine says so", () => {
+    const war = withSharedSystems();
+
+    war.start();
+
+    assert.equal(war.builds[0].gwoFlatMaps, false);
+    assert.equal(war.pools[0].flatMaps, false);
+  });
+
+  it("reaches the build and the brackets when on", () => {
+    const war = withSharedSystems();
+    war.flatMaps = () => war.$.Deferred().resolve(true).promise();
+
+    war.start();
+
+    assert.equal(war.builds[0].gwoFlatMaps, true);
+    assert.equal(war.pools[0].flatMaps, true);
+  });
+
+  it("is read before any system is drawn", () => {
+    const war = withSharedSystems();
+    const flag = war.$.Deferred();
+    war.flatMaps = () => flag.promise();
+
+    war.start();
+    assert.deepEqual(war.pools, []);
+    assert.equal(war.builds.length, 0);
+
+    flag.resolve(true);
+    assert.equal(war.builds[0].gwoFlatMaps, true);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("fails the war, not hangs it, when reading it throws", () => {
+    const war = makeWar();
+    war.flatMaps = () => {
+      throw new Error("no flag");
+    };
+
+    war.start();
+
+    assert.equal(war.builds.length, 0);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.generatingWar(), false);
+    assert.ok(
+      war.errors.includes("Failed to generate valid war: Error: no flag")
+    );
   });
 });

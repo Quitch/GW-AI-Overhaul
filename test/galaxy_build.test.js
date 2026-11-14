@@ -221,6 +221,30 @@ describe("build", () => {
       [earthlike, earthlike, earthlike]
     );
   });
+
+  it("hands each star's generate() the --flat-maps flag", async () => {
+    installFakeJQuery(stubs);
+    installSettings();
+    const configs = [];
+    makeLoader = () => ({
+      generate: (config) => {
+        configs.push(config);
+        return resolved(earthlike);
+      },
+    });
+    const galaxy = makeGalaxy();
+
+    await GWGalaxy.prototype.build.call(galaxy, {
+      seed: 1,
+      content: "PAExpansion1",
+      useEasierSystemTemplate: false,
+      gwoFlatMaps: true,
+    });
+
+    assert.deepEqual(loaderCalls, [["PAExpansion1", false]]);
+    assert.equal(configs.length, 3);
+    assert.ok(configs.every((config) => config.gwoFlatMaps === true));
+  });
 });
 
 describe("buildGraph", () => {

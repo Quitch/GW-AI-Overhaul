@@ -239,6 +239,7 @@ define([
         StarSystemTemplates.generate({
           players: systemSizeFor(star, index),
           seed: rng.stream("star", index).int(0, 2147483647),
+          gwoFlatMaps: config.gwoFlatMaps,
         })
       );
     });

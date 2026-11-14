@@ -155,6 +155,14 @@ const generated = (biomes, extra) =>
     extra
   );
 
+const FLAT_PLANET = generated(["earth", "desert", "tropical"], {
+  starting_planet: true,
+  Radius: [400, 400],
+  Shape: "flat",
+  Width: [1600, 1700],
+  Length: [1175, 1275],
+});
+
 // Pools a system draws planets from by reference. The container that tracks
 // which entries are spent is keyed by the pool object itself, so two slots
 // pointing at the same pool must not draw the same entry.
@@ -272,6 +280,27 @@ TEMPLATES.push(
         ],
       },
     ],
+  },
+  // [29, 30] is [31, 32] plus a flat system, so with the flag off the two
+  // must draw alike.
+  {
+    Players: [29, 30],
+    Systems: [
+      { Planets: [generated(["earth", "moon"]), SECOND_PLANET] },
+      { Planets: [generated(["lava", "desert"])] },
+      { Planets: [FLAT_PLANET] },
+    ],
+  },
+  {
+    Players: [31, 32],
+    Systems: [
+      { Planets: [generated(["earth", "moon"]), SECOND_PLANET] },
+      { Planets: [generated(["lava", "desert"])] },
+    ],
+  },
+  {
+    Players: [33, 34],
+    Systems: [{ Planets: [FLAT_PLANET] }],
   },
   // Last on purpose: it is what a player count matching no template falls back to.
   {
@@ -630,5 +659,101 @@ describe("gwo_system_templates template selection", () => {
       template: { Planets: [generated(["ice"])] },
     });
     assert.match(system.name, /^PA-\d+$/);
+  });
+});
+
+describe("gwo_system_templates flat planets", () => {
+  const loader = () => templates.chooseFor(undefined, "PAExpansion1", false);
+  const SEEDS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"];
+  const flatOf = (system) =>
+    system.planets.filter((planet) => planet.generator.shape === "flat");
+
+  // Filtering before the index draw keeps every flag-off war as it was.
+  it("draws without the flag as if the flat system were not there", async () => {
+    for (const seed of SEEDS) {
+      const withFlat = await generate(loader(), { players: 29, seed: seed });
+      const twin = await generate(loader(), { players: 31, seed: seed });
+      assert.equal(shape(withFlat), shape(twin), seed);
+      assert.deepEqual(flatOf(withFlat), []);
+    }
+  });
+
+  it("draws flat planets, sides in range and whole, with the flag", async () => {
+    const flat = [];
+    for (const seed of SEEDS) {
+      const system = await generate(loader(), {
+        players: 29,
+        seed: seed,
+        gwoFlatMaps: true,
+      });
+      flat.push(...flatOf(system));
+    }
+
+    assert.ok(flat.length > 0, "no seed drew the flat system");
+    for (const planet of flat) {
+      const generator = planet.generator;
+      assert.ok(Number.isInteger(generator.width));
+      assert.ok(Number.isInteger(generator.length));
+      assert.ok(generator.width >= 1600 && generator.width <= 1700);
+      assert.ok(generator.length >= 1175 && generator.length <= 1275);
+      assert.equal(generator.flatSymmetry, undefined);
+      assert.equal(planet.starting_planet, true);
+    }
+  });
+
+  // The sides are the planet's last draws, so nothing else on it moves.
+  it("gives every other value the same draw with the flag as without", async () => {
+    const template = { Planets: [SECOND_PLANET, FLAT_PLANET] };
+    for (const seed of SEEDS) {
+      const off = await generate(loader(), { players: 2, seed, template });
+      const on = await generate(loader(), {
+        players: 2,
+        seed,
+        template,
+        gwoFlatMaps: true,
+      });
+      const slab = on.planets[1].generator;
+      assert.equal(slab.shape, "flat");
+      delete slab.shape;
+      delete slab.width;
+      delete slab.length;
+      assert.equal(shape(on), shape(off), seed);
+    }
+  });
+
+  it("is unaffected by the order the fetches resolve in", async () => {
+    const config = {
+      players: 2,
+      seed: "flat-order",
+      template: { Planets: [FLAT_PLANET, SECOND_PLANET] },
+      gwoFlatMaps: true,
+    };
+    const forwards = await generate(loader(), config);
+    const backwards = await generate(loader(), config, { reverse: true });
+    assert.equal(shape(forwards), shape(backwards));
+    assert.equal(forwards.planets[0].generator.shape, "flat");
+  });
+
+  it("gives no system from a group of only flat systems without the flag", async () => {
+    assert.equal(await generate(loader(), { players: 33, seed: "f1" }), null);
+    const system = await generate(loader(), {
+      players: 33,
+      seed: "f1",
+      gwoFlatMaps: true,
+    });
+    assert.equal(flatOf(system).length, 1);
+  });
+
+  it("makes a sphere of a planet with a Shape but no sides", async () => {
+    const system = await generate(loader(), {
+      players: 2,
+      seed: "no-sides",
+      template: {
+        Planets: [generated(["earth"], { Shape: "flat", Width: [1000, 1100] })],
+      },
+      gwoFlatMaps: true,
+    });
+    assert.equal(system.planets[0].generator.shape, undefined);
+    assert.equal(system.planets[0].generator.width, undefined);
   });
 });

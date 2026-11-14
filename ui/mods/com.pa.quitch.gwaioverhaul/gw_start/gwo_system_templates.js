@@ -10,7 +10,15 @@ define([
   "main/game/galactic_war/shared/js/systems/titans-easy",
   "main/game/galactic_war/shared/js/systems/titans-normal",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
-], function (pa_easy, pa_normal, titans_easy, titans_normal, gwoRng) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js", // GWO
+], function (
+  pa_easy,
+  pa_normal,
+  titans_easy,
+  titans_normal,
+  gwoRng,
+  gwoFlatPlanets // GWO
+) {
   var chooseStarSystemTemplates = function (content, easier) {
     var activeTemplates;
 
@@ -191,9 +199,16 @@ define([
           if (!starSystemTempl) return $.when(null);
         }
 
+        // GWO - a server without --flat-maps refuses a flat planet. Filtered
+        // before the draw, and _.reject keeps order, so flag-off picks hold.
+        var systems = config.gwoFlatMaps
+          ? starSystemTempl.Systems
+          : _.reject(starSystemTempl.Systems, gwoFlatPlanets.systemHasFlat);
+        if (!systems.length) return $.when(null); // GWO
+
         // we have found a star system group for this number of players. Choose a random system template
-        var idx = getRandomInt(0, starSystemTempl.Systems.length - 1);
-        cSys = starSystemTempl.Systems[idx];
+        var idx = getRandomInt(0, systems.length - 1); // GWO - was starSystemTempl.Systems
+        cSys = systems[idx]; // GWO - was starSystemTempl.Systems
 
         rSystem.name = rng.pick(classicSystemNames); // GWO - was _.sample
         rSystem.players = starSystemTempl.Players;
@@ -426,6 +441,18 @@ define([
           );
           bp.mass = plnt.mass;
           bp.starting_planet = plnt.starting_planet;
+          // GWO - a slab. The last draws on this planet's stream, so no
+          // sphere's values move.
+          if (
+            config.gwoFlatMaps &&
+            plnt.Shape === "flat" &&
+            _.isArray(plnt.Width) &&
+            _.isArray(plnt.Length)
+          ) {
+            bp.generator.shape = "flat";
+            bp.generator.width = planetRng.int(plnt.Width[0], plnt.Width[1]);
+            bp.generator.length = planetRng.int(plnt.Length[0], plnt.Length[1]);
+          }
 
           return bp;
         });
