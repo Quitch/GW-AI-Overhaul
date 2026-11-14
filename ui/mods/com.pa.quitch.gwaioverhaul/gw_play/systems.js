@@ -202,9 +202,18 @@
             var metalDensity = loc("!LOC:Metal Density:");
             var temperature = loc("!LOC:Temperature:");
             var waterHeight = loc("!LOC:Water Height:");
+            var flat = loc("!LOC:Flat");
 
             model.gwoPlanetData = _.map(newSystem.planets(), function (planet) {
-              var tooltip = radius + " " + planet.generator.radius;
+              var generator = planet.generator;
+              var tooltip =
+                generator.shape === "flat"
+                  ? flat +
+                    " " +
+                    Math.round(generator.width) +
+                    " x " +
+                    Math.round(generator.length)
+                  : radius + " " + generator.radius;
 
               if (planet.generator.biome === "gas") {
                 return tooltip;
