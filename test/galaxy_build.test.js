@@ -106,6 +106,9 @@ registerModuleStub(
 );
 
 loadCouiModule(MOD_ROOT + "/gw_start/galaxy_build.js").install();
+const systemTemplates = loadCouiModule(
+  MOD_ROOT + "/gw_start/gwo_system_templates.js"
+);
 const galaxyConnect = loadCouiModule(
   MOD_ROOT + "/gw_start/gw_galaxy_connect.js"
 );
@@ -222,28 +225,30 @@ describe("build", () => {
     );
   });
 
-  it("hands each star's generate() the --flat-maps flag", async () => {
+  // Shared Systems' loader is still made with stock's two arguments.
+  it("hands the --flat-maps flag to the loader choice", async () => {
     installFakeJQuery(stubs);
     installSettings();
-    const configs = [];
-    makeLoader = () => ({
-      generate: (config) => {
-        configs.push(config);
-        return resolved(earthlike);
-      },
-    });
-    const galaxy = makeGalaxy();
+    makeLoader = () => ({ generate: () => resolved(earthlike) });
+    const chosen = [];
+    const chooseFor = systemTemplates.chooseFor;
+    systemTemplates.chooseFor = (...args) => {
+      chosen.push(args.slice(1));
+      return chooseFor(...args);
+    };
+    try {
+      await GWGalaxy.prototype.build.call(makeGalaxy(), {
+        seed: 1,
+        content: "PAExpansion1",
+        useEasierSystemTemplate: false,
+        gwoFlatMaps: true,
+      });
+    } finally {
+      systemTemplates.chooseFor = chooseFor;
+    }
 
-    await GWGalaxy.prototype.build.call(galaxy, {
-      seed: 1,
-      content: "PAExpansion1",
-      useEasierSystemTemplate: false,
-      gwoFlatMaps: true,
-    });
-
+    assert.deepEqual(chosen, [["PAExpansion1", false, true]]);
     assert.deepEqual(loaderCalls, [["PAExpansion1", false]]);
-    assert.equal(configs.length, 3);
-    assert.ok(configs.every((config) => config.gwoFlatMaps === true));
   });
 });
 

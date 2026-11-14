@@ -224,7 +224,8 @@ define([
       StarSystemTemplates = gwoSystemTemplates.chooseFor(
         chooseStarSystemTemplates,
         config.content,
-        config.useEasierSystemTemplate
+        config.useEasierSystemTemplate,
+        config.gwoFlatMaps
       );
     }
 
@@ -239,7 +240,6 @@ define([
         StarSystemTemplates.generate({
           players: systemSizeFor(star, index),
           seed: rng.stream("star", index).int(0, 2147483647),
-          gwoFlatMaps: config.gwoFlatMaps,
         })
       );
     });

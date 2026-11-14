@@ -66,12 +66,6 @@ describe("templateIsFlat", () => {
 });
 
 describe("planetIsFlat", () => {
-  it("reads a template planet", () => {
-    const slab = { Shape: "flat", Width: [1, 2], Length: [3, 4] };
-    assert.equal(flatPlanets.planetIsFlat(slab), true);
-    assert.equal(flatPlanets.planetIsFlat({ Shape: "flat" }), false);
-  });
-
   it("reads a planet's generator", () => {
     assert.equal(
       flatPlanets.planetIsFlat({ generator: { shape: "flat" } }),
@@ -99,18 +93,6 @@ describe("systemHasFlat", () => {
       ],
     };
     assert.equal(flatPlanets.systemHasFlat(system), true);
-  });
-
-  it("finds a flat planet in a template system", () => {
-    assert.equal(
-      flatPlanets.systemHasFlat({
-        Planets: [
-          { Radius: [1, 2] },
-          { Shape: "flat", Width: [1, 2], Length: [3, 4] },
-        ],
-      }),
-      true
-    );
   });
 
   it("is false for a system of spheres, or none", () => {

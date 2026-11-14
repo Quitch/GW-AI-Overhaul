@@ -23,7 +23,7 @@ define([
     return !!generator && generator.shape === "flat";
   };
 
-  // What gw_start/gwo_system_templates.js makes a slab.
+  // A template planet that gw_start/gwo_system_templates.js makes a slab.
   var templateIsFlat = function (planet) {
     return (
       !!planet &&
@@ -34,14 +34,11 @@ define([
   };
 
   var planetIsFlat = function (planet) {
-    return templateIsFlat(planet) || isFlat(gwoBiomes.generatorOf(planet));
+    return isFlat(gwoBiomes.generatorOf(planet));
   };
 
   var systemHasFlat = function (system) {
-    return _.some(
-      (system && (system.planets || system.Planets)) || [],
-      planetIsFlat
-    );
+    return _.some((system && system.planets) || [], planetIsFlat);
   };
 
   var side = function (value, radius) {

@@ -316,8 +316,7 @@ never starts. GWO's copy fills in `position` and `velocity` from the capitalised
 when the drawn planet lacks them. That fixes only systems GWO's copy generates, so
 `gw_play/bugfixes.js` makes the same repair once on each war's saved systems. It covers
 wars saved before the fix and systems from Shared Systems for Galactic War, which
-replaces the loader. GWO shadows `titans-easy.js` to add flat systems (see "Flat
-planets"), and keeps those slots as stock has them.
+replaces the loader.
 
 ### Shared Systems for Galactic War
 
@@ -579,20 +578,23 @@ A flat planet is a slab: an ordinary generator plus `shape: "flat"`, `width`, an
 own stream after every other value, so no sphere's values move. A planet with
 `Shape` but no `Width` or `Length` stays a sphere. On a slab, `Radius` sets the
 height of the top face, not the size. The pools' slabs have the area of a sphere of
-that `Radius`, with sides no further apart than 3:2. `titans-normal.js` holds one
-flat system per group (`planet55` to `planet58` in `shared/planets.js`), and the
-`titans-easy.js` shadow holds one in each of its two groups. None is gas or metal:
-the system editor never makes a gas slab, and metal's `radius_range` floor of 500
-is above the smaller slabs' `Radius`.
+that `Radius`, with sides no further apart than 3:2. None is gas or metal: the
+system editor never makes a gas slab, and metal's `radius_range` floor of 500 is
+above the smaller slabs' `Radius`.
 
 **The flag is read once per war**, by `enabled()` through
 `api.game.flatMapsEnabled()`, before anything is drawn. A missing call, a failed
 or slow one (5 s), or any value but `true` reads as off.
 
-**Filtered before the draw.** With the flag off, `generate()` drops the flat
-systems from the group before it draws the system index. `_.reject` keeps order,
-so a war made without the flag is the one it was before flat planets existed. A
-group that holds only flat systems keeps them, and they are drawn as spheres.
+**Added only with the flag.** The pools themselves hold no flat system.
+`gw_start/gwo_flat_systems.js` lists one per group of `titans-normal.js` and of
+stock `titans-easy.js`, and `chooseStarSystemTemplates` appends each to the end of
+its group, by position, when it builds the loader with the flag, as Simple Systems
+picks its set there. Without the flag the pools are untouched, so a war made then
+is the one it was before flat planets existed. Appended last, a flat system moves
+no other system's index. A flat system with no group to join is left out, so a
+pool with fewer groups after a patch loses a flat system rather than misplacing
+one. The classic sets get none.
 
 **Shared Systems for Galactic War.** With the flag off, `bracketsFrom` drops a
 system with a flat planet from the pool and warns. If that empties the pool,
