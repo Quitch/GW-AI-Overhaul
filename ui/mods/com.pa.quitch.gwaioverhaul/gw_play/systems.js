@@ -202,9 +202,27 @@
             var metalDensity = loc("!LOC:Metal Density:");
             var temperature = loc("!LOC:Temperature:");
             var waterHeight = loc("!LOC:Water Height:");
+            var flat = loc("!LOC:Flat");
+            // As gwoFlatPlanets.footprint and the server, which default a
+            // side a system file leaves out. That module has not loaded
+            // when the first tooltip is built.
+            var flatSide = function (side, generator) {
+              if (typeof side === "number") {
+                return Math.round(Math.min(Math.max(side, 200), 20000));
+              }
+              return 2 * (generator.radius || 700);
+            };
 
             model.gwoPlanetData = _.map(newSystem.planets(), function (planet) {
-              var tooltip = radius + " " + planet.generator.radius;
+              var generator = planet.generator;
+              var tooltip =
+                generator.shape === "flat"
+                  ? flat +
+                    " " +
+                    flatSide(generator.width, generator) +
+                    " x " +
+                    flatSide(generator.length, generator)
+                  : radius + " " + generator.radius;
 
               if (planet.generator.biome === "gas") {
                 return tooltip;

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Flat planets can appear in star systems when the game is launched with --flat-maps
+
 ## v7.10.0 - 2026-11-03
 
 ### Changed

@@ -21,6 +21,9 @@ const { runSceneScript } = require("../scripts/lib/scene-script.js");
 const realModules = {
   "/shared/gwo_rng.js": loadCouiModule(MOD_ROOT + "/shared/gwo_rng.js"),
   "/shared/gwo_promise.js": loadCouiModule(MOD_ROOT + "/shared/gwo_promise.js"),
+  "/shared/gwo_flat_planets.js": loadCouiModule(
+    MOD_ROOT + "/shared/gwo_flat_planets.js"
+  ),
   "/gw_start/war_generation_failure.js": loadCouiModule(
     MOD_ROOT + "/gw_start/war_generation_failure.js"
   ),

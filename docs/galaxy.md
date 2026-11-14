@@ -102,6 +102,8 @@ The player enters the seed in the lobby (`#game-seed`, which stock hides and
 - **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
 - **The mod set**, **the galaxy size**, **the co-op player count**, and **the player
   faction**, which are inputs rather than outputs.
+- **The `--flat-maps` launch flag.** With it, each system group holds one more
+  system, so the same seed draws a different galaxy (see "Flat planets").
 
 `gwo_system_templates.generate()` keeps stock's unseeded fallback for a call with
 no seed. The module is a copy of `template-loader.js` in GWO's namespace, not a
@@ -145,7 +147,7 @@ the same either way.
 | ↳ `jitter`                                                            | each star's third coordinate (map layout)                                                         |
 | ↳ `brackets`                                                          | `gwoSystemBrackets.selectorFor`                                                                   |
 | ↳ `size.<i>`, `star.<i>`                                              | that star's system size, and the seed handed to `generate()`                                      |
-| ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
+| ↳↳ `planet.<i>`                                                       | that planet's biome and generator values, then a flat planet's width and length                   |
 | `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
 | ↳ `races`                                                             | one race per faction (`races.assign`)                                                             |
 | `race.<faction>` → `worker.<n>`                                       | that AI's race commander; the boss stream draws none                                              |
@@ -563,6 +565,49 @@ mod later is enough.
 
 A co-op viewer needs no biome mod installed to join such a battle. It reads the
 cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
+
+### Flat planets
+
+A flat planet is a slab: an ordinary generator plus `shape: "flat"`, `width`, and
+`length`, in metres. The engine generates its terrain. A server launched without
+`--flat-maps` refuses any system that holds one, and the battle never starts, so
+`shared/gwo_flat_planets.js` gates both ends on the flag.
+
+**Template keys.** A template planet asks for a slab with `Shape: "flat"` and
+`Width` and `Length` ranges. `gwo_system_templates.js` draws both from the planet's
+own stream after every other value, so no sphere's values move. A planet with
+`Shape` but no `Width` or `Length` stays a sphere. On a slab, `Radius` sets the
+height of the top face, not the size. The pools' slabs have the area of a sphere of
+that `Radius`, with sides no further apart than 3:2. None is gas or metal: the
+system editor never makes a gas slab, and metal's `radius_range` floor of 500 is
+above the smaller slabs' `Radius`.
+
+**The flag is read once per war**, by `enabled()` through
+`api.game.flatMapsEnabled()`, before anything is drawn. A missing call, a failed
+or slow one (5 s), or any value but `true` reads as off.
+
+**Added only with the flag.** The pools themselves hold no flat system.
+`gw_start/gwo_flat_systems.js` lists one per group of `titans-normal.js` and of
+stock `titans-easy.js`, and `chooseStarSystemTemplates` appends each to the end of
+its group, by position, when it builds the loader with the flag, as Simple Systems
+picks its set there. Without the flag the pools are untouched, so a war made then
+is the one it was before flat planets existed. Appended last, a flat system moves
+no other system's index. A flat system with no group to join is left out, so a
+pool with fewer groups after a patch loses a flat system rather than misplacing
+one. The classic sets get none.
+
+**Shared Systems for Galactic War.** With the flag off, `bracketsFrom` drops a
+system with a flat planet from the pool and warns. If that empties the pool,
+that mod's own loader places systems, flat ones included, and only the fight-time
+fallback covers them.
+
+**The fight-time fallback.** The referee reads the flag again at each hire, as
+`ref.flatMaps`. Without it, `referee_config.js` turns each flat planet into a
+sphere of the same surface area, with a warning, and drops the keys that hold slab
+coordinates (`metal_spots`, `landing_zones`, `planetCSG`, `source`). A planet
+that lost its hand-placed metal gets generated metal instead. This works on the
+battle's copy of the system, so the war keeps its flat planets, and the galaxy
+map still shows the slab's sides.
 
 ## Factions
 

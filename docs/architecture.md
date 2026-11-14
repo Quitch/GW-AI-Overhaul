@@ -115,7 +115,9 @@ steps in order:
    a mod, the function collects only its biomes. See galaxy.md, "Biome mods in
    a GW battle".
 4. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
-   config: armies, personalities, planets, game modes. These files build every
+   config: armies, personalities, planets, game modes. Without `--flat-maps`,
+   which `referee.js` reads as `ref.flatMaps` just before, a flat planet is
+   fought as a sphere (galaxy.md, "Flat planets"). These files build every
    army's personality here through `shared/ai_personality.js`. The inputs are
    what the war recorded (its `personalityId`, `penchantName`, faction and
    brain) and the tier that `warTier()` in `shared/ai.js` resolves. The numbers

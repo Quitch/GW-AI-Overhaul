@@ -3,7 +3,8 @@
 // galaxy.md, "System brackets, under Shared Systems for Galactic War".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
-], function (gwoBiomes) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
+], function (gwoBiomes, gwoFlatPlanets) {
   // What system_editor.js's customLandingZones defaults an absent or zero rule bound to.
   var MIN_ARMIES = 2;
   var MAX_ARMIES = 32;
@@ -130,8 +131,9 @@ define([
     ].join("|");
   };
 
-  // `providers` names the modded biomes a battle can be given; see galaxy.md.
-  var bracketsFrom = function (systems, providers) {
+  // `providers` names the modded biomes a battle can be given, and
+  // `flatMaps` whether it can be given a flat planet; see galaxy.md.
+  var bracketsFrom = function (systems, providers, flatMaps) {
     var pool = _.sortBy(systems || [], poolOrder);
     var byRange = {};
     var brackets = [];
@@ -145,6 +147,14 @@ define([
             "' uses biome '" +
             biome +
             "', which the Galactic War server cannot load; dropping it from the galaxy pool"
+        );
+        continue;
+      }
+      if (!flatMaps && gwoFlatPlanets.systemHasFlat(system)) {
+        console.warn(
+          "gwoSystemBrackets: '" +
+            ((system && system.name) || "unnamed system") +
+            "' has a flat planet, which needs the game launched with --flat-maps; dropping it from the galaxy pool"
         );
         continue;
       }
