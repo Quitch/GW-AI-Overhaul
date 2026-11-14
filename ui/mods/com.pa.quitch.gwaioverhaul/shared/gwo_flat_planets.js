@@ -88,7 +88,7 @@ define([
     // relied on it.
     if (hadMetalSpots) {
       _.forEach(["metalClusters", "metalDensity"], function (key) {
-        if (!(generator[key] > 0)) {
+        if (typeof generator[key] !== "number" || generator[key] <= 0) {
           generator[key] = DEFAULT_METAL;
         }
       });
