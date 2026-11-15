@@ -5,6 +5,7 @@
 ### Changed
 
 - In co-op with separate tech, AI players catch up on missed deals faster
+- After a win, the tech on enemy stars is dealt again faster, and in co-op each player's tech on those stars too
 
 ### Bugfix
 

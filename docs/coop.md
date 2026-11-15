@@ -1345,8 +1345,8 @@ again when it falls to zero. A win from explore takes the hold in `model.win`
 selectable started a gap-fill that wrote it and sent its own snapshot, and the
 re-deal sent a second one about three seconds later.
 
-The host deals the AI stars one star per task, so the deal spans about a
-second on a large galaxy. The host cannot move until every star is dealt:
+The host deals the AI stars one star per task, so the deal spans several
+frames on a large galaxy. The host cannot move until every star is dealt:
 `model.gwoAiStarsDealing`, set by `gw_play/cards_ai_star_deal.js`, blocks
 `canMove` in `gw_play/systems.js`. A host who moved mid-deal would reach a
 star before its new card, and a win there could start a second deal that
