@@ -606,8 +606,10 @@ Five rules keep this affordable and safe:
   the call when all of them are loaded, not through the loader's 4 ms timer,
   and hands `done` to `gwoFinish`, not to `_.delay`. `gwoFinish` runs `done` in
   a microtask, and yields one task to the UI once 16 ms have passed since its
-  last yield. Stock's three timers per apply left an AI catching up on its
-  deals idle half the time. A card not loaded yet goes through the loader as
+  last yield. It yields through `gwo_promise.js`'s `soon`, a `MessageChannel`
+  message, whose task starts sooner than a zero-delay timer's; every 50 ms one
+  yield is a timer, so due timers still run. Stock's three timers per apply
+  left an AI catching up on its deals idle half the time. A card not loaded yet goes through the loader as
   before, and `done` never runs inside the `applyCards` call.
 - **Each apply has a timeout**, 10 seconds, set in
   `gw_play/cards_coop_ai_tech.js`. An apply that never finishes is abandoned,

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- In co-op with separate tech, AI players catch up on missed deals faster
+
 ## v7.10.0 - 2026-11-03
 
 ### Changed

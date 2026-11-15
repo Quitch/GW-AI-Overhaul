@@ -101,7 +101,7 @@ define([
 
   // params: see coop.md, "Settling deals".
   var factory = function (params) {
-    var defer = params.defer || _.defer;
+    var defer = params.defer || gwoPromise.soon;
     var decisionTimeoutMs = params.decisionTimeoutMs || DECISION_TIMEOUT_MS;
     var fieldedFor = params.fielded || _.constant(Promise.resolve());
     var writeTimeoutMs = params.writeTimeoutMs || WRITE_TIMEOUT_MS;
