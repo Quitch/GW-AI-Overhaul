@@ -5,15 +5,17 @@
 // onmessage, so a test file using it never exits. The stand-in queues each
 // message, and the test delivers them with deliver(). With `auto`, each
 // message is delivered by setImmediate instead, for a test that only needs
-// soon() to run its function later.
+// soon() to run its function later. counts.sent counts every message.
 function installFakeMessageChannel(setGlobal, options) {
   const auto = !!(options && options.auto);
   const posted = [];
+  const counts = { sent: 0 };
   setGlobal("MessageChannel", function FakeMessageChannel() {
     const port1 = {};
     this.port1 = port1;
     this.port2 = {
       postMessage: () => {
+        counts.sent += 1;
         if (auto) {
           setImmediate(() => port1.onmessage());
         } else {
@@ -25,6 +27,7 @@ function installFakeMessageChannel(setGlobal, options) {
 
   return {
     posted,
+    counts,
     deliver: () => posted.shift()(),
   };
 }

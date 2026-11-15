@@ -428,6 +428,19 @@ describe("soon", () => {
     return new FakeMessageChannel();
   });
 
+  let clock = Date.now();
+  let timers;
+
+  // Each test starts well past the last timer turn, and spends it.
+  beforeEach(() => {
+    clock += 1000;
+    timers = installFakeLodashTimers({ now: () => clock });
+    gwoPromise.soon(() => {});
+    timers.delayed.shift().fn();
+  });
+
+  afterEach(() => timers.restore());
+
   after(() => channelStubs.restoreGlobals());
 
   it("runs each fn in a message of its own, in order", () => {
@@ -437,6 +450,7 @@ describe("soon", () => {
     gwoPromise.soon(() => ran.push("b"));
     assert.deepEqual(ran, []);
     assert.equal(channel.posted.length, 2);
+    assert.deepEqual(timers.delayed, []);
 
     channel.deliver();
     assert.deepEqual(ran, ["a"]);
@@ -456,5 +470,23 @@ describe("soon", () => {
     channel.deliver();
     assert.deepEqual(ran, ["after"]);
     assert.equal(made, 1);
+  });
+
+  it("goes through a timer once 50 ms have passed since the last", () => {
+    const ran = [];
+
+    clock += 49;
+    gwoPromise.soon(() => ran.push("message"));
+    clock += 1;
+    gwoPromise.soon(() => ran.push("timer"));
+    clock += 49;
+    gwoPromise.soon(() => ran.push("message again"));
+
+    assert.equal(channel.posted.length, 2);
+    assert.equal(timers.delayed.length, 1);
+    timers.delayed.shift().fn();
+    channel.deliver();
+    channel.deliver();
+    assert.deepEqual(ran, ["timer", "message", "message again"]);
   });
 });

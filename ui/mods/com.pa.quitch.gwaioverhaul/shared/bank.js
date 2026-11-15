@@ -18,19 +18,23 @@ define([
   var SLICE_MS = 16;
   var sliceStart = _.now();
 
+  // Logged: the promise would swallow a throw from done.
+  var runDone = function (done) {
+    Promise.resolve()
+      .then(done)
+      .then(null, function (error) {
+        console.error("GWO held apply: " + ((error && error.stack) || error));
+      });
+  };
+
   var finishHeld = function (done) {
     if (_.now() - sliceStart < SLICE_MS) {
-      // Logged, as a throw from a timer is: a promise would swallow it.
-      Promise.resolve()
-        .then(done)
-        .then(null, function (error) {
-          console.error("GWO held apply: " + ((error && error.stack) || error));
-        });
+      runDone(done);
       return;
     }
     gwoPromise.soon(function () {
       sliceStart = _.now();
-      done();
+      runDone(done);
     });
   };
 
