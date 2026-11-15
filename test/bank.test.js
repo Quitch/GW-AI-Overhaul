@@ -28,6 +28,9 @@ const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
 const { makeObservableArray } = require("../scripts/lib/fake-knockout.js");
+const {
+  installFakeMessageChannel,
+} = require("../scripts/lib/fake-message-channel.js");
 
 const LS_KEY = "gwaio_bank";
 
@@ -53,6 +56,7 @@ stubs.setGlobal("ko", {
     ),
 });
 stubs.setGlobal("localStorage", storage);
+const channel = installFakeMessageChannel(stubs.setGlobal);
 stubs.setGlobal("api", {
   tally: {
     getStatInt: (name) => {
@@ -567,12 +571,12 @@ describe("bank finishing a held apply", () => {
     ).inventory.gwoFinish;
     // Starts each test on a fresh slice.
     finish(() => {});
-    timers.delayed.shift().fn();
+    channel.deliver();
   });
 
   afterEach(() => timers.restore());
 
-  it("continues within the slice without a timer", async () => {
+  it("continues within the slice without a yield", async () => {
     const done = [];
     clock += 15;
 
@@ -581,7 +585,7 @@ describe("bank finishing a held apply", () => {
     await settle();
 
     assert.deepEqual(done, ["a"]);
-    assert.deepEqual(timers.delayed, []);
+    assert.deepEqual(channel.posted, []);
   });
 
   it("yields once the slice is spent, and starts a new one", async () => {
@@ -591,15 +595,16 @@ describe("bank finishing a held apply", () => {
     finish(() => done.push("a"));
     await settle();
     assert.deepEqual(done, []);
-    assert.equal(timers.delayed.length, 1);
-    timers.delayed.shift().fn();
+    assert.equal(channel.posted.length, 1);
+    assert.deepEqual(timers.delayed, []);
+    channel.deliver();
     assert.deepEqual(done, ["a"]);
 
     clock += 15;
     finish(() => done.push("b"));
     await settle();
     assert.deepEqual(done, ["a", "b"]);
-    assert.deepEqual(timers.delayed, []);
+    assert.deepEqual(channel.posted, []);
   });
 
   it("logs a throw from done", async () => {

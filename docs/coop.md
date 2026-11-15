@@ -604,7 +604,8 @@ records a deal, the records change, the unit lookup arrives, the deck and
 before that load, because the factory-card pick below reads
 `model.gwoCardsToUnits`. A pass with nothing owed does nothing. It serves the AIs in slot
 order, and settles each AI's owed deals one at a time, in the order of the
-host's history, yielding between them. For each deal it:
+host's history, yielding between them through `gwo_promise.js`'s `soon`. For
+each deal it:
 
 1. **Deals the hand as a viewer's would be dealt.** `cards_coop_deal.js`'s
    `pendingHandForRecord` is a viewer's deal with no message sent. It deals from

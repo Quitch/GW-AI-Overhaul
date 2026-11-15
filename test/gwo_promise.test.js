@@ -2,10 +2,18 @@
 
 // shared/gwo_promise.js: settled, the adapter that turns an engine promise
 // into one jQuery waits for, steps, a chain that a step's synchronous throw
-// rejects, within, a promise raced against a timeout, and inSeries, which runs
-// one item per deferred task. See constraints.md.
+// rejects, within, a promise raced against a timeout, inSeries, which runs one
+// item per deferred task, and soon, which runs a function in a MessageChannel
+// message. See constraints.md.
 
-const { describe, it, beforeEach, afterEach, mock } = require("node:test");
+const {
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  after,
+  mock,
+} = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
@@ -16,6 +24,9 @@ const {
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
+const {
+  installFakeMessageChannel,
+} = require("../scripts/lib/fake-message-channel.js");
 
 const gwoPromise = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js"
@@ -403,5 +414,47 @@ describe("inSeries", () => {
 
     assert.deepEqual(result, []);
     assert.equal(timers.delayed.length, 0);
+  });
+});
+
+describe("soon", () => {
+  // soon() keeps the channel it makes first, so one fake serves every test.
+  const channelStubs = createGlobalStubs();
+  const channel = installFakeMessageChannel(channelStubs.setGlobal);
+  let made = 0;
+  const FakeMessageChannel = global.MessageChannel;
+  channelStubs.setGlobal("MessageChannel", function () {
+    made += 1;
+    return new FakeMessageChannel();
+  });
+
+  after(() => channelStubs.restoreGlobals());
+
+  it("runs each fn in a message of its own, in order", () => {
+    const ran = [];
+
+    gwoPromise.soon(() => ran.push("a"));
+    gwoPromise.soon(() => ran.push("b"));
+    assert.deepEqual(ran, []);
+    assert.equal(channel.posted.length, 2);
+
+    channel.deliver();
+    assert.deepEqual(ran, ["a"]);
+    channel.deliver();
+    assert.deepEqual(ran, ["a", "b"]);
+  });
+
+  it("keeps one channel, and a throw does not hold up later messages", () => {
+    const ran = [];
+
+    gwoPromise.soon(() => {
+      throw new Error("boom");
+    });
+    gwoPromise.soon(() => ran.push("after"));
+
+    assert.throws(channel.deliver, /boom/);
+    channel.deliver();
+    assert.deepEqual(ran, ["after"]);
+    assert.equal(made, 1);
   });
 });
