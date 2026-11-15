@@ -17,6 +17,9 @@ const {
 const { listCardFiles, loadCard } = require("../scripts/lib/card-files.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
+  installFakeMessageChannel,
+} = require("../scripts/lib/fake-message-channel.js");
+const {
   makeObservable,
   makeObservableArray,
 } = require("../scripts/lib/fake-knockout.js");
@@ -60,6 +63,7 @@ stubs.setGlobal("ko", {
   toJSON: (target) => JSON.stringify(toJS(target)),
 });
 stubs.setGlobal("localStorage", { setItem: () => {} });
+installFakeMessageChannel(stubs.setGlobal, { auto: true });
 
 // Card ids that never answer, as a card mod whose file hangs would.
 const hanging = new Set();

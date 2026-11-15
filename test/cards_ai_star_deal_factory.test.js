@@ -26,6 +26,10 @@ const { makeObservable } = require("../scripts/lib/fake-knockout.js");
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
+const {
+  installFakeMessageChannel,
+  soonTasks,
+} = require("../scripts/lib/fake-message-channel.js");
 
 // The sweep's lookup, answered by the stub model's canSelect.
 registerModuleStub(
@@ -82,6 +86,14 @@ const makeFactory = loadCouiModule(
 const gwoPromise = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js"
 );
+
+// gwo_promise.js's inSeries yields through soon(), which posts to a
+// MessageChannel.
+const channelStubs = createGlobalStubs();
+const channel = installFakeMessageChannel(channelStubs.setGlobal, {
+  auto: true,
+});
+after(() => channelStubs.restoreGlobals());
 
 // Star 0 is the player's; 1 and 4 are selectable AI stars; 2 is an AI star out
 // of reach; 3 is the treasure planet.
@@ -388,27 +400,33 @@ describe("the AI stars' deal", () => {
 
 describe("the AI stars' deal - one star per task", () => {
   let timers;
+  let tasks;
 
   before(() => {
     timers = installFakeLodashTimers();
+    tasks = soonTasks(timers, channel);
+    channel.setAuto(false);
   });
 
-  after(() => timers.restore());
+  after(() => {
+    timers.restore();
+    channel.setAuto(true);
+  });
 
-  // Runs the deal's deferred tasks one at a time until none is left, noting
+  // Runs the deal's tasks one at a time until none is left, noting
   // how many deals each task made, and the in-flight and stars-dealing counts
   // after it.
   async function stepThrough(run) {
     const steps = [];
     for (let guard = 0; guard < 100; guard += 1) {
-      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+      for (let tick = 0; tick < 50 && !tasks.pending(); tick += 1) {
         await Promise.resolve();
       }
-      if (!timers.delayed.length) {
+      if (!tasks.pending()) {
         break;
       }
       const before = run.calls.deals.length;
-      timers.delayed.shift().fn();
+      tasks.runNext();
       for (let tick = 0; tick < 50; tick += 1) {
         await Promise.resolve();
       }

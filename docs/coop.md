@@ -604,7 +604,8 @@ records a deal, the records change, the unit lookup arrives, the deck and
 before that load, because the factory-card pick below reads
 `model.gwoCardsToUnits`. A pass with nothing owed does nothing. It serves the AIs in slot
 order, and settles each AI's owed deals one at a time, in the order of the
-host's history, yielding between them. For each deal it:
+host's history, yielding between them through `gwo_promise.js`'s `soon`. For
+each deal it:
 
 1. **Deals the hand as a viewer's would be dealt.** `cards_coop_deal.js`'s
    `pendingHandForRecord` is a viewer's deal with no message sent. It deals from
@@ -1344,8 +1345,8 @@ again when it falls to zero. A win from explore takes the hold in `model.win`
 selectable started a gap-fill that wrote it and sent its own snapshot, and the
 re-deal sent a second one about three seconds later.
 
-The host deals the AI stars one star per task, so the deal spans about a
-second on a large galaxy. The host cannot move until every star is dealt:
+The host deals the AI stars one star per task, so the deal spans several
+frames on a large galaxy. The host cannot move until every star is dealt:
 `model.gwoAiStarsDealing`, set by `gw_play/cards_ai_star_deal.js`, blocks
 `canMove` in `gw_play/systems.js`. A host who moved mid-deal would reach a
 star before its new card, and a win there could start a second deal that

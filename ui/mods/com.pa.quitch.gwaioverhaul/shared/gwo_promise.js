@@ -63,11 +63,37 @@ define(function () {
     });
   };
 
-  // A native promise of step()'s result, run in a task of its own. A throw
-  // rejects it.
-  var later = function (step) {
+  // fn() in a task of its own. A zero-delay timer's task starts about 5 ms
+  // later on CEF and 12 ms on Coherent; a MessageChannel message's, within
+  // 1.5 ms on both. A message runs ahead of due timers, so every 50 ms one
+  // call goes through a timer instead, letting them run. Each task runs the
+  // oldest call waiting, so calls run in order whichever task starts first.
+  var TIMER_TURN_MS = 50;
+  var lastTimerTurn = _.now();
+  var channel;
+  var queued = [];
+  var runOldest = function () {
+    queued.shift()();
+  };
+  var soon = function (fn) {
+    queued.push(fn);
+    if (_.now() - lastTimerTurn >= TIMER_TURN_MS) {
+      lastTimerTurn = _.now();
+      _.defer(runOldest);
+      return;
+    }
+    if (!channel) {
+      channel = new MessageChannel();
+      channel.port1.onmessage = runOldest;
+    }
+    channel.port2.postMessage(0);
+  };
+
+  // A native promise of step()'s result, run in a task that schedule(fn)
+  // starts, soon by default. A throw rejects it.
+  var later = function (step, schedule) {
     return new Promise(function (resolve) {
-      _.defer(function () {
+      (schedule || soon)(function () {
         resolve(Promise.resolve().then(step));
       });
     });
@@ -96,7 +122,9 @@ define(function () {
   };
 
   return {
+    later: later,
     settled: settled,
+    soon: soon,
     steps: steps,
     within: within,
     inSeries: inSeries,

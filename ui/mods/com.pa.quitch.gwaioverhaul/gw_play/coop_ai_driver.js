@@ -101,7 +101,6 @@ define([
 
   // params: see coop.md, "Settling deals".
   var factory = function (params) {
-    var defer = params.defer || _.defer;
     var decisionTimeoutMs = params.decisionTimeoutMs || DECISION_TIMEOUT_MS;
     var fieldedFor = params.fielded || _.constant(Promise.resolve());
     var writeTimeoutMs = params.writeTimeoutMs || WRITE_TIMEOUT_MS;
@@ -119,11 +118,7 @@ define([
 
     // A throw from step rejects, so the pass still ends.
     var later = function (step) {
-      return new Promise(function (resolve) {
-        defer(function () {
-          resolve(Promise.resolve().then(step));
-        });
-      });
+      return gwoPromise.later(step, params.defer);
     };
 
     var owes = function (record) {
