@@ -509,6 +509,13 @@ tooltip unit that has no name. What each race expects stays in its own file.
 context bound to a recording `setTimeout`, with an optional driven clock behind
 `_.now()`. It returns the recorded calls and a restore.
 
+`scripts/lib/fake-message-channel.js` stands in for the `MessageChannel` that
+`gwo_promise.js`'s `soon` posts to. Node's real one keeps the process alive once
+a port has an `onmessage`, so a test file that reaches `soon`, for example
+through a held apply in `bank.js` or a driver built without `defer`, installs
+the fake before it does. By default the fake queues each message for the test to
+deliver; with `auto`, it delivers each one by `setImmediate`.
+
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally.
