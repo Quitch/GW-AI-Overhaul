@@ -2304,7 +2304,6 @@
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
       "UNITTYPE_FactoryBuild",
-      "UNITTYPE_CannonBuildable",
       "UNITTYPE_Offense",
       "UNITTYPE_SelfDestruct"
     ],
@@ -4032,7 +4031,8 @@
       "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
-      "UNITTYPE_FactoryBuild"
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable"
     ],
     "/pa/units/land/tank_flak/tank_flak.json": [
       "UNITTYPE_Custom58",
@@ -4074,8 +4074,7 @@
       "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Advanced",
-      "UNITTYPE_FactoryBuild",
-      "UNITTYPE_Radar"
+      "UNITTYPE_FactoryBuild"
     ],
     "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json": [
       "UNITTYPE_Custom58",
@@ -4095,7 +4094,8 @@
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
       "UNITTYPE_Hover",
-      "UNITTYPE_FactoryBuild"
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable"
     ],
     "/pa/units/land/tank_jammer/tank_jammer.json": [
       "UNITTYPE_Custom58",
@@ -4107,7 +4107,8 @@
       "UNITTYPE_Advanced",
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_Radar",
-      "UNITTYPE_RadarJammer"
+      "UNITTYPE_RadarJammer",
+      "UNITTYPE_CannonBuildable"
     ],
     "/pa/units/land/tank_laser_adv/tank_laser_adv.json": [
       "UNITTYPE_Custom58",

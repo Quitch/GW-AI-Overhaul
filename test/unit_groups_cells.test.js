@@ -12,6 +12,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { mediaDir } = require("../scripts/lib/pa-install.js");
+const { matches: buildableMatches } = require("../scripts/lib/build-types.js");
 
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoGroup = loadCouiModule(MOD_ROOT + "/shared/unit_groups.js");
@@ -111,6 +112,46 @@ describe("the cell classifier against unit_groups.js", () => {
       (unit) => /\/units\/.*\/([^/]+)\/\1\.json$/.test(unit) && !fixture[unit]
     );
     assert.deepEqual(missing, []);
+  });
+});
+
+// Paratrooper Commander starts with unitCannonMobile and makes every other
+// mobile land unit CannonBuildable, so a member the stock Unit Cannon stops
+// building can no longer be built at all.
+describe("unitCannonMobile against the stock Unit Cannon", () => {
+  const cannonBuilds = (unit) =>
+    buildableMatches(
+      harvested.buildable[gwoUnit.unitCannon],
+      new Set(fixture[unit].map((type) => type.replace(/^UNITTYPE_/, "")))
+    );
+  // The stock Unit Cannon builds these, but the Paratrooper start has never
+  // included them.
+  const LEFT_OUT = [gwoUnit.locusts, gwoUnit.mend, gwoUnit.slammer];
+
+  it("holds only units the stock Unit Cannon builds", () => {
+    assert.deepEqual(
+      gwoGroup.unitCannonMobile.filter((unit) => !cannonBuilds(unit)),
+      []
+    );
+  });
+
+  it("holds every mobile land unit the stock Unit Cannon builds, bar fabbers", () => {
+    const skipped = gwoGroup.fabbersBasic.concat(
+      gwoGroup.fabbersAdvanced,
+      LEFT_OUT,
+      gwoGroup.unitCannonMobile
+    );
+    const missing = gwoGroup.botsMobile
+      .concat(gwoGroup.vehiclesMobile)
+      .filter((unit) => cannonBuilds(unit) && !skipped.includes(unit));
+    assert.deepEqual(missing, []);
+  });
+
+  it("leaves out only units the stock Unit Cannon builds", () => {
+    for (const unit of LEFT_OUT) {
+      assert.ok(cannonBuilds(unit), unit + " is no longer cannon-buildable");
+      assert.ok(!gwoGroup.unitCannonMobile.includes(unit), unit + " is in");
+    }
   });
 });
 
