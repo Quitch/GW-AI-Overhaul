@@ -66,24 +66,26 @@ define(function () {
   // fn() in a task of its own. A zero-delay timer's task starts about 5 ms
   // later on CEF and 12 ms on Coherent; a MessageChannel message's, within
   // 1.5 ms on both. A message runs ahead of due timers, so every 50 ms one
-  // call goes through a timer instead, letting them run.
+  // call goes through a timer instead, letting them run. Each task runs the
+  // oldest call waiting, so calls run in order whichever task starts first.
   var TIMER_TURN_MS = 50;
   var lastTimerTurn = _.now();
   var channel;
   var queued = [];
+  var runOldest = function () {
+    queued.shift()();
+  };
   var soon = function (fn) {
+    queued.push(fn);
     if (_.now() - lastTimerTurn >= TIMER_TURN_MS) {
       lastTimerTurn = _.now();
-      _.defer(fn);
+      _.defer(runOldest);
       return;
     }
     if (!channel) {
       channel = new MessageChannel();
-      channel.port1.onmessage = function () {
-        queued.shift()();
-      };
+      channel.port1.onmessage = runOldest;
     }
-    queued.push(fn);
     channel.port2.postMessage(0);
   };
 

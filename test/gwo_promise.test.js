@@ -531,20 +531,69 @@ describe("soon", () => {
   });
 
   it("goes through a timer once 50 ms have passed since the last", () => {
-    const ran = [];
-
     clock += 49;
-    gwoPromise.soon(() => ran.push("message"));
+    gwoPromise.soon(() => {});
     clock += 1;
-    gwoPromise.soon(() => ran.push("timer"));
+    gwoPromise.soon(() => {});
     clock += 49;
-    gwoPromise.soon(() => ran.push("message again"));
+    gwoPromise.soon(() => {});
 
     assert.equal(channel.posted.length, 2);
     assert.equal(timers.delayed.length, 1);
     timers.delayed.shift().fn();
     channel.deliver();
     channel.deliver();
-    assert.deepEqual(ran, ["timer", "message", "message again"]);
+  });
+
+  it("runs calls in order, whether a message or the timer starts first", () => {
+    const ran = [];
+
+    gwoPromise.soon(() => ran.push("a"));
+    clock += 50;
+    gwoPromise.soon(() => ran.push("b"));
+    gwoPromise.soon(() => ran.push("c"));
+
+    assert.equal(channel.posted.length, 2);
+    assert.equal(timers.delayed.length, 1);
+    channel.deliver();
+    assert.deepEqual(ran, ["a"]);
+    timers.delayed.shift().fn();
+    assert.deepEqual(ran, ["a", "b"]);
+    channel.deliver();
+    assert.deepEqual(ran, ["a", "b", "c"]);
+  });
+
+  it("runs the oldest call when the timer starts ahead of earlier messages", () => {
+    const ran = [];
+
+    gwoPromise.soon(() => ran.push("a"));
+    clock += 50;
+    gwoPromise.soon(() => ran.push("b"));
+
+    timers.delayed.shift().fn();
+    assert.deepEqual(ran, ["a"]);
+    channel.deliver();
+    assert.deepEqual(ran, ["a", "b"]);
+  });
+
+  it("carries a later() step in a message within a timer turn", async () => {
+    const result = gwoPromise.later(() => "done");
+
+    assert.equal(channel.posted.length, 1);
+    assert.deepEqual(timers.delayed, []);
+    channel.deliver();
+    assert.equal(await result, "done");
+  });
+
+  it("carries each inSeries item in a message within a timer turn", async () => {
+    const series = gwoPromise.inSeries([1, 2], (item) => item * 10);
+
+    for (let item = 0; item < 2; item += 1) {
+      await flush();
+      assert.equal(channel.posted.length, 1);
+      assert.deepEqual(timers.delayed, []);
+      channel.deliver();
+    }
+    assert.deepEqual(await series, [10, 20]);
   });
 });
