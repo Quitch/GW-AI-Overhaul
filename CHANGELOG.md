@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Paratrooper Commander starts with the Inferno, Drifter, and Nyx, which the Unit Cannon builds since PA build 124720, and the Unit Cannon builds the Boom once it is unlocked instead of starting with a Boom nothing can build
+
 ## v7.10.0 - 2026-11-03
 
 ### Changed
