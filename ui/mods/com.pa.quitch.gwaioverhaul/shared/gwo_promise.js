@@ -87,11 +87,11 @@ define(function () {
     channel.port2.postMessage(0);
   };
 
-  // A native promise of step()'s result, run in a task of its own. A throw
-  // rejects it.
-  var later = function (step) {
+  // A native promise of step()'s result, run in a task that schedule(fn)
+  // starts, soon by default. A throw rejects it.
+  var later = function (step, schedule) {
     return new Promise(function (resolve) {
-      _.defer(function () {
+      (schedule || soon)(function () {
         resolve(Promise.resolve().then(step));
       });
     });
@@ -120,6 +120,7 @@ define(function () {
   };
 
   return {
+    later: later,
     settled: settled,
     soon: soon,
     steps: steps,

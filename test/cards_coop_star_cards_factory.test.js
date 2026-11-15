@@ -28,6 +28,10 @@ const {
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
+const {
+  installFakeMessageChannel,
+  soonTasks,
+} = require("../scripts/lib/fake-message-channel.js");
 
 // The sweep's lookup, answered by the stub model's canSelect.
 registerModuleStub(
@@ -38,6 +42,14 @@ registerModuleStub(
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
 );
+
+// gwo_promise.js's inSeries yields through soon(), which posts to a
+// MessageChannel.
+const channelStubs = createGlobalStubs();
+const channel = installFakeMessageChannel(channelStubs.setGlobal, {
+  auto: true,
+});
+after(() => channelStubs.restoreGlobals());
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
@@ -1158,12 +1170,18 @@ describe("coop star cards refresh - coalescing", () => {
 
 describe("coop star cards refresh - a throwing step", () => {
   let timers;
+  let tasks;
 
   before(() => {
     timers = installFakeLodashTimers();
+    tasks = soonTasks(timers, channel);
+    channel.setAuto(false);
   });
 
-  after(() => timers.restore());
+  after(() => {
+    timers.restore();
+    channel.setAuto(true);
+  });
 
   // A records subscriber runs inside a write, so a viewer's step can throw.
   // The refresh must still end, or every later refresh only joins it.
@@ -1185,13 +1203,13 @@ describe("coop star cards refresh - a throwing step", () => {
     let outcome;
     await captureErrors(async () => {
       const refreshed = coopStarCards.refresh().then(() => "ended");
-      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+      for (let tick = 0; tick < 50 && !tasks.pending(); tick += 1) {
         await Promise.resolve();
       }
-      assert.equal(timers.delayed.length, 1, "the viewer's step is deferred");
-      // The engine logs a throw from a deferred callback and carries on.
+      assert.equal(tasks.pending(), 1, "the viewer's step is queued");
+      // The engine logs a throw from a task's callback and carries on.
       try {
-        timers.delayed.shift().fn();
+        tasks.runNext();
       } catch (error) {
         console.error(String(error));
       }
@@ -1208,14 +1226,20 @@ describe("coop star cards refresh - a throwing step", () => {
 
 describe("coop star cards refresh - one star per task", () => {
   let timers;
+  let tasks;
 
   before(() => {
     timers = installFakeLodashTimers();
+    tasks = soonTasks(timers, channel);
+    channel.setAuto(false);
   });
 
-  after(() => timers.restore());
+  after(() => {
+    timers.restore();
+    channel.setAuto(true);
+  });
 
-  // Runs the refresh to its end one deferred step at a time, noting how many
+  // Runs the refresh to its end one task at a time, noting how many
   // deals each step made.
   async function stepThrough(refreshed, calls) {
     let settled = false;
@@ -1229,14 +1253,14 @@ describe("coop star cards refresh - one star per task", () => {
     );
     const dealsPerStep = [];
     for (let guard = 0; guard < 100 && !settled; guard += 1) {
-      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+      for (let tick = 0; tick < 50 && !tasks.pending(); tick += 1) {
         await Promise.resolve();
       }
-      if (!timers.delayed.length) {
+      if (!tasks.pending()) {
         break;
       }
       const before = calls.deals.length;
-      timers.delayed.shift().fn();
+      tasks.runNext();
       for (let tick = 0; tick < 50; tick += 1) {
         await Promise.resolve();
       }
@@ -1246,7 +1270,7 @@ describe("coop star cards refresh - one star per task", () => {
     return dealsPerStep;
   }
 
-  it("deals each star in its own deferred step, in star order", async () => {
+  it("deals each star in a task of its own, in star order", async () => {
     const { coopStarCards, calls, options } = build({
       stars: [{}, {}, {}],
     });

@@ -512,9 +512,13 @@ context bound to a recording `setTimeout`, with an optional driven clock behind
 `scripts/lib/fake-message-channel.js` stands in for the `MessageChannel` that
 `gwo_promise.js`'s `soon` posts to. Node's real one keeps the process alive once
 a port has an `onmessage`, so a test file that reaches `soon`, for example
-through a held apply in `bank.js` or a driver built without `defer`, installs
-the fake before it does. By default the fake queues each message for the test to
-deliver; with `auto`, it delivers each one by `setImmediate`.
+through a held apply in `bank.js`, a driver built without `defer`, or
+`gwo_promise.js`'s `later` and `inSeries`, installs the fake before it does. By
+default the fake queues each message for the test to deliver; with `auto`, it
+delivers each one by `setImmediate`, and `setAuto` switches between the two.
+`soon` sends a call through a timer instead once 50 ms have passed since its
+last timer turn, so a test that steps through a series task by task takes the
+next task from either queue with `soonTasks`.
 
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore
