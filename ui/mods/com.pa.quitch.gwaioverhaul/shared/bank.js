@@ -2,7 +2,8 @@
    the mod is uninstalled the gw_start loadout list isn't messed up by 404s */
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unlock_hold.js",
-], function (unlockHold) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+], function (unlockHold, gwoPromise) {
   var LS_KEY = "gwaio_bank";
 
   var self;
@@ -17,19 +18,23 @@ define([
   var SLICE_MS = 16;
   var sliceStart = _.now();
 
+  // Logged: the promise would swallow a throw from done.
+  var runDone = function (done) {
+    Promise.resolve()
+      .then(done)
+      .then(null, function (error) {
+        console.error("GWO held apply: " + ((error && error.stack) || error));
+      });
+  };
+
   var finishHeld = function (done) {
     if (_.now() - sliceStart < SLICE_MS) {
-      // Logged, as a throw from a timer is: a promise would swallow it.
-      Promise.resolve()
-        .then(done)
-        .then(null, function (error) {
-          console.error("GWO held apply: " + ((error && error.stack) || error));
-        });
+      runDone(done);
       return;
     }
-    _.delay(function () {
+    gwoPromise.soon(function () {
       sliceStart = _.now();
-      done();
+      runDone(done);
     });
   };
 

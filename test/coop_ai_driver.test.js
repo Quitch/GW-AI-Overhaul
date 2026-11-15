@@ -27,6 +27,9 @@ const {
   makeObservable,
   makeObservableArray,
 } = require("../scripts/lib/fake-knockout.js");
+const {
+  installFakeMessageChannel,
+} = require("../scripts/lib/fake-message-channel.js");
 
 installGlobals();
 // shared/bank.js, behind coop_ai_effects.js, builds its bank at load.
@@ -36,6 +39,7 @@ stubs.setGlobal("ko", {
   observableArray: makeObservableArray,
 });
 stubs.setGlobal("localStorage", { setItem: () => {} });
+const channel = installFakeMessageChannel(stubs.setGlobal, { auto: true });
 after(() => stubs.restoreGlobals());
 
 const makeDriver = loadCouiModule(
@@ -456,7 +460,9 @@ function setup(overrides) {
           calls.saveHolds.push("hold");
           return () => calls.saveHolds.push("release, running " + running);
         },
-    defer: options.defer || ((fn) => setImmediate(fn)),
+    defer: options.shippedDefer
+      ? undefined
+      : options.defer || ((fn) => setImmediate(fn)),
     decisionTimeoutMs: options.decisionTimeoutMs,
     writeTimeoutMs: options.writeTimeoutMs,
     guardiansLast: options.guardiansLast,
@@ -539,6 +545,22 @@ describe("coop_ai_driver.run", () => {
       [1, 2, 3]
     );
     assert.equal(run.calls.afterPass, 1);
+  });
+
+  it("yields between deals through gwoPromise.soon by default", async () => {
+    const run = setup({
+      history: history(2),
+      hands: { 1: [hand(["air"])], 2: [hand(["naval"])] },
+      shippedDefer: true,
+    });
+    const sent = channel.counts.sent;
+    await run.driver.run();
+
+    assert.deepEqual(
+      run.calls.writes.map((write) => write.patch.techCardDealCount),
+      [1, 2]
+    );
+    assert.ok(channel.counts.sent > sent);
   });
 
   it("deals the AI as a client of its own, by its record's id", async () => {

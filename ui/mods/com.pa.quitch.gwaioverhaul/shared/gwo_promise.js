@@ -63,6 +63,30 @@ define(function () {
     });
   };
 
+  // fn() in a task of its own. A zero-delay timer's task starts about 5 ms
+  // later on CEF and 12 ms on Coherent; a MessageChannel message's, within
+  // 1.5 ms on both. A message runs ahead of due timers, so every 50 ms one
+  // call goes through a timer instead, letting them run.
+  var TIMER_TURN_MS = 50;
+  var lastTimerTurn = _.now();
+  var channel;
+  var queued = [];
+  var soon = function (fn) {
+    if (_.now() - lastTimerTurn >= TIMER_TURN_MS) {
+      lastTimerTurn = _.now();
+      _.defer(fn);
+      return;
+    }
+    if (!channel) {
+      channel = new MessageChannel();
+      channel.port1.onmessage = function () {
+        queued.shift()();
+      };
+    }
+    queued.push(fn);
+    channel.port2.postMessage(0);
+  };
+
   // A native promise of step()'s result, run in a task of its own. A throw
   // rejects it.
   var later = function (step) {
@@ -97,6 +121,7 @@ define(function () {
 
   return {
     settled: settled,
+    soon: soon,
     steps: steps,
     within: within,
     inSeries: inSeries,
