@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Paratrooper Commander starts with the Skitter, which the Unit Cannon builds since PA build 124723
+
 ### Bugfix
 
 - The galaxy map no longer skips frames while the mouse moves over it

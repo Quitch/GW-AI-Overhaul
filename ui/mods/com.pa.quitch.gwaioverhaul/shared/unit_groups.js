@@ -470,6 +470,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.grenadier,
     gwoUnit.inferno,
     gwoUnit.nyx,
+    gwoUnit.skitter,
     gwoUnit.spark,
     gwoUnit.spinner,
     gwoUnit.stinger,
