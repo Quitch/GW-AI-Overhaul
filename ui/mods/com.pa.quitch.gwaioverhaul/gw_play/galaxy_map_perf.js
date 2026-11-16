@@ -13,6 +13,9 @@
     var originalUpdate = stage.update;
     var interactiveFrameIntervalMs = 1000 / 60;
     var idleFrameIntervalMs = 1000 / 10;
+    // rAF intervals jitter around the frame period; without slack, a frame
+    // measured just under 16.67 ms is skipped.
+    var frameJitterMs = 8;
     var lastDraw = 0;
     var interactiveUntil = 0;
 
@@ -64,7 +67,7 @@
         moved || model.player.moving() || now < interactiveUntil
           ? interactiveFrameIntervalMs
           : idleFrameIntervalMs;
-      if (now - lastDraw < interval) {
+      if (now - lastDraw < interval - frameJitterMs) {
         return;
       }
 

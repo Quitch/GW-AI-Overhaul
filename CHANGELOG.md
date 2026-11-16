@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- The galaxy map no longer skips frames while the mouse moves over it
+
 ## v7.11.0 - 2026-11-15
 
 ### Changed
