@@ -343,13 +343,9 @@ describe("jobs over the harvested fixture", () => {
   });
 
   it("gives the advanced radar a race's radars, and the jammer its jammers", (t) => {
-    // Legion's advanced radar is typed Recon alone, so it is a home of both.
     const expected = {
       mla: [["system_radar"], ["jammer_titan"]],
-      legion: [
-        ["l_radar_adv", "system_radar"],
-        ["l_jammer_station", "l_radar_adv"],
-      ],
+      legion: [["l_radar_adv", "system_radar"], ["l_jammer_station"]],
       bugs: [["bug_radar_advanced", "system_radar"], []],
       exiles: [["seizmic"], ["seizmic"]],
     };

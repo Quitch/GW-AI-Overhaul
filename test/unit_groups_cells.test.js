@@ -2,8 +2,9 @@
 
 // Validation by construction: the cell classifier reproduces the domain, tier
 // and class GWO's unit groups encode by hand, over the harvested unit_types of
-// every vanilla unit (test/fixtures/unit_types.json). A group member landing
-// elsewhere is either a pinned deviation or a classifier bug. See races.md.
+// every vanilla unit (test/fixtures/unit_types.json, its `stock` view). A group
+// member landing elsewhere is either a pinned deviation or a classifier bug.
+// See races.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -18,7 +19,7 @@ const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoGroup = loadCouiModule(MOD_ROOT + "/shared/unit_groups.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const harvested = require("./fixtures/unit_types.json");
-const fixture = harvested.units;
+const fixture = harvested.stock.units;
 
 // "*" matches any value of that part; "|" separates alternatives.
 const EXPECTED = {
@@ -121,7 +122,7 @@ describe("the cell classifier against unit_groups.js", () => {
 describe("unitCannonMobile against the stock Unit Cannon", () => {
   const cannonBuilds = (unit) =>
     buildableMatches(
-      harvested.buildable[gwoUnit.unitCannon],
+      harvested.stock.buildable[gwoUnit.unitCannon],
       new Set(fixture[unit].map((type) => type.replace(/^UNITTYPE_/, "")))
     );
   // The stock Unit Cannon builds these, but the Paratrooper start has never
