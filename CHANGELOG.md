@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Paratrooper Commander starts with the Skitter, which the Unit Cannon builds since PA build 124723
+- Paratrooper Commander starts with the Skitter, which the Unit Cannon builds since PA build 124720
 
 ### Bugfix
 
