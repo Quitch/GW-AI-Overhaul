@@ -4,7 +4,7 @@
 
 ### Bugfix
 
-- The galaxy map no longer skips a third of its frames while the mouse moves over it
+- The galaxy map no longer skips frames while the mouse moves over it
 
 ## v7.11.0 - 2026-11-15
 
