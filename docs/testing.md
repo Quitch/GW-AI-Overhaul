@@ -138,20 +138,21 @@ every add-on's, as `validate:race-trees` layers them. A companion mod that a
 descriptor does not list, such as the Bugs commander-merge, is in
 `scripts/lib/server-mods.js`. The mods are read in that order.
 
-The top-level `units` and `buildable` are that runtime view, so a mod's copy
-of a stock spec replaces the stock one there. `stock` holds the same two
-tables from the installed game alone. A test about the base game reads
-`stock`, because a mod's shadow can hide a change PA made, or pass off the
-mod's change as PA's: PA build 124720 made the Skitter cannon-buildable, and
-Legion's copy hid it until Legion's zip caught up. The harvest prints each
-stock unit whose types the mods change. `scripts/lib/unit-types-harvest.js` builds both views,
-and `test/unit_types_harvest.test.js` checks it over in-memory roots.
+The top-level `units` and `buildable` are that runtime view, so a mod's copy of
+a stock spec replaces the stock one there. `stock` holds the same two tables
+from the installed game alone. A test about the base game reads `stock`, because
+a mod's shadow can hide a change PA made, or pass off the mod's change as PA's:
+PA build 124720 made the Skitter cannon-buildable, and Legion's copy hid it
+until Legion's zip caught up. The harvest prints each stock unit whose types the
+mods change. `scripts/lib/unit-types-harvest.js` builds both views, and
+`test/unit_types_harvest.test.js` checks it over in-memory roots.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, over `stock`,
 `test/race_legion.test.js` can see Legion's cells, and
 `test/addon_second_wave.test.js` can see what an add-on brings
-(`scripts/lib/addon-fixture.js` builds the index as `race_cells.js` does). `test/unit_jobs.test.js` checks the job rule over every registered
+(`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
+does). `test/unit_jobs.test.js` checks the job rule over every registered
 race's index: a job pinned for each mobile combat unit and each defence and
 superweapon structure `shared/units.js` names, a vanilla unit a card can grant
 standing for each race unit of those cells, and no bit on a unit of those cells

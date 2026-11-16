@@ -2,8 +2,9 @@
 
 // Validation by construction: the cell classifier reproduces the domain, tier
 // and class GWO's unit groups encode by hand, over the harvested unit_types of
-// every vanilla unit (test/fixtures/unit_types.json, its `stock` view). A
-// group member landing elsewhere is either a pinned deviation or a classifier bug. See races.md.
+// every vanilla unit (test/fixtures/unit_types.json, its `stock` view). A group
+// member landing elsewhere is either a pinned deviation or a classifier bug.
+// See races.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

@@ -140,8 +140,8 @@ reach power plants.
 domain/tier/class-named group in `shared/unit_groups.js`. It runs over the
 `stock` view of `test/fixtures/unit_types.json`, which
 `scripts/harvest-unit-types.js` harvests. The test pins the deviations. Each
-deviation is a balance choice of the group, such as the Anchor, which sits in `structuresDefencesBasic` while
-typed Advanced.
+deviation is a balance choice of the group, such as the Anchor, which sits in
+`structuresDefencesBasic` while typed Advanced.
 
 At launch `gw_play/race_cells.js` reads the merged unit list and every spec it
 reaches. It reads through `spec_cache`, so `genUnitSpecs` fetches nothing

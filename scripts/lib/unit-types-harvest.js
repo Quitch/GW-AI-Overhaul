@@ -3,12 +3,13 @@
 // The fixture harvest-unit-types.js writes, from root objects as
 // mod-roots.js makes them: `stock` reads the base game's roots alone, and the
 // top-level `units` and `buildable` read the mods' roots over them. A mod's
-// shadow of a stock spec therefore never stands in for the stock spec. See
-// testing.md.
+// shadow of a stock spec therefore never stands in for the stock spec. The
+// stock unit list is the last base-game root's, as pa_ex1's replaces pa's;
+// the mods' lists are merged into it. See testing.md.
 
 const { codeUnitCompare } = require("./loc-keys.js");
 
-function view(roots) {
+function view(roots, listRoots) {
   // "/pa/units/x.json" -> "units/x.json", last root that has it wins.
   const readJson = (specPath) => {
     const rel = specPath.replace(/^\/pa\//, "");
@@ -38,7 +39,7 @@ function view(roots) {
   };
 
   const listed = new Set();
-  for (const root of roots) {
+  for (const root of listRoots) {
     if (root.has("units/unit_list.json")) {
       for (const unit of JSON.parse(root.read("units/unit_list.json")).units) {
         listed.add(unit);
@@ -64,17 +65,20 @@ function view(roots) {
   return { units, buildable, missing };
 }
 
-// Each stock unit whose unit_types or buildable_types the mods change.
+// Each stock unit whose unit_types or buildable_types the mods change. The
+// order of unit_types carries no meaning, so a reordered copy is no change.
 function shadowsOf(stock, modded) {
+  const comparable = (value) =>
+    JSON.stringify(
+      Array.isArray(value) ? [...value].sort(codeUnitCompare) : value
+    );
   const shadows = [];
   for (const unit of Object.keys(stock.units)) {
     for (const [field, key] of [
       ["unit_types", "units"],
       ["buildable_types", "buildable"],
     ]) {
-      if (
-        JSON.stringify(stock[key][unit]) !== JSON.stringify(modded[key][unit])
-      ) {
+      if (comparable(stock[key][unit]) !== comparable(modded[key][unit])) {
         shadows.push({ unit, field });
       }
     }
@@ -83,8 +87,11 @@ function shadowsOf(stock, modded) {
 }
 
 function harvestUnitTypes(stockRoots, modRoots) {
-  const stock = view(stockRoots);
-  const modded = view(stockRoots.concat(modRoots));
+  const stockList = stockRoots
+    .filter((root) => root.has("units/unit_list.json"))
+    .slice(-1);
+  const stock = view(stockRoots, stockList);
+  const modded = view(stockRoots.concat(modRoots), stockList.concat(modRoots));
   return {
     fixture: {
       units: modded.units,
@@ -92,7 +99,7 @@ function harvestUnitTypes(stockRoots, modRoots) {
       stock: { units: stock.units, buildable: stock.buildable },
     },
     shadows: shadowsOf(stock, modded),
-    missing: modded.missing,
+    missing: { stock: stock.missing, units: modded.missing },
   };
 }
 

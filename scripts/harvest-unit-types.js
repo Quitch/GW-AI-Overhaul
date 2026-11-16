@@ -47,8 +47,15 @@ function main() {
       (stockRoots.length + serverModRoots.length) +
       " roots written to " +
       path.relative(REPO_ROOT, OUT) +
-      (missing ? " (" + missing + " listed units have no spec)" : "")
+      (missing.units
+        ? " (" + missing.units + " listed units have no spec)"
+        : "")
   );
+  if (missing.stock) {
+    console.log(
+      "  " + missing.stock + " units the stock list names have no stock spec"
+    );
+  }
   for (const { unit, field } of shadows) {
     console.log("  a mod changes the stock " + field + " of " + unit);
   }
