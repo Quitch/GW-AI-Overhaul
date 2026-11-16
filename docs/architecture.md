@@ -299,9 +299,11 @@ in `gw_play.js` writes on every `body` mousemove, and that the
 `galaxyTransform` computed applies to the nebulae and every star. Diffing those
 three against the last real draw is therefore a sound dirty check.
 
-While the camera or mouse is moving, the wrapper still draws, capped to 60 FPS
-rather than the uncapped monitor refresh. Once everything is static, it drops to
-a 10 FPS heartbeat. That rate is slow enough to matter and still registers
+While the camera or mouse is moving, the wrapper still draws, at most once per
+16.67 ms frame period less 8 ms of slack for `requestAnimationFrame` jitter.
+A 60/s loop draws every frame, and a faster one is capped at about 115 FPS.
+Once everything is static, it drops to a 10 FPS heartbeat, with the same slack.
+That rate is slow enough to matter and still registers
 hover-highlight changes, because EaselJS runs its own mouseover hit testing
 inside `update()`.
 
