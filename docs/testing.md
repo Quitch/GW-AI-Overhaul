@@ -138,10 +138,20 @@ every add-on's, as `validate:race-trees` layers them. A companion mod that a
 descriptor does not list, such as the Bugs commander-merge, is in
 `scripts/lib/server-mods.js`. The mods are read in that order.
 
+The top-level `units` and `buildable` are that runtime view, so a mod's copy of
+a stock spec replaces the stock one there. `stock` holds the same two tables
+from the installed game alone. A test about the base game reads `stock`, because
+a mod's shadow can hide a change PA made, or pass off the mod's change as PA's:
+PA build 124720 made the Skitter cannon-buildable, and Legion's copy hid it
+until Legion's zip caught up. The harvest prints each stock unit whose types the
+mods change. `scripts/lib/unit-types-harvest.js` builds both views, and
+`test/unit_types_harvest.test.js` checks it over in-memory roots.
+
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
-classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
-Legion's cells, and `test/addon_second_wave.test.js` can see what an add-on
-brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
+classifier against `unit_groups.js` in CI, over `stock`,
+`test/race_legion.test.js` can see Legion's cells, and
+`test/addon_second_wave.test.js` can see what an add-on brings
+(`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
 does). `test/unit_jobs.test.js` checks the job rule over every registered
 race's index: a job pinned for each mobile combat unit and each defence and
 superweapon structure `shared/units.js` names, a vanilla unit a card can grant
@@ -508,6 +518,17 @@ tooltip unit that has no name. What each race expects stays in its own file.
 `context.setTimeout` once, at load. So the helper swaps the global lodash for a
 context bound to a recording `setTimeout`, with an optional driven clock behind
 `_.now()`. It returns the recorded calls and a restore.
+
+`scripts/lib/fake-message-channel.js` stands in for the `MessageChannel` that
+`gwo_promise.js`'s `soon` posts to. Node's real one keeps the process alive once
+a port has an `onmessage`, so a test file that reaches `soon`, for example
+through a held apply in `bank.js`, a driver built without `defer`, or
+`gwo_promise.js`'s `later` and `inSeries`, installs the fake before it does. By
+default the fake queues each message for the test to deliver; with `auto`, it
+delivers each one by `setImmediate`, and `setAuto` switches between the two.
+`soon` sends a call through a timer instead once 50 ms have passed since its
+last timer turn, so a test that steps through a series task by task takes the
+next task from either queue with `soonTasks`.
 
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore

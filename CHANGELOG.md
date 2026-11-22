@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Works around a base game bug that could lose a new war's star systems, which made every battle in that war fail with "Failed to load Galactic War config"
+- Works around the same base game bug when a co-op player receives the host's war, which could lose the star systems of that player's copy
+
+## v7.11.1 - 2026-11-16
+
+### Bugfix
+
+- Paratrooper Commander starts with the Skitter, which the Unit Cannon builds since PA build 124720
+- The galaxy map no longer skips frames while the mouse moves over it
+
+## v7.11.0 - 2026-11-15
+
+### Changed
+
+- In co-op with separate tech, AI players catch up on missed deals faster
+- After a win, the tech on enemy stars is dealt again faster, and in co-op each player's tech on those stars too
+
+### Bugfix
+
+- Paratrooper Commander starts with the Inferno, Drifter, and Nyx, which the Unit Cannon builds since PA build 124720, and the Unit Cannon builds the Boom once it is unlocked instead of starting with a Boom nothing can build
+
 ## v7.10.0 - 2026-11-03
 
 ### Changed

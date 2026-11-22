@@ -32,6 +32,19 @@ const manifest = {
 const stockSave = manifest.saveGame;
 registerModuleStub("shared/gw_common", { manifest: manifest });
 
+// shared/war_store.js: settled resolves at once unless a test holds it.
+const settledIds = [];
+let settledResult;
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/war_store.js",
+  {
+    settled: (id) => {
+      settledIds.push(id);
+      return settledResult ? settledResult() : $.Deferred().resolve().promise();
+    },
+  }
+);
+
 const saveLimit = loadCouiModule(MOD_ROOT + "/gw_play/save_limit.js");
 const launchHires = loadCouiModule(MOD_ROOT + "/gw_play/launch_hires.js");
 
@@ -48,6 +61,8 @@ afterEach(() => {
   manifest.saveGame = stockSave;
   saves.length = 0;
   pendingSave = undefined;
+  settledIds.length = 0;
+  settledResult = undefined;
 });
 
 function setup(launching, jQueryOptions, hires) {
@@ -178,6 +193,104 @@ describe("save", () => {
     await flush();
     assert.equal(calls.errors.length, 1);
     assert.match(calls.errors[0], /caller bug/);
+  });
+});
+
+describe("waiting for the commit", () => {
+  it("resolves only once the save's writes have committed", async () => {
+    setup(false);
+    const war = { id: "war" };
+    const commit = makeDeferred();
+    settledResult = () => commit.promise();
+
+    const seen = outcome(saveLimit.save(war));
+    pendingSave.resolve(war);
+    await flush();
+
+    assert.deepEqual(settledIds, ["war"]);
+    assert.equal(seen.state, "pending");
+
+    commit.resolve();
+    await flush();
+    assert.equal(seen.state, "resolved");
+    assert.equal(seen.value, war);
+  });
+
+  it("logs a fault in the wait and still resolves with stock's result", async () => {
+    const calls = setup(false);
+    const war = { id: "war" };
+    settledResult = () => $.Deferred().reject(new Error("blocked")).promise();
+
+    const seen = outcome(saveLimit.save(war));
+    pendingSave.resolve(war);
+    await flush();
+
+    assert.equal(seen.state, "resolved");
+    assert.equal(seen.value, war);
+    assert.equal(calls.errors.length, 1);
+    assert.match(
+      calls.errors[0],
+      /^Galactic War Overhaul \(GWO\): the war save could not wait for its commit: Error: blocked/
+    );
+  });
+
+  it("logs a fault that carries only a value", async () => {
+    const calls = setup(false);
+    settledResult = () => $.Deferred().reject("closed").promise();
+
+    const seen = outcome(saveLimit.save({ id: "war" }));
+    pendingSave.resolve();
+    await flush();
+
+    assert.equal(seen.state, "resolved");
+    assert.equal(
+      calls.errors[0],
+      "Galactic War Overhaul (GWO): the war save could not wait for its commit: closed"
+    );
+  });
+
+  it("fails a save whose wait has not ended after 30 s", async () => {
+    setup(false);
+    settledResult = () => makeDeferred().promise();
+
+    const seen = outcome(saveLimit.save({ id: "war" }));
+    pendingSave.resolve();
+    await expire();
+    assert.equal(seen.state, "pending");
+
+    mock.timers.tick(1);
+    await flush();
+    assert.equal(seen.state, "rejected");
+    assert.equal(seen.reason.gwoTimedOut, true);
+  });
+
+  it("does not wait when stock's save fails", async () => {
+    setup(false);
+
+    const seen = outcome(saveLimit.save({ id: "war" }));
+    pendingSave.reject("blocked");
+    await flush();
+
+    assert.deepEqual(settledIds, []);
+    assert.equal(seen.state, "rejected");
+    assert.equal(seen.reason, "blocked");
+  });
+
+  it("waits for stock's own saves once installed", async () => {
+    setup(false);
+    saveLimit.install();
+    const commit = makeDeferred();
+    settledResult = () => commit.promise();
+
+    const seen = outcome(manifest.saveGame({ id: "stock war" }));
+    pendingSave.resolve();
+    await flush();
+    assert.deepEqual(settledIds, ["stock war"]);
+    assert.equal(seen.state, "pending");
+
+    commit.resolve();
+    await flush();
+    assert.equal(seen.state, "resolved");
   });
 });
 

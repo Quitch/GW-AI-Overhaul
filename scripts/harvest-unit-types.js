@@ -4,16 +4,17 @@
 // with its effective unit_types and buildable_types (base_spec chain
 // resolved), from the PA install (pa_ex1 over pa) and the race and add-on
 // server mods' zips under download/, later roots shadowing earlier ones as
-// the runtime virtual filesystem does. CI has none of it, so the fixture is
-// committed - re-run after a PA, race or add-on patch.
+// the runtime virtual filesystem does. `stock` holds the same from the PA
+// install alone. CI has none of it, so the fixture is committed - re-run
+// after a PA, race or add-on patch.
 // See testing.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
 const { mediaDir } = require("./lib/pa-install.js");
 const { folderRoot, modRoots } = require("./lib/mod-roots.js");
-const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { shippedServerMods } = require("./lib/server-mods.js");
+const { harvestUnitTypes } = require("./lib/unit-types-harvest.js");
 const { writeText } = require("./lib/write-text.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -23,88 +24,41 @@ const OUT =
 
 const MEDIA = mediaDir();
 
-const SERVER_MODS = shippedServerMods();
-
-const ROOTS = [
-  folderRoot(path.join(MEDIA, "pa")),
-  folderRoot(path.join(MEDIA, "pa_ex1")),
-].concat(modRoots(SERVER_MODS));
-
-function readJson(specPath) {
-  // "/pa/units/x.json" -> "units/x.json", last root that has it wins.
-  const rel = specPath.replace(/^\/pa\//, "");
-  for (let i = ROOTS.length - 1; i >= 0; i--) {
-    if (ROOTS[i].has(rel)) {
-      return JSON.parse(ROOTS[i].read(rel));
-    }
-  }
-  return undefined;
-}
-
-function unitList() {
-  const units = new Set();
-  for (const root of ROOTS) {
-    if (root.has("units/unit_list.json")) {
-      for (const unit of JSON.parse(root.read("units/unit_list.json")).units) {
-        units.add(unit);
-      }
-    }
-  }
-  return [...units].sort(codeUnitCompare);
-}
-
-// The first value of `field` up the base_spec chain; null when no spec on
-// the chain is on disk at all.
-function chainValue(specPath, field) {
-  const seen = new Set();
-  let current = specPath;
-  let found = false;
-  while (current && !seen.has(current)) {
-    seen.add(current);
-    const spec = readJson(current);
-    if (!spec) {
-      return found ? undefined : null;
-    }
-    found = true;
-    if (spec[field] !== undefined) {
-      return spec[field];
-    }
-    current = spec.base_spec;
-  }
-  return undefined;
-}
-
 function main() {
   if (!fs.existsSync(path.join(MEDIA, "pa"))) {
     console.error("harvest-unit-types: no PA install at " + MEDIA);
     process.exit(1);
   }
-  const units = {};
-  const buildable = {};
-  let missing = 0;
-  for (const unit of unitList()) {
-    const types = chainValue(unit, "unit_types");
-    if (types === null) {
-      missing++;
-      continue;
-    }
-    units[unit] = Array.isArray(types) ? types : [];
-    const expression = chainValue(unit, "buildable_types");
-    if (typeof expression === "string" && expression.length) {
-      buildable[unit] = expression;
-    }
-  }
+  const stockRoots = [
+    folderRoot(path.join(MEDIA, "pa")),
+    folderRoot(path.join(MEDIA, "pa_ex1")),
+  ];
+  const serverModRoots = modRoots(shippedServerMods());
+  const { fixture, shadows, missing } = harvestUnitTypes(
+    stockRoots,
+    serverModRoots
+  );
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  writeText(OUT, JSON.stringify({ units, buildable }, null, 2) + "\n");
+  writeText(OUT, JSON.stringify(fixture, null, 2) + "\n");
   console.log(
     "harvest-unit-types: " +
-      Object.keys(units).length +
+      Object.keys(fixture.units).length +
       " units from " +
-      ROOTS.length +
+      (stockRoots.length + serverModRoots.length) +
       " roots written to " +
       path.relative(REPO_ROOT, OUT) +
-      (missing ? " (" + missing + " listed units have no spec)" : "")
+      (missing.units
+        ? " (" + missing.units + " listed units have no spec)"
+        : "")
   );
+  if (missing.stock) {
+    console.log(
+      "  " + missing.stock + " units the stock list names have no stock spec"
+    );
+  }
+  for (const { unit, field } of shadows) {
+    console.log("  a mod changes the stock " + field + " of " + unit);
+  }
 }
 
 main();

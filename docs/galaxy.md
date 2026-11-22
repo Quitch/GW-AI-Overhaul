@@ -34,6 +34,8 @@ Roughly, the order is:
 Step 5 is a piggy-back channel rather than a real API. The origin system is simply
 the one object guaranteed to survive into the play scene.
 
+### Saving the new war
+
 The run then saves the war and opens `gw_play`. Stock `GW.manifest.saveGame` never
 rejects: a failed IndexedDB write leaves its promise pending for good. So
 `gw_start/war_generation.js` waits at most `SAVE_TIMEOUT_MS` (30 s) for it, and
@@ -47,6 +49,28 @@ The timer does not cancel stock's write. A write that lands after 30 s adds the 
 to the manifest and logs `War save completed after the time limit: <id>`, but
 nothing points `gw_active_game` at it, and the archive lists only wars that are
 over, so the player never sees it.
+
+Stock's save also resolves before the data is safe. It resolves when its last
+write request succeeds, but IndexedDB commits its two transactions (the star
+systems, then the game) after that, and a page change can lose a transaction
+that has not committed. On CEF this lost the star systems of new wars: the war
+loaded with every star's system empty (`GWStar.load` falls back to `{}`), and
+every battle failed with `GW - Invalid configuration No planets.` in the server
+log (#677). Stock's own Go To War has the same fault.
+
+So after the save resolves, `shared/war_store.js` reads the war's `games` and
+`systems` records back in a read/write transaction on the `systems`, `games` and
+`manifest` stores, and the war opens only when that transaction completes.
+IndexedDB starts a read/write transaction only after every earlier read/write
+transaction on an overlapping store has finished, on any connection, so its
+completion means stock's writes have committed. It is read/write because a
+read-only transaction is not held back on Coherent: Chromium 40 ran one beside
+an unfinished systems write, so it found no record. The read waits one `_.defer`,
+so it also follows the manifest save that stock's `addGame` defers. The 30 s
+limit covers the save and the read together. A read that finds either record
+missing within that limit fails the war as a failed save does, and removes the
+half-stored war with `GW.manifest.removeGameById`, so it is not left in the load
+list. A read that finishes after the limit removes nothing.
 
 ## The isolated-star bug
 

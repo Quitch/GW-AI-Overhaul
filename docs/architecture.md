@@ -301,11 +301,14 @@ in `gw_play.js` writes on every `body` mousemove, and that the
 `galaxyTransform` computed applies to the nebulae and every star. Diffing those
 three against the last real draw is therefore a sound dirty check.
 
-While the camera or mouse is moving, the wrapper still draws, capped to 60 FPS
-rather than the uncapped monitor refresh. Once everything is static, it drops to
-a 10 FPS heartbeat. That rate is slow enough to matter and still registers
-hover-highlight changes, because EaselJS runs its own mouseover hit testing
-inside `update()`.
+While the camera or mouse is moving, the wrapper draws once at least 8.67 ms
+have passed since the last draw: the 16.67 ms frame period, less 8 ms of slack
+for `requestAnimationFrame` jitter. CEF ran that loop at 60/s on a 170 Hz
+display, and Coherent ran it slower (#668), so every frame is drawn. A loop
+faster than about 115/s would draw at most every second frame. Once everything is
+static, the wrapper drops to a 10 FPS heartbeat, with the same slack. That rate
+is slow enough to matter and still registers hover-highlight changes, because
+EaselJS runs its own mouseover hit testing inside `update()`.
 
 Three traps:
 
@@ -395,6 +398,20 @@ that save times out, it is logged and never settled, and its launch is called
 off: `launchingFight` is cleared, which closes the launch panel and lets the
 player press Fight again. Every other save, such as a move's still writing
 when Fight is pressed, rejects as usual.
+
+Stock's save also resolves before IndexedDB commits its writes (see
+[galaxy.md](galaxy.md), "Saving the new war"), and stock reloads or leaves the
+page on that resolution in several places: a co-op viewer's full rehydrate,
+which writes the war's star systems, the cheat game load, Open to Co-op
+(`openToCoop`), and the local copy that leaving, exiting, or losing a co-op
+session writes (`persistCampaignLocalCopy`). A page change before the commit
+can lose the writes (#677). So
+`gw_play/save_limit.js` resolves every save only once `settled` in
+`shared/war_store.js` finishes: a read/write transaction on the war's stores,
+which IndexedDB starts only after the save's writes have committed. It adds a
+few milliseconds to each save. A fault in that wait is logged and the save
+still resolves. The wait does count towards the 30 s limit, so a save whose
+write and wait together pass 30 s times out like one that never lands.
 
 The call-off waits for the launch's referee hires to settle, so a second Fight
 cannot hire while the first launch still does. On a co-op host, two hires'
