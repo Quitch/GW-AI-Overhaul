@@ -96,11 +96,11 @@
       return Math.floor(number);
     };
 
-    var calculateSurfaceArea = function (system) {
+    var calculateSurfaceArea = function (system, gwoFlatPlanets) {
       var area = 0;
       _.forEach(system.planets(), function (world) {
         if (world.generator && world.generator.biome !== "gas") {
-          area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+          area += gwoFlatPlanets.surfaceArea(world.generator);
         }
       });
       return formattedString(area);
@@ -179,6 +179,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/eradication_label.js",
         "shared/gw_factions",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
       ],
       function (
         gwoColour,
@@ -189,7 +190,8 @@
         gwoRaces,
         gwoStarThreat,
         eradicationLabel,
-        GWFactions
+        GWFactions,
+        gwoFlatPlanets
       ) {
         var starCardsView = gwoStarCardsView();
         _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
@@ -341,7 +343,9 @@
           var starIndex = model.selection.star();
           var star = system.star;
           var ai = star.ai();
-          model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
+          model.gwoSystemSurfaceArea(
+            calculateSurfaceArea(system, gwoFlatPlanets)
+          );
           if (!ai) {
             model.gwoSystemThreat(0);
             model.gwoAvailableTech("");

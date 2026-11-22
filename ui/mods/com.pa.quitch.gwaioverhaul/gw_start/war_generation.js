@@ -65,6 +65,7 @@ define([
     var gwoPromise = modules.gwoPromise;
     var gwoWarStore = modules.gwoWarStore;
     var generationFailure = modules.generationFailure;
+    var gwoFlatPlanets = modules.gwoFlatPlanets;
 
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt.
@@ -151,10 +152,18 @@ define([
       };
     };
 
+    // Read once per war, before anything is drawn. See galaxy.md, "Flat
+    // planets".
+    var readFlatMaps = function (run) {
+      return gwoFlatPlanets.enabled().then(function (flatMaps) {
+        run.flatMaps = flatMaps;
+      });
+    };
+
     // Resolves the brackets, or undefined without them. Rejects with
     // SYSTEM_SOURCES when no source gave a system, or one failed and none
     // gave a bracket. See galaxy.md, "Shared Systems for Galactic War".
-    var loadSystemBrackets = function () {
+    var loadSystemBrackets = function (run) {
       var ready = $.Deferred();
       var sourceFailed = false;
 
@@ -170,7 +179,11 @@ define([
         // $.when hands back one array per source.
         var systems = _.flatten(_.toArray(arguments));
         gwoBiomeMods.providers().then(function (providers) {
-          var built = gwoSystemBrackets.bracketsFrom(systems, providers);
+          var built = gwoSystemBrackets.bracketsFrom(
+            systems,
+            providers,
+            run.flatMaps
+          );
           if (built.length) {
             ready.resolve({ brackets: built, providers: providers });
           } else if (sourceFailed || _.isEmpty(systems)) {
@@ -461,6 +474,7 @@ define([
         largePlanets: run.largePlanets,
         gwoSystemBrackets: systemBrackets.brackets,
         gwoBiomeProviders: systemBrackets.providers,
+        gwoFlatMaps: run.flatMaps,
       });
     };
 
@@ -803,9 +817,11 @@ define([
 
     var generate = function (run) {
       var finishSetup = gwoPromise.steps(
-        loadSystemBrackets(),
+        $.Deferred().resolve().promise(),
         _.map(
           [
+            readFlatMaps,
+            loadSystemBrackets,
             buildGalaxy,
             dealStartCard,
             moveIn,
