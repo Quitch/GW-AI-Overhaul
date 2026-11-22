@@ -2,6 +2,7 @@ name: Bug report (manual reporting via GitHub)
 description: Report unexpected behaviours manually via GitHub.
 title: "[BUG] "
 assignees: ["Quitch"]
+type: Bug
 body:
   - type: checkboxes
     id: attestation
