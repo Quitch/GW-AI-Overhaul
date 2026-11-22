@@ -1949,7 +1949,8 @@
               "UNITTYPE_Structure",
               "UNITTYPE_Basic",
               "UNITTYPE_Recon",
-              "UNITTYPE_Custom1"
+              "UNITTYPE_Custom1",
+              "UNITTYPE_Radar"
             ],
             "base_spec": "/pa/units/land/base_structure/base_structure.json",
             "tools": [
