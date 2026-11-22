@@ -398,15 +398,16 @@ player press Fight again. Every other save, such as a move's still writing
 when Fight is pressed, rejects as usual.
 
 Stock's save also resolves before IndexedDB commits its writes (see
-[galaxy.md](galaxy.md), "Saving the new war"), and stock reloads the page on
-that resolution in two places: a co-op viewer's full rehydrate, which writes the
-war's star systems, and the cheat game load. A reload before the commit can
-lose the systems (#677). So `gw_play/save_limit.js` resolves a save only once
-`settled` in `shared/war_store.js` finishes: a read/write transaction on the
-war's stores, which IndexedDB starts only after the save's writes have
-committed. It runs inside the 30 s limit and adds a few milliseconds to each
-save. A fault in that wait is logged and the save still resolves, so the wait
-never fails a save that stock wrote.
+[galaxy.md](galaxy.md), "Saving the new war"), and stock reloads or leaves the
+page on that resolution in several places: a co-op viewer's full rehydrate,
+which writes the war's star systems, the cheat game load, and Open to Co-op
+(`openToCoop`). A page change before the commit can lose the writes (#677). So
+`gw_play/save_limit.js` resolves every save only once `settled` in
+`shared/war_store.js` finishes: a read/write transaction on the war's stores,
+which IndexedDB starts only after the save's writes have committed. It adds a
+few milliseconds to each save. A fault in that wait is logged and the save
+still resolves. The wait does count towards the 30 s limit, so a save whose
+write and wait together pass 30 s times out like one that never lands.
 
 The call-off waits for the launch's referee hires to settle, so a second Fight
 cannot hire while the first launch still does. On a co-op host, two hires'
