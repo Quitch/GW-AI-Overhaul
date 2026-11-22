@@ -68,8 +68,9 @@ read-only transaction is not held back on Coherent: Chromium 40 ran one beside
 an unfinished systems write, so it found no record. The read waits one `_.defer`,
 so it also follows the manifest save that stock's `addGame` defers. The 30 s
 limit covers the save and the read together. A read that finds either record
-missing fails the war as a failed save does, and removes the half-stored war
-with `GW.manifest.removeGameById`, so it is not left in the load list.
+missing within that limit fails the war as a failed save does, and removes the
+half-stored war with `GW.manifest.removeGameById`, so it is not left in the load
+list. A read that finishes after the limit removes nothing.
 
 ## The isolated-star bug
 
