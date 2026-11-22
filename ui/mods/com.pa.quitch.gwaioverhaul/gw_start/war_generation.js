@@ -63,6 +63,7 @@ define([
     var gwoBiomeMods = modules.gwoBiomeMods;
     var gwoRaces = modules.gwoRaces;
     var gwoPromise = modules.gwoPromise;
+    var gwoWarStore = modules.gwoWarStore;
     var generationFailure = modules.generationFailure;
 
     var warGenerationAttempts = 0;
@@ -742,12 +743,20 @@ define([
       scene.saveDifficultySettings();
 
       var game = model.newGame();
-      var save;
+      var stored;
       new Promise(function (resolve) {
-        save = GW.manifest.saveGame(game);
-        resolve(gwoPromise.within(save, SAVE_TIMEOUT_MS, "war save"));
+        stored = storedWar(GW.manifest.saveGame(game), game.id);
+        resolve(gwoPromise.within(stored, SAVE_TIMEOUT_MS, "war save"));
       }).then(onGameSaved, function (err) {
-        onWarNotSaved(err, save, game.id);
+        onWarNotSaved(err, stored, game.id);
+      });
+    };
+
+    // Stock's save resolves before its writes commit. See galaxy.md, "Saving
+    // the new war".
+    var storedWar = function (save, id) {
+      return save.then(function () {
+        return gwoWarStore.committed(id);
       });
     };
 
@@ -771,12 +780,15 @@ define([
       }
     };
 
-    var onWarNotSaved = function (err, save, id) {
+    var onWarNotSaved = function (err, stored, id) {
       console.error("War could not be saved: " + ((err && err.stack) || err));
       if (err && err.gwoTimedOut) {
-        save.then(function () {
+        stored.then(function () {
           console.log("War save completed after the time limit: " + id);
-        });
+        }, _.noop);
+      }
+      if (err && err.gwoIncomplete) {
+        GW.manifest.removeGameById(id);
       }
       warGenerationFailure(undefined);
     };

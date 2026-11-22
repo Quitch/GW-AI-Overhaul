@@ -244,17 +244,17 @@ module** in the mod's own namespace. The glue file then requires that sibling. T
 same split serves files in GWO's own namespace that are not shadows but depend on
 base-game modules all the same:
 
-| Glue file                                        | Measured sibling                                                                                                          |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `gw_play/per_player_tech_referee.js` (GWO's own) | `gw_play/per_player_tech.js`                                                                                              |
-| `gw_faction_*.js` (shadows)                      | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js`                                       |
-| `gw_play/referee_game_files.js` (GWO's own)      | `gw_play/referee_game_file_paths.js`                                                                                      |
-| `gw_play/referee_config.js` (GWO's own)          | `gw_play/referee_config_setup.js`                                                                                         |
-| `gw_play/referee.js` (GWO's own)                 | `gw_play/referee_biomes.js`                                                                                               |
-| `gw_play/cards_start_subcdr.js` (GWO's own)      | `gw_play/general_commander_setup.js`                                                                                      |
-| `gw_play/coop_ai.js` (GWO's own)                 | `gw_play/coop_ai_roster.js`, `gw_play/coop_ai_lobby.js`                                                                   |
-| `gw_play/gwo_panel.js` (GWO's own)               | `gw_play/gwo_panel_view.js`                                                                                               |
-| `gw_start/setup.js` (GWO's own)                  | `gw_start/war_generation.js`, `gw_start/ai_population.js`, `gw_start/war_record.js`, `gw_start/war_generation_failure.js` |
+| Glue file                                        | Measured sibling                                                                                                                                   |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gw_play/per_player_tech_referee.js` (GWO's own) | `gw_play/per_player_tech.js`                                                                                                                       |
+| `gw_faction_*.js` (shadows)                      | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js`                                                                |
+| `gw_play/referee_game_files.js` (GWO's own)      | `gw_play/referee_game_file_paths.js`                                                                                                               |
+| `gw_play/referee_config.js` (GWO's own)          | `gw_play/referee_config_setup.js`                                                                                                                  |
+| `gw_play/referee.js` (GWO's own)                 | `gw_play/referee_biomes.js`                                                                                                                        |
+| `gw_play/cards_start_subcdr.js` (GWO's own)      | `gw_play/general_commander_setup.js`                                                                                                               |
+| `gw_play/coop_ai.js` (GWO's own)                 | `gw_play/coop_ai_roster.js`, `gw_play/coop_ai_lobby.js`                                                                                            |
+| `gw_play/gwo_panel.js` (GWO's own)               | `gw_play/gwo_panel_view.js`                                                                                                                        |
+| `gw_start/setup.js` (GWO's own)                  | `gw_start/war_generation.js`, `gw_start/ai_population.js`, `gw_start/war_record.js`, `gw_start/war_generation_failure.js`, `gw_start/war_store.js` |
 
 The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded,
 bar `gw_play/referee_config.js` and `gw_play/per_player_tech_referee.js`, which

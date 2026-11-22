@@ -190,6 +190,9 @@ function makeModules(scene) {
       },
       "/gw_start/galaxy_build.js": { install: () => {} },
       "/shared/races.js": { MLA_ID: "mla", assign: () => ({}) },
+      "/gw_start/war_store.js": {
+        committed: () => $.Deferred().resolve().promise(),
+      },
     },
     realModules
   );
