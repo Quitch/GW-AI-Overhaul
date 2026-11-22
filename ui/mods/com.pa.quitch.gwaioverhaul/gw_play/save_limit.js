@@ -5,7 +5,8 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
-], function (GW, gwoPromise, launchHires) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/war_store.js",
+], function (GW, gwoPromise, launchHires, warStore) {
   var timeLimitMs = 30000;
   var manifest = GW.manifest;
   var stockSave = manifest.saveGame;
@@ -16,30 +17,49 @@ define([
     );
   };
 
+  // Stock's save resolves before its writes commit, and stock reloads the page
+  // on it in places, so this resolves once they have. A fault in that wait is
+  // logged, not passed on. See architecture.md, "Saving the war".
+  var stored = function (args) {
+    var game = args[0];
+    return stockSave.apply(manifest, args).then(function (saved) {
+      return warStore.settled(game && game.id).then(
+        function () {
+          return saved;
+        },
+        function (error) {
+          report(
+            "the war save could not wait for its commit: " +
+              ((error && (error.stack || error.message)) || error)
+          );
+          return $.Deferred().resolve(saved).promise();
+        }
+      );
+    });
+  };
+
   // A jQuery promise, because stock passes saves to $.when. The callbacks run
   // in a native promise reaction, which would swallow a throw from a caller's
   // continuation that the engine used to log. A result that lands after the
   // limit is dropped.
   var limited = function (args, onFailure) {
     var done = $.Deferred();
-    gwoPromise
-      .within(stockSave.apply(manifest, args), timeLimitMs, "War save")
-      .then(
-        function (game) {
-          try {
-            done.resolve(game);
-          } catch (e) {
-            report(e);
-          }
-        },
-        function (error) {
-          try {
-            onFailure(error, done);
-          } catch (e) {
-            report(e);
-          }
+    gwoPromise.within(stored(args), timeLimitMs, "War save").then(
+      function (game) {
+        try {
+          done.resolve(game);
+        } catch (e) {
+          report(e);
         }
-      );
+      },
+      function (error) {
+        try {
+          onFailure(error, done);
+        } catch (e) {
+          report(e);
+        }
+      }
+    );
     return done.promise();
   };
 
