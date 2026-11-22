@@ -400,8 +400,10 @@ when Fight is pressed, rejects as usual.
 Stock's save also resolves before IndexedDB commits its writes (see
 [galaxy.md](galaxy.md), "Saving the new war"), and stock reloads or leaves the
 page on that resolution in several places: a co-op viewer's full rehydrate,
-which writes the war's star systems, the cheat game load, and Open to Co-op
-(`openToCoop`). A page change before the commit can lose the writes (#677). So
+which writes the war's star systems, the cheat game load, Open to Co-op
+(`openToCoop`), and the local copy that leaving, exiting, or losing a co-op
+session writes (`persistCampaignLocalCopy`). A page change before the commit
+can lose the writes (#677). So
 `gw_play/save_limit.js` resolves every save only once `settled` in
 `shared/war_store.js` finishes: a read/write transaction on the war's stores,
 which IndexedDB starts only after the save's writes have committed. It adds a
