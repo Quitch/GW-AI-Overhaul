@@ -1,6 +1,6 @@
 // Stock GW.manifest.saveGame resolves before IndexedDB commits, and a page
 // change can lose the uncommitted star systems. See galaxy.md, "Saving the
-// new war".
+// new war", and architecture.md, "Saving the war".
 define(function () {
   var DATABASE = "gw_manifest";
   var STORES = ["systems", "games", "manifest"];
@@ -13,7 +13,7 @@ define(function () {
     return error;
   };
 
-  var readBack = function (db, id, done) {
+  var readBack = function (db, id, done, check) {
     // Read/write, not read-only: Chromium 40 runs a read-only transaction
     // beside an unfinished write to the same store.
     var transaction = db.transaction(STORES, "readwrite");
@@ -29,7 +29,7 @@ define(function () {
       if (!systems.result) {
         missing.push("systems");
       }
-      if (missing.length) {
+      if (check && missing.length) {
         done.reject(incomplete(id, missing));
       } else {
         done.resolve();
@@ -41,7 +41,7 @@ define(function () {
     };
   };
 
-  var committed = function (id) {
+  var afterWrites = function (id, check) {
     var done = $.Deferred();
     // Deferred behind the manifest save that stock's addGame defers, so the
     // read waits for that write too.
@@ -54,7 +54,7 @@ define(function () {
         request.onsuccess = function () {
           var db = request.result;
           try {
-            readBack(db, id, done);
+            readBack(db, id, done, check);
           } catch (e) {
             db.close();
             done.reject(e);
@@ -68,6 +68,14 @@ define(function () {
   };
 
   return {
-    committed: committed,
+    // Once the war's earlier writes have committed; rejects, marked
+    // gwoIncomplete, if its game or systems record is missing.
+    committed: function (id) {
+      return afterWrites(id, true);
+    },
+    // Once the war's earlier writes have committed, whatever was stored.
+    settled: function (id) {
+      return afterWrites(id, false);
+    },
   };
 });

@@ -28,6 +28,12 @@ registerModuleStub("shared/gw_common", {
   },
 });
 
+// The commit wait is save_limit.test.js's. Here it ends at once.
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/war_store.js",
+  { settled: () => $.Deferred().resolve().promise() }
+);
+
 const gwoSave = loadCouiModule(MOD_ROOT + "/gw_play/save.js");
 
 const stubs = createGlobalStubs();

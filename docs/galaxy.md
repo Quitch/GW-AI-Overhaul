@@ -58,7 +58,7 @@ loaded with every star's system empty (`GWStar.load` falls back to `{}`), and
 every battle failed with `GW - Invalid configuration No planets.` in the server
 log (#677). Stock's own Go To War has the same fault.
 
-So after the save resolves, `gw_start/war_store.js` reads the war's `games` and
+So after the save resolves, `shared/war_store.js` reads the war's `games` and
 `systems` records back in a read/write transaction on the `systems`, `games` and
 `manifest` stores, and the war opens only when that transaction completes.
 IndexedDB starts a read/write transaction only after every earlier read/write

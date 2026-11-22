@@ -1,7 +1,8 @@
 "use strict";
 
-// gw_start/war_store.js: committed, the read-back that resolves once a new
-// war's game and systems records have committed. The fake indexedDB hands the
+// shared/war_store.js: committed, the read-back that resolves once a new
+// war's game and systems records have committed, and settled, which only
+// waits for the commit. The fake indexedDB hands the
 // test each request and the transaction, so it settles them in any order.
 // See galaxy.md, "Saving the new war".
 
@@ -14,7 +15,7 @@ const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
 
-const warStore = loadCouiModule(MOD_ROOT + "/gw_start/war_store.js");
+const warStore = loadCouiModule(MOD_ROOT + "/shared/war_store.js");
 
 const stubs = createGlobalStubs();
 let timers;
@@ -241,5 +242,74 @@ describe("committed", () => {
     await settle();
 
     assert.equal(outcome.error, blocked);
+  });
+});
+
+describe("settled", () => {
+  const run = async (fake, id, end) => {
+    const outcome = { settled: false };
+    warStore.settled(id).then(
+      () => {
+        outcome.settled = "resolved";
+      },
+      (error) => {
+        outcome.settled = "rejected";
+        outcome.error = error;
+      }
+    );
+    timers.delayed.shift().fn();
+    fake.request.result = fake.db;
+    fake.request.onsuccess();
+    if (end) {
+      fake.transaction[end]();
+    }
+    await settle();
+    return outcome;
+  };
+
+  it("waits for the same read/write transaction to complete", async () => {
+    const fake = fakeIndexedDB(BOTH);
+
+    const outcome = await run(fake, "7");
+
+    assert.equal(outcome.settled, false);
+    assert.deepEqual(fake.transactions, [
+      { stores: ["systems", "games", "manifest"], mode: "readwrite" },
+    ]);
+  });
+
+  it("resolves and closes the database when the transaction completes", async () => {
+    const fake = fakeIndexedDB(BOTH);
+
+    const outcome = await run(fake, "7", "oncomplete");
+
+    assert.equal(outcome.settled, "resolved");
+    assert.equal(fake.closed, 1);
+  });
+
+  it("resolves when the war's records are missing", async () => {
+    const fake = fakeIndexedDB({});
+
+    const outcome = await run(fake, "7", "oncomplete");
+
+    assert.equal(outcome.settled, "resolved");
+  });
+
+  it("rejects when the transaction aborts", async () => {
+    const fake = fakeIndexedDB(BOTH);
+    const aborted = new Error("aborted");
+
+    const outcome = { settled: false };
+    warStore.settled("7").then(null, (error) => {
+      outcome.error = error;
+    });
+    timers.delayed.shift().fn();
+    fake.request.result = fake.db;
+    fake.request.onsuccess();
+    fake.transaction.error = aborted;
+    fake.transaction.onabort();
+    await settle();
+
+    assert.equal(outcome.error, aborted);
   });
 });
