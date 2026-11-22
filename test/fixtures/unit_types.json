@@ -3289,7 +3289,8 @@
       "UNITTYPE_Structure",
       "UNITTYPE_Basic",
       "UNITTYPE_Recon",
-      "UNITTYPE_Custom1"
+      "UNITTYPE_Custom1",
+      "UNITTYPE_Radar"
     ],
     "/pa/units/land/l_scout_bot/l_scout_bot_radar_mode_collision_check.json": [
       "UNITTYPE_Bot",

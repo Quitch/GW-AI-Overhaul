@@ -149,6 +149,9 @@ function makeModules(war) {
         war.saved.push(game);
         return $.Deferred().resolve().promise();
       },
+      removeGameById: (id) => {
+        war.removed.push(id);
+      },
     },
   };
   GW.Game.gameStates = { active: "active" };
@@ -205,8 +208,8 @@ function makeModules(war) {
     },
     gwoVersion: "9.9.9",
     gwoSystemBrackets: {
-      bracketsFrom: (systems, providers) => {
-        war.pools.push({ systems, providers });
+      bracketsFrom: (systems, providers, flatMaps) => {
+        war.pools.push({ systems, providers, flatMaps });
         const kept = systems.filter((system) => !system.unusable);
         return kept.length ? [{ min: 0, max: 32, systems: kept }] : [];
       },
@@ -227,7 +230,14 @@ function makeModules(war) {
       },
     },
     gwoPromise: gwoPromise,
+    gwoWarStore: {
+      committed: (id) => {
+        war.committedIds.push(id);
+        return war.committed();
+      },
+    },
     generationFailure: generationFailure,
+    gwoFlatPlanets: { enabled: () => war.flatMaps() },
   };
 }
 
@@ -317,6 +327,9 @@ function makeWar() {
     populated: [],
     records: [],
     saved: [],
+    committedIds: [],
+    committed: () => war.$.Deferred().resolve().promise(),
+    removed: [],
     upserts: [],
     games: [],
     pools: [],
@@ -347,6 +360,7 @@ function makeWar() {
   // Stamped with its id, as setup.js stamps each loaded card.
   war.cards = { [START_CARD]: { id: START_CARD, ...dealingCard(war) } };
   war.loadOptions = () => war.$.Deferred().resolve(war.options).promise();
+  war.flatMaps = () => war.$.Deferred().resolve(false).promise();
   war.options = [
     { name: "Uber", load: () => war.$.Deferred().resolve([usable]).promise() },
   ];
@@ -715,6 +729,159 @@ describe("a war whose save never finishes", () => {
     assert.equal(war.window.location.href, GW_PLAY);
     assert.equal(war.model.gwoWarGenerationError(), "");
     assert.deepEqual(war.errors, []);
+  });
+});
+
+describe("a war whose stored records are checked", () => {
+  const SAVE_TIMEOUT_MS = 30000;
+
+  // A jQuery promise the test settles, as war_store.js's committed returns.
+  const held = (war) => {
+    const deferred = war.$.Deferred();
+    return {
+      promise: deferred.promise(),
+      resolve: () => deferred.resolve(),
+      reject: (error) => deferred.reject(error),
+    };
+  };
+
+  const rejected = (war, error) => war.$.Deferred().reject(error).promise();
+
+  const incomplete = () => {
+    const error = new Error("War 1 was not stored: no systems record");
+    error.gwoIncomplete = true;
+    return error;
+  };
+
+  const failsAsABug = (war) => {
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+  };
+
+  it("checks the saved war's records before it opens the war", async () => {
+    const war = makeWar();
+    const check = held(war);
+    war.committed = () => check.promise;
+
+    war.start();
+    await settle();
+
+    assert.deepEqual(war.committedIds, [war.game().id]);
+    assert.equal(war.generatingWar(), true);
+    assert.equal(war.model.activeGameId(), undefined);
+    assert.equal(war.window.location.href, GW_START);
+
+    check.resolve();
+    await settle();
+
+    assert.equal(war.model.activeGameId(), war.game().id);
+    assert.equal(war.window.location.href, GW_PLAY);
+  });
+
+  it("does not check the records when the save fails", async () => {
+    const war = makeWar();
+    war.modules.GW.manifest.saveGame = () =>
+      war.$.Deferred().reject("blocked").promise();
+
+    war.start();
+    await settle();
+
+    assert.deepEqual(war.committedIds, []);
+    assert.equal(war.errors[0], "War could not be saved: blocked");
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug, and removes it, when a record is missing", async () => {
+    const war = makeWar();
+    war.committed = () => rejected(war, incomplete());
+
+    war.start();
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved: Error: War 1 was not stored: no systems record/
+    );
+    assert.deepEqual(war.removed, [war.game().id]);
+    failsAsABug(war);
+  });
+
+  it("fails the war as a bug, and keeps it, when the check fails another way", async () => {
+    const war = makeWar();
+    war.committed = () => rejected(war, new Error("aborted"));
+
+    war.start();
+    await settle();
+
+    assert.match(war.errors[0], /^War could not be saved: Error: aborted/);
+    assert.deepEqual(war.removed, []);
+    failsAsABug(war);
+  });
+
+  it("gives the save and the check 30 seconds together", async (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = makeWar();
+    const check = held(war);
+    war.committed = () => check.promise;
+
+    war.start();
+    await settle();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS - 1);
+    await settle();
+
+    assert.equal(war.generatingWar(), true);
+    assert.deepEqual(war.errors, []);
+
+    t.mock.timers.tick(1);
+    await settle();
+
+    assert.match(
+      war.errors[0],
+      /^War could not be saved: Error: war save timed out after 30000ms/
+    );
+    assert.deepEqual(war.removed, []);
+    assert.deepEqual(war.logged, []);
+    failsAsABug(war);
+  });
+
+  it("logs a check that completes after the time limit, and does not open the war", async (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = makeWar();
+    const check = held(war);
+    war.committed = () => check.promise;
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+    check.resolve();
+    await settle();
+
+    assert.deepEqual(war.logged, [
+      "War save completed after the time limit: " + war.game().id,
+    ]);
+    assert.deepEqual(war.removed, []);
+    failsAsABug(war);
+  });
+
+  it("logs nothing more, and keeps the war, when a late check finds a record missing", async (t) => {
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    const war = makeWar();
+    const check = held(war);
+    war.committed = () => check.promise;
+
+    war.start();
+    t.mock.timers.tick(SAVE_TIMEOUT_MS);
+    await settle();
+    check.reject(incomplete());
+    await settle();
+
+    assert.deepEqual(war.logged, []);
+    assert.equal(war.errors.length, 2);
+    assert.deepEqual(war.removed, []);
+    failsAsABug(war);
   });
 });
 
@@ -1899,5 +2066,62 @@ describe("the star systems", () => {
       /^System sources failed to load: Error: no list/
     );
     failsWithSourcesMessage(war);
+  });
+});
+
+describe("the --flat-maps flag", () => {
+  const withSharedSystems = () => {
+    const war = makeWar();
+    war.sharedSystems = true;
+    return war;
+  };
+
+  it("is off for the build and the brackets when the engine says so", () => {
+    const war = withSharedSystems();
+
+    war.start();
+
+    assert.equal(war.builds[0].gwoFlatMaps, false);
+    assert.equal(war.pools[0].flatMaps, false);
+  });
+
+  it("reaches the build and the brackets when on", () => {
+    const war = withSharedSystems();
+    war.flatMaps = () => war.$.Deferred().resolve(true).promise();
+
+    war.start();
+
+    assert.equal(war.builds[0].gwoFlatMaps, true);
+    assert.equal(war.pools[0].flatMaps, true);
+  });
+
+  it("is read before any system is drawn", () => {
+    const war = withSharedSystems();
+    const flag = war.$.Deferred();
+    war.flatMaps = () => flag.promise();
+
+    war.start();
+    assert.deepEqual(war.pools, []);
+    assert.equal(war.builds.length, 0);
+
+    flag.resolve(true);
+    assert.equal(war.builds[0].gwoFlatMaps, true);
+    assert.equal(war.saved.length, 1);
+  });
+
+  it("fails the war, not hangs it, when reading it throws", () => {
+    const war = makeWar();
+    war.flatMaps = () => {
+      throw new Error("no flag");
+    };
+
+    war.start();
+
+    assert.equal(war.builds.length, 0);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.generatingWar(), false);
+    assert.ok(
+      war.errors.includes("Failed to generate valid war: Error: no flag")
+    );
   });
 });

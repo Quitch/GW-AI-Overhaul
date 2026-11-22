@@ -224,7 +224,8 @@ define([
       StarSystemTemplates = gwoSystemTemplates.chooseFor(
         chooseStarSystemTemplates,
         config.content,
-        config.useEasierSystemTemplate
+        config.useEasierSystemTemplate,
+        config.gwoFlatMaps
       );
     }
 

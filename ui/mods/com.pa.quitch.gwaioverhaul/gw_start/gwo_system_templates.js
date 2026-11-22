@@ -10,14 +10,44 @@ define([
   "main/game/galactic_war/shared/js/systems/titans-easy",
   "main/game/galactic_war/shared/js/systems/titans-normal",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
-], function (pa_easy, pa_normal, titans_easy, titans_normal, gwoRng) {
-  var chooseStarSystemTemplates = function (content, easier) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js", // GWO
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_flat_systems.js", // GWO
+], function (
+  pa_easy,
+  pa_normal,
+  titans_easy,
+  titans_normal,
+  gwoRng,
+  gwoFlatPlanets, // GWO
+  gwoFlatSystems // GWO
+) {
+  // GWO - flatMaps
+  var chooseStarSystemTemplates = function (content, easier, flatMaps) {
     var activeTemplates;
+    var flatSystems = []; // GWO
 
     if (content === "PAExpansion1") {
       activeTemplates = easier ? titans_easy : titans_normal;
+      // GWO
+      flatSystems = easier
+        ? gwoFlatSystems.titansEasy
+        : gwoFlatSystems.titansNormal;
     } else {
       activeTemplates = easier ? pa_easy : pa_normal;
+    }
+
+    // GWO - a server without --flat-maps refuses a flat planet, so the flat
+    // systems join the end of each group only with it. Copies, not the shared
+    // modules. A flat system with no group to join is left out.
+    if (flatMaps) {
+      activeTemplates = _.map(activeTemplates, function (group, index) {
+        if (!flatSystems[index]) {
+          return group;
+        }
+        return _.assign({}, group, {
+          Systems: group.Systems.concat([flatSystems[index]]),
+        });
+      });
     }
 
     var planet_template = {
@@ -426,6 +456,13 @@ define([
           );
           bp.mass = plnt.mass;
           bp.starting_planet = plnt.starting_planet;
+          // GWO - a slab. The last draws on this planet's stream, so no
+          // sphere's values move.
+          if (flatMaps && gwoFlatPlanets.templateIsFlat(plnt)) {
+            bp.generator.shape = "flat";
+            bp.generator.width = planetRng.int(plnt.Width[0], plnt.Width[1]);
+            bp.generator.length = planetRng.int(plnt.Length[0], plnt.Length[1]);
+          }
 
           return bp;
         });
@@ -453,11 +490,12 @@ define([
     // and marks its version with loadOptions, the same capability check
     // war_generation.js uses. Where it is present it owns system selection, so
     // defer to it.
-    chooseFor: function (baseLoader, content, easier) {
+    // flatMaps reaches only GWO's copy: Shared Systems' loader has no use for it.
+    chooseFor: function (baseLoader, content, easier, flatMaps) {
       if (_.isFunction(baseLoader) && _.isFunction(baseLoader.loadOptions)) {
         return baseLoader(content, easier);
       }
-      return chooseStarSystemTemplates(content, easier);
+      return chooseStarSystemTemplates(content, easier, flatMaps);
     },
   };
 });

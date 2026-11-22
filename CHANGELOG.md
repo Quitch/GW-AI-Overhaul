@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v7.11.2 - 2026-11-22
+
+### Bugfix
+
+- Works around a base game bug that could lose a new war's star systems, which made every battle in that war fail with "Failed to load Galactic War config"
+- Works around the same base game bug when a co-op player receives the host's war, which could lose the star systems of that player's copy
+
 ## v7.11.1 - 2026-11-16
 
 ### Bugfix

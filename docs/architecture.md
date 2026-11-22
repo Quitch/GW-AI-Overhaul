@@ -115,7 +115,9 @@ steps in order:
    a mod, the function collects only its biomes. See galaxy.md, "Biome mods in
    a GW battle".
 4. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
-   config: armies, personalities, planets, game modes. These files build every
+   config: armies, personalities, planets, game modes. Without `--flat-maps`,
+   which `referee.js` reads as `ref.flatMaps` just before, a flat planet is
+   fought as a sphere (galaxy.md, "Flat planets"). These files build every
    army's personality here through `shared/ai_personality.js`. The inputs are
    what the war recorded (its `personalityId`, `penchantName`, faction and
    brain) and the tier that `warTier()` in `shared/ai.js` resolves. The numbers
@@ -396,6 +398,20 @@ that save times out, it is logged and never settled, and its launch is called
 off: `launchingFight` is cleared, which closes the launch panel and lets the
 player press Fight again. Every other save, such as a move's still writing
 when Fight is pressed, rejects as usual.
+
+Stock's save also resolves before IndexedDB commits its writes (see
+[galaxy.md](galaxy.md), "Saving the new war"), and stock reloads or leaves the
+page on that resolution in several places: a co-op viewer's full rehydrate,
+which writes the war's star systems, the cheat game load, Open to Co-op
+(`openToCoop`), and the local copy that leaving, exiting, or losing a co-op
+session writes (`persistCampaignLocalCopy`). A page change before the commit
+can lose the writes (#677). So
+`gw_play/save_limit.js` resolves every save only once `settled` in
+`shared/war_store.js` finishes: a read/write transaction on the war's stores,
+which IndexedDB starts only after the save's writes have committed. It adds a
+few milliseconds to each save. A fault in that wait is logged and the save
+still resolves. The wait does count towards the 30 s limit, so a save whose
+write and wait together pass 30 s times out like one that never lands.
 
 The call-off waits for the launch's referee hires to settle, so a second Fight
 cannot hire while the first launch still does. On a co-op host, two hires'

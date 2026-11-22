@@ -36,8 +36,11 @@ special-cases the `-dev` identifier.
    changed. A merge just after that time reaches players about a day later.
    The merge keeps `master`'s release identifier and display name, because
    `develop` never changes those lines.
-6. Publish a GitHub release tagged `v<version>` on `master`. The tag is for
-   GitHub's records only; the Community Mods manager does not read it.
+6. Publish a GitHub release tagged `v<version>` on `master`, with that
+   version's `CHANGELOG.md` section as its notes. Tick "Create a discussion for
+   this release" in the Announcements category (`gh release create` takes
+   `--discussion-category Announcements`). The tag is for GitHub's records only;
+   the Community Mods manager does not read it.
 
 `npm run release` (`scripts/release.js`) needs the PA install and PA's user data
 folder, found as [testing.md](testing.md) describes. It stops at the first step

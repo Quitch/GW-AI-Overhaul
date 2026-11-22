@@ -63,7 +63,9 @@ define([
     var gwoBiomeMods = modules.gwoBiomeMods;
     var gwoRaces = modules.gwoRaces;
     var gwoPromise = modules.gwoPromise;
+    var gwoWarStore = modules.gwoWarStore;
     var generationFailure = modules.generationFailure;
+    var gwoFlatPlanets = modules.gwoFlatPlanets;
 
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt.
@@ -150,10 +152,18 @@ define([
       };
     };
 
+    // Read once per war, before anything is drawn. See galaxy.md, "Flat
+    // planets".
+    var readFlatMaps = function (run) {
+      return gwoFlatPlanets.enabled().then(function (flatMaps) {
+        run.flatMaps = flatMaps;
+      });
+    };
+
     // Resolves the brackets, or undefined without them. Rejects with
     // SYSTEM_SOURCES when no source gave a system, or one failed and none
     // gave a bracket. See galaxy.md, "Shared Systems for Galactic War".
-    var loadSystemBrackets = function () {
+    var loadSystemBrackets = function (run) {
       var ready = $.Deferred();
       var sourceFailed = false;
 
@@ -169,7 +179,11 @@ define([
         // $.when hands back one array per source.
         var systems = _.flatten(_.toArray(arguments));
         gwoBiomeMods.providers().then(function (providers) {
-          var built = gwoSystemBrackets.bracketsFrom(systems, providers);
+          var built = gwoSystemBrackets.bracketsFrom(
+            systems,
+            providers,
+            run.flatMaps
+          );
           if (built.length) {
             ready.resolve({ brackets: built, providers: providers });
           } else if (sourceFailed || _.isEmpty(systems)) {
@@ -460,6 +474,7 @@ define([
         largePlanets: run.largePlanets,
         gwoSystemBrackets: systemBrackets.brackets,
         gwoBiomeProviders: systemBrackets.providers,
+        gwoFlatMaps: run.flatMaps,
       });
     };
 
@@ -742,12 +757,20 @@ define([
       scene.saveDifficultySettings();
 
       var game = model.newGame();
-      var save;
+      var stored;
       new Promise(function (resolve) {
-        save = GW.manifest.saveGame(game);
-        resolve(gwoPromise.within(save, SAVE_TIMEOUT_MS, "war save"));
+        stored = storedWar(GW.manifest.saveGame(game), game.id);
+        resolve(gwoPromise.within(stored, SAVE_TIMEOUT_MS, "war save"));
       }).then(onGameSaved, function (err) {
-        onWarNotSaved(err, save, game.id);
+        onWarNotSaved(err, stored, game.id);
+      });
+    };
+
+    // Stock's save resolves before its writes commit. See galaxy.md, "Saving
+    // the new war".
+    var storedWar = function (save, id) {
+      return save.then(function () {
+        return gwoWarStore.committed(id);
       });
     };
 
@@ -771,12 +794,15 @@ define([
       }
     };
 
-    var onWarNotSaved = function (err, save, id) {
+    var onWarNotSaved = function (err, stored, id) {
       console.error("War could not be saved: " + ((err && err.stack) || err));
       if (err && err.gwoTimedOut) {
-        save.then(function () {
+        stored.then(function () {
           console.log("War save completed after the time limit: " + id);
-        });
+        }, _.noop);
+      }
+      if (err && err.gwoIncomplete) {
+        GW.manifest.removeGameById(id);
       }
       warGenerationFailure(undefined);
     };
@@ -791,9 +817,11 @@ define([
 
     var generate = function (run) {
       var finishSetup = gwoPromise.steps(
-        loadSystemBrackets(),
+        $.Deferred().resolve().promise(),
         _.map(
           [
+            readFlatMaps,
+            loadSystemBrackets,
             buildGalaxy,
             dealStartCard,
             moveIn,

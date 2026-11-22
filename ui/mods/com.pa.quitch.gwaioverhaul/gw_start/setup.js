@@ -175,6 +175,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/war_generation_failure.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/war_generation.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/war_store.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
       ],
       function (
         GW,
@@ -201,7 +203,9 @@
         gwoRaces,
         gwoPromise,
         gwoGenerationFailure,
-        gwoWarGeneration
+        gwoWarGeneration,
+        gwoWarStore,
+        gwoFlatPlanets
       ) {
         // Replaces GWGalaxy.prototype.build, which war generation calls.
         gwoGalaxyBuild.install();
@@ -333,7 +337,9 @@
             gwoBiomeMods: gwoBiomeMods,
             gwoRaces: gwoRaces,
             gwoPromise: gwoPromise,
+            gwoWarStore: gwoWarStore,
             generationFailure: gwoGenerationFailure,
+            gwoFlatPlanets: gwoFlatPlanets,
           },
           {
             generatingWar: generatingWar,
