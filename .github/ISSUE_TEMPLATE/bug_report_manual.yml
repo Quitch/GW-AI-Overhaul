@@ -1,7 +1,6 @@
 name: Bug report (manual reporting via GitHub)
 description: Report unexpected behaviours manually via GitHub.
 title: "[BUG] "
-labels: ["bug"]
 assignees: ["Quitch"]
 body:
   - type: checkboxes
