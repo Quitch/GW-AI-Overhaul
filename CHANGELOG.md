@@ -4,7 +4,7 @@
 
 ### Bugfix
 
-- A new war no longer loses its star systems at random, which made every battle in it fail with "Failed to load Galactic War config"
+- Works around a base game bug that could lose a new war's star systems, which made every battle in that war fail with "Failed to load Galactic War config"
 
 ## v7.11.1 - 2026-11-16
 
