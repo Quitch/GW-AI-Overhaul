@@ -27,11 +27,13 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.flatMapMods(
-          gwoGroup.energyWeapons,
-          "multiply",
-          gwoCard.paths.energyWeapon,
-          0.25
+        gwoCard.ammoCost(
+          gwoCard.flatMapMods(
+            gwoGroup.energyWeapons,
+            "multiply",
+            gwoCard.paths.energyWeapon,
+            0.25
+          )
         )
       );
     },

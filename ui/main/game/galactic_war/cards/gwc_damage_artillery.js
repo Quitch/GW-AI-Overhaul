@@ -33,11 +33,13 @@ define([
             1.25
           )
           .concat(
-            gwoCard.flatMapMods(
-              gwoGroup.structuresArtilleryWeapons,
-              "multiply",
-              gwoCard.paths.energyWeapon,
-              0.1
+            gwoCard.ammoCost(
+              gwoCard.flatMapMods(
+                gwoGroup.structuresArtilleryWeapons,
+                "multiply",
+                gwoCard.paths.energyWeapon,
+                0.1
+              )
             )
           )
       );

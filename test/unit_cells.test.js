@@ -10,6 +10,9 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const cells = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js"
 );
+const specs = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
+);
 
 const T = (list) => list.split(" ").map((tag) => "UNITTYPE_" + tag);
 
@@ -471,6 +474,30 @@ describe("expandMods", () => {
         mod(FX_TANK_WEAPON, "rate_of_fire", 4),
       ]
     );
+  });
+
+  // The flag has to reach the race weapon for specs.mod to skip the cut. The
+  // weapon inherits its ammo keys from a base tool.
+  it("carries ammoCost to the stand-in, where specs.mod skips it on time ammo", () => {
+    const cut = Object.assign(mod(ANT_WEAPON, "ammo_per_shot", 0.25), {
+      ammoCost: true,
+    });
+    const landed = cells.expandMods([cut], vanilla, race);
+    assert.deepEqual(landed, [
+      Object.assign({}, cut, { file: FX_TANK_WEAPON }),
+    ]);
+
+    const BASE_WEAPON = "/pa/tools/rx_base_weapon.json";
+    const cook = (source) => {
+      const data = {
+        [BASE_WEAPON]: { ammo_source: source, ammo_per_shot: 0.6 },
+        [FX_TANK_WEAPON]: { base_spec: BASE_WEAPON },
+      };
+      specs.mod(data, landed, "");
+      return data[FX_TANK_WEAPON].ammo_per_shot;
+    };
+    assert.equal(cook("time"), 0.6);
+    assert.equal(cook("energy"), 0.15);
   });
 
   it("drops a mod on a vanilla file the race has no cell-mate for, keeps foreign and file-less mods", () => {
