@@ -506,6 +506,15 @@ define([
       });
     },
 
+    // The same descriptors, each skipped on a weapon whose ammo refills over
+    // time, where there is no cost to cut. See specs.md, "Ammo-cost mods".
+    // e.g. ammoCost(mods(gwoUnit.x, "multiply", gwoCard.paths.energyWeapon, 0.25))
+    ammoCost: function (list) {
+      return _.map(list || [], function (mod) {
+        return _.assign({}, mod, { ammoCost: true });
+      });
+    },
+
     // The attribute sets cards multiply as one, in the order they emit them.
     paths: {
       navigation: [
