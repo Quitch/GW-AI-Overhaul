@@ -165,6 +165,17 @@ descriptor names, with its `base_spec` chain flattened, so an inherited
 `ammo_source` counts. `replace` runs before `multiply`, so a card that turns a
 weapon to time ammo is seen wherever it sits in the list.
 
+The check does not follow the path. A flagged descriptor that names a unit and
+walks into its weapon through a reference (`tools.0.spec_id.ammo_capacity`) is
+tested against the unit, which has no `ammo_source`, and is applied. A flagged
+descriptor therefore names the weapon's own file, as every GWO card does.
+
+A card's `buff()` sets the flag, so a descriptor stored before the card had it
+stays unflagged. The host's cards and the AI's tech are built again on each
+load. Under per-player tech, a co-op player's record stores its mods
+([`coop.md`](coop.md), "The record"), and keeps them until that player's cards
+are next applied.
+
 GWO sets the flag on every cut to `gwoCard.paths.energyWeapon`: Artillery
 Ammunition Tech, Complete Energy Tech, Improved Energy Weapons, the Bionic
 Augmentation Commander's Uber Cannon cut, and the AI's Ammunition Tech
