@@ -1,2 +1,6 @@
 # disable blank issue creation
 blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/Quitch/GW-AI-Overhaul/discussions/categories/q-a
+    about: How to use the mod, or anything that is not a bug report.
