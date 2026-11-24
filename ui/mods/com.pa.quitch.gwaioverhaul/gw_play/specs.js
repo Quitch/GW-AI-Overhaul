@@ -388,12 +388,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           );
         }
 
-        // Time ammo has no cost, so a cut only shortens the refill, and a
-        // carpet_fire volley that never empties ignores orders. See specs.md.
-        if (mod.ammoCost && spec.ammo_source === "time") {
-          return;
-        }
-
         var resolved = resolveSelector(mod, spec);
         if (resolved) {
           _.forEach(resolved, applyMod);
@@ -549,10 +543,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       };
 
+      // Time ammo has no cost, so a cut only shortens the refill, and a
+      // carpet_fire volley that never empties ignores orders. See specs.md.
+      var cutsTimeAmmo = function (mod) {
+        var spec = mod.ammoCost && load(mod.file);
+        return !!spec && spec.ammo_source === "time";
+      };
+
       var orderedMods = orderOfOperations(mods);
       _.forEach(orderedMods, function (mod) {
         try {
-          applyMod(mod);
+          if (!cutsTimeAmmo(mod)) {
+            applyMod(mod);
+          }
         } catch (e) {
           console.error(
             "specs.mod: applyMod threw, skipping mod " +
