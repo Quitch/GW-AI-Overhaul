@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Lob Upgrade Tech with Artillery Ammunition Tech no longer makes the Lob fire without end and ignore Stop and Hold Fire
+- Cards and AI tech that cut ammunition cost no longer speed up weapons that reload over time, such as some of Legion's
+
 ## v7.11.2 - 2026-11-22
 
 ### Bugfix

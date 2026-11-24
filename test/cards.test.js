@@ -1405,3 +1405,23 @@ describe("stockOnly", () => {
     assert.deepEqual(cards.stockOnly(undefined), []);
   });
 });
+
+describe("ammoCost", () => {
+  it("flags every descriptor, as a copy, and leaves the input alone", () => {
+    const input = cards.mods(
+      "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
+      "multiply",
+      cards.paths.energyWeapon,
+      0.25
+    );
+    const flagged = cards.ammoCost(input);
+
+    assert.deepEqual(
+      flagged,
+      input.map((mod) => Object.assign({}, mod, { ammoCost: true }))
+    );
+    assert.equal(input[0].ammoCost, undefined);
+    assert.notEqual(flagged[0], input[0]);
+    assert.deepEqual(cards.ammoCost(undefined), []);
+  });
+});

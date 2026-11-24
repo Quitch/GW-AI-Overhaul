@@ -242,6 +242,7 @@ describe("a mod's cards can grant advanced tech", () => {
 // Named individually rather than by diffing the whole export, so adding a helper
 // stays free while removing or renaming one fails.
 const CARD_HELPERS = [
+  "ammoCost",
   "anyPlayerHasCard",
   "antiTechDeal",
   "applyDulls",

@@ -123,6 +123,25 @@ describe("factionTechs", () => {
     });
   });
 
+  // Ammunition tech cuts ammo cost, and combat tech carries the same mods.
+  it("flags the ammo-cost cut in ammunition (1) and combat (6) tech, and nothing else", () => {
+    const AMMO_PATHS = ["ammo_capacity", "ammo_demand", "ammo_per_shot"];
+    aiTech.factionTechs.forEach((faction) => {
+      POPULATED_SLOTS.forEach((slot) => {
+        faction[slot].forEach((descriptor) => {
+          assert.equal(
+            descriptor.ammoCost === true,
+            AMMO_PATHS.includes(descriptor.path),
+            slot + " " + descriptor.file + " " + descriptor.path
+          );
+        });
+      });
+      [1, 6].forEach((slot) => {
+        assert.ok(faction[slot].some((descriptor) => descriptor.ammoCost));
+      });
+    });
+  });
+
   it("combat tech (6) appends ammunition (1) then armour (2) at its tail", () => {
     // Pinning the tail proves the concat order and guards against a reorder.
     aiTech.factionTechs.forEach((faction) => {

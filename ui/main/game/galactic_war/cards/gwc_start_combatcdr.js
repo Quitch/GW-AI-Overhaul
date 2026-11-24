@@ -16,11 +16,13 @@ define([
         gwoCard
           .mods(gwoUnit.commander, "multiply", gwoCard.paths.navigation, 5)
           .concat(
-            gwoCard.mods(
-              gwoUnit.commanderSecondary,
-              "multiply",
-              gwoCard.paths.energyWeapon,
-              0.25
+            gwoCard.ammoCost(
+              gwoCard.mods(
+                gwoUnit.commanderSecondary,
+                "multiply",
+                gwoCard.paths.energyWeapon,
+                0.25
+              )
             ),
             gwoCard.flatMapMods(gwoGroup.commanderPrimaryWeapons, "multiply", {
               rate_of_fire: 2,

@@ -72,7 +72,7 @@ define([
     });
     _.forEach(factionWeapons, function (weapons, i) {
       factionTechs[i][1] = factionTechs[i][1].concat(
-        multiply(weapons, 0.25, weaponPaths)
+        gwoCard.ammoCost(multiply(weapons, 0.25, weaponPaths))
       );
     });
   };
