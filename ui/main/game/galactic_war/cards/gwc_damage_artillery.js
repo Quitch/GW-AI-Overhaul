@@ -19,8 +19,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
-      // Lob Upgrade Tech's time ammo takes no ammo-cost cut, and the Lob's
-      // shell does no damage, so the card does nothing for an upgraded Lob.
+      // The Lob's shell does no damage, and Lob Upgrade Tech's time ammo takes
+      // no ammo-cost cut (specs.md, "Ammo-cost mods").
       var artillery = inventory.hasCard("gwaio_upgrade_lob")
         ? _.without(gwoGroup.structuresArtillery, gwoUnit.lob)
         : gwoGroup.structuresArtillery;
