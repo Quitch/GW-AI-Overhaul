@@ -163,7 +163,9 @@ tags. One cache serves the launch, so a co-op host's second hire reuses the
 first hire's applies. The hire keeps the results as `ref.viewerInventories`
 and in `ref.coopAis`, and writes no record. Every launch reader takes the other
 players' inventories from there: the AI players' specs and trees, the
-Guardians' mods and AI mods, and the per-player tech referee's viewer specs.
+Guardians' mods and AI mods, the Sub Commander colour order, and the per-player
+tech referee's viewer specs. The AI players' card judging between battles still
+reads the records.
 
 An apply that fails or times out rejects the hire, as a failed stage does
 ("Battle launch" in [`architecture.md`](architecture.md)). An apply takes about
