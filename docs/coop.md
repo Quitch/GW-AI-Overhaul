@@ -164,8 +164,20 @@ first hire's applies. The hire keeps the results as `ref.viewerInventories`
 and in `ref.coopAis`, and writes no record. Every launch reader takes the other
 players' inventories from there: the AI players' specs and trees, the
 Guardians' mods and AI mods, the Sub Commander colour order, and the per-player
-tech referee's viewer specs. The AI players' card judging between battles still
-reads the records.
+tech referee's viewer specs.
+
+The AI players' card judging between battles still reads the records as
+stored: the viewers' mods and AI mods that The Guardians' view adds
+("Before The Guardians"), and the other players' inventories that give the
+team's domains ([`tech-cards.md`](tech-cards.md), "How AI players judge a
+card"). After a GWO update that changes what a card gives, an AI therefore
+judges against that player's old effects until the player's cards are next
+applied, which their next card does. This is left as it is (#687). The gap
+closes by itself, and nothing breaks. Applying the records for judging would be
+fast, but it would make the team's domains asynchronous for every caller that
+scores a card, and each would need a rule for an apply that fails. The AI's own
+inventory is not affected: `gw_play/coop_ai_effects.js` applies it again for
+every judgement.
 
 An apply that fails or times out rejects the hire, as a failed stage does
 ("Battle launch" in [`architecture.md`](architecture.md)). An apply takes about
@@ -857,7 +869,9 @@ the log tags it `human-held`.
 The humans' mods are read when the prune runs. If a human later deletes their
 copy, or a viewer holding it disconnects before Fight, the AI's kept copy helps
 the Guardians again, and it is not judged again until the AI's next deal. This
-is the same staleness the prune accepts for a viewer who connects later.
+is the same staleness the prune accepts for a viewer who connects later. A
+viewer's mods also come from their stored record, so they can lag a GWO update
+("Records at launch").
 
 ### Holding the war
 
