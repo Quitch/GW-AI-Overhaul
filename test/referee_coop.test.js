@@ -115,6 +115,32 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     );
   });
 
+  // Issue #685: the hire's applied inventories, not the records.
+  it("takes a hire's viewers as it applied them", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: { "view-1": makeRecord(["Gamma"]) },
+    });
+
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(
+          hostInventory,
+          game,
+          [HOST, VIEWER_ONE],
+          [],
+          [
+            {
+              client: VIEWER_ONE,
+              inventory: makeRecord(["Gamma", "Zeta"]).inventory,
+            },
+          ]
+        )
+      ),
+      ["Alpha", "Beta", "Gamma", "Zeta"]
+    );
+  });
+
   it("keeps the host first however the client list is ordered", () => {
     const game = makeGame({
       perPlayerTechCards: true,

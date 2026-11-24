@@ -269,26 +269,20 @@ define([
     return inventory.mods || [];
   };
 
-  // Every other player's inventory: the connected viewers' and, under
-  // per-player tech, the hire's co-op AI players' (ref.coopAis).
-  var getConnectedClientInventories = function (
-    game,
-    connectedClients,
-    coopAis
-  ) {
+  // Every other player's inventory: the hire's viewers' (ref.viewerInventories)
+  // and, under per-player tech, its co-op AI players' (ref.coopAis).
+  var getConnectedClientInventories = function (viewers, coopAis) {
     return _.pluck(
-      refereeCoop
-        .getConnectedViewerInventories(game, connectedClients)
-        .concat(refereeCoop.launchAiInventories(coopAis)),
+      (viewers || []).concat(refereeCoop.launchAiInventories(coopAis)),
       "inventory"
     );
   };
 
-  var getConnectedClientAiMods = function (game, connectedClients, coopAis) {
+  var getConnectedClientAiMods = function (viewers, coopAis) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      getConnectedClientInventories(game, connectedClients, coopAis),
+      getConnectedClientInventories(viewers, coopAis),
       function (inventory) {
         connectedClientAiMods = connectedClientAiMods.concat(
           getRefereeInventoryAiMods(inventory)
@@ -299,14 +293,9 @@ define([
     return connectedClientAiMods;
   };
 
-  var getInventoryWithAllPlayerAiMods = function (
-    inventory,
-    game,
-    connectedClients,
-    coopAis
-  ) {
+  var getInventoryWithAllPlayerAiMods = function (inventory, viewers, coopAis) {
     var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
-      getConnectedClientAiMods(game, connectedClients, coopAis)
+      getConnectedClientAiMods(viewers, coopAis)
     );
 
     return {
@@ -738,13 +727,13 @@ define([
   // the race's files layered over the brain's base files, written to the
   // race's own root. Each takes the AI mods of the inventories whose mods the
   // MLA tree in its place would take. See races.md, "Race trees".
-  var raceTreeJobs = function (game, connectedClients, coopAis) {
+  var raceTreeJobs = function (game, viewers, coopAis) {
     var inventory = game.inventory();
     var ai = gwoAI.currentStarAi(game);
     var playerRace = gwoRaces.raceOf(inventory);
     var guardians = ai.mirrorMode;
     var everyPlayer = [inventory].concat(
-      getConnectedClientInventories(game, connectedClients, coopAis)
+      getConnectedClientInventories(viewers, coopAis)
     );
     var jobs = {};
 
@@ -807,23 +796,20 @@ define([
     // Each viewer's own race: the host's under Separate races off, and whatever
     // they picked under it on. A viewer's destination is its own either way -
     // the race decides which brain's tree is filtered into it. See coop.md.
-    _.forEach(
-      refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer, viewerIndex) {
-        var viewerRace = gwoRaces.raceOf(viewer.inventory);
-        add(
-          "subcommander",
-          viewerRace,
-          gwoAI.getSubcommanderPathForViewer(
-            viewer.inventory,
-            ".player" + viewerIndex,
-            viewerRace
-          ),
+    _.forEach(viewers, function (viewer, viewerIndex) {
+      var viewerRace = gwoRaces.raceOf(viewer.inventory);
+      add(
+        "subcommander",
+        viewerRace,
+        gwoAI.getSubcommanderPathForViewer(
           viewer.inventory,
-          [viewer.inventory]
-        );
-      }
-    );
+          ".player" + viewerIndex,
+          viewerRace
+        ),
+        viewer.inventory,
+        [viewer.inventory]
+      );
+    });
     // A race co-op AI player's own tree, on its co-op brain, and under
     // per-player tech its Sub Commanders' as a viewer's. See coop.md.
     _.forEach(coopAis, function (coopAi) {
@@ -1042,13 +1028,11 @@ define([
       ? self.hireClients
       : refereeCoop.getConnectedClients();
     var coopAis = self.coopAis || [];
+    var viewers =
+      self.viewerInventories ||
+      refereeCoop.getConnectedViewerInventories(game, connectedClients);
     var playerAiModInventory = guardians
-      ? getInventoryWithAllPlayerAiMods(
-          game.inventory(),
-          game,
-          connectedClients,
-          coopAis
-        )
+      ? getInventoryWithAllPlayerAiMods(game.inventory(), viewers, coopAis)
       : game.inventory();
 
     // The hire hands the launch's cache in, so a co-op host's second hire
@@ -1076,57 +1060,51 @@ define([
 
     // The per-player referee checks its launch clients against the list that
     // numbers these trees. See coop.md, "The two referees".
-    self.hireClientKeys = _.map(
-      refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
-        return refereeCoop.clientKey(viewer.client.id, viewer.client.name);
-      }
-    );
+    self.hireClientKeys = _.map(viewers, function (viewer) {
+      return refereeCoop.clientKey(viewer.client.id, viewer.client.name);
+    });
 
-    _.forEach(
-      refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer, viewerIndex) {
-        // A race viewer's tree is a race tree job (raceTreeJobs).
-        if (!gwoRaces.isMla(gwoRaces.raceOf(viewer.inventory))) {
-          return;
-        }
-        var viewerInventory = viewer.inventory;
-        var viewerPlayerTag = ".player" + viewerIndex;
-        // Read from the viewer's own tier, which its destination is built
-        // from too: the host's Sub Commander Tactics is not the viewer's.
-        var viewerSubCommanderSource = gwoAI.getAIPathSource(
-          "subcommander",
-          undefined,
-          viewerInventory
-        );
-        var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
-          viewerInventory,
-          viewerPlayerTag
-        );
-        var viewerAiPaths = _.assign({}, aiPaths, {
-          subCommanderSource: viewerSubCommanderSource,
-          subCommanderDestination: viewerSubCommanderDestination,
-        });
-
-        promises.push(
-          processDirectories(
-            viewerSubCommanderSource,
-            _.assign({}, launch, {
-              aiPaths: viewerAiPaths,
-              clusterPresence: "None",
-              inventory: viewerInventory,
-              forceSubCommanderScope: true,
-            })
-          )
-        );
+    _.forEach(viewers, function (viewer, viewerIndex) {
+      // A race viewer's tree is a race tree job (raceTreeJobs).
+      if (!gwoRaces.isMla(gwoRaces.raceOf(viewer.inventory))) {
+        return;
       }
-    );
+      var viewerInventory = viewer.inventory;
+      var viewerPlayerTag = ".player" + viewerIndex;
+      // Read from the viewer's own tier, which its destination is built
+      // from too: the host's Sub Commander Tactics is not the viewer's.
+      var viewerSubCommanderSource = gwoAI.getAIPathSource(
+        "subcommander",
+        undefined,
+        viewerInventory
+      );
+      var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
+        viewerInventory,
+        viewerPlayerTag
+      );
+      var viewerAiPaths = _.assign({}, aiPaths, {
+        subCommanderSource: viewerSubCommanderSource,
+        subCommanderDestination: viewerSubCommanderDestination,
+      });
+
+      promises.push(
+        processDirectories(
+          viewerSubCommanderSource,
+          _.assign({}, launch, {
+            aiPaths: viewerAiPaths,
+            clusterPresence: "None",
+            inventory: viewerInventory,
+            forceSubCommanderScope: true,
+          })
+        )
+      );
+    });
 
     _.forEach(coopAiTreeRequests(coopAis, launch), function (tree) {
       promises.push(processDirectories(tree.source, tree.request));
     });
 
-    _.forEach(raceTreeJobs(game, connectedClients, coopAis), function (job) {
+    _.forEach(raceTreeJobs(game, viewers, coopAis), function (job) {
       promises.push(writeRaceTree(job, treeCache, configFiles));
     });
 

@@ -102,8 +102,11 @@ steps in order:
 0. `gw_play/referee.js` reads the connected clients once as `ref.hireClients`
    and fixes the battle's co-op AI players as `ref.coopAis`, from
    `model.gwoCoopAi.launchRoster(ref.hireClients)`. The steps below read the
-   roster and the clients from there, never from the war or the live list. See
-   [`coop.md`](coop.md), "AI players" and "The two referees".
+   roster and the clients from there, never from the war or the live list.
+   After the AI load files, the hire applies each viewer's and each AI
+   player's record again (`gw_play/launch_inventories.js`), and the steps
+   below read those inventories, not the records. See [`coop.md`](coop.md),
+   "AI players", "The two referees", and "Records at launch".
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
    applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".

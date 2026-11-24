@@ -171,10 +171,11 @@ tested against the unit, which has no `ammo_source`, and is applied. A flagged
 descriptor therefore names the weapon's own file, as every GWO card does.
 
 A card's `buff()` sets the flag, so a descriptor stored before the card had it
-stays unflagged. The host's cards and the AI's tech are built again on each
-load. Under per-player tech, a co-op player's record stores its mods
-([`coop.md`](coop.md), "The record"), and keeps them until that player's cards
-are next applied.
+stays unflagged. No battle that GWO's referee builds reads a stored one. The
+host's cards and the AI's
+tech are built again on each load. Under per-player tech, a co-op player's
+record stores its mods ([`coop.md`](coop.md), "The record"), and each hire
+applies that player's cards again ([`coop.md`](coop.md), "Records at launch").
 
 GWO sets the flag on every cut to `gwoCard.paths.energyWeapon`: Artillery
 Ammunition Tech, Complete Energy Tech, Improved Energy Weapons, the Bionic

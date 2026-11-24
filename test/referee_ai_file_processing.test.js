@@ -1004,15 +1004,19 @@ describe("race trees", () => {
         { id: "v1", name: "Viewer1", role: "viewer" },
       ]);
 
-      const jobs = raceTreeJobs(fixture.game, undefined, [
-        {
-          race: "fixture",
-          path: "/pa/ai_race_fixture/player_ai1/",
-          inventory: coopInventory,
-          perPlayer: true,
-          tag: ".ai1",
-        },
-      ]);
+      const jobs = raceTreeJobs(
+        fixture.game,
+        [{ client: { id: "v1", name: "Viewer1" }, inventory: viewer }],
+        [
+          {
+            race: "fixture",
+            path: "/pa/ai_race_fixture/player_ai1/",
+            inventory: coopInventory,
+            perPlayer: true,
+            tag: ".ai1",
+          },
+        ]
+      );
 
       const every = ["host.json", "viewer.json", "coop.json"];
       assert.deepEqual(modsOf(jobs), {

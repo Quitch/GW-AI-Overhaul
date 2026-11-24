@@ -146,6 +146,34 @@ listed, and then reads again on the next call. So a single broken file in any mo
 leaves the cache unseeded: the hire logs `AI load files not read before the hire:`
 and reads each load file itself, as it did before the seed.
 
+### Records at launch
+
+Under per-player tech, each viewer's and each AI player's record stores its
+inventory as its cards were last applied: the units, mods, and AI mods that
+each card's `buff()` and `dull()` gave then. A card that a GWO update changes
+would reach that player only when the player's cards were next applied. The
+host's own inventory is applied again on every load, so it never lags.
+
+So each hire applies the records again before it builds anything
+(`gw_play/launch_inventories.js`). It applies the record of each viewer in the
+hire's client list, and of each co-op AI player that fields its own tech. It
+uses `gw_play/coop_ai_effects.js`, so the applies hold loadout unlocks off,
+run one at a time, time out after 10 seconds, and are cached by cards and
+tags. One cache serves the launch, so a co-op host's second hire reuses the
+first hire's applies. The hire keeps the results as `ref.viewerInventories`
+and in `ref.coopAis`, and writes no record. Every launch reader takes the other
+players' inventories from there: the AI players' specs and trees, the
+Guardians' mods and AI mods, the Sub Commander colour order, and the per-player
+tech referee's viewer specs. The AI players' card judging between battles still
+reads the records.
+
+An apply that fails or times out rejects the hire, as a failed stage does
+("Battle launch" in [`architecture.md`](architecture.md)). An apply takes about
+1 ms per player on CEF. `gw_play` loads the module of every card in the war's
+deck, loadouts included, when the scene starts. So the shared hire's reduced
+client mods do not stop a held card from loading. A card that is not in the
+deck and cannot load adds nothing, as on the host's own load.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.

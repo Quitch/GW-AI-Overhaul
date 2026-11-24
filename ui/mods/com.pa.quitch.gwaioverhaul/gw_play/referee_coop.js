@@ -93,14 +93,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   // since a subcommander's tech comes from its own player.
   //
   // Order in equals order out, so a caller that cares which colour lands where
-  // must pass clients host-first. A hire passes its AI players as
-  // aiInventories (launchAiInventories); without them the records are read.
-  // See coop.md for what is excluded and why.
+  // must pass clients host-first. A hire passes its viewers and AI players as
+  // viewerInventories and aiInventories (launchAiInventories), as it applied
+  // them; without them the records are read. See coop.md for what is
+  // excluded and why.
   var getOrderedSubcommanders = function (
     inventory,
     game,
     connectedClients,
-    aiInventories
+    aiInventories,
+    viewerInventories
   ) {
     // The host's own inventory is always the live GWInventory. Only the viewer
     // records below arrive as plain objects, hence the _.isArray tests there.
@@ -116,9 +118,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
 
     _.forEach(
-      getConnectedViewerInventories(game, connectedClients).concat(
-        aiInventories || getCoopAiInventories(game)
-      ),
+      (
+        viewerInventories ||
+        getConnectedViewerInventories(game, connectedClients)
+      ).concat(aiInventories || getCoopAiInventories(game)),
       function (player) {
         if (!_.isArray(player.inventory.minions)) {
           return;
