@@ -758,7 +758,9 @@ the base game's legacy `gwc_start_allfactory` does that.
 
 The team is everyone who fights beside the AI: the host, the connected viewers,
 and the other AI players. A teammate fields a domain when it can reach a
-factory, a combat unit, a fabber, or a titan there.
+factory, a combat unit, a fabber, or a titan there. The viewers' and other AIs'
+inventories are read from their stored records, so they can lag a GWO update
+([`coop.md`](coop.md), "Records at launch").
 
 ### Deciding
 

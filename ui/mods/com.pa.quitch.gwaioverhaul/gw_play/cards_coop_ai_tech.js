@@ -322,8 +322,8 @@ define([
     };
 
     // What the host and the connected viewers give The Guardians, from the
-    // viewers' records, which a hire applies again. See coop.md, "Records at
-    // launch".
+    // viewers' stored records, which can lag a GWO update. See coop.md,
+    // "Records at launch".
     var humanMods = function () {
       var humans = [inventory].concat(
         _.pluck(refereeCoop.getConnectedViewerInventories(game), "inventory")
