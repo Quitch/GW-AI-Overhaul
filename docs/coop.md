@@ -171,9 +171,10 @@ stored: the viewers' mods and AI mods that The Guardians' view adds
 ("Before The Guardians"), and the other players' inventories that give the
 team's domains ([`tech-cards.md`](tech-cards.md), "How AI players judge a
 card"). After a GWO update that changes what a card gives, an AI therefore
-judges against that player's old effects until the player's cards are next
-applied, which their next card does. This is left as it is (#687). The gap
-closes by itself, and nothing breaks. Applying the records for judging would be
+judges against that player's old effects until the player next takes or deletes
+a card, which applies and stores their record again. A player who only declines
+or rerolls keeps the old effects for the rest of the war. This is left as it is
+(#687): nothing breaks, and the battle itself uses the applied records. Applying the records for judging would be
 fast, but it would make the team's domains asynchronous for every caller that
 scores a card, and each would need a rule for an apply that fails. The AI's own
 inventory is not affected: `gw_play/coop_ai_effects.js` applies it again for
