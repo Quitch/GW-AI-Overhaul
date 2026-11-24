@@ -2,7 +2,8 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoGroup) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwoCard, gwoGroup, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: function () {
@@ -18,8 +19,13 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
+      // The Lob's shell does no damage, and Lob Upgrade Tech's time ammo takes
+      // no ammo-cost cut (specs.md, "Ammo-cost mods").
+      var artillery = inventory.hasCard("gwaio_upgrade_lob")
+        ? _.without(gwoGroup.structuresArtillery, gwoUnit.lob)
+        : gwoGroup.structuresArtillery;
       return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery),
+        gwoCard.hasUnit(inventory.units(), artillery),
         gwoCard.travelledShort(system, context, sizes) ? 70 : 35
       );
     },
