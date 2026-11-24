@@ -102,10 +102,14 @@ function ownRoster(inventories) {
   });
 }
 
-function generate(coopAis) {
+function generate(coopAis, viewerInventories) {
   const filesObj = {};
   return refereeAi
-    .call({ files: () => filesObj, coopAis: coopAis })
+    .call({
+      files: () => filesObj,
+      coopAis: coopAis,
+      viewerInventories: viewerInventories,
+    })
     .then(() => filesObj);
 }
 
@@ -323,6 +327,44 @@ describe("co-op AI trees", () => {
       lists.some((builders) => builders.includes("aiGuardian")),
       JSON.stringify(lists)
     );
+  });
+
+  // Issue #685: the viewer's record still holds the mods of its last apply.
+  it("hands the Guardians a viewer's AI mods as the hire applied them", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      perPlayerTech: true,
+      aiMods: [HOST_MOD],
+    });
+    const viewer = { id: "v1", name: "Viewer1", role: "viewer" };
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? { inventory: { cards: [], aiMods: [marker("recordStale")] } }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      viewer,
+    ]);
+    installTrees();
+
+    const files = await generate(
+      [],
+      [
+        {
+          client: viewer,
+          inventory: { cards: [], aiMods: [marker("viewerApplied")] },
+        },
+      ]
+    );
+    const builders = _.flatten(
+      Object.keys(files)
+        .filter((key) => key.endsWith("fabber_land_builds.json"))
+        .map((key) => files[key].build_list[0].builders)
+    );
+
+    assert.ok(builders.includes("viewerApplied"), JSON.stringify(builders));
+    assert.ok(!builders.includes("recordStale"), JSON.stringify(builders));
   });
 
   it("gives the AI the host's AI mods under shared tech, not the viewers'", async () => {

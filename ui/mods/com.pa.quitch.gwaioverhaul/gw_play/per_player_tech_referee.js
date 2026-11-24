@@ -47,10 +47,21 @@ define([
     perPlayerTech.buildViewerSubcommanderArmies;
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
-  var loadInventoryFromRecord = function (record) {
+  // The viewer's inventory as the hire applied it. A viewer outside the hire's
+  // list fails the client check below, and a hire that applied none (stock's)
+  // leaves the record's. See coop.md, "Records at launch".
+  var loadInventoryFromRecord = function (referee, client, record) {
+    var key = refereeCoop.clientKey(client.id, client.name);
+    var applied = _.find(referee.viewerInventories, function (viewer) {
+      return (
+        refereeCoop.clientKey(viewer.client.id, viewer.client.name) === key
+      );
+    });
     var inventory = new GWInventory();
     // GWO - a JSON copy, as lodash 3's cloneDeep is quadratic in what it copies
-    inventory.load(JSON.parse(JSON.stringify(record.inventory)));
+    inventory.load(
+      JSON.parse(JSON.stringify(applied ? applied.inventory : record.inventory))
+    );
     return inventory;
   };
 
@@ -257,7 +268,11 @@ define([
         return done.promise();
       }
 
-      var loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
+      var loadedInventory = loadInventoryFromRecord(
+        referee,
+        connectedClient,
+        inventoryDataRecord
+      );
       playerInventories[clientIndex] = loadedInventory;
       playerCommanders[clientIndex] = stripKnownSpecTag(
         inventoryDataRecord.commander
