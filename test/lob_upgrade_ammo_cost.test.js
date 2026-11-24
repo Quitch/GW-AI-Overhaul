@@ -115,6 +115,35 @@ describe("Lob Upgrade Tech with Artillery Ammunition Tech", () => {
   });
 });
 
+// GWO #684: with the upgrade the card changes nothing on the Lob, so the Lob
+// alone must not open its deal.
+describe("Artillery Ammunition Tech's deal", () => {
+  const card = cards.get("gwc_damage_artillery.js");
+  const chance = (units, cardIds) =>
+    card.deal(
+      { distance: () => 0 },
+      { totalSize: 0 },
+      {
+        units: () => units,
+        hasCard: (id) => cardIds.includes(id),
+      }
+    ).chance;
+
+  it("is not dealt for an upgraded Lob alone", () => {
+    assert.equal(chance([gwoUnit.lob], ["gwaio_upgrade_lob"]), 0);
+  });
+
+  it("is dealt for the stock Lob", () => {
+    assert.ok(chance([gwoUnit.lob], []) > 0);
+  });
+
+  it("is dealt for an upgraded Lob beside other artillery", () => {
+    [gwoUnit.pelter, gwoUnit.holkins].forEach((unit) => {
+      assert.ok(chance([gwoUnit.lob, unit], ["gwaio_upgrade_lob"]) > 0, unit);
+    });
+  });
+});
+
 describe("cards that cut ammo cost", () => {
   const isCut = (mod) =>
     mod.op === "multiply" &&
