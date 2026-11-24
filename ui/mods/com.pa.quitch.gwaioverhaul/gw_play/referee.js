@@ -32,6 +32,9 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_hires.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_flat_planets.js",
+        "shared/gw_inventory",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_inventories.js",
       ],
       function (
         GW,
@@ -48,13 +51,18 @@
         refereeCoop,
         raceCells,
         launchHires,
-        gwoFlatPlanets
+        gwoFlatPlanets,
+        GWInventory,
+        coopAiEffects,
+        launchInventories
       ) {
         var hiresThisLaunch = 0;
         var latestHire = null;
         // The AI tree cache lives one launch: a co-op host's two hires share
         // it, the next Fight starts a new one. See ai-pipeline.md.
         var treeCache = null;
+        // Shared by the launch's hires, so each record is applied once.
+        var recordApplies = null;
         var firstHireClientKeys = null;
         // Read while every mod is mounted, for a co-op host's shared hire.
         // The hire logs a failure. See coop.md, "Host-only load files".
@@ -65,6 +73,7 @@
             hiresThisLaunch = 0;
             latestHire = null;
             treeCache = null;
+            recordApplies = null;
             firstHireClientKeys = null;
             // Stock's own test for a co-op host's two hires.
             launchHires.begin(
@@ -229,6 +238,35 @@
                   .then(function (files) {
                     ref.treeCache.seed(files);
                   });
+              },
+              // Every launch reader takes the other players' inventories from
+              // here. A failed apply fails the hire. See coop.md, "Records at
+              // launch".
+              function () {
+                var applied = $.Deferred();
+                recordApplies =
+                  recordApplies ||
+                  coopAiEffects({
+                    GWInventory: GWInventory,
+                    stockBank: GW.bank,
+                    timeoutMs: 10000,
+                  });
+                launchInventories
+                  .forHire({
+                    game: game,
+                    clients: ref.hireClients,
+                    coopAis: ref.coopAis,
+                    effects: recordApplies,
+                  })
+                  .then(function (launch) {
+                    ref.viewerInventories = launch.viewers;
+                    ref.coopAis = launch.coopAis;
+                    applied.resolve();
+                  })
+                  .then(null, function (error) {
+                    applied.reject(error);
+                  });
+                return applied.promise();
               },
               _.bind(gwoGenerateGameFiles, ref),
               function () {

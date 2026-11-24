@@ -255,6 +255,31 @@ describe("the per-player tech referee's apply", () => {
     });
   });
 
+  // Issue #685: a record keeps the mods of its last apply.
+  it("builds the viewer's specs from the inventory the hire applied", () => {
+    const { ref, options } = setup();
+    const applied = viewerRecord().inventory;
+    applied.units = ["/pa/units/land/bot/bot.json"];
+    ref.viewerInventories = [
+      { client: { id: "v9", name: "Z" }, inventory: { units: ["x.json"] } },
+      { client: VIEWER, inventory: applied },
+    ];
+
+    return referee.apply(ref, options).then((ok) => {
+      assert.equal(ok, true);
+      assert.deepEqual(io.plans[0].units, ["/pa/units/land/bot/bot.json"]);
+    });
+  });
+
+  it("builds from the record when the hire applied none", () => {
+    const { ref, options } = setup();
+    ref.viewerInventories = [];
+
+    return referee.apply(ref, options).then(() => {
+      assert.deepEqual(io.plans[0].units, ["/pa/units/land/tank/tank.json"]);
+    });
+  });
+
   it("runs the retag mods in a pass of their own", () => {
     io.retagMods = [{ file: "/pa/units/commanders/x.json", op: "tag" }];
     const { ref, options } = setup();

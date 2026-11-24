@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v7.11.3 - 2026-11-24
+
+### Bugfix
+
+- Lob Upgrade Tech with Artillery Ammunition Tech no longer makes the Lob fire without end and ignore Stop and Hold Fire
+- Cards and AI tech that cut ammunition cost no longer speed up weapons that reload over time, such as some of Legion's
+- In co-op with separate tech, a tech card that a GWO update changes now works the new way in every player's next battle, not only after that player gets another card
+- Artillery Ammunition Tech is no longer offered when your only artillery structure is a Lob with Lob Upgrade Tech, which the card does not improve
+
 ## v7.11.2 - 2026-11-22
 
 ### Bugfix

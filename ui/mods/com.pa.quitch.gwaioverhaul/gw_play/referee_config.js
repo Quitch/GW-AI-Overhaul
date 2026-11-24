@@ -177,7 +177,8 @@ define([
           inventory,
           game,
           undefined,
-          aiInventories
+          aiInventories,
+          self.viewerInventories
         ).length,
         battleRng,
         { ffa: !_.isEmpty(ai.foes) }
@@ -246,7 +247,8 @@ define([
         inventory,
         game,
         undefined,
-        []
+        [],
+        self.viewerInventories
       ).length,
     });
     // Store the game in the config for diagnostic purposes.

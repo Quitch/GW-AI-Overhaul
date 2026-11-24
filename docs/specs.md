@@ -132,6 +132,58 @@ holds it.
 `eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
 whatever code they like anyway, so the risk is not meaningful.
 
+### Ammo-cost mods
+
+A descriptor can carry `ammoCost: true`. `specs.mod` skips that descriptor on a
+spec whose `ammo_source` is `"time"`, and applies it to every other spec.
+`gwoCard.ammoCost(list)` returns copies of the descriptors with the flag set:
+
+```js
+gwoCard.ammoCost(
+  gwoCard.mods(gwoUnit.x, "multiply", gwoCard.paths.energyWeapon, 0.25)
+);
+```
+
+The flag marks a mod that cuts what a weapon's ammo costs. On metal or energy
+ammo, `ammo_capacity`, `ammo_demand`, and `ammo_per_shot` set that cost. Time
+ammo has no cost. It refills by itself, and the three keys do not set how fast:
+the Lob with Lob Upgrade Tech (capacity 17, demand 0, 2 per shot) fired 9
+shells about every 18 seconds in game. A cut to capacity and per shot therefore
+only shortens the wait between volleys.
+
+A weapon with `carpet_fire` and `carpet_wait_for_full_ammo` fires until its
+ammo runs out, then waits for a full load. Where a cut takes what the weapon
+spends per second below the refill, the volley never ends, and the unit
+ignores Stop and Hold Fire while it fires. This was GWO #173: Lob Upgrade Tech
+with Artillery Ammunition Tech left the Lob at capacity 1.7 and 0.2 per shot.
+
+The check is in `specs.mod` and not in a card, because the two mods can come
+from different lists. The Guardians take the AI's tech and every player's mods
+(`gw_play/referee_game_files.js`), and a mod aimed at a stock weapon lands on
+the race weapons that stand for it. The check reads the file that the
+descriptor names, with its `base_spec` chain flattened, so an inherited
+`ammo_source` counts. `replace` runs before `multiply`, so a card that turns a
+weapon to time ammo is seen wherever it sits in the list.
+
+The check does not follow the path. A flagged descriptor that names a unit and
+walks into its weapon through a reference (`tools.0.spec_id.ammo_capacity`) is
+tested against the unit, which has no `ammo_source`, and is applied. A flagged
+descriptor therefore names the weapon's own file, as every GWO card does.
+
+A card's `buff()` sets the flag, so a descriptor stored before the card had it
+stays unflagged. No battle that GWO's referee builds reads a stored one. The
+host's cards and the AI's
+tech are built again on each load. Under per-player tech, a co-op player's
+record stores its mods ([`coop.md`](coop.md), "The record"), and each hire
+applies that player's cards again ([`coop.md`](coop.md), "Records at launch").
+
+GWO sets the flag on every cut to `gwoCard.paths.energyWeapon`: Artillery
+Ammunition Tech, Complete Energy Tech, Improved Energy Weapons, the Bionic
+Augmentation Commander's Uber Cannon cut, and the AI's Ammunition Tech
+(`gw_play/ai_tech.js`), which its Combat Tech carries too.
+`test/lob_upgrade_ammo_cost.test.js` fails a shipped card that cuts those
+paths without the flag.
+
 ### Creating an attribute that doesn't exist
 
 No op ever learns whether the attribute was there. The path walker creates the leaf

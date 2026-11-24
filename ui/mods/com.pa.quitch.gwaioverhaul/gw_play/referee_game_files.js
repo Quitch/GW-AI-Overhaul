@@ -31,7 +31,8 @@ define([
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
   };
 
-  var guardianMods = function (game, hostMods, coopAis) {
+  // viewers and coopAis: the hire's, applied at its start.
+  var guardianMods = function (game, hostMods, viewers, coopAis) {
     // Without per-player tech every viewer draws from the host's inventory.
     if (!game.perPlayerTechCards()) {
       return hostMods;
@@ -39,9 +40,7 @@ define([
 
     var mods = hostMods;
     _.forEach(
-      refereeCoop
-        .getConnectedViewerInventories(game)
-        .concat(refereeCoop.launchAiInventories(coopAis)),
+      viewers.concat(refereeCoop.launchAiInventories(coopAis)),
       function (player) {
         mods = mods.concat(player.inventory.mods || []);
       }
@@ -112,7 +111,7 @@ define([
         var guardians = ai.mirrorMode;
         if (guardians) {
           aiInventory = aiInventory.concat(
-            guardianMods(game, inventory.mods(), params.coopAis)
+            guardianMods(game, inventory.mods(), params.viewers, params.coopAis)
           );
         }
         // The AI's tech names vanilla files; a race army's land on the race
@@ -197,6 +196,7 @@ define([
           clusterUnitMapTitansPath: CLUSTER_UNIT_MAP_X1,
           game: battle.game,
           inventory: battle.inventory,
+          viewers: battle.viewers,
           coopAis: battle.coopAis,
           aiFactionDeferred: battle.aiFactions[n],
         });
@@ -409,6 +409,7 @@ define([
           var battle = {
             game: game,
             inventory: inventory,
+            viewers: self.viewerInventories,
             coopAis: coopAis,
             ai: ai,
             aiTag: aiTag,

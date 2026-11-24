@@ -287,6 +287,9 @@ included. An entry that also names a stock unit is dealt through either half. Th
 The tooltip shows that same entry translated for the race: the race units each
 named vanilla unit stands for, and the race or add-on units it names that the
 race fields. It never shows a second, race-written list. See [`races.md`](races.md).
+The tooltip names units by group and cell, not by what each mod lands on. A
+unit whose only change `specs.mod` skips ([`specs.md`](specs.md), "Ammo-cost
+mods") is therefore still listed.
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
@@ -499,6 +502,12 @@ army.
   with the flag set:
   `gwoCard.stockOnly(gwoCard.mods(gwoUnit.dox, "multiply", { max_health: 1.5 }))`.
   An army with no race cells (MLA with no add-on) applies the change as usual.
+
+A third flag is not about reach, but a race army is where it most often acts.
+A mod that cuts a weapon's ammo cost carries `ammoCost: true`, and `specs.mod`
+skips it on a weapon whose ammo refills over time, as some of Legion's do.
+`gwoCard.ammoCost(list)` returns copies of the descriptors with the flag set.
+See [`specs.md`](specs.md), "Ammo-cost mods".
 
 A card's AI mods reach a race AI's tree aimed at the race's keys, where the
 race's own units can do what they ask ([`ai-pipeline.md`](ai-pipeline.md),
@@ -749,7 +758,9 @@ the base game's legacy `gwc_start_allfactory` does that.
 
 The team is everyone who fights beside the AI: the host, the connected viewers,
 and the other AI players. A teammate fields a domain when it can reach a
-factory, a combat unit, a fabber, or a titan there.
+factory, a combat unit, a fabber, or a titan there. The viewers' and other AIs'
+inventories are read from their stored records, so they can lag a GWO update
+([`coop.md`](coop.md), "Records at launch").
 
 ### Deciding
 

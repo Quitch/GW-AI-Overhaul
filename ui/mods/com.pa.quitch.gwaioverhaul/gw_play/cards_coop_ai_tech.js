@@ -321,9 +321,9 @@ define([
       );
     };
 
-    // What the host and the connected viewers give The Guardians, as
-    // gw_play/referee_game_files.js guardianMods and gw_play/referee_ai.js
-    // raceTreeJobs read them.
+    // What the host and the connected viewers give The Guardians, from the
+    // viewers' stored records, which can lag a GWO update. See coop.md,
+    // "Records at launch".
     var humanMods = function () {
       var humans = [inventory].concat(
         _.pluck(refereeCoop.getConnectedViewerInventories(game), "inventory")

@@ -1503,3 +1503,101 @@ describe("specs.mod - selecting an observer item by layer and channel", () => {
     );
   });
 });
+
+describe("specs.mod - ammo-cost mods", () => {
+  const cut = (file, flagged) => {
+    const mods = gwoCard.mods(
+      file,
+      "multiply",
+      gwoCard.paths.energyWeapon,
+      0.1
+    );
+    return flagged ? gwoCard.ammoCost(mods) : mods;
+  };
+  const weapon = (source) => ({
+    ammo_source: source,
+    ammo_capacity: 400,
+    ammo_demand: 10,
+    ammo_per_shot: 50,
+  });
+  const ammo = (spec) => [
+    spec.ammo_source,
+    spec.ammo_capacity,
+    spec.ammo_demand,
+    spec.ammo_per_shot,
+  ];
+
+  it("skips a flagged mod on a weapon whose ammo refills over time", () => {
+    const data = { "weapon.json": weapon("time") };
+    specs.mod(data, cut("weapon.json", true), "");
+    assert.deepEqual(ammo(data["weapon.json"]), ["time", 400, 10, 50]);
+  });
+
+  ["metal", "energy", undefined].forEach((source) => {
+    it("applies a flagged mod where ammo_source is " + source, () => {
+      const data = { "weapon.json": weapon(source) };
+      specs.mod(data, cut("weapon.json", true), "");
+      assert.deepEqual(ammo(data["weapon.json"]), [source, 40, 1, 5]);
+    });
+  });
+
+  it("applies an unflagged mod to a time-ammo weapon", () => {
+    const data = { "weapon.json": weapon("time") };
+    specs.mod(data, cut("weapon.json", false), "");
+    assert.deepEqual(ammo(data["weapon.json"]), ["time", 40, 1, 5]);
+  });
+
+  it("skips on an ammo_source the weapon inherits", () => {
+    const data = {
+      "base.json": weapon("time"),
+      "weapon.json": { base_spec: "base.json", ammo_capacity: 20 },
+    };
+    specs.mod(data, cut("weapon.json", true), "");
+    assert.deepEqual(ammo(data["weapon.json"]), ["time", 20, 10, 50]);
+  });
+
+  it("reads the tagged spec", () => {
+    const data = { "weapon.json.ai0": weapon("time") };
+    specs.mod(data, cut("weapon.json", true), ".ai0");
+    assert.deepEqual(ammo(data["weapon.json.ai0"]), ["time", 400, 10, 50]);
+  });
+
+  // replace runs before multiply, so a card that makes the weapon time-ammo
+  // is seen wherever it sits in the list.
+  it("skips after a replace to time ammo, in either list order", () => {
+    const toTime = gwoCard.mods("weapon.json", "replace", {
+      ammo_source: "time",
+      ammo_capacity: 17,
+      ammo_demand: 0,
+      ammo_per_shot: 2,
+    });
+    const flagged = cut("weapon.json", true);
+    [toTime.concat(flagged), flagged.concat(toTime)].forEach((mods) => {
+      const data = { "weapon.json": weapon("metal") };
+      specs.mod(data, mods, "");
+      assert.deepEqual(ammo(data["weapon.json"]), ["time", 17, 0, 2]);
+    });
+  });
+
+  it("skips a flagged mod whose path holds a selector", () => {
+    const data = {
+      "weapon.json": {
+        ammo_source: "time",
+        items: [{ layer: "a", channel: "b", cost: 10 }],
+      },
+    };
+    specs.mod(
+      data,
+      gwoCard.ammoCost([
+        {
+          file: "weapon.json",
+          path: "items.[layer=a,channel=b].cost",
+          op: "multiply",
+          value: 0.5,
+        },
+      ]),
+      ""
+    );
+    assert.equal(data["weapon.json"].items[0].cost, 10);
+  });
+});
