@@ -441,7 +441,7 @@ describe("coop_ai_effects", () => {
     assert.equal(gwoAI.armyGap(navalWithFactory.units), undefined);
   });
 
-  // As every advanced-fabber card does, or the fabber has nothing to build.
+  // As every advanced-fabber card does, or the fabber cannot build them.
   it("gives every loadout with an advanced fabber the advanced structures", async () => {
     const run = effects();
     const loadoutIds = loadCouiModule(
