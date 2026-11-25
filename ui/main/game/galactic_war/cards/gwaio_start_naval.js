@@ -10,7 +10,7 @@ define([
     bank: GW.bank,
     start: GWCStart,
     apply: function (inventory) {
-      inventory.addUnits(gwoGroup.naval);
+      inventory.addUnits(gwoGroup.naval.concat(gwoGroup.starterUnitsAdvanced));
     },
   });
   return {
