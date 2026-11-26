@@ -441,6 +441,31 @@ describe("coop_ai_effects", () => {
     assert.equal(gwoAI.armyGap(navalWithFactory.units), undefined);
   });
 
+  // As every advanced-fabber card does, or the fabber cannot build them.
+  it("gives every loadout with an advanced fabber the advanced structures", async () => {
+    const run = effects();
+    const loadoutIds = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"
+    ).all;
+    const checked = [];
+    for (const id of loadoutIds) {
+      const applied = await run.apply({
+        cards: [{ id: id }],
+        tags: BOT_AI.tags,
+      });
+      if (_.intersection(applied.units, groups.fabbersAdvanced).length === 0) {
+        continue;
+      }
+      checked.push(id);
+      assert.deepEqual(
+        _.difference(groups.starterUnitsAdvanced, applied.units),
+        [],
+        id
+      );
+    }
+    assert.ok(checked.includes("gwaio_start_naval"));
+  });
+
   it("puts a loadout first and a tech card last", () => {
     assert.deepEqual(
       makeEffects.addCard({ cards: [{ id: "a" }] }, { id: "l" }, true).cards,

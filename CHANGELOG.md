@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v7.11.4 - 2026-11-26
+
+### Bugfix
+
+- Naval Commander's Advanced Naval Fabricator can build the advanced structures every advanced fabricator starts with
+- Penchant AIs' Helios attack the surface even when the enemy has no orbital units
+- AI land attack platoons no longer accept anti-nuke launchers, which cannot move
+
 ## v7.11.3 - 2026-11-24
 
 ### Bugfix
