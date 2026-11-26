@@ -935,7 +935,8 @@ follow. GW Server Mods mounts the zip at the root after the client mods, so
 while Exiles is active every MLA Titans AI reads those copies.
 
 The one cost is GWO's own `platoon_templates.json` shadow, which is not seen.
-That shadow is a Suicide squad on the two Transfer templates. This is accepted
+That shadow adds a Suicide squad to the two Transfer templates, and requires
+`Mobile` on the anti-nuke row of the land attack templates. This is accepted
 for this pass, because the change is a tightening, not a break. See
 [`race-conventions.md`](race-conventions.md).
 

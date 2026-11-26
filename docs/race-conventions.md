@@ -233,7 +233,8 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   The land builds differ from `pa_ex1`'s only in the condition strings that
   follow the template change. So the conflict is the template file. It shadows
   GWO's own `platoon_templates.json` while the mod is active (GWO loses its
-  Suicide squad on the two Transfer templates). This is accepted for this
+  Suicide squad on the two Transfer templates, and `Mobile` on the anti-nuke
+  row of the land attack templates). This is accepted for this
   pass. If it ever matters, an AI mod applied at launch would make GWO's edit
   survive whichever file is underneath.
 
