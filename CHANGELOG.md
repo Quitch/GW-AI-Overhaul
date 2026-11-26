@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Naval Commander's Advanced Naval Fabricator can build the advanced structures every advanced fabricator starts with: the Advanced Metal Extractor, Advanced Energy Plant, Advanced Radar, Radar Jamming Station, Anti-Nuke Launcher, Unit Cannon, Nuclear Missile Launcher, Catalyst, and Halley
+- Penchant AIs' Helios attack the surface even when the enemy has no orbital units
 
 ## v7.11.3 - 2026-11-24
 
