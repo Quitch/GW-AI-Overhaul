@@ -936,9 +936,12 @@ while Exiles is active every MLA Titans AI reads those copies.
 
 The one cost is GWO's own `platoon_templates.json` shadow, which is not seen.
 That shadow adds a Suicide squad to the two Transfer templates, and requires
-`Mobile` on the anti-nuke row of the land attack templates. This is accepted
-for this pass, because the change is a tightening, not a break. See
-[`race-conventions.md`](race-conventions.md).
+`Mobile` on the anti-nuke row of the land attack templates. Exiles' copy still
+has that row without `Mobile`
+([Exiles-Faction#22](https://github.com/NikolaMX/Exiles-Faction/issues/22)), so
+while Exiles is active the MLA Titans AI's land attack templates still match
+the immobile anti-nuke launchers. This is accepted for this pass, because
+Exiles' change is a tightening, not a break. See [`race-conventions.md`](race-conventions.md).
 
 ## Add-ons
 

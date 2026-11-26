@@ -235,7 +235,9 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   GWO's own `platoon_templates.json` while the mod is active (GWO loses its
   Suicide squad on the two Transfer templates, and `Mobile` on the anti-nuke
   row of the land attack templates). This is accepted for this
-  pass. If it ever matters, an AI mod applied at launch would make GWO's edit
+  pass. The anti-nuke row is reported upstream as
+  [Exiles-Faction#22](https://github.com/NikolaMX/Exiles-Faction/issues/22).
+  If it ever matters, an AI mod applied at launch would make GWO's edit
   survive whichever file is underneath.
 
 - Legion's GW theming stays off because stock leaves
