@@ -17,6 +17,7 @@
 - With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
 - Penchant AIs build air defences and fighters as TITANS AIs do, rather than waiting for enemy aircraft in the system
 - Penchant AIs build naval defences against a threat only when an enemy naval threat is on the planet
+- Penchant AIs send at most one Ward with each land platoon
 
 ## v7.11.4 - 2026-11-26
 
