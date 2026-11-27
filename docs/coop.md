@@ -1527,7 +1527,8 @@ Four things about it are not obvious from the scene it sits in:
   settings. `host_war.js` therefore loads the campaign game through
   `GW.manifest.loadGame(model.activeGameId())` once and caches the promise for
   both scene scripts. It resolves
-  `{ faction, colour, race, races, perPlayerRace }` always and never rejects,
+  `{ faction, colour, race, races, perPlayerRace, loadouts }` always and never
+  rejects,
   because a loadout preview outside a war still has to render. A war it cannot
   read, such as an id stock's `loadGame` has not stored, is one with no races.
   Both scripts wait on the same jQuery promise, and jQuery 2.1.4 runs no later
@@ -1572,6 +1573,31 @@ Four things about it are not obvious from the scene it sits in:
 Banking is the other half, and "Whose unlocks are whose" below covers it. A
 viewer banks its own war loadout from this scene. That is why the hold placed on
 the host's inventory does not reach it.
+
+### Loadouts the host can apply
+
+A viewer's picker lists the loadouts that the viewer's own card mods add, and
+the host applies every viewer's cards again at each hire ("Records at launch").
+A loadout from a mod that the host does not have cannot load on the host
+(#699). The host is the authority, so the picker offers only what the host can
+apply.
+
+When `gw_play` loads on any client but a viewer, `gw_play/cards.js` calls
+`shared/host_loadouts.js`. It loads GWO's loadouts and every loadout a mod
+registered in that scene (`model.gwoStartingCards`, `model.gwoNewStartCards`),
+and writes those that load on the host's inventory as the global tag
+`gwaioHostLoadouts`. A viewer's copy of the war carries the host's inventory,
+so `host_war.js` reads the list as `loadouts`. `shared/loadouts.js` then marks
+each unlocked loadout that the host does not offer as `gwoHostLocked`. Like a
+race-locked loadout it is dimmed and inert, `ready` refuses it, and
+`selectableIndex` moves a selection off it. `host_lock_reason.html` adds the
+line "The host does not have the mod that adds this loadout." to it.
+
+GWO's own loadouts are on every host, so they are always offered. A copy of
+the war that carries no list offers GWO's own alone. The tag is written again
+on every host load, so it follows the host's mods. A loadout that a mod
+registers only in `gw_start` is not on the list, so viewers see it locked even
+when the host has the mod.
 
 ## Whose unlocks are whose
 

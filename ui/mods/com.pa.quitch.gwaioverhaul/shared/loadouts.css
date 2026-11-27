@@ -1,9 +1,16 @@
-/* A loadout the player's race cannot use: stock's disabled-switch values
-   (gw_start.css, .gw-start-square-switch.disabled). pointer-events: none also
-   drops the hover glow and makes the favourite button inert on the card. */
-#start-cards > .gwo-race-locked {
+/* A loadout the player's race cannot use, or one a co-op host cannot apply:
+   stock's disabled-switch values (gw_start.css, .gw-start-square-switch.disabled).
+   pointer-events: none also drops the hover glow and makes the favourite button
+   inert on the card. */
+#start-cards > .gwo-race-locked,
+#start-cards > .gwo-host-locked {
   opacity: 0.45;
   pointer-events: none;
+}
+
+/* Under the race icons, which hold the card's bottom. */
+#start-cards > .card > .gwo-loadout-host-locked {
+  padding-top: 8px;
 }
 
 /* A line of its own under the card's text, which it would otherwise cover,

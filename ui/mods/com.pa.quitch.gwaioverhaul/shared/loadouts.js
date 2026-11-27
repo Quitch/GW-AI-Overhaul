@@ -51,12 +51,12 @@ define([
   // The card's click binding is `click: activate` and its class binding
   // `css: btnClass`, so an inert activate and an extra class are all the
   // markup needs. A locked-hint card is left as it is.
-  var lockForRace = function (card) {
+  var lock = function (card, flag, cssClass) {
     var stockBtnClass = card.btnClass;
-    card.gwoRaceLocked = true;
+    card[flag] = true;
     card.activate = function () {};
     card.btnClass = ko.computed(function () {
-      return stockBtnClass() + " gwo-race-locked";
+      return stockBtnClass() + " " + cssClass;
     });
     return card;
   };
@@ -65,8 +65,10 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // once gwoLoadoutBanks.load() settles, it sees every bank; called before, it
   // falls back to the base game's bank and GWO's own, so a loadout that only a
-  // mod's bank records shows as locked.
-  var startCards = function () {
+  // mod's bank records shows as locked. offers, when given, says whether the
+  // host can apply a loadout; a co-op viewer's scene passes it. See coop.md,
+  // "Loadouts the host can apply".
+  var startCards = function (offers) {
     var race = raceInPlay();
     return _.map(allCards, function (cardData) {
       if (
@@ -76,13 +78,19 @@ define([
         gwoLoadoutBanks.hasStartCard(cardData)
       ) {
         var card = model.makeKnown(cardData);
-        return helpers.raceLocksLoadout(
-          race,
-          cardData.id,
-          helpers.loadoutEntries(model)
-        )
-          ? lockForRace(card)
-          : card;
+        if (
+          helpers.raceLocksLoadout(
+            race,
+            cardData.id,
+            helpers.loadoutEntries(model)
+          )
+        ) {
+          lock(card, "gwoRaceLocked", "gwo-race-locked");
+        }
+        if (_.isFunction(offers) && !offers(cardData.id)) {
+          lock(card, "gwoHostLocked", "gwo-host-locked");
+        }
+        return card;
       } else {
         return model.makeUnknown(cardData);
       }
