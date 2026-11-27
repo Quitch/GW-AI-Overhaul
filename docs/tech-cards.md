@@ -427,21 +427,21 @@ synchronously at scene load. It therefore always pushes before GWO's own `requir
 callbacks run. A bare assignment in place of an `_.isArray(...) ? ... : []` guard
 silently discards everything the mod registered.
 
-| Global                         | Scene                     | Read by                                                                                                                |
-| ------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                                                                       |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                                                                              |
-| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                                                                             |
-| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                                                                        |
-| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                                                                        |
-| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js`                        |
-| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `loadout_race_badges.js` (each entry's `races`) |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                                                                           |
-| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                                                                           |
-| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                                                                              |
-| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                                                                  |
-| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                                                                              |
-| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                                                                             |
+| Global                         | Scene                     | Read by                                                                                                                                    |
+| ------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                                                                                           |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                                                                                                  |
+| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                                                                                                 |
+| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                                                                                            |
+| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                                                                                            |
+| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `host_loadouts.js`, `loadout_race_badges.js`                        |
+| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js`, `host_loadouts.js`, `loadout_race_badges.js` (each entry's `races`) |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                                                                                               |
+| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                                                                                               |
+| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                                                                                                  |
+| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                                                                                      |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                                                                                                  |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                                                                                                 |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -470,6 +470,11 @@ or add-on units they bring, rather than `inventory.units()`.
 A mod that pushes its loadouts only in `gw_start` is therefore missing from the
 treasure pool in `gw_play`. It is also missing from the per-player loadout picker in
 co-op.
+
+A co-op viewer can pick a mod's loadout only when the host has the mod too, and
+the mod registers the loadout in `gw_play`. The host writes the loadouts its
+`gw_play` loaded, and the viewer's picker locks the rest
+([`coop.md`](coop.md), "Loadouts the host can apply").
 
 ### Which races a card reaches
 

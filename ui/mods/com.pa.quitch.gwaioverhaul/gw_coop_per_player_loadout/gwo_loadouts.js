@@ -2,27 +2,33 @@
   try {
     // Before ko.applyBindings, as race_picker.js is: Join is bound to this
     // and submitLoadout reads self.ready() on the same object, so the swap
-    // gates both. A race-locked loadout can never be joined with.
+    // gates both. A locked loadout can never be joined with.
     var stockReady = model.ready;
+    // Locked for the race in play, or because the host cannot apply it.
+    var isLocked = function (card) {
+      return !!card.gwoRaceLocked || !!card.gwoHostLocked;
+    };
     // The list has been built from the resolved banks for the war's race.
     // Until then it is stock's, with nothing locked.
     var modulesReady = ko.observable(false);
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
       return (
-        modulesReady() &&
-        stockReady() &&
-        !!activeCard &&
-        !activeCard.gwoRaceLocked
+        modulesReady() && stockReady() && !!activeCard && !isLocked(activeCard)
       );
     });
 
+    // Before ko.applyBindings too, so foreach clones it per unlocked loadout.
+    // See coop.md, "Loadouts the host can apply".
+    $("#start-cards .card").append(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/host_lock_reason.html"
+      )
+    );
+    locTree($("#start-cards .card .gwo-loadout-host-locked"));
+
     var cardId = function (card) {
       return card && card.id ? card.id() : undefined;
-    };
-
-    var isRaceLocked = function (card) {
-      return !!card.gwoRaceLocked;
     };
 
     requireGW(
@@ -65,12 +71,16 @@
           }
           var activeCard = model.activeStartCard.peek();
           var activeId = activeCard && cardId(activeCard);
-          model.startCards(loadouts.startCards());
+          model.startCards(
+            loadouts.startCards(function (id) {
+              return hostWar.offersLoadout(war, id);
+            })
+          );
           var index = loadoutSelection.selectableIndex(
             model.startCards.peek(),
             activeId,
             cardId,
-            isRaceLocked
+            isLocked
           );
           if (index !== -1) {
             model.activeStartCardIndex(index);

@@ -6,6 +6,28 @@
   pointer-events: none;
 }
 
+/* A loadout a co-op host cannot apply is dimmed the same way, except the line
+   that says why, which keeps its full contrast (accessibility.md). A card
+   locked for its race too drops the card-wide value for the same reason. */
+#start-cards > .gwo-host-locked {
+  opacity: 1;
+  pointer-events: none;
+}
+
+#start-cards > .gwo-host-locked > :not(.gwo-loadout-host-locked) {
+  opacity: 0.45;
+}
+
+/* Under the race icons, which hold the card's bottom; with no icons, it holds
+   the bottom itself. */
+#start-cards > .card > .gwo-loadout-host-locked {
+  padding-top: 8px;
+}
+
+#start-cards > .card > .gwo-loadout-races:empty + .gwo-loadout-host-locked {
+  margin-top: auto;
+}
+
 /* A line of its own under the card's text, which it would otherwise cover,
    held to the bottom of a card stretched to its neighbours' height. The card
    is a column flexbox. */

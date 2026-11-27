@@ -8,6 +8,7 @@
 
 ### Bugfix
 
+- A loadout whose card mod is missing, such as a co-op player's from a mod the host does not have, gives the standard start instead of no units
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
 - Penchant AIs with an advanced bot penchant, such as Heavy or Sniper, build Support Commanders
 - Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots
@@ -20,6 +21,7 @@
 - Penchant AIs send at most one Ward with each land platoon
 - Penchant AIs take Locusts when they reinforce another planet, and no longer count Titans toward a reinforcement
 - Penchant AIs no longer count Booms toward a land attack platoon's size
+- In co-op with separate tech, the loadout picker locks a loadout from a card mod the host does not have
 - TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
 
 ## v7.11.4 - 2026-11-26
