@@ -497,6 +497,11 @@ describe("gw_inventory - a loadout that fails to load", () => {
     };
     try {
       run(() => {
+        assert.equal(
+          typeof held,
+          "function",
+          "the loadout was never requested"
+        );
         settled = true;
         held();
       });
@@ -564,7 +569,10 @@ describe("gw_inventory - a loadout that fails to load", () => {
     withLateLoadout(
       (onLoad) =>
         onLoad({
-          buff: () => calls.push(["loadout buff"]),
+          buff: (held) => {
+            calls.push(["loadout buff"]);
+            held.addMods([{ op: "push", from: "loadout" }]);
+          },
           dull: () => {},
         }),
       (settleLoadout) => {
@@ -581,6 +589,54 @@ describe("gw_inventory - a loadout that fails to load", () => {
       ["tech dull"],
       ["done"],
     ]);
+    assert.deepEqual(
+      inventory.mods().map((mod) => mod.from),
+      ["loadout", "tech"]
+    );
+  });
+
+  it("finishes a hand whose only card is a loadout that loads late", () => {
+    const calls = [];
+    const inventory = inventoryHolding([{ id: "mym_start_late" }]);
+
+    withLateLoadout(
+      (onLoad) =>
+        onLoad({
+          buff: () => calls.push(["loadout buff"]),
+          dull: () => calls.push(["loadout dull"]),
+        }),
+      (settleLoadout) => {
+        inventory.applyCards(() => calls.push(["done"]));
+        settleLoadout();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [["loadout buff"], ["loadout dull"], ["done"]]);
+  });
+
+  // A record is saved data, so an entry that is not a card can reach here.
+  // It must fail to load and finish, not throw from inside the first card's
+  // callback, where the caller's catch cannot release the unlock hold.
+  it("finishes past an entry that is not a card", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const calls = [];
+    cardModules.gwc_start_orbital = {
+      buff: () => calls.push(["loadout buff"]),
+      dull: () => {},
+    };
+
+    inventoryHolding([{ id: "gwc_start_orbital" }, null]).applyCards(() =>
+      calls.push(["done"])
+    );
+    drain();
+
+    assert.deepEqual(calls, [["loadout buff"], ["done"]]);
+    assert.ok(
+      errorMock.mock.calls.some((call) =>
+        /^Failed loading card null /.test(call.arguments[0])
+      )
+    );
   });
 
   it("gives it once when the loader runs the errback twice", () => {
