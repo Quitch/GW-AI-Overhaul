@@ -6,6 +6,7 @@
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
 - Penchant AIs with an advanced bot penchant, such as Heavy or Sniper, build Support Commanders
+- Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots
 
 ## v7.11.4 - 2026-11-26
 
