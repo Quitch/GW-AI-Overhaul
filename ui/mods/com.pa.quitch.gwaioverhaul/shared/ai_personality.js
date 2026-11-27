@@ -101,14 +101,16 @@ define([
 
   // The tags an enemy's brain adds to the tier's: Titans its default orders,
   // Queller its faction orders, Penchant its drawn penchant plus the defaults.
+  // GalacticWar picks the Galactic War side of the build files' tag splits; the
+  // base game gives it to every Galactic War AI.
   var brainTags = function (brain, faction, penchantTags) {
     switch (brain) {
       case "Titans":
-        return ["Default"];
+        return ["Default", "GalacticWar"];
       case "Queller":
         return quellerTags(faction);
       case "Penchant":
-        return (penchantTags || []).concat(["Default"]);
+        return (penchantTags || []).concat(["Default", "GalacticWar"]);
       default:
         return [];
     }

@@ -78,7 +78,10 @@ describe("applyTier", () => {
 
 describe("brainTags", () => {
   it("gives Titans its defaults and Queller its faction orders", () => {
-    assert.deepEqual(gwoPersonality.brainTags("Titans", 0), ["Default"]);
+    assert.deepEqual(gwoPersonality.brainTags("Titans", 0), [
+      "Default",
+      "GalacticWar",
+    ]);
     assert.deepEqual(gwoPersonality.brainTags("Queller", 0), [
       "tank",
       "queller",
@@ -105,8 +108,12 @@ describe("brainTags", () => {
     assert.deepEqual(gwoPersonality.brainTags("Penchant", 0, ["Rush"]), [
       "Rush",
       "Default",
+      "GalacticWar",
     ]);
-    assert.deepEqual(gwoPersonality.brainTags("Penchant", 0), ["Default"]);
+    assert.deepEqual(gwoPersonality.brainTags("Penchant", 0), [
+      "Default",
+      "GalacticWar",
+    ]);
   });
 
   it("gives nothing for an unknown brain or a faction Queller does not know", () => {
@@ -137,6 +144,7 @@ describe("resolve", () => {
     assert.deepEqual(personality.personality_tags, [
       "SlowerExpansion",
       "Default",
+      "GalacticWar",
     ]);
     assert.notEqual(personality, stored);
     assert.deepEqual(stored, {
@@ -170,6 +178,7 @@ describe("resolve", () => {
       "SlowerExpansion",
       "Rush",
       "Default",
+      "GalacticWar",
     ]);
     const queller = gwoPersonality.resolve(enemy(), {
       side: "enemy",

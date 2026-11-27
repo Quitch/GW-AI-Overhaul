@@ -77,7 +77,7 @@ describe("enemy personalities at launch", () => {
     assert.equal(personality.go_for_the_kill, GOLD.goForKill === "true");
     assert.deepEqual(
       personality.personality_tags,
-      GOLD.personality_tags.concat(["Default"])
+      GOLD.personality_tags.concat(["Default", "GalacticWar"])
     );
     // The war's own record is untouched.
     assert.equal(boss.personality.energy_demand_check, 0.48);
