@@ -189,8 +189,7 @@ Three things follow from this:
   it.
 - A `remove` runs after every `replace`, and it matches a whole test, so it
   misses a test that a `replace` changed. A test that a `new` adds comes after
-  every `replace` and every descriptor with a `refId`, so none of them reaches
-  it.
+  every `replace` and every `append`, `prepend`, or `unset` with a `refId`, so none of them reaches it.
 - `silence` runs after every `replace`, so it zeroes a build even when a card
   replaced its `priority`. Under the Guardians, one player's Rapid Deployment
   Commander therefore silences another player's factory upgrade.

@@ -456,6 +456,21 @@ describe("applyAiMods - op order", () => {
       },
     ]);
     assert.deepEqual(json.build_list[0].build_conditions, [[test]]);
+
+    const later = buildJson([
+      { to_build: "Bot", build_conditions: [[{ test_type: "T" }]] },
+    ]);
+    applyAiMods(later, [
+      { op: "new", toBuild: "Bot", idToMod: true, value: test },
+      {
+        op: "remove",
+        toBuild: "Bot",
+        value: test,
+        refId: "test_type",
+        refValue: "T",
+      },
+    ]);
+    assert.deepEqual(later.build_list[0].build_conditions, [[]]);
   });
 
   it("keeps the written order among descriptors with a refId", () => {
