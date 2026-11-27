@@ -18,9 +18,14 @@
   opacity: 0.45;
 }
 
-/* Under the race icons, which hold the card's bottom. */
+/* Under the race icons, which hold the card's bottom; with no icons, it holds
+   the bottom itself. */
 #start-cards > .card > .gwo-loadout-host-locked {
   padding-top: 8px;
+}
+
+#start-cards > .card > .gwo-loadout-races:empty + .gwo-loadout-host-locked {
+  margin-top: auto;
 }
 
 /* A line of its own under the card's text, which it would otherwise cover,
