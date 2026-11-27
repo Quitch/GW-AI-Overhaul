@@ -175,6 +175,70 @@ trees under the same name. `pa/platoon_templates.json` is half the size of the
 TITANS-era entry rather than fail. See [`ai-paths.md`](ai-paths.md) for why the
 overlay is addressed as `/pa/…` regardless.
 
+#### What GWO changes in the `pa/ai/` files, and why
+
+Against the base copies of PA 124739, GWO's eight files differ in 15 entries.
+Every other entry is identical. A `1` in GWO against a `1.0` in base is the same
+value, from the minification, and is not counted. The list is the work to hand to
+the base game so that GWO can stop shipping these copies.
+
+A `GalacticWar` `true` group applies only to an AI with the `GalacticWar`
+personality tag. The base game gives the tag to every Galactic War AI. GWO gave it
+only to allies and Sub Commanders until #743 (#740), so before that fix items 1
+and 2 reached no enemy.
+
+1. **Basic Air Defense** (`fabber_defense_builds.json`). On the `GalacticWar`
+   `true` side, GWO has two groups that keep the limits of the two `false` groups:
+   fewer than two basic air defences in the base, three energy or factory
+   structures or one tactical or artillery structure, and no `Tutorial` tag. Both
+   add `EnemyAirPresenceOnPlanet`. Base has one `true` group, with
+   `EnemyAirPresenceOnPlanet` and none of those limits. Why: "Improved quality and
+   consistency of TITANS AI anti-air approach to Galactic War" (2402ecbfb, 2024).
+   958d2a07c (2025) aligned the `Tutorial` tests.
+2. **Basic Air Fighter** (`factory_air_builds.json`) and **Advanced Air Fighter**
+   (`factory_air_builds_additional.json`). GWO adds a `GalacticWar` `true` group
+   for an AI alone on its planet: `SystemThreat Air > 0`, and fewer than 20
+   fighters within the planet's radius. Every base `true` group needs
+   `AloneOnPlanet` `false`, so in base a Galactic War AI alone on a planet builds
+   fighters only from the `BaseThreatRatio` group. Why: "Ensure the AI also
+   considers being alone on a planet properly in the context of Galactic War"
+   (2402ecbfb, 2024; 0449c17c5 fixed an inverted boolean the same day).
+3. **Basic AA Vehicle** (`factory_land_builds.json`), **Advanced AA Vehicle**
+   (`factory_land_builds_x1.json`), and **Basic AA Bot**
+   (`factory_land_builds_additional.json`). GWO adds `SystemThreat Air > 0` to the
+   `AloneOnPlanet` `true` group, which builds for another planet through a
+   teleporter. Base has no air test in that group, so an AI alone on a planet
+   sends mobile anti-air to another planet whether or not anyone has aircraft.
+   Why: "TITANS and Penchant AIs recognise that they doesn't need mobile AA if no
+   one has air tech". The vehicle came in 2402ecbfb (2024), the Flak Tank in
+   958d2a07c (2025), and the bot in #733 (#713, 2026).
+4. **Basic AA Bot - UC** (`factory_uc_builds_x1.json`). GWO adds
+   `SystemThreat Air > 0`; base builds it whenever it can afford it. Why: the same
+   change, 958d2a07c (2025). Base's own **Basic AA Vehicle - UC** (the unshadowed
+   `pa/ai/factory_builds/factory_uc_builds.json`) has this test on its
+   `GalacticWar` `true` side.
+5. **Basic AA Bot - UC** in `factory_land_builds_additional.json` is in base and
+   not in GWO. Base has this entry twice, here and in `factory_uc_builds_x1.json`.
+   GWO's copy of this file has never had it (958d2a07c, 2025). No reason is
+   recorded. Without the removal, a Unit Cannon could build anti-air bots from
+   this untested copy and skip the test in item 4.
+6. **Land_Attack_Small, \_Medium, \_Large, \_XLarge, \_Max, \_XLarge_Transfer,
+   \_Max_Transfer** (`platoon_templates.json`). The anti-nuke row takes
+   `Land & NukeDefense & Mobile - Titan`. Base takes `Land & NukeDefense - Titan`,
+   which also matches the anti-nuke launcher, a structure that cannot move. Why:
+   "AI land attack platoons no longer accept anti-nuke launchers, which cannot
+   move" (#695, 2026).
+7. **Land_Attack_XLarge_Transfer** and **Land_Attack_Max_Transfer**
+   (`platoon_templates.json`). GWO adds a `Bot & SelfDestruct` row, squad
+   `Suicide`, with the same maximum as its `Fast` and `General` rows (40, or no
+   limit). Every base row subtracts `SelfDestruct`, so base sends no Booms between
+   planets. Why: "TITANS and Penchant AI not sending Booms via teleporters"
+   (e272959a6, 2025).
+
+Items 1 to 5 are one change: in Galactic War, the AI builds anti-air only when
+someone has aircraft. Items 6 and 7 are platoon fixes that do not depend on
+Galactic War.
+
 #### Which copy each `pa/ai_queller/` file replaces
 
 Queller ships only under `pa_ex1/`, so there is one base copy of each. Every GWO
