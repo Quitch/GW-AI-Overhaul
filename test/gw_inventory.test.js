@@ -539,9 +539,15 @@ describe("gw_inventory - a loadout that fails to load", () => {
     drain();
 
     assert.equal(done, 1);
-    // The loadout in the buff pass and the dull pass. The standard start's own
-    // failure goes straight to the card's finish.
-    assert.equal(errorMock.mock.callCount(), 2);
+    // The loadout in the buff pass and the dull pass, and the standard start.
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments[0]),
+      [
+        "Failed loading card mym_start_missing : no such card",
+        "GWO: the standard start did not load either: no such card",
+        "Failed loading card mym_start_missing : no such card",
+      ]
+    );
   });
 });
 

@@ -218,7 +218,16 @@ define([
             // launch".
             if (op === "buff" && index === 0 && _.includes(cardId, "_start_")) {
               console.warn("GWO: the standard start replaces " + cardId);
-              requireGW(["cards/gwc_start"], runCard, finishThisCard);
+              requireGW(
+                ["cards/gwc_start"],
+                runCard,
+                _.once(function (startError) {
+                  console.error(
+                    "GWO: the standard start did not load either: " + startError
+                  );
+                  finishThisCard();
+                })
+              );
               return;
             }
             finishThisCard();

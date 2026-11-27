@@ -196,7 +196,8 @@ place of a first card whose id holds `_start_` and whose module fails to load,
 and logs `GWO: the standard start replaces <id>`. Every apply goes through it:
 the hire's, and stock's `applyCoopPlayerInventoryRecord`, which stores the
 result in the viewer's record when the viewer answers a tech offer or
-deletes a card.
+deletes a card. It is not limited to co-op: any inventory whose loadout's mod
+is missing gets the standard start, a solo player's included.
 
 ## Player tags
 
