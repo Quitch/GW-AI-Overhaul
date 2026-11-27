@@ -587,13 +587,23 @@ at `path` need only expose `hasStartCard` and `addStartCard`.
 reads that bank directly, so a mod cannot capture them. This is also why a mod's
 loadout ids must contain `_start_` but must not begin `gwc_start`.
 
+The reverse holds too: GWO treats every card id that contains `_start_` as a
+loadout, everywhere (`shared/cards_deal_helpers.js` `isStartLoadoutCardId`). A
+star that holds a tech card with such an id offers it alone, with no rerolls
+(`gw_play/cards_explore.js`). When a player wins it, `gw_play/cards_win.js` banks
+it as a loadout unlock and submits no card, so the player never holds it as
+tech. A tech card's id must not contain `_start_`.
+
 ## How AI players judge a card
 
 Under per-player tech the host chooses a co-op AI player's cards for it
 ([`coop.md`](coop.md), "AI players' tech"). The AI judges a card by what the
-card observably does to its inventory, never by its id. A card from any mod is
-therefore judged like one of GWO's own, and needs nothing registered to be
-judged.
+card observably does to its inventory. It reads the id for one thing only: an
+id that contains `_start_` marks a loadout. The AI declines any hand that holds
+one, because a loadout is banked and an AI never banks (`shared/coop_ai_cards.js`
+`decide`). It never deletes or swaps out the loadout in its first place.
+Otherwise a card from any mod is judged like one of GWO's own, and needs nothing
+registered to be judged.
 
 ### Applying the card
 
