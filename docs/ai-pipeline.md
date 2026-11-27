@@ -163,6 +163,35 @@ A string target hides this bug: `['A'] + 'B'` and `'A' + 'B'` both give `'AB'`.
 That is why `test/applyAiMods.test.js` pins the bug on a numeric target, where
 `[1] + 2` is `'12'` and not `3`.
 
+### Op order
+
+`applyAiMods` runs every `replace` first and then every other op, as
+`gw_play/specs.js` `orderOfOperations` does for spec ops. Each group keeps the
+order of the list that it was given. The list holds the descriptors of every
+card in the inventory, and a Guardians list holds every player's.
+
+A `replace` often finds its entry by `refId` and `refValue`, for example
+`builders` equal to `["AdvancedBotFactory"]`. An `append` to `builders` that
+runs first, from the same card or from another, changes the entry, and the
+`replace` then matches nothing. Bot Factory Upgrade Tech appends to the
+`builders` of four bots, and finds six bots by that match to replace their
+`priority`.
+
+Three things follow from this:
+
+- Only `replace` moves. An `append`, `prepend`, or `unset` that matches by
+  `refId` still sees each change that comes before it in the list, from any
+  card.
+- A `remove` runs after every `replace`, and it matches a whole test, so it
+  misses a test that a `replace` changed. A test that a `new` adds comes after
+  every `replace`, so no `replace` reaches it.
+- `silence` runs after every `replace`, so it zeroes a build even when a card
+  replaced its `priority`. Under the Guardians, one player's Rapid Deployment
+  Commander therefore silences another player's factory upgrade.
+
+The order is applied inside `applyAiMods`, after a race tree's descriptors are
+aimed. The aim's passes read the list in its given order (see "Race trees").
+
 ## Which AIs get modified
 
 `whichAIsAreBeingModified(clusterPresence, inventory)`:
@@ -349,8 +378,9 @@ console) creates its own.
 `referee_ai.js` exposes `applyAiMods`, `raceTreeJobs`, `coopAiTreeRequests`, and
 `writeRaceTree` through a `typeof module !== "undefined"` guard. That branch
 never executes in the game's Chromium runtime. It exists so tests can reach
-functions that `define()` never returns: `test/applyAiMods.test.js` and
-`test/rapid_builders.test.js` take `applyAiMods`, and
+functions that `define()` never returns: `test/applyAiMods.test.js`,
+`test/botfactory_ai_mods.test.js`, and `test/rapid_builders.test.js` take
+`applyAiMods`, and
 `test/referee_ai_race_trees.test.js`, `test/referee_ai_coop_trees.test.js`, and
 `test/referee_ai_file_processing.test.js` take the rest. Tests reach them with `requireShippedModule`, not
 `loadCouiModule`. See [`testing.md`](testing.md).
