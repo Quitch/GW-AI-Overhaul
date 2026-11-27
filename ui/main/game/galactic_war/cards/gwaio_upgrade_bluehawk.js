@@ -38,8 +38,8 @@ define([
               },
             }),
             [
+              { file: gwoUnit.bluehawk, path: "tools.2.spec_id", op: "tag" },
               { file: gwoUnit.bluehawk, path: "tools.3.spec_id", op: "tag" },
-              { file: gwoUnit.bluehawk, path: "tools.4.spec_id", op: "tag" },
             ]
           )
       );
