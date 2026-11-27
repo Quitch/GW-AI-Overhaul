@@ -11,10 +11,13 @@ define([
     requires: gwoUnit.landMine,
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.mods(gwoUnit.landMineWeapon, "replace", {
-          self_destruct: false,
-          rate_of_fire: 0.1,
-        })
+        gwoCard
+          .mods(gwoUnit.landMineWeapon, "replace", { self_destruct: false })
+          .concat(
+            gwoCard.mods(gwoUnit.landMineWeapon, "multiply", {
+              rate_of_fire: 0.02,
+            })
+          )
       );
     },
   });
