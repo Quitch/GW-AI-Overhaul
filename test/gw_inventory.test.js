@@ -433,6 +433,124 @@ describe("gw_inventory - a card that fails to load", () => {
   });
 });
 
+// A co-op viewer's loadout from a card mod the host lacks fails to load on the
+// host. With no buff the inventory had no commander, and the battle could not
+// end. See coop.md, "Records at launch".
+describe("gw_inventory - a loadout that fails to load", () => {
+  const drain = () => {
+    while (timers.delayed.length) {
+      timers.delayed.shift().fn();
+    }
+  };
+
+  const standardStart = (calls) => ({
+    buff: (inventory, params) => calls.push(["start", inventory, params]),
+    dull: () => calls.push(["start dull"]),
+  });
+
+  it("gives the standard start in its place", () => {
+    mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    cardModules.gwc_bld_efficiency = {
+      buff: () => calls.push(["tech buff"]),
+      dull: () => calls.push(["tech dull"]),
+    };
+    const inventory = inventoryHolding([
+      { id: "mym_start_missing", extra: 1 },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    inventory.applyCards(() => calls.push(["done"]));
+    drain();
+
+    assert.deepEqual(calls, [
+      ["start", inventory, { id: "mym_start_missing", extra: 1 }],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+    assert.deepEqual(
+      warnMock.mock.calls.map((call) => call.arguments),
+      [["GWO: the standard start replaces mym_start_missing"]]
+    );
+  });
+
+  it("gives it once when the loader runs the errback twice", () => {
+    mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    const requireCards = global.requireGW;
+    global.requireGW = (ids, onLoad, onError) => {
+      if (ids[0] === "cards/mym_start_missing") {
+        onError("no such card");
+        onError("no such card");
+        return;
+      }
+      requireCards(ids, onLoad, onError);
+    };
+
+    try {
+      inventoryHolding([{ id: "mym_start_missing" }]).applyCards(() =>
+        calls.push(["done"])
+      );
+      drain();
+    } finally {
+      global.requireGW = requireCards;
+    }
+
+    assert.equal(calls.filter((call) => call[0] === "start").length, 1);
+    assert.deepEqual(calls.at(-1), ["done"]);
+  });
+
+  it("leaves a loadout that is not the first card, and a tech card, without one", () => {
+    mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    cardModules.gwc_start_orbital = {
+      buff: () => calls.push(["loadout buff"]),
+      dull: () => {},
+    };
+
+    inventoryHolding([
+      { id: "gwc_start_orbital" },
+      { id: "mym_start_missing" },
+    ]).applyCards(() => calls.push(["done"]));
+    inventoryHolding([{ id: "gwc_missing" }]).applyCards(() =>
+      calls.push(["done"])
+    );
+    drain();
+
+    assert.deepEqual(calls, [["loadout buff"], ["done"], ["done"]]);
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it("still finishes when the standard start cannot load either", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    let done = 0;
+
+    inventoryHolding([{ id: "mym_start_missing" }]).applyCards(() => {
+      done++;
+    });
+    drain();
+
+    assert.equal(done, 1);
+    // The loadout in the buff pass and the dull pass, and the standard start.
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments[0]),
+      [
+        "Failed loading card mym_start_missing : no such card",
+        "GWO: the standard start did not load either: no such card",
+        "Failed loading card mym_start_missing : no such card",
+      ]
+    );
+  });
+});
+
 // bank.applyInventoryHeld sets gwoFinish on the inventories it applies. A pass
 // whose card modules are all loaded then runs them in the call, in the
 // loader's order, and hands done to gwoFinish rather than _.delay.
