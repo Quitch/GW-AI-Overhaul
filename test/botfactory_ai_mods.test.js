@@ -28,6 +28,9 @@ const { applyAiMods } = requireShippedModule(
 const card = loadCouiModule(
   path.join(CARDS_DIR, "gwaio_upgrade_botfactory.js")
 );
+const paratrooper = loadCouiModule(
+  path.join(CARDS_DIR, "gwaio_start_paratrooper.js")
+);
 
 const FACTORY_BUILDS = path.join(__dirname, "../pa/ai_penchant/factory_builds");
 const BOTS = [
@@ -45,18 +48,27 @@ const APPENDED = [
   "TMLBot",
 ];
 
-function cardAiMods() {
+// A loadout adds its AI mods only as the war's start card: the first card,
+// on the first buff.
+const START_CARD = {
+  lookupCard: () => 0,
+  getTag: (context, name, def) =>
+    context === "" && name === "buffCount" ? 0 : def,
+};
+
+function aiModsOf(source, answers) {
   const aiMods = [];
-  card.buff(
+  source.buff(
     createCapturingInventory({
+      answers: answers,
       capture: { addAIMods: recordInto(aiMods) },
     })
   );
   return aiMods;
 }
 
-function advancedFactoryEntries() {
-  const aiMods = cardAiMods();
+function advancedFactoryEntries(before) {
+  const aiMods = (before || []).concat(aiModsOf(card));
   const entries = [];
   for (const file of [
     "factory_land_builds.json",
@@ -95,6 +107,22 @@ describe("gwaio_upgrade_botfactory AI mods", () => {
         ? ["AdvancedBotFactory", "BasicBotFactory"]
         : ["AdvancedBotFactory"];
       assert.deepEqual(build.builders, expected, build.to_build);
+    }
+  });
+
+  // Paratrooper's builders append has matchAll and comes first in the hand;
+  // the card's refValue-matched appends must still find their entries.
+  it("adds the basic bot factory with Paratrooper Commander first", () => {
+    const before = aiModsOf(paratrooper, START_CARD).filter(
+      (mod) => mod.op !== "load"
+    );
+    for (const build of advancedFactoryEntries(before)) {
+      if (APPENDED.includes(build.to_build)) {
+        assert.ok(
+          build.builders.includes("BasicBotFactory"),
+          build.to_build + " " + JSON.stringify(build.builders)
+        );
+      }
     }
   });
 });
