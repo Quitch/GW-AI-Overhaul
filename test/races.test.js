@@ -362,22 +362,25 @@ describe("what a race player fields, and the mods that reach it", () => {
   });
 
   it("drops a mod on another race's path, and keeps stock, own, and file-less mods", () => {
-    const evalMod = { path: "x", op: "eval", value: "1" };
+    const filelessMod = { path: "x", op: "replace", value: 1 };
     const mods = [
       mod(gwoUnit.dox),
       mod(FX_TANK),
       mod(OTHER_TANK),
       mod(STALE),
-      evalMod,
+      filelessMod,
     ];
 
     assert.deepEqual(races.modsFor("fixture", mods), [
       mod(gwoUnit.dox),
       mod(FX_TANK),
       mod(STALE),
-      evalMod,
+      filelessMod,
     ]);
-    assert.deepEqual(races.modsFor("mla", mods), [mod(gwoUnit.dox), evalMod]);
+    assert.deepEqual(races.modsFor("mla", mods), [
+      mod(gwoUnit.dox),
+      filelessMod,
+    ]);
   });
 
   it("changes a race file as named once the cells are built, never re-aimed by cell", () => {

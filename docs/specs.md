@@ -97,7 +97,6 @@ gwoCard.mods(
 | `multiplyOrCreate` | **GWO addition.** Multiplies if numeric, creates the value if absent.                            |
 | `clone`            | Deep-copies a spec to a new tagged id. Runs first, so other ops can target the copy.             |
 | `tag`              | Rewrites a `.json` reference to carry the current `specTag`.                                     |
-| `eval`             | Runs `new Function("attribute", value)`.                                                         |
 
 `prepend` and `wipe` exist because the base ops cannot do those jobs. Order matters
 for `buildable_types` and build lists, where the engine takes the **first** match.
@@ -129,8 +128,9 @@ a `multiply` into a replaced object or a `tag` inside replaced `tools`, write
 into that one shared object, so the change would land once for every spec that
 holds it.
 
-`eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
-whatever code they like anyway, so the risk is not meaningful.
+This op table deliberately lacks stock's `eval` op. A descriptor that uses it is
+skipped like any unknown op: once its file is found, `specs.mod` logs
+`Invalid operation in mod`. The rest of the hand still applies.
 
 ### Ammo-cost mods
 
@@ -316,12 +316,12 @@ The reference fields that count are the ones `tagSpec` renames: `base_spec`,
 ### Pathless mods
 
 ```js
-var opsWithoutPath = { eval: true, clone: true };
+var opsWithoutPath = { clone: true };
 ```
 
-Only these two do something useful when applied to a whole spec with no path. They
-mutate their target in place or write to `specs` directly. Every other op merely
-returns a new value, so a pathless mod for it is a silent no-op.
+Only `clone` does something useful when applied to a whole spec with no path. It
+writes to `specs` directly. Every other op merely returns a new value, so a
+pathless mod for it is a silent no-op.
 
 A pathless `clone` is the only way to mint a new spec id. That is why it leads the
 op ordering. A mod that names the copy has to find it already in `specs`. Otherwise

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### API
+
+- Card mods can no longer use the `eval` op
+
 ### Bugfix
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
