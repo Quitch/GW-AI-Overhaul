@@ -439,6 +439,25 @@ describe("applyAiMods - op order", () => {
     ]);
   });
 
+  it("leaves a remove or new that carries a refId in list order", () => {
+    const test = { test_type: "T" };
+    const json = buildJson([
+      { to_build: "Bot", build_conditions: [[{ test_type: "T" }]] },
+    ]);
+    applyAiMods(json, [
+      { op: "remove", toBuild: "Bot", value: test },
+      {
+        op: "new",
+        toBuild: "Bot",
+        idToMod: true,
+        value: test,
+        refId: "test_type",
+        refValue: "T",
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].build_conditions, [[test]]);
+  });
+
   it("keeps the written order among descriptors with a refId", () => {
     const json = buildJson([{ to_build: "Bot", priority: 1, tag: "a" }]);
     applyAiMods(json, [

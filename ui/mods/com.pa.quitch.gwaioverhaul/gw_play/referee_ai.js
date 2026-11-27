@@ -228,10 +228,12 @@ define([
   };
 
   // See ai-pipeline.md, "Op order".
+  var REF_OPS = ["append", "prepend", "unset"];
+
   var orderOfOperations = function (mods) {
     var replaces = _.partition(mods, { op: "replace" });
     var qualified = _.partition(replaces[1], function (mod) {
-      return !!mod && !_.isUndefined(mod.refId);
+      return _.includes(REF_OPS, mod.op) && !_.isUndefined(mod.refId);
     });
     return replaces[0].concat(qualified[0], qualified[1]);
   };

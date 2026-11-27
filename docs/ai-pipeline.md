@@ -165,8 +165,8 @@ That is why `test/applyAiMods.test.js` pins the bug on a numeric target, where
 
 ### Op order
 
-`applyAiMods` runs every `replace` first, then every other descriptor that
-carries a `refId`, then the rest. Each group keeps the order of the list that it
+`applyAiMods` runs every `replace` first, then every `append`, `prepend`, or
+`unset` that carries a `refId`, then the rest. Each group keeps the order of the list that it
 was given. The list holds the descriptors of every card in the inventory, and a
 Guardians list holds every player's. `gw_play/specs.js` `orderOfOperations`
 orders spec ops by op.
@@ -182,12 +182,15 @@ Commander appends `UnitCannon` to the `builders` of two of them with
 
 Three things follow from this:
 
-- A `refId` matches the entry as it was before every unqualified `append`,
-  `prepend`, or `unset`, from any card. It still sees every `replace`, and every
-  descriptor with a `refId` that comes before it in the list.
+- A `refId` matches the entry as it was before every other `append`,
+  `prepend`, `unset`, `remove`, `new`, or `silence`, from any card. It still
+  sees every `replace`, and every earlier `append`, `prepend`, or `unset` with a
+  `refId`. A `remove` or `new` reads no `refId`, so carrying one does not move
+  it.
 - A `remove` runs after every `replace`, and it matches a whole test, so it
   misses a test that a `replace` changed. A test that a `new` adds comes after
-  every `replace`, so no `replace` reaches it.
+  every `replace` and every descriptor with a `refId`, so none of them reaches
+  it.
 - `silence` runs after every `replace`, so it zeroes a build even when a card
   replaced its `priority`. Under the Guardians, one player's Rapid Deployment
   Commander therefore silences another player's factory upgrade.
