@@ -250,6 +250,46 @@ The tag needs the **final** index. `clone` and `replace` run before `push`, `pre
 and `tag` (see the op ordering). A tool pushed onto a four-tool unit is therefore
 tagged at `tools.4.spec_id`. The index comes from the stock spec, not the card.
 
+That count holds only while no other card in the hand changes the unit's `tools`
+list. The ops that `orderOfOperations` does not move to the front, `push`,
+`prepend`, and `tag` among them, run in one list, in the order of the cards in the
+hand. A `push` from an earlier card moves the index of a pushed tool, and a
+`prepend` from an earlier card moves every index. A `replace` of the whole `tools`
+list runs before all of them, so the count then starts from the replaced list,
+whatever the hand order. The tag lands on the wrong tool or on none. The pushed
+tool stays untagged, so the player's other cards do not reach it. Under co-op
+per-player tech, the Guardians' list holds every player's hand in turn (see
+below), so another player's card, or their copy of the same card, moves the
+index too.
+
+A `replace` of the whole list that keeps its length moves no index. But the
+`replace`s run in hand order among themselves, so it drops an earlier card's
+`replace` of one tool in the list, and that card's `tag` then marks GWO's tool.
+
+GWO's own cards change these units' `tools` lists. Test a card that adds a tool to
+one of them, replaces one, or tags one, with GWO's card in the hand, before it and
+after it:
+
+| Unit                       | File                        | GWO card                                | Change                 |
+| -------------------------- | --------------------------- | --------------------------------------- | ---------------------- |
+| Advanced Fabrication Bot   | `fabrication_bot_adv`       | `gwaio_upgrade_advancedfabricationbot`  | `push`                 |
+| Avenger                    | `orbital_fighter`           | `gwaio_upgrade_avenger`                 | `push`                 |
+| Bluehawk                   | `bot_tactical_missile`      | `gwaio_upgrade_bluehawk`                | two `push`es           |
+| Catapult                   | `tactical_missile_launcher` | `gwaio_upgrade_catapult`                | `push`                 |
+| Colonel                    | `bot_support_commander`     | `gwaio_start_ceo`                       | `push`                 |
+| Firefly                    | `air_scout`                 | `gwaio_upgrade_firefly`                 | `replace`, 0 to 1      |
+| Horsefly                   | `strafer`                   | `gwaio_upgrade_horsefly`                | `push`                 |
+| Inferno                    | `tank_armor`                | `gwaio_upgrade_inferno`                 | `push`                 |
+| Kaiju                      | `hover_ship`                | `gwaio_upgrade_kaiju`                   | `replace`, same length |
+| Single Laser Defense Tower | `laser_defense_single`      | `gwaio_upgrade_singlelaserdefensetower` | `replace`, same length |
+| Skitter                    | `land_scout`                | `gwaio_upgrade_skitter`                 | `replace`, same length |
+| Solar Array                | `solar_array`               | `gwaio_upgrade_solararray`              | `push` of two          |
+| Stinger                    | `bot_aa`                    | `gwaio_upgrade_stinger`                 | `replace`, same length |
+| Stingray                   | `missile_ship`              | `gwaio_upgrade_stingray`                | `push`                 |
+| Storm                      | `tank_flak`                 | `gwaio_upgrade_storm`                   | `push`                 |
+| Stryker                    | `attack_vehicle`            | `gwaio_upgrade_stryker`                 | `prepend`              |
+| Vanguard                   | `tank_heavy_armor`          | `gwaio_upgrade_vanguard`                | `push`                 |
+
 The target must **exist tagged**. Otherwise the tag points at nothing, and the tool
 is lost outright. A file that the unit already references is covered, because
 `tagSpec` walked it. A file borrowed from another unit is not covered. It belongs in
