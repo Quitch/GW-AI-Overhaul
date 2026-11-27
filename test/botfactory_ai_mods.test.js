@@ -110,8 +110,8 @@ describe("gwaio_upgrade_botfactory AI mods", () => {
     }
   });
 
-  // GWO #710: Paratrooper's builders append, with matchAll and first in the
-  // hand, used to hide two of the four from the card's refValue match.
+  // Paratrooper's builders append has matchAll and comes first in the hand;
+  // the card's refValue-matched appends must still find their entries.
   it("adds the basic bot factory with Paratrooper Commander first", () => {
     const before = aiModsOf(paratrooper, START_CARD).filter(
       (mod) => mod.op !== "load"
