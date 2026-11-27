@@ -39,6 +39,9 @@ const SECOND_RACE = Object.assign({}, FIXTURE_RACE, {
 function makeGame(options) {
   const opts = options || {};
   const tags = { playerFaction: opts.faction };
+  if (opts.loadouts) {
+    tags.gwaioHostLoadouts = opts.loadouts;
+  }
   if (opts.race) {
     tags.playerRace = opts.race;
   }
@@ -238,6 +241,18 @@ describe("readGame", () => {
       ["mla", "fixture"]
     );
     assert.equal(info.perPlayerRace, true);
+    assert.equal(info.loadouts, undefined);
+  });
+
+  it("reads the loadouts the host can apply", () => {
+    const info = hostWar.readGame(
+      makeGame({ loadouts: ["gwc_start_vehicle", "mym_start_engineer"] })
+    );
+
+    assert.deepEqual(info.loadouts, [
+      "gwc_start_vehicle",
+      "mym_start_engineer",
+    ]);
   });
 
   it("hands the installed info through to the offer", () => {
@@ -319,6 +334,7 @@ describe("load", () => {
 
     assert.notEqual(outcome, "hung");
     assert.equal(outcome.perPlayerRace, false);
+    assert.equal(outcome.loadouts, undefined);
     assert.deepEqual(
       outcome.races.map((race) => race.id),
       ["mla"]
@@ -358,5 +374,26 @@ describe("playerRace", () => {
       undefined
     );
     assert.equal(hostWar.playerRace(undefined, "mla"), undefined);
+  });
+});
+
+describe("offersLoadout", () => {
+  it("offers a loadout on the host's list", () => {
+    const host = { loadouts: ["gwc_start_vehicle", "mym_start_engineer"] };
+
+    assert.equal(hostWar.offersLoadout(host, "mym_start_engineer"), true);
+    assert.equal(hostWar.offersLoadout(host, "mym_start_other"), false);
+  });
+
+  it("offers GWO's own loadouts, even when the host's list is unknown", () => {
+    assert.equal(
+      hostWar.offersLoadout({ loadouts: undefined }, "gwaio_start_rapid"),
+      true
+    );
+    assert.equal(hostWar.offersLoadout(undefined, "gwc_start_vehicle"), true);
+    assert.equal(
+      hostWar.offersLoadout({ loadouts: undefined }, "mym_start_engineer"),
+      false
+    );
   });
 });

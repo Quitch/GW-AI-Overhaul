@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
-], function (GW, gwoAI, gwoRaces, raceCheck) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/host_loadouts.js",
+], function (GW, gwoAI, gwoRaces, raceCheck, hostLoadouts) {
   var loaded;
 
   // The host's active server mods, not this client's. No answer is "cannot
@@ -60,6 +61,7 @@ define([
       race: tag("playerRace"),
       races: offeredRaces(recorded, installed),
       perPlayerRace: !!(recorded && recorded.perPlayerRace),
+      loadouts: hostLoadouts.read(inventory),
     };
   };
 
@@ -70,11 +72,13 @@ define([
       race: undefined,
       races: gwoRaces.detect([]),
       perPlayerRace: false,
+      loadouts: undefined,
     };
   };
 
-  // Resolves to { faction, colour, race, races, perPlayerRace }, always - a war
-  // that cannot be read is one with no races and no picker, not a failure.
+  // Resolves to { faction, colour, race, races, perPlayerRace, loadouts },
+  // always - a war that cannot be read is one with no races and no picker,
+  // not a failure.
   var load = function () {
     if (loaded) {
       return loaded;
@@ -121,6 +125,12 @@ define([
     return (host && host.perPlayerRace && pickedRace) || (host && host.race);
   };
 
+  // Whether the host can apply the loadout, so the viewer may pick it. See
+  // coop.md, "Loadouts the host can apply".
+  var offersLoadout = function (host, id) {
+    return hostLoadouts.offers(host && host.loadouts, id);
+  };
+
   // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
@@ -130,8 +140,9 @@ define([
       readGame: readGame,
       hostInstalledInfo: hostInstalledInfo,
       playerRace: playerRace,
+      offersLoadout: offersLoadout,
     };
   }
 
-  return { load: load, playerRace: playerRace };
+  return { load: load, playerRace: playerRace, offersLoadout: offersLoadout };
 });
