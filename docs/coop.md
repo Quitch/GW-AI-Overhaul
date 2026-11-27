@@ -855,9 +855,8 @@ the card's mods that the host or a connected viewer holds identically, by
 `JSON.stringify`, with an op that does not stack:
 
 - Spec ops (`gw_play/specs.js`): `replace`, `merge`, `tag`, `pull`, and
-  `clone`. `wipe` and `eval` are left in, since they are not reliably
-  idempotent, as are `multiply`, `add`, `push`, `prepend`, and
-  `multiplyOrCreate`, which stack.
+  `clone`. `wipe` is left in, since it is not reliably idempotent, as are
+  `multiply`, `add`, `push`, `prepend`, and `multiplyOrCreate`, which stack.
 - AI-mod ops (`gw_play/referee_ai.js` `aiModOps`): `replace`, `unset`,
   `remove`, and `silence`, and `load`, whose file is written once however
   often it is loaded. `append`, `prepend`, `new`, and `squad` push a second

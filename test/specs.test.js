@@ -184,23 +184,6 @@ describe("specs.mod - basic ops", () => {
     assert.equal(data["unit.json"].mult, 15);
   });
 
-  it("eval runs the given code against the current value", () => {
-    const data = { "unit.json": { hp: 100 } };
-    specs.mod(
-      data,
-      [
-        {
-          file: "unit.json",
-          path: "hp",
-          op: "eval",
-          value: "return attribute + 50;",
-        },
-      ],
-      ""
-    );
-    assert.equal(data["unit.json"].hp, 150);
-  });
-
   it("tag rewrites a file reference's spec-tag suffix", () => {
     const data = { "unit.json": { ref: "other_unit.json.oldtag" } };
     specs.mod(data, [{ file: "unit.json", path: "ref", op: "tag" }], ".newtag");
@@ -416,7 +399,6 @@ describe("specs.mod - a missing intermediate segment", () => {
     ["prepend", 5],
     ["pull", 5],
     ["wipe", ["a", "b"]],
-    ["eval", "return 5;"],
   ]) {
     it(op + " still creates the observer item it writes to", () => {
       const data = { "unit.json": oneObserverItem() };
@@ -720,24 +702,39 @@ describe("specs.mod - malformed-mod tolerance", () => {
     assert.equal(warnMock.mock.callCount(), 1);
   });
 
-  it("catches a throwing mod (e.g. bad eval code) and continues with the rest", () => {
+  it("logs and skips eval, which GWO does not support", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { hp: 100, armor: 1 } };
+    specs.mod(
+      data,
+      [
+        { file: "unit.json", path: "hp", op: "eval", value: "return 5;" },
+        { file: "unit.json", op: "eval", value: "attribute.hp = 5;" },
+        { file: "unit.json", path: "armor", op: "replace", value: 2 },
+      ],
+      ""
+    );
+    assert.deepEqual(data["unit.json"], { hp: 100, armor: 2 });
+    assert.equal(errorMock.mock.callCount(), 2);
+    errorMock.mock.calls.forEach((call) => {
+      assert.match(call.arguments[0], /^Invalid operation in mod /);
+    });
+  });
+
+  it("catches a throwing mod and continues with the rest", () => {
     const errorMock = mock.method(console, "error", () => {});
     const data = { "unit.json": { hp: 100 } };
     specs.mod(
       data,
       [
-        {
-          file: "unit.json",
-          path: "hp",
-          op: "eval",
-          value: "this is not valid JS(((",
-        },
+        { file: "unit.json", path: 5, op: "replace", value: 1 },
         { file: "unit.json", path: "hp", op: "replace", value: 999 },
       ],
       ""
     );
     assert.equal(data["unit.json"].hp, 999);
     assert.equal(errorMock.mock.callCount(), 1);
+    assert.match(errorMock.mock.calls[0].arguments[0], /applyMod threw/);
   });
 });
 

@@ -823,7 +823,7 @@ approximation in four ways:
   helps or only hurts to the other side.
 - That drop does not model op order. `clone` and `replace` run before every
   op that stacks (`gw_play/specs.js` `orderOfOperations`), but `merge`, `tag`,
-  and `pull` run in list order beside `push`, `prepend`, `wipe`, and `eval`. A
+  and `pull` run in list order beside `push`, `prepend`, and `wipe`. A
   `push` that lands between a human's `pull` and the AI's identical one is
   pulled again by the AI's copy, so deleting that copy would let it stand,
   which the view does not see.
