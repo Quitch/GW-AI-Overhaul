@@ -482,6 +482,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "De opwaardeertechnologie voor de Mend laat de geavanceerde gevechtsfabber bij alle bouwopdrachten helpen. Schakelt de automatische reparatie uit."
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "Met de opwaardeertechnologie voor mijnen kunnen mijnen exploderen zonder zichzelf te vernietigen. Mijnen staan na 10 seconden weer op scherp."
+  },
   "Minelayer": {
     "message": "Mijnenlegger"
   },

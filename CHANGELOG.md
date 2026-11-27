@@ -6,6 +6,10 @@
 
 - Card mods can no longer use the `eval` op
 
+### Changed
+
+- Mine Upgrade Tech's mines take 10 seconds to re-arm
+
 ### Bugfix
 
 - A loadout whose card mod is missing, such as a co-op player's from a mod the host does not have, gives the standard start instead of no units
@@ -23,6 +27,7 @@
 - Penchant AIs no longer count Booms toward a land attack platoon's size
 - In co-op with separate tech, the loadout picker locks a loadout from a card mod the host does not have
 - TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
+- With Rapid Deployment, the AIs that use your tech build anti-air bots and vehicles for another planet only when an enemy has aircraft
 
 ## v7.11.4 - 2026-11-26
 
