@@ -182,16 +182,25 @@ define([
           finishPhase();
         }
       };
-      var applyCardOp = function (op, cardParams, index) {
-        var cardId;
+      // GWO - an entry that is not a card fails to load and finishes, rather
+      // than throwing where the caller's catch cannot reach.
+      var cardIdOf = function (cardParams) {
+        return _.isString(cardParams)
+          ? cardParams
+          : cardParams && cardParams.id;
+      };
+      var applyCardOp = function (op, cardParams, index, settled) {
+        var cardId = cardIdOf(cardParams);
         if (_.isString(cardParams)) {
-          cardId = cardParams;
           cardParams = undefined;
-        } else {
-          cardId = cardParams.id;
         }
         // GWO - once per card: the loader can run a failed card's errback twice
-        var finishThisCard = _.once(finishCard);
+        var finishThisCard = _.once(function () {
+          finishCard();
+          if (settled) {
+            settled();
+          }
+        });
         var runCard = function (card) {
           curCard = cardId;
           // GWO - a card that throws still finishes, or done and the unlock
@@ -240,12 +249,30 @@ define([
       var applyDulls = function () {
         resetCardCount();
         finishPhase = finishApplyCards;
-        _.forEach(cards, _.bind(applyCardOp, self, "dull"));
+        _.forEach(cards, function (card, index) {
+          applyCardOp("dull", card, index);
+        });
       };
+      // GWO - the first card, the loadout, buffs before the rest, also when it
+      // loads late or gives the standard start: spec ops past the front of
+      // orderOfOperations run in the order the cards add them. See specs.md.
       var applyBuffs = function () {
         resetCardCount();
         finishPhase = applyDulls;
-        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
+        if (!cards.length) {
+          return;
+        }
+        // The rest load meanwhile; only their buffs wait.
+        if (!atOnce) {
+          _.forEach(cards.slice(1), function (card) {
+            requireGW(["cards/" + cardIdOf(card)], _.noop, _.noop);
+          });
+        }
+        applyCardOp("buff", cards[0], 0, function () {
+          _.forEach(cards.slice(1), function (card, index) {
+            applyCardOp("buff", card, index + 1);
+          });
+        });
       };
 
       self.units([]);

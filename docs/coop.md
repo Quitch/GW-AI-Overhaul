@@ -193,7 +193,11 @@ nothing from it, the viewer's army had no units and no commander, so the
 viewer's surrender did nothing and the battle could not end (#699). So the
 shadowed `gw_inventory.js` gives the standard start, `cards/gwc_start`, in
 place of a first card whose id holds `_start_` and whose module fails to load,
-and logs `GWO: the standard start replaces <id>`. Every apply goes through it:
+and logs `GWO: the standard start replaces <id>`. The rest of the hand buffs
+only once that first slot has settled, as it does after a loadout that loads.
+Spec ops past the front of `orderOfOperations` run in the order the cards added
+them ([`specs.md`](specs.md)), so the standard start keeps the loadout's place.
+Every apply goes through it:
 the hire's, and stock's `applyCoopPlayerInventoryRecord`, which stores the
 result in the viewer's record when the viewer answers a tech offer or
 deletes a card. It is not limited to co-op: any inventory whose loadout's mod
