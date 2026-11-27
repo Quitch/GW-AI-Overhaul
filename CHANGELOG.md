@@ -12,6 +12,7 @@
 - Bluehawk Upgrade Tech's extra ground missile launcher now gets your other tech for the Bluehawk's weapon
 - With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
 - Penchant AIs build air defences and fighters as TITANS AIs do, rather than waiting for enemy aircraft in the system
+- Penchant AIs build naval defences against a threat only when an enemy naval threat is on the planet
 
 ## v7.11.4 - 2026-11-26
 
