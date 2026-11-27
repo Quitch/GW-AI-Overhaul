@@ -18,9 +18,9 @@ Translations' own `docs/design.md`.
 
 `ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js` is the sole
 `global_mod_list` entry in `modinfo.json` and appears in no scene list. It calls
-`window.ModTranslations.register("com.pa.quitch.gwaioverhaul")` once per page, so
-the framework has merged GWO's file for the player's locale before the stock scene
-runs. That timing matters: the game translates its static HTML in
+`window.ModTranslations.register("com.pa.quitch.gwaioverhaul", { languages: LANGUAGES })`
+once per page, so the framework has merged GWO's file for the player's locale
+before the stock scene runs. That timing matters: the game translates its static HTML in
 `locUpdateDocument()` at `document.ready`, and stock model constructors call
 `loc()` eagerly and cache the result (`gw_play.js` builds each star's description
 in a `ko.computed`). Both run before any scene-list script, so a registration from a
