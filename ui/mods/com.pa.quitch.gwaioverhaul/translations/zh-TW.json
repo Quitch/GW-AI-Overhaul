@@ -827,6 +827,9 @@
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "銀河太小，無法讓每個敵方派系都擁有母星系。請選擇更大的銀河，或啟用「派系成長」，讓較小的銀河擁有較少的派系。"
   },
+  "The host does not have this mod.": {
+    "message": "主機沒有此模組。"
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "只要銀河大小、玩家人數、派系、難易度與遊戲選項相同且安裝相同模組，同一個種子就會重建相同的銀河與相同的敵人。星球名稱仍會不同。保持不變即可產生全新的銀河。"
   },

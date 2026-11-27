@@ -797,6 +797,9 @@
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "La galaxie est trop petite pour que chaque faction ennemie ait un système d'origine. Choisissez une galaxie plus grande ou activez « Mise à l'échelle des factions » pour que les petites galaxies aient moins de factions."
   },
+  "The host does not have this mod.": {
+    "message": "L'hôte n'a pas ce mod."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "La même valeur reconstruit la même galaxie et les mêmes ennemis, à condition que la taille de la galaxie, le nombre de joueurs, la faction, la difficulté et les options de jeu correspondent et que les mêmes mods soient installés. Les noms des planètes varient quand même. Laissez le champ tel quel pour une nouvelle galaxie."
   },
