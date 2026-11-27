@@ -482,6 +482,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "멘드 업그레이드 기술은 상급 전투 건설 유닛이 모든 건설을 보조할 수 있게 합니다. 자동 수리 기능이 비활성화됩니다."
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "지뢰 업그레이드 기술은 지뢰가 폭발해도 제거되지 않게 해줍니다. 지뢰는 재장전에 10초가 걸립니다."
+  },
   "Minelayer": {
     "message": "지뢰형"
   },

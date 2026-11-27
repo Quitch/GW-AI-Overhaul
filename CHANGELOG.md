@@ -6,6 +6,10 @@
 
 - Card mods can no longer use the `eval` op
 
+### Changed
+
+- Mine Upgrade Tech's mines take 10 seconds to re-arm
+
 ### Bugfix
 
 - A loadout whose card mod is missing, such as a co-op player's from a mod the host does not have, gives the standard start instead of no units
