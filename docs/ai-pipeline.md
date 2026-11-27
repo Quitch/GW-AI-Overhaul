@@ -177,11 +177,14 @@ runs first, from the same card or from another, changes the entry, and the
 `builders` of four bots, and finds six bots by that match to replace their
 `priority`.
 
-Two things follow from this:
+Three things follow from this:
 
 - Only `replace` moves. An `append`, `prepend`, or `unset` that matches by
   `refId` still sees each change that comes before it in the list, from any
   card.
+- A `remove` runs after every `replace`, and it matches a whole test, so it
+  misses a test that a `replace` changed. A test that a `new` adds comes after
+  every `replace`, so no `replace` reaches it.
 - `silence` runs after every `replace`, so it zeroes a build even when a card
   replaced its `priority`. Under the Guardians, one player's Rapid Deployment
   Commander therefore silences another player's factory upgrade.
