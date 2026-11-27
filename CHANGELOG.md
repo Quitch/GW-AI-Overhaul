@@ -5,7 +5,7 @@
 ### Bugfix
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
-- Penchant AIs build anti-air as TITANS AIs do, rather than waiting for enemy aircraft in the system
+- Penchant AIs build air defences and fighters as TITANS AIs do, rather than waiting for enemy aircraft in the system
 
 ## v7.11.4 - 2026-11-26
 
