@@ -5,6 +5,12 @@
 ### Bugfix
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
+- Penchant AIs with an advanced bot penchant, such as Heavy or Sniper, build Support Commanders
+- Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots
+- Penchant AIs with the Infernodier, Sniper, or Tactical penchant send their tactical missile bots with their artillery
+- Penchant AIs with the Heavy, Infernodier, Platoon, Sniper, or Tactical penchant no longer count a mobile anti-nuke toward an attack platoon's size, and Tactical AIs send Booms when they reinforce another planet
+- Bluehawk Upgrade Tech's extra ground missile launcher now gets your other tech for the Bluehawk's weapon
+- With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
 - Penchant AIs build air defences and fighters as TITANS AIs do, rather than waiting for enemy aircraft in the system
 
 ## v7.11.4 - 2026-11-26
