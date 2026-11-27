@@ -1,8 +1,7 @@
 "use strict";
 
-// GWO #709: Bluehawk Upgrade Tech pushes two launchers onto the Bluehawk's
-// two stock tools and must tag both. It tagged tools.3 and tools.4, which
-// left the first pushed launcher on the stock file. See specs.md, "Writing a
+// Bluehawk Upgrade Tech pushes two launchers onto the Bluehawk's two stock
+// tools, so it tags them at tools.2 and tools.3. See specs.md, "Writing a
 // spec reference".
 
 const { describe, it, mock, afterEach } = require("node:test");
