@@ -794,6 +794,9 @@
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "銀河が小さすぎて、すべての敵ファクションに本拠星系を割り当てられない。より大きな銀河を選ぶか、「ファクション スケーリング」を有効にして、小さな銀河のファクション数を減らそう。"
   },
+  "The host does not have this mod.": {
+    "message": "ホストはこのMODを導入していない。"
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "銀河のサイズ、プレイヤー人数、ファクション、難易度、ゲームオプションが一致し、同じMODが導入されていれば、同じシード値から同じ銀河と同じ敵が再現される。惑星名は毎回変わる。新しい銀河にするには、そのままにしておく。"
   },

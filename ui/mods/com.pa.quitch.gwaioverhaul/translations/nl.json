@@ -794,6 +794,9 @@
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "Het sterrenstelsel is te klein om elke vijandige factie een thuisstelsel te geven. Kies een groter sterrenstelsel of schakel \"Factie-opschaling\" in, zodat kleinere sterrenstelsels minder facties hebben."
   },
+  "The host does not have this mod.": {
+    "message": "De host heeft deze mod niet."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "Dezelfde seed bouwt hetzelfde sterrenstelsel en dezelfde vijanden opnieuw op, mits de grootte van het sterrenstelsel, het aantal spelers, de factie, de moeilijkheid en de spelopties overeenkomen en dezelfde mods geïnstalleerd zijn. Planeetnamen verschillen nog steeds. Laat het veld met rust voor een nieuw sterrenstelsel."
   },

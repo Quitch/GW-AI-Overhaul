@@ -794,6 +794,9 @@
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "Галактика слишком мала, чтобы у каждой вражеской фракции была родная система. Выберите галактику побольше или включите параметр «Корректировка фракций», чтобы в небольших галактиках было меньше фракций."
   },
+  "The host does not have this mod.": {
+    "message": "У хоста нет этого мода."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "То же начальное значение воссоздаёт ту же галактику и тех же врагов при условии, что размер галактики, количество игроков, фракция, сложность и настройки игры совпадают и установлены те же моды. Названия планет всё равно меняются. Оставьте поле как есть, чтобы получить новую галактику."
   },

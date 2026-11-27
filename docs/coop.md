@@ -1603,7 +1603,7 @@ so `host_war.js` reads the list as `loadouts`. `shared/loadouts.js` then marks
 each unlocked loadout that the host does not offer as `gwoHostLocked`. Like a
 race-locked loadout it is dimmed and inert, `ready` refuses it, and
 `selectableIndex` moves a selection off it. `host_lock_reason.html` adds the
-line "The host does not have the mod that adds this loadout." to it.
+line "The host does not have this mod." to it.
 
 GWO's own loadouts are on every host, so they are always offered. A copy of
 the war that carries no list offers GWO's own alone. The tag is written again
