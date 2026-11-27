@@ -29,6 +29,7 @@
 - TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
 - With Rapid Deployment, the AIs that use your tech build anti-air bots and vehicles for another planet only when an enemy has aircraft
 - TITANS and Penchant enemy and co-op AIs build air defences and fighters only against enemy aircraft
+- With Rapid Deployment, the AIs that use your tech build fighters only against enemy aircraft
 
 ## v7.11.4 - 2026-11-26
 
