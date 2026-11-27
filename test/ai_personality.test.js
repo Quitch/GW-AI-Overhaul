@@ -250,6 +250,36 @@ describe("resolve", () => {
     assert.equal(stored.micro_type, 0);
   });
 
+  it("adds GalacticWar to a stored Titans or Penchant enemy that lacks it", () => {
+    const titans = gwoPersonality.resolve(
+      { personality: { personality_tags: ["SlowerExpansion", "Default"] } },
+      { side: "enemy", faction: 0, tier: TIER, brain: "Titans" }
+    );
+    assert.deepEqual(titans.personality_tags, [
+      "SlowerExpansion",
+      "Default",
+      "GalacticWar",
+    ]);
+    const penchant = gwoPersonality.resolve(
+      { personality: { personality_tags: "junk" } },
+      { side: "enemy", faction: 0, tier: TIER, brain: "Penchant" }
+    );
+    assert.deepEqual(penchant.personality_tags, ["GalacticWar"]);
+    const tagged = gwoPersonality.resolve(
+      { personality: { personality_tags: ["Default", "GalacticWar"] } },
+      { side: "enemy", faction: 0, tier: TIER, brain: "Titans" }
+    );
+    assert.deepEqual(tagged.personality_tags, ["Default", "GalacticWar"]);
+  });
+
+  it("leaves a stored ally's tags as they are", () => {
+    const ally = gwoPersonality.resolve(
+      { personality: { personality_tags: ["Default"] } },
+      { side: "ally", faction: 0, brain: "Titans" }
+    );
+    assert.deepEqual(ally.personality_tags, ["Default"]);
+  });
+
   it("treats an id no longer shipped like no id, and copes with no personality at all", () => {
     const stored = { energy_demand_check: 0.5 };
     assert.equal(

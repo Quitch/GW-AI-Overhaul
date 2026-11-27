@@ -20,7 +20,7 @@
 - Penchant AIs with the Heavy, Infernodier, Platoon, Sniper, or Tactical penchant no longer count a mobile anti-nuke toward an attack platoon's size, and Tactical AIs send Booms when they reinforce another planet
 - Bluehawk Upgrade Tech's extra ground missile launcher now gets your other tech for the Bluehawk's weapon
 - With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
-- Penchant AIs build air defences and fighters as TITANS AIs do, rather than waiting for enemy aircraft in the system
+- Penchant AIs build air defences and fighters as TITANS AIs do
 - Penchant AIs build naval defences against a threat only when an enemy naval threat is on the planet
 - Penchant AIs send at most one Ward with each land platoon
 - Penchant AIs take Locusts when they reinforce another planet, and no longer count Titans toward a reinforcement
@@ -28,7 +28,7 @@
 - In co-op with separate tech, the loadout picker locks a loadout from a card mod the host does not have
 - TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
 - With Rapid Deployment, the AIs that use your tech build anti-air bots and vehicles for another planet only when an enemy has aircraft
-- Enemy and co-op AIs build air defences and fighters only against enemy aircraft
+- TITANS and Penchant enemy and co-op AIs build air defences and fighters only against enemy aircraft
 
 ## v7.11.4 - 2026-11-26
 

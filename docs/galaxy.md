@@ -784,7 +784,9 @@ tags followed by the brain's. The brain's tags are `Default` and `GalacticWar` f
 TITANS, the faction's arm plus `queller` for Queller, and the drawn penchant's tags
 plus `Default` and `GalacticWar` for Penchant. `GalacticWar` picks the Galactic War
 side of the build files' `HasPersonalityTag GalacticWar` splits, as the base game's
-own tiers do. No Queller file tests it. An `ai.ally` resolves as an ally: template tags plus its
+own tiers do. No Queller file tests it. A stored personality used as the fallback
+gains it too under TITANS or Penchant, because some wars saved before personality ids
+stored their tags without it. An `ai.ally` resolves as an ally: template tags plus its
 penchant, no tier. Queller's FFA tags are appended per entity afterwards, as before.
 
 The war records the id and the `penchantName`. The resolved object is written too,

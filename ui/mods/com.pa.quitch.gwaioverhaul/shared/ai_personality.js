@@ -118,10 +118,11 @@ define([
 
   // The personality an AI fights with, as a new object: the template its id
   // names, the tier's settings and tags, and the brain's tags. An AI without
-  // an id, or with one no longer shipped, keeps what the war stored and still
-  // takes the tier's settings. options: side ("enemy" or "ally"), faction,
-  // tier, brain, penchantTags, ffa. An ally takes no tier and keeps its
-  // template's tags. See galaxy.md, "AI personalities and penchants".
+  // an id, or with one no longer shipped, keeps what the war stored, takes the
+  // tier's settings, and gains GalacticWar under TITANS or Penchant. options:
+  // side ("enemy" or "ally"), faction, tier, brain, penchantTags, ffa. An ally
+  // takes no tier and keeps its template's tags. See galaxy.md, "AI
+  // personalities and penchants".
   var resolve = function (ai, options) {
     var opts = options || {};
     var ally = opts.side === "ally";
@@ -129,7 +130,21 @@ define([
 
     if (!personality) {
       personality = _.cloneDeep(ai.personality || {});
-      return ally ? personality : applyTier(personality, opts.tier);
+      if (ally) {
+        return personality;
+      }
+      applyTier(personality, opts.tier);
+      // Some wars saved before personality ids stored no GalacticWar.
+      var stored = _.isArray(personality.personality_tags)
+        ? personality.personality_tags
+        : [];
+      if (
+        (opts.brain === "Titans" || opts.brain === "Penchant") &&
+        !_.includes(stored, "GalacticWar")
+      ) {
+        personality.personality_tags = stored.concat(["GalacticWar"]);
+      }
+      return personality;
     }
 
     if (ally) {
