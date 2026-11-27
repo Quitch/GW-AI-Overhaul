@@ -8,6 +8,7 @@
 
 ### Bugfix
 
+- A co-op player whose loadout comes from a card mod the host does not have starts battles with the standard start, instead of with no units
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
 - Penchant AIs with an advanced bot penchant, such as Heavy or Sniper, build Support Commanders
 - Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots

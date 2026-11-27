@@ -182,7 +182,7 @@ define([
           finishPhase();
         }
       };
-      var applyCardOp = function (op, cardParams) {
+      var applyCardOp = function (op, cardParams, index) {
         var cardId;
         if (_.isString(cardParams)) {
           cardId = cardParams;
@@ -208,10 +208,22 @@ define([
           runCard(requireGW("cards/" + cardId));
           return;
         }
-        requireGW(["cards/" + cardId], runCard, function (error) {
-          console.error("Failed loading card " + cardId + " : " + error);
-          finishThisCard();
-        });
+        requireGW(
+          ["cards/" + cardId],
+          runCard,
+          _.once(function (error) {
+            console.error("Failed loading card " + cardId + " : " + error);
+            // GWO - a loadout this client cannot load gives the standard
+            // start, or its player has no commander. See coop.md, "Records at
+            // launch".
+            if (op === "buff" && index === 0 && _.includes(cardId, "_start_")) {
+              console.warn("GWO: the standard start replaces " + cardId);
+              requireGW(["cards/gwc_start"], runCard, finishThisCard);
+              return;
+            }
+            finishThisCard();
+          })
+        );
       };
       var resetCardCount = function () {
         cardCount = cards.length;

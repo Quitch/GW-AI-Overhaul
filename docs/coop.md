@@ -187,6 +187,17 @@ deck, loadouts included, when the scene starts. So the shared hire's reduced
 client mods do not stop a held card from loading. A card that is not in the
 deck and cannot load adds nothing, as on the host's own load.
 
+The one exception is a loadout in first place. A viewer can pick a loadout from
+a card mod the host does not have, and the host cannot load that card. With
+nothing from it, the viewer's army had no units and no commander, so the
+viewer's surrender did nothing and the battle could not end (#699). So the
+shadowed `gw_inventory.js` gives the standard start, `cards/gwc_start`, in
+place of a first card whose id holds `_start_` and whose module fails to load,
+and logs `GWO: the standard start replaces <id>`. Every apply goes through it:
+the hire's, and stock's `applyCoopPlayerInventoryRecord`, which stores the
+result in the viewer's record when the viewer answers a tech offer or
+deletes a card.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.
