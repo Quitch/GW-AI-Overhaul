@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
+- With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
 
 ## v7.11.4 - 2026-11-26
 

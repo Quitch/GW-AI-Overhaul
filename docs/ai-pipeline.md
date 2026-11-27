@@ -165,23 +165,26 @@ That is why `test/applyAiMods.test.js` pins the bug on a numeric target, where
 
 ### Op order
 
-`applyAiMods` runs every `replace` first and then every other op, as
-`gw_play/specs.js` `orderOfOperations` does for spec ops. Each group keeps the
-order of the list that it was given. The list holds the descriptors of every
-card in the inventory, and a Guardians list holds every player's.
+`applyAiMods` runs every `replace` first, then every other descriptor that
+carries a `refId`, then the rest. Each group keeps the order of the list that it
+was given. The list holds the descriptors of every card in the inventory, and a
+Guardians list holds every player's. `gw_play/specs.js` `orderOfOperations`
+orders spec ops by op.
 
-A `replace` often finds its entry by `refId` and `refValue`, for example
+A descriptor with a `refId` finds its entry by `refValue`, for example
 `builders` equal to `["AdvancedBotFactory"]`. An `append` to `builders` that
 runs first, from the same card or from another, changes the entry, and the
-`replace` then matches nothing. Bot Factory Upgrade Tech appends to the
+descriptor then matches nothing. Bot Factory Upgrade Tech appends to the
 `builders` of four bots, and finds six bots by that match to replace their
-`priority`.
+`priority`. Its own `append`s find the four the same way, and Paratrooper
+Commander appends `UnitCannon` to the `builders` of two of them with
+`matchAll`.
 
 Three things follow from this:
 
-- Only `replace` moves. An `append`, `prepend`, or `unset` that matches by
-  `refId` still sees each change that comes before it in the list, from any
-  card.
+- A `refId` matches the entry as it was before every unqualified `append`,
+  `prepend`, or `unset`, from any card. It still sees every `replace`, and every
+  descriptor with a `refId` that comes before it in the list.
 - A `remove` runs after every `replace`, and it matches a whole test, so it
   misses a test that a `replace` changed. A test that a `new` adds comes after
   every `replace`, so no `replace` reaches it.

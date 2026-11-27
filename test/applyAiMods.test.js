@@ -410,6 +410,64 @@ describe("applyAiMods - op order", () => {
     ]);
     assert.equal(json.build_list[0].priority, 0);
   });
+
+  it("runs a descriptor with a refId before an unqualified append written ahead of it", () => {
+    const json = buildJson([
+      { to_build: "Bot", priority: 199, builders: ADVANCED_ONLY },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "UnitCannon",
+        matchAll: true,
+      },
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "BasicBotFactory",
+        refId: "builders",
+        refValue: ADVANCED_ONLY,
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].builders, [
+      "AdvancedBotFactory",
+      "BasicBotFactory",
+      "UnitCannon",
+    ]);
+  });
+
+  it("keeps the written order among descriptors with a refId", () => {
+    const json = buildJson([{ to_build: "Bot", priority: 1, tag: "a" }]);
+    applyAiMods(json, [
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "priority",
+        value: 10,
+        refId: "tag",
+        refValue: "a",
+      },
+      {
+        op: "unset",
+        toBuild: "Bot",
+        idToMod: "tag",
+        refId: "tag",
+        refValue: "a",
+      },
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "priority",
+        value: 100,
+        refId: "tag",
+        refValue: "a",
+      },
+    ]);
+    assert.equal(json.build_list[0].priority, 11);
+  });
 });
 
 describe("applyAiMods - invalid input", () => {
