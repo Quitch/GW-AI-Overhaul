@@ -482,6 +482,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "Die Mend-Upgrade-Technologie erlaubt es dem verbesserten Kampf-Fabrikator, bei allen Bauaufträgen zu helfen. Deaktiviert die automatische Reparatur."
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "Die Minen-Upgrade-Technologie lässt Minen explodieren, ohne sich selbst zu zerstören. Minen brauchen 10 Sekunden, bis sie wieder scharf sind."
+  },
   "Minelayer": {
     "message": "Minenleger"
   },

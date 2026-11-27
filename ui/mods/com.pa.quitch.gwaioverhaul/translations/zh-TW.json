@@ -503,6 +503,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "修繕升級科技允許進階戰鬥製造者協助所有建造。停用自動修理功能。"
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "地雷升級科技允許地雷可在不摧毀自己的情況下爆炸。地雷需要 10 秒重新裝填。"
+  },
   "Minelayer": {
     "message": "佈雷"
   },
