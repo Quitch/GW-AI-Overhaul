@@ -477,6 +477,112 @@ describe("gw_inventory - a loadout that fails to load", () => {
     );
   });
 
+  // Spec ops past the front of orderOfOperations run in the order the cards
+  // added them, so the loadout's slot has to buff first however its module
+  // arrives. See specs.md.
+  // The loadout's first request is held until the test settles it; later
+  // ones, such as the dull pass's, are answered at once.
+  const withLateLoadout = (answer, run) => {
+    let held;
+    let settled = false;
+    const requireCards = global.requireGW;
+    global.requireGW = (ids, onLoad, onError) => {
+      if (ids[0] !== "cards/mym_start_late") {
+        requireCards(ids, onLoad, onError);
+      } else if (settled) {
+        answer(onLoad, onError);
+      } else {
+        held = () => answer(onLoad, onError);
+      }
+    };
+    try {
+      run(() => {
+        settled = true;
+        held();
+      });
+    } finally {
+      global.requireGW = requireCards;
+    }
+  };
+
+  const techCard = (calls) => ({
+    buff: (inventory) => {
+      calls.push(["tech buff"]);
+      inventory.addMods([{ op: "push", from: "tech" }]);
+    },
+    dull: () => calls.push(["tech dull"]),
+  });
+
+  it("buffs the standard start before the rest when the loadout fails late", () => {
+    mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = {
+      buff: (inventory) => {
+        calls.push(["start"]);
+        inventory.addMods([{ op: "tag", from: "start" }]);
+      },
+      dull: () => {},
+    };
+    cardModules.gwc_bld_efficiency = techCard(calls);
+    const inventory = inventoryHolding([
+      { id: "mym_start_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    withLateLoadout(
+      (onLoad, onError) => onError("no such card"),
+      (settleLoadout) => {
+        inventory.applyCards(() => calls.push(["done"]));
+        // The rest of the hand waits for the loadout's slot.
+        assert.deepEqual(calls, []);
+        settleLoadout();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [
+      ["start"],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+    assert.deepEqual(
+      inventory.mods().map((mod) => mod.from),
+      ["start", "tech"]
+    );
+  });
+
+  it("buffs a loadout that loads late before the rest", () => {
+    const calls = [];
+    cardModules.gwc_bld_efficiency = techCard(calls);
+    const inventory = inventoryHolding([
+      { id: "mym_start_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    withLateLoadout(
+      (onLoad) =>
+        onLoad({
+          buff: () => calls.push(["loadout buff"]),
+          dull: () => {},
+        }),
+      (settleLoadout) => {
+        inventory.applyCards(() => calls.push(["done"]));
+        assert.deepEqual(calls, []);
+        settleLoadout();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [
+      ["loadout buff"],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+  });
+
   it("gives it once when the loader runs the errback twice", () => {
     mock.method(console, "error", () => {});
     mock.method(console, "warn", () => {});

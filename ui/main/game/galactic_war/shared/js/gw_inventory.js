@@ -182,7 +182,7 @@ define([
           finishPhase();
         }
       };
-      var applyCardOp = function (op, cardParams, index) {
+      var applyCardOp = function (op, cardParams, index, settled) {
         var cardId;
         if (_.isString(cardParams)) {
           cardId = cardParams;
@@ -191,7 +191,12 @@ define([
           cardId = cardParams.id;
         }
         // GWO - once per card: the loader can run a failed card's errback twice
-        var finishThisCard = _.once(finishCard);
+        var finishThisCard = _.once(function () {
+          finishCard();
+          if (settled) {
+            settled();
+          }
+        });
         var runCard = function (card) {
           curCard = cardId;
           // GWO - a card that throws still finishes, or done and the unlock
@@ -240,12 +245,24 @@ define([
       var applyDulls = function () {
         resetCardCount();
         finishPhase = finishApplyCards;
-        _.forEach(cards, _.bind(applyCardOp, self, "dull"));
+        _.forEach(cards, function (card, index) {
+          applyCardOp("dull", card, index);
+        });
       };
+      // GWO - the first card, the loadout, buffs before the rest, also when it
+      // loads late or gives the standard start: spec ops past the front of
+      // orderOfOperations run in hand order. See specs.md.
       var applyBuffs = function () {
         resetCardCount();
         finishPhase = applyDulls;
-        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
+        if (!cards.length) {
+          return;
+        }
+        applyCardOp("buff", cards[0], 0, function () {
+          _.forEach(cards.slice(1), function (card, index) {
+            applyCardOp("buff", card, index + 1);
+          });
+        });
       };
 
       self.units([]);
