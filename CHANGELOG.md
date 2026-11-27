@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
+- Bluehawk Upgrade Tech's extra ground missile launcher now gets your other tech for the Bluehawk's weapon
 
 ## v7.11.4 - 2026-11-26
 
