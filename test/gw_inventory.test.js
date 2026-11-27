@@ -518,6 +518,24 @@ describe("gw_inventory - a loadout that fails to load", () => {
     dull: () => calls.push(["tech dull"]),
   });
 
+  // Applies [late loadout, tech card] and settles the loadout only after the
+  // rest of the hand has had its chance to run. Returns the mods' sources.
+  const applyLateHand = (answer, calls) => {
+    cardModules.gwc_bld_efficiency = techCard(calls);
+    const inventory = inventoryHolding([
+      { id: "mym_start_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+    withLateLoadout(answer, (settleLoadout) => {
+      inventory.applyCards(() => calls.push(["done"]));
+      // The rest of the hand waits for the loadout's slot.
+      assert.deepEqual(calls, []);
+      settleLoadout();
+      drain();
+    });
+    return inventory.mods().map((mod) => mod.from);
+  };
+
   it("buffs the standard start before the rest when the loadout fails late", () => {
     mock.method(console, "error", () => {});
     mock.method(console, "warn", () => {});
@@ -529,21 +547,10 @@ describe("gw_inventory - a loadout that fails to load", () => {
       },
       dull: () => {},
     };
-    cardModules.gwc_bld_efficiency = techCard(calls);
-    const inventory = inventoryHolding([
-      { id: "mym_start_late" },
-      { id: "gwc_bld_efficiency" },
-    ]);
 
-    withLateLoadout(
+    const mods = applyLateHand(
       (onLoad, onError) => onError("no such card"),
-      (settleLoadout) => {
-        inventory.applyCards(() => calls.push(["done"]));
-        // The rest of the hand waits for the loadout's slot.
-        assert.deepEqual(calls, []);
-        settleLoadout();
-        drain();
-      }
+      calls
     );
 
     assert.deepEqual(calls, [
@@ -552,21 +559,13 @@ describe("gw_inventory - a loadout that fails to load", () => {
       ["tech dull"],
       ["done"],
     ]);
-    assert.deepEqual(
-      inventory.mods().map((mod) => mod.from),
-      ["start", "tech"]
-    );
+    assert.deepEqual(mods, ["start", "tech"]);
   });
 
   it("buffs a loadout that loads late before the rest", () => {
     const calls = [];
-    cardModules.gwc_bld_efficiency = techCard(calls);
-    const inventory = inventoryHolding([
-      { id: "mym_start_late" },
-      { id: "gwc_bld_efficiency" },
-    ]);
 
-    withLateLoadout(
+    const mods = applyLateHand(
       (onLoad) =>
         onLoad({
           buff: (held) => {
@@ -575,12 +574,7 @@ describe("gw_inventory - a loadout that fails to load", () => {
           },
           dull: () => {},
         }),
-      (settleLoadout) => {
-        inventory.applyCards(() => calls.push(["done"]));
-        assert.deepEqual(calls, []);
-        settleLoadout();
-        drain();
-      }
+      calls
     );
 
     assert.deepEqual(calls, [
@@ -589,10 +583,7 @@ describe("gw_inventory - a loadout that fails to load", () => {
       ["tech dull"],
       ["done"],
     ]);
-    assert.deepEqual(
-      inventory.mods().map((mod) => mod.from),
-      ["loadout", "tech"]
-    );
+    assert.deepEqual(mods, ["loadout", "tech"]);
   });
 
   it("finishes a hand whose only card is a loadout that loads late", () => {
