@@ -128,9 +128,9 @@ a `multiply` into a replaced object or a `tag` inside replaced `tools`, write
 into that one shared object, so the change would land once for every spec that
 holds it.
 
-Stock's `eval` op is deliberately absent, so GWO runs no code that a card supplies
-as a string. A descriptor with `op: "eval"` logs `Invalid operation in mod` and is
-skipped. The rest of the hand still applies.
+This op table deliberately lacks stock's `eval` op. A descriptor that uses it is
+skipped like any unknown op: once its file is found, `specs.mod` logs
+`Invalid operation in mod`. The rest of the hand still applies.
 
 ### Ammo-cost mods
 
