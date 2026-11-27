@@ -227,8 +227,14 @@ define([
     },
   };
 
+  // See ai-pipeline.md, "Op order".
+  var orderOfOperations = function (mods) {
+    var parts = _.partition(mods, { op: "replace" });
+    return parts[0].concat(parts[1]);
+  };
+
   var applyAiMods = function (json, mods) {
-    _.forEach(mods, function (mod) {
+    _.forEach(orderOfOperations(mods), function (mod) {
       if (!Object.prototype.hasOwnProperty.call(aiModOps, mod.op)) {
         console.error("Invalid AI mod operation: " + JSON.stringify(mod));
         return;
