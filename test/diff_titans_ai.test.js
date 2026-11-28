@@ -238,6 +238,15 @@ describe("titans-ai-diff list keys", () => {
     assert.deepEqual(empty.diffs[0].detail, {
       fields: [{ field: "build_conditions", gwo: [], base: undefined }],
     });
+    const full = compareFile(
+      { build_list: [{ name: "A", build_conditions: [[AFFORD], [ALONE]] }] },
+      { build_list: [{ name: "A" }] }
+    );
+    assert.deepEqual(full.diffs[0].detail.fields, []);
+    assert.deepEqual(full.diffs[0].detail.build_conditions.onlyGwo, [
+      "CanAffordBuildDemand",
+      "AloneOnPlanet = true",
+    ]);
     const odd = compareFile(
       { platoon_templates: { T: { units: "x" } } },
       { platoon_templates: { T: { units: [] } } }

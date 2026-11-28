@@ -72,8 +72,15 @@ function git(args) {
 
 // git's own reason, else the command that failed.
 function gitReason(error) {
-  const stderr = String((error && error.stderr) || "").trim();
-  return (stderr || String(error && error.message)).split(/\r?\n/)[0];
+  const lines = String((error && error.stderr) || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return (
+    lines.find((line) => /^(fatal|error):/.test(line)) ||
+    lines[0] ||
+    String(error && error.message).split(/\r?\n/)[0]
+  );
 }
 
 function gitOk(args) {
@@ -86,8 +93,8 @@ function gitOk(args) {
 }
 
 function makeHistory() {
-  // A shallow clone has no parents to compare against, so every entry would
-  // look added by the tip commit.
+  // A shallow clone's oldest commit has no parent to compare against, so every
+  // entry older than it would look added by that commit.
   if (git(["rev-parse", "--is-shallow-repository"]).trim() === "true") {
     throw new Error("the clone is shallow");
   }

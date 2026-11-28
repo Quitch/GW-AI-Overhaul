@@ -253,8 +253,9 @@ request that merged it, the subject of a merge that is not a pull request, or
 `not on this branch`. `--no-history` skips git, and `--json <file>` also writes
 the whole report. It exits non-zero without the install, on an unknown argument
 or a `--json` with no file, on a file that does not parse, and when git cannot
-read the history: outside a clone, or in a shallow clone, where every entry would
-look added by the tip commit. The last says to use `--no-history`.
+read the history: outside a clone, or in a shallow clone, where every entry older
+than the oldest commit fetched would look added by it. The last says to use
+`--no-history`.
 
 What it cannot see: an entry renamed in GWO shows as removed and added; entries
 that share a name pair up by position, so a repeat inserted earlier in a list

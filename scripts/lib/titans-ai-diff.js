@@ -175,14 +175,27 @@ function diffEntry(gwo, base, kind) {
             ? group.map(formatTest).join("; ")
             : String(group);
   const detail = { fields: fieldDiffs(gwo, base, listKey) };
-  // A list only one side has, or one that is not a list, is a plain field.
-  const oneSide = Object.hasOwn(gwo, listKey) !== Object.hasOwn(base, listKey);
+  // A missing list is compared as empty, so its items still print one per line.
+  // A value that is not a list, or an empty list against a missing one, has no
+  // items to print and is named as a plain field instead.
+  const shape = (entry) => {
+    if (!Object.hasOwn(entry, listKey)) {
+      return "missing";
+    }
+    if (!Array.isArray(entry[listKey])) {
+      return "other";
+    }
+    return entry[listKey].length ? "list" : "empty";
+  };
+  const shapes = [shape(gwo), shape(base)];
   if (
-    oneSide ||
-    !Array.isArray(gwo[listKey]) ||
-    !Array.isArray(base[listKey])
+    shapes.includes("other") ||
+    (shapes.includes("missing") && shapes.includes("empty"))
   ) {
-    if (oneSide || canon(gwo[listKey]) !== canon(base[listKey])) {
+    if (
+      canon(gwo[listKey]) !== canon(base[listKey]) ||
+      shapes[0] !== shapes[1]
+    ) {
       detail.fields.push({
         field: listKey,
         gwo: gwo[listKey],
@@ -191,7 +204,7 @@ function diffEntry(gwo, base, kind) {
     }
     return detail;
   }
-  const list = diffList(gwo[listKey], base[listKey], format);
+  const list = diffList(gwo[listKey] || [], base[listKey] || [], format);
   if (list) {
     detail[listKey] = list;
   }
