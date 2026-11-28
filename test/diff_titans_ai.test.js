@@ -6,6 +6,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { pathToFileURL } = require("node:url");
 const {
   historicPaths,
   baseRels,
@@ -225,6 +226,25 @@ describe("titans-ai-diff repeats and missing fields", () => {
     assert.deepEqual(result.diffs[0].detail.fields, [
       { field: "max_count", gwo: null, base: undefined },
     ]);
+  });
+});
+
+describe("titans-ai-diff list keys", () => {
+  it("names a condition list only one side has, or one that is not a list", () => {
+    const empty = compareFile(
+      { build_list: [{ name: "A", build_conditions: [] }] },
+      { build_list: [{ name: "A" }] }
+    );
+    assert.deepEqual(empty.diffs[0].detail, {
+      fields: [{ field: "build_conditions", gwo: [], base: undefined }],
+    });
+    const odd = compareFile(
+      { platoon_templates: { T: { units: "x" } } },
+      { platoon_templates: { T: { units: [] } } }
+    );
+    assert.deepEqual(odd.diffs[0].detail, {
+      fields: [{ field: "units", gwo: "x", base: [] }],
+    });
   });
 });
 
@@ -497,8 +517,8 @@ describe("diff-titans-ai.js", () => {
     );
   });
 
-  it("asks for --no-history where there is no git history", () => {
-    const copy = path.join(dir, "no-git");
+  // The script, its two libraries and GWO's pa/ai/, outside this clone.
+  function copyTool(copy) {
     for (const rel of [
       "scripts/diff-titans-ai.js",
       "scripts/lib/titans-ai-diff.js",
@@ -508,22 +528,77 @@ describe("diff-titans-ai.js", () => {
       fs.copyFileSync(path.join(REPO_ROOT, rel), path.join(copy, rel));
     }
     fs.cpSync(AI_ROOT, path.join(copy, "pa", "ai"), { recursive: true });
-    const result = spawnSync(
+  }
+
+  function runCopy(copy, media) {
+    return spawnSync(
       process.execPath,
       [path.join(copy, "scripts", "diff-titans-ai.js")],
       {
         encoding: "utf8",
         env: Object.assign({}, process.env, {
-          PA_MEDIA: writeMedia("no-git-media"),
+          PA_MEDIA: media,
           GIT_CEILING_DIRECTORIES: dir,
         }),
       }
     );
+  }
+
+  function git(cwd, args) {
+    const hooks = path.join(dir, "no-hooks");
+    fs.mkdirSync(hooks, { recursive: true });
+    const result = spawnSync(
+      "git",
+      [
+        "-c",
+        "user.name=test",
+        "-c",
+        "user.email=test@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "core.hooksPath=" + hooks,
+      ].concat(args),
+      { cwd: cwd, encoding: "utf8" }
+    );
+    assert.equal(result.status, 0, args.join(" ") + ": " + result.stderr);
+  }
+
+  it("asks for --no-history where there is no git history", () => {
+    const copy = path.join(dir, "no-git");
+    copyTool(copy);
+    const result = runCopy(copy, writeMedia("no-git-media"));
     assert.equal(result.status, 1, result.stdout);
     assert.match(
       result.stderr,
-      /cannot read the git history \(.*\); run with --no-history/
+      /cannot read the git history \(.*not a git repository.*\); run with --no-history/
     );
     assert.doesNotMatch(result.stderr, /\n\s+at /);
+  });
+
+  it("asks for --no-history in a shallow clone", () => {
+    const origin = path.join(dir, "origin");
+    copyTool(origin);
+    git(origin, ["init", "-q"]);
+    git(origin, ["add", "."]);
+    git(origin, ["commit", "-q", "-m", "one"]);
+    fs.writeFileSync(path.join(origin, "note.txt"), "two");
+    git(origin, ["add", "."]);
+    git(origin, ["commit", "-q", "-m", "two"]);
+    const shallow = path.join(dir, "shallow");
+    git(dir, [
+      "clone",
+      "-q",
+      "--depth",
+      "1",
+      pathToFileURL(origin).href,
+      shallow,
+    ]);
+    const result = runCopy(shallow, writeMedia("shallow-media"));
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(
+      result.stderr,
+      /cannot read the git history \(the clone is shallow\); run with --no-history/
+    );
   });
 });

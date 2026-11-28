@@ -66,8 +66,14 @@ function git(args) {
     cwd: REPO_ROOT,
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
-    stdio: ["ignore", "pipe", "ignore"],
+    stdio: ["ignore", "pipe", "pipe"],
   });
+}
+
+// git's own reason, else the command that failed.
+function gitReason(error) {
+  const stderr = String((error && error.stderr) || "").trim();
+  return (stderr || String(error && error.message)).split(/\r?\n/)[0];
 }
 
 function gitOk(args) {
@@ -80,6 +86,11 @@ function gitOk(args) {
 }
 
 function makeHistory() {
+  // A shallow clone has no parents to compare against, so every entry would
+  // look added by the tip commit.
+  if (git(["rev-parse", "--is-shallow-repository"]).trim() === "true") {
+    throw new Error("the clone is shallow");
+  }
   const shown = new Map();
   const details = new Map();
   const firstParent = new Set(
@@ -206,7 +217,7 @@ function main() {
     } catch (error) {
       console.error(
         "cannot read the git history (" +
-          error.message.split(/\r?\n/)[0] +
+          gitReason(error) +
           "); run with --no-history"
       );
       return 1;

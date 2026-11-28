@@ -175,6 +175,22 @@ function diffEntry(gwo, base, kind) {
             ? group.map(formatTest).join("; ")
             : String(group);
   const detail = { fields: fieldDiffs(gwo, base, listKey) };
+  // A list only one side has, or one that is not a list, is a plain field.
+  const oneSide = Object.hasOwn(gwo, listKey) !== Object.hasOwn(base, listKey);
+  if (
+    oneSide ||
+    !Array.isArray(gwo[listKey]) ||
+    !Array.isArray(base[listKey])
+  ) {
+    if (oneSide || canon(gwo[listKey]) !== canon(base[listKey])) {
+      detail.fields.push({
+        field: listKey,
+        gwo: gwo[listKey],
+        base: base[listKey],
+      });
+    }
+    return detail;
+  }
   const list = diffList(gwo[listKey], base[listKey], format);
   if (list) {
     detail[listKey] = list;
