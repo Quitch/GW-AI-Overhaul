@@ -236,6 +236,9 @@ define([
           })
         );
       };
+      var runCardOp = function (run) {
+        run();
+      };
       // GWO - every card's module settles before any card runs, so the cards
       // run in hand order however their modules arrive: spec ops past the
       // front of orderOfOperations run in the order the cards add them. See
@@ -248,9 +251,7 @@ define([
             runs[index] = run;
             --waiting;
             if (!waiting) {
-              _.forEach(runs, function (runCard) {
-                runCard();
-              });
+              _.forEach(runs, runCardOp);
               next();
             }
           });
