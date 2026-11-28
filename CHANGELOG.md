@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v7.12.0 - 2026-11-28
 
 ### API
 
