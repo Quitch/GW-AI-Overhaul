@@ -26,6 +26,7 @@
 - Penchant AIs build naval defences against a threat only when an enemy naval threat is on the planet
 - Penchant AIs send at most one Ward with each land platoon
 - Penchant AIs take Locusts when they reinforce another planet, and no longer count Titans toward a reinforcement
+- TITANS AIs take Locusts when they reinforce another planet
 - Penchant AIs no longer count Booms toward a land attack platoon's size
 - In co-op with separate tech, the loadout picker locks a loadout from a card mod the host does not have
 - TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
