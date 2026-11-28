@@ -396,6 +396,12 @@ describe("gw_inventory - a card that throws", () => {
   });
 });
 
+const drain = () => {
+  while (timers.delayed.length) {
+    timers.delayed.shift().fn();
+  }
+};
+
 describe("gw_inventory - a card that fails to load", () => {
   // The loader can run a failed require's errback a second time, when the
   // next require's check re-emits the module's error. Counting both ended the
@@ -422,9 +428,7 @@ describe("gw_inventory - a card that fails to load", () => {
         { id: "gwc_missing" },
         { id: "gwc_start_orbital" },
       ]).applyCards(() => order.push("done"));
-      while (timers.delayed.length) {
-        timers.delayed.shift().fn();
-      }
+      drain();
     } finally {
       global.requireGW = requireCards;
     }
@@ -436,12 +440,6 @@ describe("gw_inventory - a card that fails to load", () => {
 // A co-op viewer's loadout from a card mod the host lacks fails to load on the
 // host. With no buff the inventory had no commander, and the battle could not
 // end. See coop.md, "Records at launch".
-const drain = () => {
-  while (timers.delayed.length) {
-    timers.delayed.shift().fn();
-  }
-};
-
 // The card's first request is held until the test settles it; later ones, such
 // as the dull pass's, are answered at once.
 const withLateCard = (id, answer, run) => {
