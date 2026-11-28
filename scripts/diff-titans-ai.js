@@ -12,6 +12,7 @@ const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 const { mediaDir } = require("./lib/pa-install.js");
 const {
+  codeUnitCompare,
   historicPaths,
   baseRels,
   compareFile,
@@ -54,7 +55,7 @@ function listCopies(dir, prefix) {
       rels.push(rel);
     }
   }
-  return rels.sort();
+  return rels.sort(codeUnitCompare);
 }
 
 function readJson(file) {

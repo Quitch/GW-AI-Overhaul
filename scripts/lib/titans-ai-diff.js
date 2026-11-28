@@ -9,6 +9,14 @@
 // ai/. Searching every layout keeps the history from stopping at a move.
 const LAYOUTS = ["pa/ai/", "pa/ai/bugfix/", "ai/"];
 
+// Code-unit order, which is the same on every machine and locale.
+function codeUnitCompare(a, b) {
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+}
+
 function historicPaths(rel) {
   return LAYOUTS.map((prefix) => prefix + rel);
 }
@@ -68,7 +76,7 @@ function canon(value) {
     return (
       "{" +
       Object.keys(value)
-        .sort()
+        .sort(codeUnitCompare)
         .map((key) => JSON.stringify(key) + ":" + canon(value[key]))
         .join(",") +
       "}"
@@ -139,7 +147,7 @@ function oneSided(mine, theirs, format) {
 function fieldDiffs(gwo, base, skip) {
   const fields = [];
   const keys = new Set([...Object.keys(gwo), ...Object.keys(base)]);
-  for (const key of [...keys].sort()) {
+  for (const key of [...keys].sort(codeUnitCompare)) {
     const oneSide = Object.hasOwn(gwo, key) !== Object.hasOwn(base, key);
     if (key !== skip && (oneSide || canon(gwo[key]) !== canon(base[key]))) {
       fields.push({ field: key, gwo: gwo[key], base: base[key] });
@@ -369,60 +377,65 @@ function describeCommit(commit) {
 
 // report: { files: [{ rel, base, comparison, history? }] } as the script builds
 // it. history, when present, maps a key to commits with their details filled in.
-function formatReport(report) {
-  const lines = [];
-  let differing = 0;
-  for (const file of report.files) {
-    if (!file.base) {
-      lines.push("pa/ai/" + file.rel + ": no base copy in the install");
-      continue;
-    }
-    const comparison = file.comparison;
-    differing += comparison.diffs.length;
-    lines.push(
-      "pa/ai/" +
-        file.rel +
-        " against " +
-        file.base +
-        ": " +
-        comparison.gwoCount +
-        " entries, " +
-        comparison.identical +
-        " identical, " +
-        comparison.diffs.length +
-        " differing"
-    );
-    if (!comparison.sameOrder) {
-      lines.push("  entry order differs from base");
-    }
-    for (const key of comparison.otherKeys) {
-      lines.push("  top-level key differs: " + key);
-    }
-    for (const diff of comparison.diffs) {
-      lines.push("  " + diff.key + ": " + diff.status);
-      if (diff.detail) {
-        lines.push(...describeDetail(diff.detail, "    "));
-      }
-      const commits = file.history && file.history[diff.key];
-      if (commits && commits.length) {
-        lines.push("    history:");
-        for (const commit of commits) {
-          lines.push(...describeCommit(commit));
-        }
-      }
+function describeDiff(diff, commits) {
+  const lines = ["  " + diff.key + ": " + diff.status];
+  if (diff.detail) {
+    lines.push(...describeDetail(diff.detail, "    "));
+  }
+  if (commits && commits.length) {
+    lines.push("    history:");
+    for (const commit of commits) {
+      lines.push(...describeCommit(commit));
     }
   }
-  lines.push(
-    differing +
-      " differing entries in " +
-      report.files.filter((file) => file.base).length +
-      " files"
+  return lines;
+}
+
+function describeFile(file) {
+  if (!file.base) {
+    return ["pa/ai/" + file.rel + ": no base copy in the install"];
+  }
+  const comparison = file.comparison;
+  const lines = [
+    "pa/ai/" +
+      file.rel +
+      " against " +
+      file.base +
+      ": " +
+      comparison.gwoCount +
+      " entries, " +
+      comparison.identical +
+      " identical, " +
+      comparison.diffs.length +
+      " differing",
+  ];
+  if (!comparison.sameOrder) {
+    lines.push("  entry order differs from base");
+  }
+  for (const key of comparison.otherKeys) {
+    lines.push("  top-level key differs: " + key);
+  }
+  for (const diff of comparison.diffs) {
+    lines.push(...describeDiff(diff, file.history && file.history[diff.key]));
+  }
+  return lines;
+}
+
+function formatReport(report) {
+  const compared = report.files.filter((file) => file.base);
+  const differing = compared.reduce(
+    (sum, file) => sum + file.comparison.diffs.length,
+    0
   );
-  return lines.join("\n");
+  return report.files
+    .flatMap(describeFile)
+    .concat(differing + " differing entries in " + compared.length + " files")
+    .join("\n");
 }
 
 module.exports = {
   LAYOUTS,
+  codeUnitCompare,
   historicPaths,
   baseRels,
   entries,
