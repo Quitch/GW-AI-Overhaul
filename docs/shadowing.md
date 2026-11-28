@@ -199,7 +199,7 @@ and 2 reached no enemy.
    `EnemyAirPresenceOnPlanet`. Why: "Improved quality and consistency of TITANS
    AI anti-air approach to Galactic War" (2402ecbfb, 2024). That copy also had a
    `HasPersonalityTag Tutorial` `false` test in every group, which base does not
-   have. 958d2a07c (2025) removed it from the `false` groups, and a 2026 commit
+   have. 958d2a07c (2025) removed it from the `false` groups, and #748 (2026)
    from the `true` groups.
 2. **Basic Air Fighter** (`factory_air_builds.json`) and **Advanced Air Fighter**
    (`factory_air_builds_additional.json`). GWO adds a `GalacticWar` `true` group
