@@ -10,6 +10,7 @@
 ### Changed
 
 - Mine Upgrade Tech's mines take 10 seconds to re-arm
+- Lobotomy AIs build basic air defences when enemy aircraft reach their planet
 
 ### Bugfix
 

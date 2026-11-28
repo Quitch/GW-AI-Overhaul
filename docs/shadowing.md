@@ -196,10 +196,11 @@ and 2 reached no enemy.
    limit. GWO replaces it with two `true` groups. Each keeps the limits of one
    `false` group: fewer than two basic air defences in the base, and three energy
    or factory structures or one tactical or artillery structure. Both keep base's
-   `EnemyAirPresenceOnPlanet` and add `HasPersonalityTag Tutorial` `false`. Why:
-   "Improved quality and consistency of TITANS AI anti-air approach to Galactic
-   War" (2402ecbfb, 2024). 958d2a07c (2025) removed the `Tutorial` tests from the
-   `false` groups, which now match base.
+   `EnemyAirPresenceOnPlanet`. Why: "Improved quality and consistency of TITANS
+   AI anti-air approach to Galactic War" (2402ecbfb, 2024). That copy also had a
+   `HasPersonalityTag Tutorial` `false` test in every group, which base does not
+   have. 958d2a07c (2025) removed it from the `false` groups, and #748 (2026)
+   from the `true` groups.
 2. **Basic Air Fighter** (`factory_air_builds.json`) and **Advanced Air Fighter**
    (`factory_air_builds_additional.json`). GWO adds a `GalacticWar` `true` group
    for an AI alone on its planet: `SystemThreat Air > 0`, and fewer than 20
