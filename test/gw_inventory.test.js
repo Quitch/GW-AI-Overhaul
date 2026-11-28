@@ -396,6 +396,12 @@ describe("gw_inventory - a card that throws", () => {
   });
 });
 
+const drain = () => {
+  while (timers.delayed.length) {
+    timers.delayed.shift().fn();
+  }
+};
+
 describe("gw_inventory - a card that fails to load", () => {
   // The loader can run a failed require's errback a second time, when the
   // next require's check re-emits the module's error. Counting both ended the
@@ -422,9 +428,7 @@ describe("gw_inventory - a card that fails to load", () => {
         { id: "gwc_missing" },
         { id: "gwc_start_orbital" },
       ]).applyCards(() => order.push("done"));
-      while (timers.delayed.length) {
-        timers.delayed.shift().fn();
-      }
+      drain();
     } finally {
       global.requireGW = requireCards;
     }
@@ -436,13 +440,33 @@ describe("gw_inventory - a card that fails to load", () => {
 // A co-op viewer's loadout from a card mod the host lacks fails to load on the
 // host. With no buff the inventory had no commander, and the battle could not
 // end. See coop.md, "Records at launch".
-describe("gw_inventory - a loadout that fails to load", () => {
-  const drain = () => {
-    while (timers.delayed.length) {
-      timers.delayed.shift().fn();
+// The card's first request is held until the test settles it; later ones, such
+// as the dull pass's, are answered at once.
+const withLateCard = (id, answer, run) => {
+  let held;
+  let settled = false;
+  const requireCards = global.requireGW;
+  global.requireGW = (ids, onLoad, onError) => {
+    if (ids[0] !== "cards/" + id) {
+      requireCards(ids, onLoad, onError);
+    } else if (settled) {
+      answer(onLoad, onError);
+    } else {
+      held = () => answer(onLoad, onError);
     }
   };
+  try {
+    run(() => {
+      assert.equal(typeof held, "function", id + " was never requested");
+      settled = true;
+      held();
+    });
+  } finally {
+    global.requireGW = requireCards;
+  }
+};
 
+describe("gw_inventory - a loadout that fails to load", () => {
   const standardStart = (calls) => ({
     buff: (inventory, params) => calls.push(["start", inventory, params]),
     dull: () => calls.push(["start dull"]),
@@ -480,35 +504,8 @@ describe("gw_inventory - a loadout that fails to load", () => {
   // Spec ops past the front of orderOfOperations run in the order the cards
   // added them, so the loadout's slot has to buff first however its module
   // arrives. See specs.md.
-  // The loadout's first request is held until the test settles it; later
-  // ones, such as the dull pass's, are answered at once.
-  const withLateLoadout = (answer, run) => {
-    let held;
-    let settled = false;
-    const requireCards = global.requireGW;
-    global.requireGW = (ids, onLoad, onError) => {
-      if (ids[0] !== "cards/mym_start_late") {
-        requireCards(ids, onLoad, onError);
-      } else if (settled) {
-        answer(onLoad, onError);
-      } else {
-        held = () => answer(onLoad, onError);
-      }
-    };
-    try {
-      run(() => {
-        assert.equal(
-          typeof held,
-          "function",
-          "the loadout was never requested"
-        );
-        settled = true;
-        held();
-      });
-    } finally {
-      global.requireGW = requireCards;
-    }
-  };
+  const withLateLoadout = (answer, run) =>
+    withLateCard("mym_start_late", answer, run);
 
   const techCard = (calls) => ({
     buff: (inventory) => {
@@ -704,9 +701,56 @@ describe("gw_inventory - a loadout that fails to load", () => {
   });
 });
 
+// A tag by index counts on every earlier card's push and prepend having run, so
+// the cards run in hand order whichever module arrives first. See specs.md.
+describe("gw_inventory - hand order", () => {
+  it("buffs and dulls in hand order when a later card's module arrives first", () => {
+    const calls = [];
+    const recording = (id) => ({
+      buff: (inventory) => {
+        calls.push(id + " buff");
+        inventory.addMods([{ op: "push", from: id }]);
+      },
+      dull: () => calls.push(id + " dull"),
+    });
+    cardModules.gwc_start_orbital = recording("gwc_start_orbital");
+    cardModules.gwc_bld_efficiency = recording("gwc_bld_efficiency");
+    const inventory = inventoryHolding([
+      { id: "gwc_start_orbital" },
+      { id: "gwc_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    withLateCard(
+      "gwc_late",
+      (onLoad) => onLoad(recording("gwc_late")),
+      (settleLate) => {
+        inventory.applyCards(() => calls.push("done"));
+        assert.deepEqual(calls, []);
+        settleLate();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [
+      "gwc_start_orbital buff",
+      "gwc_late buff",
+      "gwc_bld_efficiency buff",
+      "gwc_start_orbital dull",
+      "gwc_late dull",
+      "gwc_bld_efficiency dull",
+      "done",
+    ]);
+    assert.deepEqual(
+      inventory.mods().map((mod) => mod.from),
+      ["gwc_start_orbital", "gwc_late", "gwc_bld_efficiency"]
+    );
+  });
+});
+
 // bank.applyInventoryHeld sets gwoFinish on the inventories it applies. A pass
-// whose card modules are all loaded then runs them in the call, in the
-// loader's order, and hands done to gwoFinish rather than _.delay.
+// whose card modules are all loaded then runs them in the call, in hand order,
+// and hands done to gwoFinish rather than _.delay.
 describe("gw_inventory - an apply with gwoFinish", () => {
   let loads;
   let requireCards;
