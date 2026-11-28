@@ -5,10 +5,12 @@
 ### API
 
 - Card mods can no longer use the `eval` op
+- Cards apply in hand order on every load
 
 ### Changed
 
 - Mine Upgrade Tech's mines take 10 seconds to re-arm
+- Lobotomy AIs build basic air defences when enemy aircraft reach their planet
 
 ### Bugfix
 
