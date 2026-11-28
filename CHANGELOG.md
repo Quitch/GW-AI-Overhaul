@@ -5,6 +5,7 @@
 ### API
 
 - Card mods can no longer use the `eval` op
+- Cards apply in hand order on every load
 
 ### Changed
 

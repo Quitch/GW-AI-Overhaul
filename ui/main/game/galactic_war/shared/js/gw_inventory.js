@@ -174,14 +174,6 @@ define([
         }
       };
 
-      var cardCount;
-      var finishPhase;
-      var finishCard = function () {
-        --cardCount;
-        if (!cardCount) {
-          finishPhase();
-        }
-      };
       // GWO - an entry that is not a card fails to load and finishes, rather
       // than throwing where the caller's catch cannot reach.
       var cardIdOf = function (cardParams) {
@@ -189,37 +181,38 @@ define([
           ? cardParams
           : cardParams && cardParams.id;
       };
-      var applyCardOp = function (op, cardParams, index, settled) {
+      var loadCardOp = function (op, cardParams, index, loaded) {
         var cardId = cardIdOf(cardParams);
         if (_.isString(cardParams)) {
           cardParams = undefined;
         }
         // GWO - once per card: the loader can run a failed card's errback twice
-        var finishThisCard = _.once(function () {
-          finishCard();
-          if (settled) {
-            settled();
-          }
-        });
-        var runCard = function (card) {
-          curCard = cardId;
-          // GWO - a card that throws still finishes, or done and the unlock
-          // resume never run. The loader does not catch a throw here.
-          try {
-            card[op](self, cardParams);
-          } catch (e) {
-            console.error("GWO card " + cardId + " threw in " + op + ": " + e);
-          }
-          finishThisCard();
+        var settle = _.once(loaded);
+        var useCard = function (card) {
+          settle(function () {
+            curCard = cardId;
+            // GWO - a card that throws still finishes, or done and the unlock
+            // resume never run. The loader does not catch a throw here.
+            try {
+              card[op](self, cardParams);
+            } catch (e) {
+              console.error(
+                "GWO card " + cardId + " threw in " + op + ": " + e
+              );
+            }
+          });
+        };
+        var skipCard = function () {
+          settle(_.noop);
         };
         // GWO
         if (atOnce) {
-          runCard(requireGW("cards/" + cardId));
+          useCard(requireGW("cards/" + cardId));
           return;
         }
         requireGW(
           ["cards/" + cardId],
-          runCard,
+          useCard,
           _.once(function (error) {
             console.error("Failed loading card " + cardId + " : " + error);
             // GWO - a loadout this client cannot load gives the standard
@@ -229,50 +222,42 @@ define([
               console.warn("GWO: the standard start replaces " + cardId);
               requireGW(
                 ["cards/gwc_start"],
-                runCard,
+                useCard,
                 _.once(function (startError) {
                   console.error(
                     "GWO: the standard start did not load either: " + startError
                   );
-                  finishThisCard();
+                  skipCard();
                 })
               );
               return;
             }
-            finishThisCard();
+            skipCard();
           })
         );
       };
-      var resetCardCount = function () {
-        cardCount = cards.length;
+      // GWO - every card's module settles before any card runs, so the cards
+      // run in hand order however their modules arrive: spec ops past the
+      // front of orderOfOperations run in the order the cards add them. See
+      // specs.md.
+      var applyCardOps = function (op, next) {
+        var runs = [];
+        var waiting = cards.length;
+        _.forEach(cards, function (card, index) {
+          loadCardOp(op, card, index, function (run) {
+            runs[index] = run;
+            --waiting;
+            if (!waiting) {
+              _.forEach(runs, function (runCard) {
+                runCard();
+              });
+              next();
+            }
+          });
+        });
       };
       var applyDulls = function () {
-        resetCardCount();
-        finishPhase = finishApplyCards;
-        _.forEach(cards, function (card, index) {
-          applyCardOp("dull", card, index);
-        });
-      };
-      // GWO - the first card, the loadout, buffs before the rest, also when it
-      // loads late or gives the standard start: spec ops past the front of
-      // orderOfOperations run in the order the cards add them. See specs.md.
-      var applyBuffs = function () {
-        resetCardCount();
-        finishPhase = applyDulls;
-        if (!cards.length) {
-          return;
-        }
-        // The rest load meanwhile; only their buffs wait.
-        if (!atOnce) {
-          _.forEach(cards.slice(1), function (card) {
-            requireGW(["cards/" + cardIdOf(card)], _.noop, _.noop);
-          });
-        }
-        applyCardOp("buff", cards[0], 0, function () {
-          _.forEach(cards.slice(1), function (card, index) {
-            applyCardOp("buff", card, index + 1);
-          });
-        });
+        applyCardOps("dull", finishApplyCards);
       };
 
       self.units([]);
@@ -282,7 +267,7 @@ define([
       self.maxCards(0);
       self.minions([]);
 
-      applyBuffs();
+      applyCardOps("buff", applyDulls);
     },
     hasCard: function (id) {
       var self = this;
