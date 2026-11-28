@@ -203,6 +203,31 @@ describe("titans-ai-diff compareFile", () => {
   });
 });
 
+describe("titans-ai-diff repeats and missing fields", () => {
+  it("counts a repeated item instead of calling the list reordered", () => {
+    const a = { squad: "Fast", unit_types: "A" };
+    const b = { squad: "Fast", unit_types: "B" };
+    const result = compareFile(
+      { platoon_templates: { T: { units: [a, a, b] } } },
+      { platoon_templates: { T: { units: [a, b] } } }
+    );
+    const units = result.diffs[0].detail.units;
+    assert.deepEqual(units.onlyGwo, ["Fast | A"]);
+    assert.deepEqual(units.onlyBase, []);
+    assert.equal(units.reordered, false);
+  });
+
+  it("names a field that only one side has, even when it is null", () => {
+    const result = compareFile(
+      { build_list: [build("A", [[AFFORD]], { max_count: null })] },
+      { build_list: [build("A", [[AFFORD]])] }
+    );
+    assert.deepEqual(result.diffs[0].detail.fields, [
+      { field: "max_count", gwo: null, base: undefined },
+    ]);
+  });
+});
+
 describe("titans-ai-diff entryHistory", () => {
   it("records every commit that added, changed or removed an entry", () => {
     const docs = {
@@ -447,7 +472,15 @@ describe("diff-titans-ai.js", () => {
     const bad = run(media, ["--bogus"]);
     assert.equal(bad.status, 1);
     assert.match(bad.stderr, /unknown argument: --bogus/);
-    assert.equal(run(media, ["--json", ""]).status, 1);
+    for (const args of [
+      ["--json", ""],
+      ["--json"],
+      ["--json", "--no-history"],
+    ]) {
+      const missing = run(media, args);
+      assert.equal(missing.status, 1, args.join(" "));
+      assert.match(missing.stderr, /--json needs a file/);
+    }
     const broken = path.join(
       media,
       "pa_ex1",
@@ -462,5 +495,35 @@ describe("diff-titans-ai.js", () => {
       result.stderr,
       /cannot compare pa\/ai\/factory_builds\/factory_land_builds\.json/
     );
+  });
+
+  it("asks for --no-history where there is no git history", () => {
+    const copy = path.join(dir, "no-git");
+    for (const rel of [
+      "scripts/diff-titans-ai.js",
+      "scripts/lib/titans-ai-diff.js",
+      "scripts/lib/pa-install.js",
+    ]) {
+      fs.mkdirSync(path.dirname(path.join(copy, rel)), { recursive: true });
+      fs.copyFileSync(path.join(REPO_ROOT, rel), path.join(copy, rel));
+    }
+    fs.cpSync(AI_ROOT, path.join(copy, "pa", "ai"), { recursive: true });
+    const result = spawnSync(
+      process.execPath,
+      [path.join(copy, "scripts", "diff-titans-ai.js")],
+      {
+        encoding: "utf8",
+        env: Object.assign({}, process.env, {
+          PA_MEDIA: writeMedia("no-git-media"),
+          GIT_CEILING_DIRECTORIES: dir,
+        }),
+      }
+    );
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(
+      result.stderr,
+      /cannot read the git history \(.*\); run with --no-history/
+    );
+    assert.doesNotMatch(result.stderr, /\n\s+at /);
   });
 });

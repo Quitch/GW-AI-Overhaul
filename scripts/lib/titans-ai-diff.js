@@ -118,18 +118,30 @@ function formatUnit(unit) {
   return parts.filter((part) => part !== undefined).join(" | ");
 }
 
-// Items one list has and the other does not, by value. Order and repeats are not
-// compared here; the caller reports a reorder.
+// Items one list has more of than the other, by value, so a repeat counts. Order
+// is not compared here; the caller reports a reorder.
 function oneSided(mine, theirs, format) {
-  const other = new Set(theirs.map(canon));
-  return mine.filter((item) => !other.has(canon(item))).map(format);
+  const left = new Map();
+  for (const item of theirs) {
+    const key = canon(item);
+    left.set(key, (left.get(key) || 0) + 1);
+  }
+  return mine
+    .filter((item) => {
+      const key = canon(item);
+      const count = left.get(key) || 0;
+      left.set(key, count - 1);
+      return count <= 0;
+    })
+    .map(format);
 }
 
 function fieldDiffs(gwo, base, skip) {
   const fields = [];
   const keys = new Set([...Object.keys(gwo), ...Object.keys(base)]);
   for (const key of [...keys].sort()) {
-    if (key !== skip && canon(gwo[key]) !== canon(base[key])) {
+    const oneSide = Object.hasOwn(gwo, key) !== Object.hasOwn(base, key);
+    if (key !== skip && (oneSide || canon(gwo[key]) !== canon(base[key]))) {
       fields.push({ field: key, gwo: gwo[key], base: base[key] });
     }
   }

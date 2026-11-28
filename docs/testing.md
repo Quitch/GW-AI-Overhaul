@@ -246,15 +246,20 @@ side has, or says that the same ones are in another order. It also names entries
 that only one side has, a different entry order, and any other top-level key
 that differs. Then it lists every commit that added, changed, or removed each
 differing entry, across every layout the copies have had (`pa/ai/`,
-`pa/ai/bugfix/`, `ai/`). Each commit shows its date, subject, the pull request
-that merged it or `direct`, and the changelog lines it added. `--no-history`
-skips git, and `--json <file>` also writes the whole report. It exits non-zero
-only without the install, on an unknown argument, or on a file that does not
-parse.
+`pa/ai/bugfix/`, `ai/`). Each commit shows its date, its subject, how it reached
+the branch, and the changelog lines it added. How it reached the branch is
+`direct` for a commit on the first-parent line, else `PR #<n>` for the pull
+request that merged it, the subject of a merge that is not a pull request, or
+`not on this branch`. `--no-history` skips git, and `--json <file>` also writes
+the whole report. It exits non-zero without the install, on an unknown argument
+or a `--json` with no file, on a file that does not parse, and when git cannot
+read the history, such as outside a clone. The last says to use `--no-history`.
 
-What it cannot see: an entry renamed in GWO shows as removed and added; a merge
-commit's conflict resolution is not read; and a base change made after GWO copied
-a file looks the same as a GWO change, because Steam keeps no old file bodies.
+What it cannot see: an entry renamed in GWO shows as removed and added; entries
+that share a name pair up by position, so a repeat inserted earlier in a list
+pairs the wrong ones; a merge commit's conflict resolution is not read; and a
+base change made after GWO copied a file looks the same as a GWO change, because
+Steam keeps no old file bodies.
 `test/diff_titans_ai.test.js` tests the comparison and the history walk on
 fixtures, and runs the script with `--no-history` over fixture installs, because
 CI's clone has no history. Run it after a PA patch, and update the list in

@@ -5,7 +5,7 @@
 // See testing.md, "The validators", and shadowing.md, "What GWO changes in the
 // pa/ai/ files, and why".
 //
-//   npm run diff:titans-ai [-- --json <file>] [-- --no-history]
+//   npm run diff:titans-ai [-- [--json <file>] [--no-history]]
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -31,14 +31,15 @@ function parseArgs(argv) {
     if (argv[i] === "--no-history") {
       options.history = false;
     } else if (argv[i] === "--json") {
-      options.json = argv[i + 1];
+      const file = argv[i + 1];
+      if (!file || file.startsWith("--")) {
+        throw new Error("--json needs a file");
+      }
+      options.json = file;
       i += 1;
     } else {
       throw new Error("unknown argument: " + argv[i]);
     }
-  }
-  if (options.json === "") {
-    throw new Error("--json needs a file");
   }
   return options;
 }
@@ -198,7 +199,19 @@ function main() {
     console.error("no PA install at " + media + " (set PA_MEDIA)");
     return 1;
   }
-  const historyFor = options.history ? makeHistory() : undefined;
+  let historyFor;
+  if (options.history) {
+    try {
+      historyFor = makeHistory();
+    } catch (error) {
+      console.error(
+        "cannot read the git history (" +
+          error.message.split(/\r?\n/)[0] +
+          "); run with --no-history"
+      );
+      return 1;
+    }
+  }
   const report = { media: media, files: [] };
   for (const rel of listCopies(AI_ROOT, "")) {
     const baseRel = baseRels(rel).find((candidate) =>
