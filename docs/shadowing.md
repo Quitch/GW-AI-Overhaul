@@ -182,6 +182,10 @@ Every other entry is identical. A `1` in GWO against a `1.0` in base is the same
 value, from the minification, and is not counted. The list is the work to hand to
 the base game so that GWO can stop shipping these copies.
 
+`npm run diff:titans-ai` prints these differences from the install, with every
+commit that touched each entry. Run it after a PA patch, and update this list to
+match. See [`testing.md`](testing.md), "The validators".
+
 GWO deleted its earlier copies of these files in c6165f792 (2023) and added the
 current ones in 2402ecbfb (2024), 958d2a07c (2025) and e272959a6 (2025). Some
 changes are older than the current copy, and the item says so.
