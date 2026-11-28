@@ -14,9 +14,9 @@
 
 ### Bugfix
 
-- A loadout whose card mod is missing, such as a co-op player's from a mod the host does not have, gives the standard start instead of no units
+- A loadout whose card mod is missing gives the standard start instead of no units
 - Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
-- Penchant AIs with an advanced bot penchant, such as Heavy or Sniper, build Support Commanders
+- Penchant AIs with an advanced bot penchant build Support Commanders
 - Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots
 - Penchant AIs with the Infernodier, Sniper, or Tactical penchant send their tactical missile bots with their artillery
 - Penchant AIs with the Heavy, Infernodier, Platoon, Sniper, or Tactical penchant no longer count a mobile anti-nuke toward an attack platoon's size, and Tactical AIs send Booms when they reinforce another planet
