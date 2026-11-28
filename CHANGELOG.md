@@ -30,6 +30,7 @@
 - With Rapid Deployment, the AIs that use your tech build anti-air bots and vehicles for another planet only when an enemy has aircraft
 - TITANS and Penchant enemy and co-op AIs build air defences and fighters only against enemy aircraft
 - With Rapid Deployment, the AIs that use your tech build fighters only against enemy aircraft
+- With Rapid Deployment, the AIs that use your tech build basic fighters and land scouts as they do without it
 
 ## v7.11.4 - 2026-11-26
 
