@@ -5,6 +5,8 @@
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
@@ -35,7 +37,9 @@ describe("register", () => {
     };
 
     assert.equal(translations.register(root), result);
-    assert.deepEqual(calls, [["com.pa.quitch.gwaioverhaul", undefined]]);
+    assert.deepEqual(calls, [
+      ["com.pa.quitch.gwaioverhaul", { languages: translations.languages }],
+    ]);
   });
 
   it("does nothing when the global is absent or has no register function", () => {
@@ -76,5 +80,32 @@ describe("register", () => {
 
     assert.equal(translations.register(root), undefined);
     assert.deepEqual(errors, ["gwoTranslations: bare"]);
+  });
+});
+
+describe("languages", () => {
+  const folder = path.join(
+    __dirname,
+    "..",
+    "ui",
+    "mods",
+    "com.pa.quitch.gwaioverhaul",
+    "translations"
+  );
+
+  it("lists every translation file except the en-US catalog", () => {
+    const shipped = fs
+      .readdirSync(folder)
+      .filter((name) => name.endsWith(".json") && name !== "en-US.json")
+      .map((name) => name.slice(0, -".json".length))
+      .sort();
+
+    assert.deepEqual([...translations.languages].sort(), shipped);
+  });
+
+  it("holds only names Mod Translations accepts", () => {
+    for (const name of translations.languages) {
+      assert.match(name, /^[a-z]+(-[a-z0-9]+)*$/i);
+    }
   });
 });

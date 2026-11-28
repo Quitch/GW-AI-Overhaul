@@ -502,20 +502,20 @@ describe("expandMods", () => {
 
   it("drops a mod on a vanilla file the race has no cell-mate for, keeps foreign and file-less mods", () => {
     const foreign = mod("/pa/units/mod/x.json", "a", 1);
-    const evalMod = { path: "x", op: "eval", value: "1" };
+    const filelessMod = { path: "x", op: "replace", value: 1 };
     assert.deepEqual(
       cells.expandMods(
         [
           mod(DOX, "max_health", 2),
           mod(DOX_AMMO, "damage", 2),
           foreign,
-          evalMod,
+          filelessMod,
           undefined,
         ],
         vanilla,
         race
       ),
-      [foreign, evalMod, undefined]
+      [foreign, filelessMod, undefined]
     );
   });
 

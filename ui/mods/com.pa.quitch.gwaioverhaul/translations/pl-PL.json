@@ -482,6 +482,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "Technologia ulepszająca Mendy pozwala zaawansowanemu fabrykatorowi bojowemu wspomagać wszystkie budowy. Wyłącza automatyczną naprawę."
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "Technologia ulepszająca miny sprawia, że miny eksplodują, nie dokonując autodestrukcji. Ponowne uzbrojenie min trwa 10 sekund."
+  },
   "Minelayer": {
     "message": "Minerska"
   },
@@ -793,6 +796,9 @@
   },
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "Galaktyka jest za mała, aby każda wroga frakcja miała system macierzysty. Wybierz większą galaktykę lub włącz „Skalowanie frakcji”, aby mniejsze galaktyki miały mniej frakcji."
+  },
+  "The host does not have this mod.": {
+    "message": "Gospodarz nie ma tego moda."
   },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "Ten sam zarodek odtwarza tę samą galaktykę i tych samych wrogów, o ile wielkość galaktyki, liczba graczy, frakcja, poziom trudności i opcje gry są zgodne, a zainstalowane są te same mody. Nazwy planet i tak się różnią. Zostaw bez zmian, aby dostać nową galaktykę."

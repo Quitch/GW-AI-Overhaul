@@ -482,6 +482,9 @@
   "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
     "message": "Mend 升级科技可使这种高级战斗建造兵协助所有建造。禁用自动修理功能。"
   },
+  "Mine Upgrade Tech allows mines to explode without self-destructing. Mines take 10 seconds to re-arm.": {
+    "message": "地雷升级科技可使地雷在不自毁的条件下爆炸。地雷需要10秒重新装填。"
+  },
   "Minelayer": {
     "message": "布雷手"
   },
@@ -793,6 +796,9 @@
   },
   "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
     "message": "银河太小，无法让每个敌对派系都拥有母星系。请选择更大的银河，或启用“按比例调整派系数量”，让较小的银河拥有较少的派系。"
+  },
+  "The host does not have this mod.": {
+    "message": "主机没有此模组。"
   },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "只要银河大小、玩家数、派系、难度和游戏选项相同且安装了相同的模组，同一个种子就会重建相同的银河和相同的敌人。星球名称仍会不同。保持不变即可生成全新的银河。"

@@ -396,6 +396,12 @@ describe("gw_inventory - a card that throws", () => {
   });
 });
 
+const drain = () => {
+  while (timers.delayed.length) {
+    timers.delayed.shift().fn();
+  }
+};
+
 describe("gw_inventory - a card that fails to load", () => {
   // The loader can run a failed require's errback a second time, when the
   // next require's check re-emits the module's error. Counting both ended the
@@ -422,9 +428,7 @@ describe("gw_inventory - a card that fails to load", () => {
         { id: "gwc_missing" },
         { id: "gwc_start_orbital" },
       ]).applyCards(() => order.push("done"));
-      while (timers.delayed.length) {
-        timers.delayed.shift().fn();
-      }
+      drain();
     } finally {
       global.requireGW = requireCards;
     }
@@ -433,9 +437,320 @@ describe("gw_inventory - a card that fails to load", () => {
   });
 });
 
+// A co-op viewer's loadout from a card mod the host lacks fails to load on the
+// host. With no buff the inventory had no commander, and the battle could not
+// end. See coop.md, "Records at launch".
+// The card's first request is held until the test settles it; later ones, such
+// as the dull pass's, are answered at once.
+const withLateCard = (id, answer, run) => {
+  let held;
+  let settled = false;
+  const requireCards = global.requireGW;
+  global.requireGW = (ids, onLoad, onError) => {
+    if (ids[0] !== "cards/" + id) {
+      requireCards(ids, onLoad, onError);
+    } else if (settled) {
+      answer(onLoad, onError);
+    } else {
+      held = () => answer(onLoad, onError);
+    }
+  };
+  try {
+    run(() => {
+      assert.equal(typeof held, "function", id + " was never requested");
+      settled = true;
+      held();
+    });
+  } finally {
+    global.requireGW = requireCards;
+  }
+};
+
+describe("gw_inventory - a loadout that fails to load", () => {
+  const standardStart = (calls) => ({
+    buff: (inventory, params) => calls.push(["start", inventory, params]),
+    dull: () => calls.push(["start dull"]),
+  });
+
+  it("gives the standard start in its place", () => {
+    mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    cardModules.gwc_bld_efficiency = {
+      buff: () => calls.push(["tech buff"]),
+      dull: () => calls.push(["tech dull"]),
+    };
+    const inventory = inventoryHolding([
+      { id: "mym_start_missing", extra: 1 },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    inventory.applyCards(() => calls.push(["done"]));
+    drain();
+
+    assert.deepEqual(calls, [
+      ["start", inventory, { id: "mym_start_missing", extra: 1 }],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+    assert.deepEqual(
+      warnMock.mock.calls.map((call) => call.arguments),
+      [["GWO: the standard start replaces mym_start_missing"]]
+    );
+  });
+
+  // Spec ops past the front of orderOfOperations run in the order the cards
+  // added them, so the loadout's slot has to buff first however its module
+  // arrives. See specs.md.
+  const withLateLoadout = (answer, run) =>
+    withLateCard("mym_start_late", answer, run);
+
+  const techCard = (calls) => ({
+    buff: (inventory) => {
+      calls.push(["tech buff"]);
+      inventory.addMods([{ op: "push", from: "tech" }]);
+    },
+    dull: () => calls.push(["tech dull"]),
+  });
+
+  // Applies [late loadout, tech card] and settles the loadout only after the
+  // rest of the hand has had its chance to run. Returns the mods' sources.
+  const applyLateHand = (answer, calls) => {
+    cardModules.gwc_bld_efficiency = techCard(calls);
+    const inventory = inventoryHolding([
+      { id: "mym_start_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+    withLateLoadout(answer, (settleLoadout) => {
+      inventory.applyCards(() => calls.push(["done"]));
+      // The rest of the hand waits for the loadout's slot.
+      assert.deepEqual(calls, []);
+      settleLoadout();
+      drain();
+    });
+    return inventory.mods().map((mod) => mod.from);
+  };
+
+  it("buffs the standard start before the rest when the loadout fails late", () => {
+    mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = {
+      buff: (inventory) => {
+        calls.push(["start"]);
+        inventory.addMods([{ op: "tag", from: "start" }]);
+      },
+      dull: () => {},
+    };
+
+    const mods = applyLateHand(
+      (onLoad, onError) => onError("no such card"),
+      calls
+    );
+
+    assert.deepEqual(calls, [
+      ["start"],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+    assert.deepEqual(mods, ["start", "tech"]);
+  });
+
+  it("buffs a loadout that loads late before the rest", () => {
+    const calls = [];
+
+    const mods = applyLateHand(
+      (onLoad) =>
+        onLoad({
+          buff: (held) => {
+            calls.push(["loadout buff"]);
+            held.addMods([{ op: "push", from: "loadout" }]);
+          },
+          dull: () => {},
+        }),
+      calls
+    );
+
+    assert.deepEqual(calls, [
+      ["loadout buff"],
+      ["tech buff"],
+      ["tech dull"],
+      ["done"],
+    ]);
+    assert.deepEqual(mods, ["loadout", "tech"]);
+  });
+
+  it("finishes a hand whose only card is a loadout that loads late", () => {
+    const calls = [];
+    const inventory = inventoryHolding([{ id: "mym_start_late" }]);
+
+    withLateLoadout(
+      (onLoad) =>
+        onLoad({
+          buff: () => calls.push(["loadout buff"]),
+          dull: () => calls.push(["loadout dull"]),
+        }),
+      (settleLoadout) => {
+        inventory.applyCards(() => calls.push(["done"]));
+        settleLoadout();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [["loadout buff"], ["loadout dull"], ["done"]]);
+  });
+
+  // A record is saved data, so an entry that is not a card can reach here.
+  // It must fail to load and finish, not throw from inside the first card's
+  // callback, where the caller's catch cannot release the unlock hold.
+  it("finishes past an entry that is not a card", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const calls = [];
+    cardModules.gwc_start_orbital = {
+      buff: () => calls.push(["loadout buff"]),
+      dull: () => {},
+    };
+
+    inventoryHolding([{ id: "gwc_start_orbital" }, null]).applyCards(() =>
+      calls.push(["done"])
+    );
+    drain();
+
+    assert.deepEqual(calls, [["loadout buff"], ["done"]]);
+    assert.ok(
+      errorMock.mock.calls.some((call) =>
+        /^Failed loading card null /.test(call.arguments[0])
+      )
+    );
+  });
+
+  it("gives it once when the loader runs the errback twice", () => {
+    mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    const requireCards = global.requireGW;
+    global.requireGW = (ids, onLoad, onError) => {
+      if (ids[0] === "cards/mym_start_missing") {
+        onError("no such card");
+        onError("no such card");
+        return;
+      }
+      requireCards(ids, onLoad, onError);
+    };
+
+    try {
+      inventoryHolding([{ id: "mym_start_missing" }]).applyCards(() =>
+        calls.push(["done"])
+      );
+      drain();
+    } finally {
+      global.requireGW = requireCards;
+    }
+
+    assert.equal(calls.filter((call) => call[0] === "start").length, 1);
+    assert.deepEqual(calls.at(-1), ["done"]);
+  });
+
+  it("leaves a loadout that is not the first card, and a tech card, without one", () => {
+    mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
+    const calls = [];
+    cardModules.gwc_start = standardStart(calls);
+    cardModules.gwc_start_orbital = {
+      buff: () => calls.push(["loadout buff"]),
+      dull: () => {},
+    };
+
+    inventoryHolding([
+      { id: "gwc_start_orbital" },
+      { id: "mym_start_missing" },
+    ]).applyCards(() => calls.push(["done"]));
+    inventoryHolding([{ id: "gwc_missing" }]).applyCards(() =>
+      calls.push(["done"])
+    );
+    drain();
+
+    assert.deepEqual(calls, [["loadout buff"], ["done"], ["done"]]);
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it("still finishes when the standard start cannot load either", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    mock.method(console, "warn", () => {});
+    let done = 0;
+
+    inventoryHolding([{ id: "mym_start_missing" }]).applyCards(() => {
+      done++;
+    });
+    drain();
+
+    assert.equal(done, 1);
+    // The loadout in the buff pass and the dull pass, and the standard start.
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments[0]),
+      [
+        "Failed loading card mym_start_missing : no such card",
+        "GWO: the standard start did not load either: no such card",
+        "Failed loading card mym_start_missing : no such card",
+      ]
+    );
+  });
+});
+
+// A tag by index counts on every earlier card's push and prepend having run, so
+// the cards run in hand order whichever module arrives first. See specs.md.
+describe("gw_inventory - hand order", () => {
+  it("buffs and dulls in hand order when a later card's module arrives first", () => {
+    const calls = [];
+    const recording = (id) => ({
+      buff: (inventory) => {
+        calls.push(id + " buff");
+        inventory.addMods([{ op: "push", from: id }]);
+      },
+      dull: () => calls.push(id + " dull"),
+    });
+    cardModules.gwc_start_orbital = recording("gwc_start_orbital");
+    cardModules.gwc_bld_efficiency = recording("gwc_bld_efficiency");
+    const inventory = inventoryHolding([
+      { id: "gwc_start_orbital" },
+      { id: "gwc_late" },
+      { id: "gwc_bld_efficiency" },
+    ]);
+
+    withLateCard(
+      "gwc_late",
+      (onLoad) => onLoad(recording("gwc_late")),
+      (settleLate) => {
+        inventory.applyCards(() => calls.push("done"));
+        assert.deepEqual(calls, []);
+        settleLate();
+        drain();
+      }
+    );
+
+    assert.deepEqual(calls, [
+      "gwc_start_orbital buff",
+      "gwc_late buff",
+      "gwc_bld_efficiency buff",
+      "gwc_start_orbital dull",
+      "gwc_late dull",
+      "gwc_bld_efficiency dull",
+      "done",
+    ]);
+    assert.deepEqual(
+      inventory.mods().map((mod) => mod.from),
+      ["gwc_start_orbital", "gwc_late", "gwc_bld_efficiency"]
+    );
+  });
+});
+
 // bank.applyInventoryHeld sets gwoFinish on the inventories it applies. A pass
-// whose card modules are all loaded then runs them in the call, in the
-// loader's order, and hands done to gwoFinish rather than _.delay.
+// whose card modules are all loaded then runs them in the call, in hand order,
+// and hands done to gwoFinish rather than _.delay.
 describe("gw_inventory - an apply with gwoFinish", () => {
   let loads;
   let requireCards;

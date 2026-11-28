@@ -229,7 +229,7 @@ describe("coop_ai_guardians.held", () => {
   });
 
   it("keeps a copy of each op that stacks, or that may not be idempotent", () => {
-    ["multiply", "add", "push", "prepend", "multiplyOrCreate", "wipe", "eval"]
+    ["multiply", "add", "push", "prepend", "multiplyOrCreate", "wipe"]
       .map((op) => [mod(op)])
       .forEach((mods) => {
         assert.equal(

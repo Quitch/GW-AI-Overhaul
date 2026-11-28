@@ -346,6 +346,164 @@ describe("applyAiMods - squad", () => {
   });
 });
 
+describe("applyAiMods - op order", () => {
+  const ADVANCED_ONLY = ["AdvancedBotFactory"];
+
+  it("runs a replace before an append written ahead of it", () => {
+    const json = buildJson([
+      { to_build: "Bot", priority: 199, builders: ADVANCED_ONLY },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "BasicBotFactory",
+        refId: "builders",
+        refValue: ADVANCED_ONLY,
+      },
+      {
+        op: "replace",
+        toBuild: "Bot",
+        idToMod: "priority",
+        value: 97,
+        refId: "builders",
+        refValue: ADVANCED_ONLY,
+      },
+    ]);
+    assert.deepEqual(json.build_list[0], {
+      to_build: "Bot",
+      priority: 97,
+      builders: ["AdvancedBotFactory", "BasicBotFactory"],
+    });
+  });
+
+  it("keeps the written order among replaces and among the other ops", () => {
+    const json = buildJson([{ to_build: "Bot", priority: 1, builders: ["A"] }]);
+    const mod = (op, idToMod, value) => ({
+      op: op,
+      toBuild: "Bot",
+      idToMod: idToMod,
+      value: value,
+    });
+    applyAiMods(json, [
+      mod("append", "builders", "B"),
+      mod("replace", "priority", 10),
+      mod("prepend", "builders", "C"),
+      mod("replace", "priority", 20),
+      mod("append", "priority", 5),
+    ]);
+    assert.deepEqual(json.build_list[0].builders, ["C", "A", "B"]);
+    assert.equal(json.build_list[0].priority, 25);
+  });
+
+  it("runs silence after a replace written after it", () => {
+    const json = buildJson([
+      { to_build: "Bot", priority: 199, builders: ["BasicBotFactory"] },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "silence",
+        value: { builders: ["BasicBotFactory"], except: [] },
+      },
+      { op: "replace", toBuild: "Bot", idToMod: "priority", value: 97 },
+    ]);
+    assert.equal(json.build_list[0].priority, 0);
+  });
+
+  it("runs a descriptor with a refId before an unqualified append written ahead of it", () => {
+    const json = buildJson([
+      { to_build: "Bot", priority: 199, builders: ADVANCED_ONLY },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "UnitCannon",
+        matchAll: true,
+      },
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "BasicBotFactory",
+        refId: "builders",
+        refValue: ADVANCED_ONLY,
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].builders, [
+      "AdvancedBotFactory",
+      "BasicBotFactory",
+      "UnitCannon",
+    ]);
+  });
+
+  it("leaves a remove or new that carries a refId in list order", () => {
+    const test = { test_type: "T" };
+    const json = buildJson([
+      { to_build: "Bot", build_conditions: [[{ test_type: "T" }]] },
+    ]);
+    applyAiMods(json, [
+      { op: "remove", toBuild: "Bot", value: test },
+      {
+        op: "new",
+        toBuild: "Bot",
+        idToMod: true,
+        value: test,
+        refId: "test_type",
+        refValue: "T",
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].build_conditions, [[test]]);
+
+    const later = buildJson([
+      { to_build: "Bot", build_conditions: [[{ test_type: "T" }]] },
+    ]);
+    applyAiMods(later, [
+      { op: "new", toBuild: "Bot", idToMod: true, value: test },
+      {
+        op: "remove",
+        toBuild: "Bot",
+        value: test,
+        refId: "test_type",
+        refValue: "T",
+      },
+    ]);
+    assert.deepEqual(later.build_list[0].build_conditions, [[]]);
+  });
+
+  it("keeps the written order among descriptors with a refId", () => {
+    const json = buildJson([{ to_build: "Bot", priority: 1, tag: "a" }]);
+    applyAiMods(json, [
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "priority",
+        value: 10,
+        refId: "tag",
+        refValue: "a",
+      },
+      {
+        op: "unset",
+        toBuild: "Bot",
+        idToMod: "tag",
+        refId: "tag",
+        refValue: "a",
+      },
+      {
+        op: "append",
+        toBuild: "Bot",
+        idToMod: "priority",
+        value: 100,
+        refId: "tag",
+        refValue: "a",
+      },
+    ]);
+    assert.equal(json.build_list[0].priority, 11);
+  });
+});
+
 describe("applyAiMods - invalid input", () => {
   it("logs and skips an unknown op without throwing or blocking later mods", () => {
     const errorMock = mock.method(console, "error", () => {});

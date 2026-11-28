@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## v7.12.0 - 2026-11-28
+
+### API
+
+- Card mods can no longer use the `eval` op
+- Cards apply in hand order on every load
+
+### Changed
+
+- Mine Upgrade Tech's mines take 10 seconds to re-arm
+- Lobotomy AIs build basic air defences when enemy aircraft reach their planet
+
+### Bugfix
+
+- A loadout whose card mod is missing gives the standard start instead of no units
+- Bot Factory Upgrade Tech makes the AIs that use your tech favour all six of its advanced bots, not only two
+- Penchant AIs with an advanced bot penchant build Support Commanders
+- Penchant AIs with the Assault penchant no longer build Nano Swarm, artillery bots, tactical missile bots, or advanced combat fabber bots
+- Penchant AIs with the Infernodier, Sniper, or Tactical penchant send their tactical missile bots with their artillery
+- Penchant AIs with the Heavy, Infernodier, Platoon, Sniper, or Tactical penchant no longer count a mobile anti-nuke toward an attack platoon's size, and Tactical AIs send Booms when they reinforce another planet
+- Bluehawk Upgrade Tech's extra ground missile launcher now gets your other tech for the Bluehawk's weapon
+- With Paratrooper Commander, Bot and Vehicle Factory Upgrade Tech let the AIs that use your tech build all of their units from basic factories
+- Penchant AIs build air defences and fighters as TITANS AIs do
+- Penchant AIs build naval defences against a threat only when an enemy naval threat is on the planet
+- Penchant AIs send at most one Ward with each land platoon
+- Penchant AIs take Locusts when they reinforce another planet, and no longer count Titans toward a reinforcement
+- TITANS AIs take Locusts when they reinforce another planet
+- Penchant AIs no longer count Booms toward a land attack platoon's size
+- In co-op with separate tech, the loadout picker locks a loadout from a card mod the host does not have
+- TITANS AIs build anti-air bots for another planet only when an enemy has aircraft
+- With Rapid Deployment, the AIs that use your tech build anti-air bots and vehicles for another planet only when an enemy has aircraft
+- TITANS and Penchant enemy and co-op AIs build air defences and fighters only against enemy aircraft
+- With Rapid Deployment, the AIs that use your tech build fighters only against enemy aircraft
+- With Rapid Deployment, the AIs that use your tech build basic fighters and land scouts as they do without it
+
 ## v7.11.4 - 2026-11-26
 
 ### Bugfix

@@ -223,12 +223,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return attribute;
         },
-        // Runs arbitrary code against the attribute. No shipped card uses it; it
-        // is kept for third-party mods, which can run any code anyway. See
-        // specs.md, "The op table".
-        eval: function (attribute, value) {
-          return new Function("attribute", value)(attribute);
-        },
         clone: function (attribute, value) {
           if (isNullish(attribute)) {
             console.warn(
@@ -313,10 +307,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
       };
 
-      // Ops that mutate in place or write to `specs`. Every other op only returns
-      // a value, so a pathless mod for it is a no-op. See specs.md.
+      // clone writes to `specs`. Every other op only returns a value, so a
+      // pathless mod for it is a no-op. See specs.md.
       var opsWithoutPath = {
-        eval: true,
         clone: true,
       };
 

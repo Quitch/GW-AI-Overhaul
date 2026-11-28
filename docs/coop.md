@@ -187,6 +187,22 @@ deck, loadouts included, when the scene starts. So the shared hire's reduced
 client mods do not stop a held card from loading. A card that is not in the
 deck and cannot load adds nothing, as on the host's own load.
 
+The one exception is a loadout in first place. A viewer can pick a loadout from
+a card mod the host does not have, and the host cannot load that card. With
+nothing from it, the viewer's army had no units and no commander, so the
+viewer's surrender did nothing and the battle could not end (#699). So the
+shadowed `gw_inventory.js` gives the standard start, `cards/gwc_start`, in
+place of a first card whose id holds `_start_` and whose module fails to load,
+and logs `GWO: the standard start replaces <id>`. No card runs until every
+card's module has loaded or failed, so the standard start buffs in the
+loadout's place. Spec ops past the front of `orderOfOperations` run in the
+order the cards added them ([`specs.md`](specs.md)).
+Every apply goes through it:
+the hire's, and stock's `applyCoopPlayerInventoryRecord`, which stores the
+result in the viewer's record when the viewer answers a tech offer or
+deletes a card. It is not limited to co-op: any inventory whose loadout's mod
+is missing gets the standard start, a solo player's included.
+
 ## Player tags
 
 The host is `.player`. Subsequent players are `.player0`, `.player1`, and so on.
@@ -855,9 +871,8 @@ the card's mods that the host or a connected viewer holds identically, by
 `JSON.stringify`, with an op that does not stack:
 
 - Spec ops (`gw_play/specs.js`): `replace`, `merge`, `tag`, `pull`, and
-  `clone`. `wipe` and `eval` are left in, since they are not reliably
-  idempotent, as are `multiply`, `add`, `push`, `prepend`, and
-  `multiplyOrCreate`, which stack.
+  `clone`. `wipe` is left in, since it is not reliably idempotent, as are
+  `multiply`, `add`, `push`, `prepend`, and `multiplyOrCreate`, which stack.
 - AI-mod ops (`gw_play/referee_ai.js` `aiModOps`): `replace`, `unset`,
   `remove`, and `silence`, and `load`, whose file is written once however
   often it is loaded. `append`, `prepend`, `new`, and `squad` push a second
@@ -1528,7 +1543,8 @@ Four things about it are not obvious from the scene it sits in:
   settings. `host_war.js` therefore loads the campaign game through
   `GW.manifest.loadGame(model.activeGameId())` once and caches the promise for
   both scene scripts. It resolves
-  `{ faction, colour, race, races, perPlayerRace }` always and never rejects,
+  `{ faction, colour, race, races, perPlayerRace, loadouts }` always and never
+  rejects,
   because a loadout preview outside a war still has to render. A war it cannot
   read, such as an id stock's `loadGame` has not stored, is one with no races.
   Both scripts wait on the same jQuery promise, and jQuery 2.1.4 runs no later
@@ -1573,6 +1589,31 @@ Four things about it are not obvious from the scene it sits in:
 Banking is the other half, and "Whose unlocks are whose" below covers it. A
 viewer banks its own war loadout from this scene. That is why the hold placed on
 the host's inventory does not reach it.
+
+### Loadouts the host can apply
+
+A viewer's picker lists the loadouts that the viewer's own card mods add, and
+the host applies every viewer's cards again at each hire ("Records at launch").
+A loadout from a mod that the host does not have cannot load on the host
+(#699). The host is the authority, so the picker offers only what the host can
+apply.
+
+When `gw_play` loads on any client but a viewer, `gw_play/cards.js` calls
+`shared/host_loadouts.js`. It loads GWO's loadouts and every loadout a mod
+registered in that scene (`model.gwoStartingCards`, `model.gwoNewStartCards`),
+and writes those that load on the host's inventory as the global tag
+`gwaioHostLoadouts`. A viewer's copy of the war carries the host's inventory,
+so `host_war.js` reads the list as `loadouts`. `shared/loadouts.js` then marks
+each unlocked loadout that the host does not offer as `gwoHostLocked`. Like a
+race-locked loadout it is dimmed and inert, `ready` refuses it, and
+`selectableIndex` moves a selection off it. `host_lock_reason.html` adds the
+line "The host does not have this mod." to it.
+
+GWO's own loadouts are on every host, so they are always offered. A copy of
+the war that carries no list offers GWO's own alone. The tag is written again
+on every host load, so it follows the host's mods. A loadout that a mod
+registers only in `gw_start` is not on the list, so viewers see it locked even
+when the host has the mod.
 
 ## Whose unlocks are whose
 

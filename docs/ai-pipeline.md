@@ -163,6 +163,40 @@ A string target hides this bug: `['A'] + 'B'` and `'A' + 'B'` both give `'AB'`.
 That is why `test/applyAiMods.test.js` pins the bug on a numeric target, where
 `[1] + 2` is `'12'` and not `3`.
 
+### Op order
+
+`applyAiMods` runs every `replace` first, then every `append`, `prepend`, or
+`unset` that carries a `refId`, then the rest. Each group keeps the order of the list that it
+was given. The list holds the descriptors of every card in the inventory, and a
+Guardians list holds every player's. `gw_play/specs.js` `orderOfOperations`
+orders spec ops by op.
+
+A descriptor with a `refId` finds its entry by `refValue`, for example
+`builders` equal to `["AdvancedBotFactory"]`. An `append` to `builders` that
+runs first, from the same card or from another, changes the entry, and the
+descriptor then matches nothing. Bot Factory Upgrade Tech appends to the
+`builders` of four bots, and finds six bots by that match to replace their
+`priority`. Its own `append`s find the four the same way, and Paratrooper
+Commander appends `UnitCannon` to the `builders` of two of them with
+`matchAll`.
+
+Three things follow from this:
+
+- A `refId` matches the entry as it was before every other `append`,
+  `prepend`, `unset`, `remove`, `new`, or `silence`, from any card. It still
+  sees every `replace`, and every earlier `append`, `prepend`, or `unset` with a
+  `refId`. A `remove` or `new` reads no `refId`, so carrying one does not move
+  it.
+- A `remove` runs after every `replace`, and it matches a whole test, so it
+  misses a test that a `replace` changed. A test that a `new` adds comes after
+  every `replace` and every `append`, `prepend`, or `unset` with a `refId`, so none of them reaches it.
+- `silence` runs after every `replace`, so it zeroes a build even when a card
+  replaced its `priority`. Under the Guardians, one player's Rapid Deployment
+  Commander therefore silences another player's factory upgrade.
+
+The order is applied inside `applyAiMods`, after a race tree's descriptors are
+aimed. The aim's passes read the list in its given order (see "Race trees").
+
 ## Which AIs get modified
 
 `whichAIsAreBeingModified(clusterPresence, inventory)`:
@@ -349,8 +383,9 @@ console) creates its own.
 `referee_ai.js` exposes `applyAiMods`, `raceTreeJobs`, `coopAiTreeRequests`, and
 `writeRaceTree` through a `typeof module !== "undefined"` guard. That branch
 never executes in the game's Chromium runtime. It exists so tests can reach
-functions that `define()` never returns: `test/applyAiMods.test.js` and
-`test/rapid_builders.test.js` take `applyAiMods`, and
+functions that `define()` never returns: `test/applyAiMods.test.js`,
+`test/botfactory_ai_mods.test.js`, and `test/rapid_builders.test.js` take
+`applyAiMods`, and
 `test/referee_ai_race_trees.test.js`, `test/referee_ai_coop_trees.test.js`, and
 `test/referee_ai_file_processing.test.js` take the rest. Tests reach them with `requireShippedModule`, not
 `loadCouiModule`. See [`testing.md`](testing.md).

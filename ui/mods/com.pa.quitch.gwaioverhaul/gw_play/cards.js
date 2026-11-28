@@ -392,6 +392,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save_debt.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/host_loadouts.js",
       ],
       function (
         GW,
@@ -418,7 +419,8 @@
         cardsWin,
         cardsStartSubcdr,
         coopPublish,
-        saveDebt
+        saveDebt,
+        hostLoadouts
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -677,6 +679,13 @@
         });
 
         generalCommander.setupGeneralCommander();
+
+        // What a co-op viewer may pick. A viewer's inventory here is the
+        // host's, so only the host writes it. See coop.md, "Loadouts the host
+        // can apply".
+        if (!model.isCampaignViewer()) {
+          hostLoadouts.publish(inventory);
+        }
       }
     );
   } catch (e) {

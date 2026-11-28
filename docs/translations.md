@@ -18,9 +18,9 @@ Translations' own `docs/design.md`.
 
 `ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js` is the sole
 `global_mod_list` entry in `modinfo.json` and appears in no scene list. It calls
-`window.ModTranslations.register("com.pa.quitch.gwaioverhaul")` once per page, so
-the framework has merged GWO's file for the player's locale before the stock scene
-runs. That timing matters: the game translates its static HTML in
+`window.ModTranslations.register("com.pa.quitch.gwaioverhaul", { languages: LANGUAGES })`
+once per page, so the framework has merged GWO's file for the player's locale
+before the stock scene runs. That timing matters: the game translates its static HTML in
 `locUpdateDocument()` at `document.ready`, and stock model constructors call
 `loc()` eagerly and cache the result (`gw_play.js` builds each star's description
 in a `ko.computed`). Both run before any scene-list script, so a registration from a
@@ -32,6 +32,12 @@ nothing. The framework's global is another mod's, so the shim treats absent,
 incomplete and throwing alike: no call, one `console.error` for a throw, and GWO's
 text stays English. `modinfo.json` declares the framework as a dependency, so the
 mod manager installs it alongside GWO.
+
+The call passes the shim's `LANGUAGES` list as the `languages` option, so the
+framework requests only the files GWO ships. Without the list it also asks for each
+other file in the locale's chain, such as `zh.json` for `zh-CN` or `de-AT.json`,
+and on CEF each missing file logs `CEF webview resource not found` on every panel.
+Versions of the framework without the option ignore it.
 
 ## Files
 
@@ -46,7 +52,8 @@ mod manager installs it alongside GWO.
 - `<lang>.json` — one file per shipped language (`de`, `es-ES`, `fr`, `it`, `ja`,
   `ko`, `nl`, `pl-PL`, `ru`, `zh-CN`, `zh-TW`), holding only the keys the game's
   own tables lack for that language. `de-AT` and `nl-BE` reach `de` and `nl` by
-  fallback at runtime.
+  fallback at runtime. A new file needs its name in `LANGUAGES` too, or it never
+  loads; `test/mod_translations.test.js` fails until the two match.
 
 Both have the game's own table shape, `{ "key": { "message": "…" } }`, so a file
 can be handed upstream unchanged.

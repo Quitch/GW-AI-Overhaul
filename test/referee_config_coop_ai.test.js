@@ -191,7 +191,7 @@ describe("setupCoopAiArmies", () => {
     const titans = armiesFor([coopAiEntry()])[0].personality;
     assert.deepEqual(
       titans.personality_tags,
-      GOLD.personality_tags.concat(["Default"])
+      GOLD.personality_tags.concat(["Default", "GalacticWar"])
     );
 
     const penchant = armiesFor([
@@ -199,7 +199,7 @@ describe("setupCoopAiArmies", () => {
     ])[0].personality;
     assert.deepEqual(
       penchant.personality_tags,
-      GOLD.personality_tags.concat(["Artillery", "Default"])
+      GOLD.personality_tags.concat(["Artillery", "Default", "GalacticWar"])
     );
     for (const personality of [queller, titans, penchant]) {
       assert.ok(!personality.personality_tags.includes("GWAlly"));
