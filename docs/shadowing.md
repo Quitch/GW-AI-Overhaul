@@ -252,10 +252,18 @@ and 2 reached no enemy.
    limit). No base row takes a Boom: `Fast` and `General` subtract
    `SelfDestruct`, and every other row needs a role a Boom does not have. Why:
    "TITANS and Penchant AI not sending Booms via teleporters" (e272959a6, 2025).
+8. **Land_Attack_XLarge_Transfer** and **Land_Attack_Max_Transfer**
+   (`platoon_templates.json`). GWO adds a `Bot & Deconstruction` row, squad
+   `Fast`, after the `Suicide` row, with the same maximum as its `Fast` row (40,
+   or no limit). No base row takes a Locust: `Fast` and `General` subtract
+   `Deconstruction`, and every other row needs a role a Locust does not have. The
+   base transfer pool tests count Locusts, and base builds Locusts for a transfer
+   when the AI is alone on its planet. Why: "TITANS AIs take Locusts when they
+   reinforce another planet" (#752, 2026).
 
 Items 1 to 5 are one change: the AI builds anti-air only when someone has
 aircraft. Items 1 and 2 apply only with the `GalacticWar` tag. Items 3 to 5 apply
-to every AI that loads these files. Items 6 and 7 are platoon fixes.
+to every AI that loads these files. Items 6 to 8 are platoon fixes.
 
 #### Which copy each `pa/ai_queller/` file replaces
 
